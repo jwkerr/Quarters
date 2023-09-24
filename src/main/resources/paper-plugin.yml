@@ -1,0 +1,33 @@
+name: Quarters
+version: "${project.version}"
+main: net.earthmc.quarters.Quarters
+api-version: "1.20"
+prefix: Quarters
+authors: [Fruitloopins]
+description: Because residents deserve the bare minimum
+website: https://earthmc.net
+
+dependencies:
+  - name: Towny
+    required: true
+
+permissions:
+  quarters.wand:
+    description: "Grants permission to use the Quarters selection wand"
+    default: true
+
+  quarters.command.clear:
+    description: "Grants permission to clear current selection"
+    default: true
+
+  quarters.command.create:
+    description: "Grants permission to create a quarter"
+    default: true
+
+  quarters.command.info:
+    description: "Grants permission to show basic info about the Quarters installation"
+    default: true
+
+  quarters.command.pos:
+    description: "Grants permission to select areas with commands"
+    default: true
