@@ -13,7 +13,6 @@ import net.earthmc.quarters.object.Selection;
 import net.earthmc.quarters.manager.SelectionManager;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandAlias("quarters|q")
@@ -21,9 +20,7 @@ public class CreateCommand extends BaseCommand {
     @Subcommand("create")
     @Description("Turn selected area into a quarter")
     @CommandPermission("quarters.command.create")
-    public void onCreate(CommandSender sender) {
-        Player player = (Player) sender;
-
+    public void onCreate(Player player) {
         Selection selection = SelectionManager.selectionMap.get(player);
 
         Location pos1 = selection.getPos1();

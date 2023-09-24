@@ -10,7 +10,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 @CommandAlias("quarters|q")
 public class InfoCommand extends BaseCommand {
@@ -19,8 +18,6 @@ public class InfoCommand extends BaseCommand {
     @Description("Display info about Quarters")
     @CommandPermission("quarters.command.info")
     public void onInfo(CommandSender sender) {
-        Player player = (Player) sender;
-
         PluginMeta meta = Quarters.plugin.getPluginMeta();
 
         TextComponent component = Component.text()
@@ -30,6 +27,6 @@ public class InfoCommand extends BaseCommand {
                         .append(Component.text(meta.getAuthors().get(0))).color(NamedTextColor.GRAY)
                         .build();
 
-        QuartersMessaging.sendInfoWall(player, component);
+        QuartersMessaging.sendInfoWall(sender, component);
     }
 }
