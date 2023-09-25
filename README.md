@@ -1,5 +1,9 @@
 # THIS PLUGIN IS NOT FINISHED OR READY FOR USE
 
+# Quarters
+
+> Because residents deserve the bare minimum.
+
 ---
 
 Quarters allows the sub-division, sale, and ownership of Towny plots by players using a wand or a series of user-friendly commands. The most common use-case for this is making so-called "apartments" in plots that could otherwise only be owned by one player.

@@ -4,25 +4,24 @@ import co.aikar.commands.PaperCommandManager;
 import net.earthmc.quarters.command.*;
 import net.earthmc.quarters.config.Config;
 import net.earthmc.quarters.listener.PlayerInteractListener;
+import net.earthmc.quarters.db.FlatFile;
 import net.earthmc.quarters.task.SelectionParticleTask;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-@SuppressWarnings("unused")
 public final class Quarters extends JavaPlugin {
-    public static JavaPlugin plugin;
-    public final FileConfiguration config = getConfig();
+    public static JavaPlugin instance;
     public static Material wand;
 
     @Override
     public void onEnable() {
-        Config.init(config);
+        Config.init(getConfig());
         saveConfig();
 
-        plugin = this;
-        wand = Material.valueOf(config.getString("wand"));
+        instance = this;
+        wand = Material.valueOf(getConfig().getString("wand"));
 
+        FlatFile.init();
         initListeners();
         initCommands();
 
@@ -30,6 +29,11 @@ public final class Quarters extends JavaPlugin {
         task.runTaskTimer(this, 0, 10);
 
         getLogger().info("Quarters enabled :3");
+    }
+
+    @Override
+    public void onDisable() {
+        getLogger().info("Quarters disabled :v");
     }
 
     public void initListeners() {
@@ -41,13 +45,9 @@ public final class Quarters extends JavaPlugin {
 
         manager.registerCommand(new ClearCommand());
         manager.registerCommand(new CreateCommand());
+        manager.registerCommand(new HereCommand());
         manager.registerCommand(new InfoCommand());
         manager.registerCommand(new Pos1Command());
         manager.registerCommand(new Pos2Command());
-    }
-
-    @Override
-    public void onDisable() {
-        getLogger().info("Quarters disabled :v");
     }
 }

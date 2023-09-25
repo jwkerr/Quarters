@@ -18,7 +18,7 @@ public class InfoCommand extends BaseCommand {
     @Description("Display info about Quarters")
     @CommandPermission("quarters.command.info")
     public void onInfo(CommandSender sender) {
-        PluginMeta meta = Quarters.plugin.getPluginMeta();
+        PluginMeta meta = Quarters.instance.getPluginMeta();
 
         TextComponent component = Component.text()
                         .append(Component.text("Version: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))

@@ -41,7 +41,7 @@ public class SelectionParticleTask extends BukkitRunnable {
 
                 int volume = length * height * width;
 
-                if (volume > Quarters.plugin.getConfig().getInt("max_volume"))
+                if (volume > Quarters.instance.getConfig().getInt("max_volume"))
                     continue;
 
                 List<int[]> edges = new ArrayList<>();

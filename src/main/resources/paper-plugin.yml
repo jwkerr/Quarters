@@ -24,6 +24,10 @@ permissions:
     description: "Grants permission to create a quarter"
     default: true
 
+  quarters.command.here:
+    description: "Grants permission to view info about the quarter you are standing in"
+    default: true
+
   quarters.command.info:
     description: "Grants permission to show basic info about the Quarters installation"
     default: true

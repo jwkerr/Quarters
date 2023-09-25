@@ -9,6 +9,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import net.earthmc.quarters.api.QuartersMessaging;
+import net.earthmc.quarters.db.FlatFile;
 import net.earthmc.quarters.object.Selection;
 import net.earthmc.quarters.manager.SelectionManager;
 import org.bukkit.Location;
@@ -41,7 +42,7 @@ public class CreateCommand extends BaseCommand {
         int townBlockSize = TownySettings.getTownBlockSize();
 
         if (maxX - minX > townBlockSize | maxZ - minZ > townBlockSize) {
-            QuartersMessaging.sendErrorMessage(player, "Selected area is larger than the server's town block size, no quarter has been created");
+            QuartersMessaging.sendErrorMessage(player, "Selected area is larger than the server's town block size");
             return;
         }
 
@@ -51,14 +52,16 @@ public class CreateCommand extends BaseCommand {
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
-                    if (townyAPI.getTown(new Location(world, x, y, z)) == null) {
-                        QuartersMessaging.sendErrorMessage(player, "Selected area contains wilderness, no quarter has been created");
+                    Location location = new Location(world, x, y, z);
+
+                    if (townyAPI.getTown(location) == null) {
+                        QuartersMessaging.sendErrorMessage(player, "Selected area contains wilderness");
                         return;
                     }
 
                     TownBlock currentPosTownBlock = townyAPI.getTownBlock(new Location(world, x, y, z));
                     if (pos1TownBlock != currentPosTownBlock) {
-                        QuartersMessaging.sendErrorMessage(player, "Selected area contains multiple town blocks, no quarter has been created");
+                        QuartersMessaging.sendErrorMessage(player, "Selected area contains multiple town blocks");
                         return;
                     }
                 }
@@ -68,6 +71,8 @@ public class CreateCommand extends BaseCommand {
         selection.setPos1(null);
         selection.setPos2(null);
 
-        QuartersMessaging.sendSuccessMessage(player, "Selected area has been successfully turned into a quarter");
+        FlatFile.createQuarter(pos1, pos2, pos1TownBlock);
+
+        QuartersMessaging.sendSuccessMessage(player, "Selected quarter has been successfully created");
     }
 }
