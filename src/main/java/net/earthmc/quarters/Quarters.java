@@ -1,10 +1,12 @@
 package net.earthmc.quarters;
 
 import co.aikar.commands.PaperCommandManager;
+import com.palmergames.bukkit.towny.object.metadata.MetadataLoader;
 import net.earthmc.quarters.command.*;
 import net.earthmc.quarters.config.Config;
 import net.earthmc.quarters.listener.PlayerInteractListener;
-import net.earthmc.quarters.db.FlatFile;
+import net.earthmc.quarters.object.QuarterListDFDeserializer;
+import net.earthmc.quarters.object.QuarterListDataField;
 import net.earthmc.quarters.task.SelectionParticleTask;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,7 +23,9 @@ public final class Quarters extends JavaPlugin {
         instance = this;
         wand = Material.valueOf(getConfig().getString("wand"));
 
-        FlatFile.init();
+        MetadataLoader.getInstance()
+                        .registerDeserializer(QuarterListDataField.typeID(), new QuarterListDFDeserializer());
+
         initListeners();
         initCommands();
 
@@ -49,5 +53,6 @@ public final class Quarters extends JavaPlugin {
         manager.registerCommand(new InfoCommand());
         manager.registerCommand(new Pos1Command());
         manager.registerCommand(new Pos2Command());
+        manager.registerCommand(new TrustCommand());
     }
 }

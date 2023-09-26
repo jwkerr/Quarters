@@ -35,3 +35,7 @@ permissions:
   quarters.command.pos:
     description: "Grants permission to select areas with commands"
     default: true
+
+  quarters.command.trust:
+    description: "Grants permission to trust other users in your plot"
+    default: true

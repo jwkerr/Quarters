@@ -20,12 +20,12 @@ public class HereCommand extends BaseCommand {
     @Description("Get info about the quarter you are standing in")
     @CommandPermission("quarters.command.here")
     public void onHere(Player player) {
-        if (!QuartersAPI.isPlayerInQuarter(player)) {
+        if (!QuartersAPI.getInstance().isPlayerInQuarter(player)) {
             QuartersMessaging.sendErrorMessage(player, "You are not standing within a quarter");
             return;
         }
 
-        Quarter quarter = QuartersAPI.getQuarter(player.getLocation());
+        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
 
         TextComponent component = Component.text()
                 .append(Component.text("Owner: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))

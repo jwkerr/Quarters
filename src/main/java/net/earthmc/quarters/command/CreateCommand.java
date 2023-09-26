@@ -9,7 +9,6 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import net.earthmc.quarters.api.QuartersMessaging;
-import net.earthmc.quarters.db.FlatFile;
 import net.earthmc.quarters.object.Selection;
 import net.earthmc.quarters.manager.SelectionManager;
 import org.bukkit.Location;
@@ -70,8 +69,6 @@ public class CreateCommand extends BaseCommand {
 
         selection.setPos1(null);
         selection.setPos2(null);
-
-        FlatFile.createQuarter(pos1, pos2, pos1TownBlock);
 
         QuartersMessaging.sendSuccessMessage(player, "Selected quarter has been successfully created");
     }
