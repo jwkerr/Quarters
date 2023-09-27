@@ -3,8 +3,10 @@ package net.earthmc.quarters.api;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import net.earthmc.quarters.Quarters;
-import net.earthmc.quarters.manager.DataManager;
+import net.earthmc.quarters.manager.QuarterDataManager;
+import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Quarter;
+import net.earthmc.quarters.utils.QuarterUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -38,7 +40,9 @@ public class QuartersAPI {
      * @return True if there is at least one quarter defined within the TownBlock
      */
     public boolean hasQuarter(TownBlock townBlock) {
-        return DataManager.quarterMap.get(townBlock) != null;
+        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTownBlock(townBlock);
+
+        return quarterList != null && !quarterList.isEmpty();
     }
 
     /**
@@ -56,28 +60,18 @@ public class QuartersAPI {
         if (!hasQuarter(townBlock))
             return false;
 
-        for (Quarter quarter : DataManager.quarterMap.get(townBlock)) {
+        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTownBlock(townBlock);
+
+        if (quarterList == null)
+            return false;
+
+        for (Quarter quarter : quarterList) {
             Location pos1 = quarter.getPos1();
             Location pos2 = quarter.getPos2();
 
-            int minX = Math.min(pos1.getBlockX(), pos2.getBlockX());
-            int maxX = Math.max(pos1.getBlockX(), pos2.getBlockX());
-            int minY = Math.min(pos1.getBlockY(), pos2.getBlockY());
-            int maxY = Math.max(pos1.getBlockY(), pos2.getBlockY());
-            int minZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ());
-            int maxZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ());
-
             Location playerLocation = player.getLocation();
-            if (playerLocation.getY() < minY | playerLocation.getY() > maxY)
-                return false;
-
-            if (playerLocation.getX() < minX | playerLocation.getX() > maxX)
-                return false;
-
-            if (playerLocation.getZ() < minZ | playerLocation.getZ() > maxZ)
-                return false;
-
-            return true;
+            if (QuarterUtils.isLocationInsideCuboidBounds(playerLocation, new Cuboid(pos1, pos2)))
+                return true;
         }
 
         return false;
@@ -89,32 +83,22 @@ public class QuartersAPI {
      * @param location Location to check
      * @return The quarter at the specified location or null if there is none
      */
-    public Quarter getQuarter(Location location) {
+    public Quarter getQuarterAtLocation(Location location) {
         TownBlock townBlock = townyAPI.getTownBlock(location);
-        if (hasQuarter(townBlock))
+        if (!hasQuarter(townBlock))
             return null;
 
-        for (Quarter quarter : DataManager.quarterMap.get(townBlock)) {
+        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTownBlock(townBlock);
+
+        if (quarterList == null)
+            return null;
+
+        for (Quarter quarter : quarterList) {
             Location pos1 = quarter.getPos1();
             Location pos2 = quarter.getPos2();
 
-            int minX = Math.min(pos1.getBlockX(), pos2.getBlockX());
-            int maxX = Math.max(pos1.getBlockX(), pos2.getBlockX());
-            int minY = Math.min(pos1.getBlockY(), pos2.getBlockY());
-            int maxY = Math.max(pos1.getBlockY(), pos2.getBlockY());
-            int minZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ());
-            int maxZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ());
-
-            if (location.getY() < minY | location.getY() > maxY)
-                return null;
-
-            if (location.getX() < minX | location.getX() > maxX)
-                return null;
-
-            if (location.getZ() < minZ | location.getZ() > maxZ)
-                return null;
-
-            return quarter;
+            if (QuarterUtils.isLocationInsideCuboidBounds(location, new Cuboid(pos1, pos2)))
+                return quarter;
         }
 
         return null;
@@ -124,9 +108,9 @@ public class QuartersAPI {
      * Gets all the quarters within a TownBlock
      *
      * @param townBlock TownBlock to check
-     * @return A list of all quarters within the specified TownBlock
+     * @return A list of all quarters within the specified TownBlock or null if there are none
      */
-    public List<Quarter> getQuarters(TownBlock townBlock) {
-        return DataManager.quarterMap.get(townBlock);
+    public List<Quarter> getQuartersInTownBlock(TownBlock townBlock) {
+        return QuarterDataManager.getQuarterListFromTownBlock(townBlock);
     }
 }

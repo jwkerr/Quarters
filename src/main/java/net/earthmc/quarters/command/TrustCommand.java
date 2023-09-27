@@ -22,7 +22,7 @@ public class TrustCommand extends BaseCommand {
             return;
         }
 
-        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
+        Quarter quarter = QuartersAPI.getInstance().getQuarterAtLocation(player.getLocation());
         if (!quarter.getOwner().equals(player)) {
             QuartersMessaging.sendErrorMessage(player, "You do not own this quarter");
             return;

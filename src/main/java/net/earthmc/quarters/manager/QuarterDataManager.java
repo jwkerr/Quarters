@@ -33,6 +33,7 @@ public class QuarterDataManager {
                 QuarterListDataField qldf = (QuarterListDataField) cdf;
 
                 qldf.setValue(updatedVal);
+                townBlock.addMetaData(qldf);
             }
         }
     }

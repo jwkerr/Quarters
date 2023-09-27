@@ -25,7 +25,7 @@ public class HereCommand extends BaseCommand {
             return;
         }
 
-        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
+        Quarter quarter = QuartersAPI.getInstance().getQuarterAtLocation(player.getLocation());
 
         TextComponent component = Component.text()
                 .append(Component.text("Owner: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))

@@ -1,5 +1,8 @@
 package net.earthmc.quarters.object;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Town;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -10,6 +13,7 @@ public class Quarter {
     Location pos1;
     Location pos2;
     UUID uuid;
+    Town town;
     Player owner;
     List<Player> trustedPlayers;
 
@@ -37,8 +41,18 @@ public class Quarter {
         return uuid;
     }
 
-    public void setOwner(Player player) {
-        this.owner = player;
+    public void setTown(UUID uuid) {
+        this.town = TownyAPI.getInstance().getTown(uuid);
+    }
+
+    public Town getTown() {
+        return town;
+    }
+
+    public void setOwner(UUID uuid) {
+        if (uuid != null) {
+            this.owner = Bukkit.getPlayer(uuid);
+        }
     }
 
     public Player getOwner() {

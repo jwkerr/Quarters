@@ -1,5 +1,7 @@
 package net.earthmc.quarters.utils;
 
+import net.earthmc.quarters.Quarters;
+import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Quarter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,17 +22,29 @@ public class QuarterUtils {
         return location.getWorld().getName() + "+" + location.getBlockX() + "+" + location.getBlockY() + "+" + location.getBlockZ();
     }
 
+    public static List<Player> getPlayerListFromString(String string) {
+        String[] split = string.split("\\+");
+
+        List<Player> playerList = new ArrayList<>();
+        for (String player : split) {
+            playerList.add(Bukkit.getPlayer(player));
+        }
+
+        return playerList;
+    }
+
     public static String serializePlayerList(List<Player> playerList) {
+        if (playerList == null || playerList.isEmpty())
+            return "null";
+
         StringBuilder sb = new StringBuilder();
-        if (!playerList.isEmpty()) {
-            for (Player player : playerList) {
-                if (sb.length() > 0)
-                    sb.append("+");
+        for (Player player : playerList) {
+            if (sb.length() > 0)
+                sb.append("+");
 
-                String trustedPlayerUUID = player.getUniqueId().toString();
+            String trustedPlayerUUID = player.getUniqueId().toString();
 
-                sb.append(trustedPlayerUUID);
-            }
+            sb.append(trustedPlayerUUID);
         }
 
         return sb.toString();
@@ -46,25 +60,23 @@ public class QuarterUtils {
             Location pos1 = getLocationFromString(quarterSplit[0]);
             Location pos2 = getLocationFromString(quarterSplit[1]);
             UUID uuid = UUID.fromString(quarterSplit[2]);
+            UUID town = UUID.fromString(quarterSplit[3]);
 
-            Player owner = null;
-            if (!quarterSplit[3].equals("null")) {
-                owner = Bukkit.getPlayer(quarterSplit[3]);
+            UUID owner = null;
+            if (!quarterSplit[4].equals("null")) {
+                owner = UUID.fromString(quarterSplit[4]);
             }
 
             List<Player> trustedPlayers = new ArrayList<>();
-            if (!quarterSplit[4].equals("null")) {
-                final String[] trustedPlayersSplit = quarterSplit[4].split("\\+");
-
-                for (String player : trustedPlayersSplit) {
-                    trustedPlayers.add(Bukkit.getPlayer(player));
-                }
+            if (!quarterSplit[5].equals("null")) {
+                trustedPlayers = getPlayerListFromString(quarterSplit[5]);
             }
 
             Quarter quarter = new Quarter();
             quarter.setPos1(pos1);
             quarter.setPos2(pos2);
             quarter.setUUID(uuid);
+            quarter.setTown(town);
             quarter.setOwner(owner);
             quarter.setTrustedPlayers(trustedPlayers);
             quarterList.add(quarter);
@@ -73,14 +85,16 @@ public class QuarterUtils {
         return quarterList;
     }
 
-    public static List<Player> getPlayerListFromString(String string) {
-        String[] split = string.split(",");
+    public static boolean isLocationInsideCuboidBounds(Location location, Cuboid cuboid) {
+        if (location.getY() < cuboid.getMinY() || location.getY() > cuboid.getMaxY())
+            return false;
 
-        List<Player> playerList = new ArrayList<>();
-        for (String player : split) {
-            playerList.add(Bukkit.getPlayer(player));
-        }
+        if (location.getX() < cuboid.getMinX() || location.getX() > cuboid.getMaxX())
+            return false;
 
-        return playerList;
+        if (location.getZ() < cuboid.getMinZ() || location.getZ() > cuboid.getMaxZ())
+            return false;
+
+        return true;
     }
 }

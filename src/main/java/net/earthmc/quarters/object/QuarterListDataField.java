@@ -30,8 +30,8 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
     }
 
     /**
-     * Example input string: world+23+71+70,world+17+62+76,2563fe14-4843-4f16-b28c-e3b7e59fb8f2,fed0ec4a-f1ad-4b97-9443-876391668b34,f17d77ab-aed4-44e7-96ef-ec9cd473eda3+7395d056-536a-4cf3-9c96-6c7a7df6897a|world+23+71+70,world+17+62+76,2563fe14-4843-4f16-b28c-e3b7e59fb8f2,fed0ec4a-f1ad-4b97-9443-876391668b34,f17d77ab-aed4-44e7-96ef-ec9cd473eda3+7395d056-536a-4cf3-9c96-6c7a7df6897a
-     * Above string represented by name: pos1,pos2,uuid,owner,trustedPlayers
+     * Example input string: world+23+71+70,world+17+62+76,2563fe14-4843-4f16-b28c-e3b7e59fb8f2,02158d9e-2f71-4750-a27b-96493413d09e,fed0ec4a-f1ad-4b97-9443-876391668b34,f17d77ab-aed4-44e7-96ef-ec9cd473eda3+7395d056-536a-4cf3-9c96-6c7a7df6897a|world+23+71+70,world+17+62+76,2563fe14-4843-4f16-b28c-e3b7e59fb8f2,02158d9e-2f71-4750-a27b-96493413d09e,fed0ec4a-f1ad-4b97-9443-876391668b34,f17d77ab-aed4-44e7-96ef-ec9cd473eda3+7395d056-536a-4cf3-9c96-6c7a7df6897a
+     * Above string represented by name: pos1,pos2,uuid,town,owner,trustedPlayers
      * The "+" between trustedPlayers delimits a new entry in the list, owner and trustedPlayers can have the values of "null"
      * The "|" delimits different quarter lists, this will represent a whole new entry of type "Quarter" in the final list
      *
@@ -58,12 +58,13 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
             String pos1String = "Position 1: " + "World=" + pos1.getWorld().getName() + "/X=" + pos1.getBlockX() + "/Y=" + pos1.getBlockY() + "/Z=" + pos1.getBlockZ() + "\n";
             String pos2String = "Position 2: " + "World=" + pos2.getWorld().getName() + "/X=" + pos2.getBlockX() + "/Y=" + pos2.getBlockY() + "/Z=" + pos2.getBlockZ() + "\n";
             String uuid = "Quarter UUID: " + quarter.getUUID().toString() + "\n";
+            String town = "Town UUID: " + quarter.town.getUUID() + "\n";
 
             String owner;
             if (quarter.getOwner() != null) {
-                owner = "Quarter owner: " + quarter.getOwner().getUniqueId() + "\n";
+                owner = "Owner UUID: " + quarter.getOwner().getUniqueId() + "\n";
             } else {
-                owner = "Quarter owner: null\n";
+                owner = "Owner UUID: null\n";
             }
 
             StringBuilder trustedPlayersSB = new StringBuilder();
@@ -74,9 +75,9 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
                 trustedPlayersSB.append(player.getName());
             }
 
-            String trustedPlayers = "Trusted players: " + trustedPlayersSB + "\n";
+            String trustedPlayers = "Trusted player UUIDS: " + trustedPlayersSB + "\n";
 
-            String quarterString = title + pos1String + pos2String + uuid + owner + trustedPlayers;
+            String quarterString = title + pos1String + pos2String + uuid + town + owner + trustedPlayers;
             quarterSB.append(quarterString);
 
             i++;
@@ -100,6 +101,7 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
             String pos1 = QuarterUtils.serializeLocation(quarter.getPos1());
             String pos2 = QuarterUtils.serializeLocation(quarter.getPos2());
             String uuid = quarter.getUUID().toString();
+            String town = quarter.getTown().getUUID().toString();
 
             String owner;
             if (quarter.getOwner() != null) {
@@ -110,7 +112,7 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
 
             String trustedPlayers = QuarterUtils.serializePlayerList(quarter.getTrustedPlayers());
 
-            String quarterString = pos1 + "," + pos2 + "," + uuid + "," + owner + "," + trustedPlayers;
+            String quarterString = pos1 + "," + pos2 + "," + uuid + "," + town + "," + owner + "," + trustedPlayers;
 
             sb.append(quarterString);
         }
