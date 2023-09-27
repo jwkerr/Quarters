@@ -61,7 +61,7 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
 
             String owner;
             if (quarter.getOwner() != null) {
-                owner = "Quarter owner UUID: " + quarter.getOwner().getUniqueId() + "\n";
+                owner = "Quarter owner: " + quarter.getOwner().getUniqueId() + "\n";
             } else {
                 owner = "Quarter owner: null\n";
             }
@@ -74,7 +74,7 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
                 trustedPlayersSB.append(player.getName());
             }
 
-            String trustedPlayers = trustedPlayersSB.toString();
+            String trustedPlayers = "Trusted players: " + trustedPlayersSB + "\n";
 
             String quarterString = title + pos1String + pos2String + uuid + owner + trustedPlayers;
             quarterSB.append(quarterString);

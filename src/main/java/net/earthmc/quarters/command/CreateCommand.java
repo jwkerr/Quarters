@@ -9,11 +9,15 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import net.earthmc.quarters.api.QuartersMessaging;
+import net.earthmc.quarters.manager.QuarterDataManager;
+import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.Selection;
 import net.earthmc.quarters.manager.SelectionManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 @CommandAlias("quarters|q")
 public class CreateCommand extends BaseCommand {
@@ -47,6 +51,7 @@ public class CreateCommand extends BaseCommand {
 
         TownyAPI townyAPI = TownyAPI.getInstance();
         TownBlock pos1TownBlock = TownyAPI.getInstance().getTownBlock(selection.getPos1());
+        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTownBlock(pos1TownBlock);
 
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
@@ -63,6 +68,12 @@ public class CreateCommand extends BaseCommand {
                         QuartersMessaging.sendErrorMessage(player, "Selected area contains multiple town blocks");
                         return;
                     }
+
+                    if (quarterList != null) {
+                        for (Quarter quarter : quarterList) {
+
+                        }
+                    }
                 }
             }
         }
@@ -71,5 +82,9 @@ public class CreateCommand extends BaseCommand {
         selection.setPos2(null);
 
         QuartersMessaging.sendSuccessMessage(player, "Selected quarter has been successfully created");
+    }
+
+    private boolean doesBoundIntersect() {
+
     }
 }
