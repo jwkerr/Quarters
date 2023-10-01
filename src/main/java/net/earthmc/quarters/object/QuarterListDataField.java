@@ -2,8 +2,6 @@ package net.earthmc.quarters.object;
 
 import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
 import net.earthmc.quarters.utils.QuarterUtils;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,46 +42,7 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
 
     @Override
     protected String displayFormattedValue() {
-        final List<Quarter> quarterList = this.getValue();
-
-        if (quarterList == null || quarterList.isEmpty())
-            return "<Empty>";
-
-        int i = 1;
-        StringBuilder quarterSB = new StringBuilder();
-        for (Quarter quarter : quarterList) {
-            String title = "Quarter " + i + ":\n";
-            Location pos1 = quarter.getPos1();
-            Location pos2 = quarter.getPos2();
-            String pos1String = "Position 1: " + "World=" + pos1.getWorld().getName() + "/X=" + pos1.getBlockX() + "/Y=" + pos1.getBlockY() + "/Z=" + pos1.getBlockZ() + "\n";
-            String pos2String = "Position 2: " + "World=" + pos2.getWorld().getName() + "/X=" + pos2.getBlockX() + "/Y=" + pos2.getBlockY() + "/Z=" + pos2.getBlockZ() + "\n";
-            String uuid = "Quarter UUID: " + quarter.getUUID().toString() + "\n";
-            String town = "Town UUID: " + quarter.town.getUUID() + "\n";
-
-            String owner;
-            if (quarter.getOwner() != null) {
-                owner = "Owner UUID: " + quarter.getOwner().getUniqueId() + "\n";
-            } else {
-                owner = "Owner UUID: null\n";
-            }
-
-            StringBuilder trustedPlayersSB = new StringBuilder();
-            for (Player player : quarter.getTrustedPlayers()) {
-                if (trustedPlayersSB.length() > 0)
-                    trustedPlayersSB.append(", ");
-
-                trustedPlayersSB.append(player.getName());
-            }
-
-            String trustedPlayers = "Trusted player UUIDS: " + trustedPlayersSB + "\n";
-
-            String quarterString = title + pos1String + pos2String + uuid + town + owner + trustedPlayers;
-            quarterSB.append(quarterString);
-
-            i++;
-        }
-
-        return quarterSB.toString();
+       return this.getValue().toString();
     }
 
     @Override
@@ -105,14 +64,16 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
 
             String owner;
             if (quarter.getOwner() != null) {
-                owner = quarter.getOwner().getUniqueId().toString();
+                owner = quarter.getOwner().getUUID().toString();
             } else {
                 owner = "null";
             }
 
-            String trustedPlayers = QuarterUtils.serializePlayerList(quarter.getTrustedPlayers());
+            String trustedPlayers = QuarterUtils.serializeResidentList(quarter.getTrustedResidents());
 
-            String quarterString = pos1 + "," + pos2 + "," + uuid + "," + town + "," + owner + "," + trustedPlayers;
+            double price = quarter.getPrice();
+
+            String quarterString = pos1 + "," + pos2 + "," + uuid + "," + town + "," + owner + "," + trustedPlayers + "," + price;
 
             sb.append(quarterString);
         }

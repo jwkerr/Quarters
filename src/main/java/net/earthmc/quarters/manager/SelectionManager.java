@@ -2,10 +2,10 @@ package net.earthmc.quarters.manager;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.TownBlock;
-import com.palmergames.bukkit.towny.permissions.PermissionNodes;
+import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.object.Selection;
 import net.earthmc.quarters.api.QuartersMessaging;
+import net.earthmc.quarters.utils.QuarterUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -20,8 +20,8 @@ public class SelectionManager {
     public static void selectPosition(Player player, Location location, boolean isPos1) {
         Selection selection = selectionMap.computeIfAbsent(player, k -> new Selection());
 
-        TownBlock townBlock = TownyAPI.getInstance().getTownBlock(location);
-        if (!canSelectPosition(player, townBlock))
+        Town town = TownyAPI.getInstance().getTown(location);
+        if (!canSelectPosition(player, town))
             return;
 
         if (isPos1)
@@ -33,8 +33,8 @@ public class SelectionManager {
         QuartersMessaging.sendInfoMessage(player, getSelectedPositionComponent(isPos1, location));
     }
 
-    public static boolean canSelectPosition(Player player, TownBlock townBlock) {
-        if (townBlock == null) {
+    public static boolean canSelectPosition(Player player, Town town) {
+        if (town == null) {
             QuartersMessaging.sendErrorMessage(player, "Selected area must be part of a town");
             return false;
         }
@@ -43,10 +43,7 @@ public class SelectionManager {
         if (resident == null)
             return false;
 
-        boolean isMayor = resident.hasPermissionNode(PermissionNodes.TOWNY_COMMAND_PLOT_ASMAYOR.getNode());
-        boolean isMayorInTheirOwnTown = isMayor && resident.hasTown() && resident.getTownOrNull() == townBlock.getTownOrNull();
-
-        if (!isMayorInTheirOwnTown && !townBlock.hasResident(resident)) {
+        if (!QuarterUtils.hasSufficientPerms(resident, town)) {
             QuartersMessaging.sendErrorMessage(player, "Selected area must be a town block where you have sufficient permissions");
             return false;
         }

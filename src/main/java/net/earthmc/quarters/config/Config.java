@@ -10,6 +10,8 @@ public class Config {
 
         config.addDefault("wand", "FLINT");
         config.addDefault("max_volume", 16384);
+        config.addDefault("selection_particle", "SCRAPE");
+        config.addDefault("created_particle", "WAX_OFF");
 
         config.options().copyDefaults(true);
     }

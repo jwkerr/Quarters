@@ -1,7 +1,7 @@
 package net.earthmc.quarters.task;
 
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.object.TownBlock;
+import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.manager.QuarterDataManager;
 import net.earthmc.quarters.object.Cuboid;
@@ -17,7 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectionParticleTask extends BukkitRunnable {
+public class OutlineParticleTask extends BukkitRunnable {
     @Override
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -31,21 +31,23 @@ public class SelectionParticleTask extends BukkitRunnable {
                 Location pos2 = selection.getPos2();
 
                 if (pos1 != null && pos2 != null) {
-                    createCuboidParticles(player, pos1, pos2, Particle.SCRAPE);
+                    createParticlesAtCuboidEdges(player, pos1, pos2, Particle.valueOf(Quarters.instance.getConfig().getString("selection_particle")));
                 }
             }
 
-            TownBlock townBlock = TownyAPI.getInstance().getTownBlock(player);
-            List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTownBlock(townBlock);
-            if (quarterList != null) {
-                for (Quarter quarter : quarterList) {
-                    createCuboidParticles(player, quarter.getPos1(), quarter.getPos2(), Particle.WAX_OFF);
+            Town town = TownyAPI.getInstance().getTown(player);
+            if (town != null) {
+                List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
+                if (quarterList != null) {
+                    for (Quarter quarter : quarterList) {
+                        createParticlesAtCuboidEdges(player, quarter.getPos1(), quarter.getPos2(), Particle.valueOf(Quarters.instance.getConfig().getString("created_particle")));
+                    }
                 }
             }
         }
     }
 
-    private void createCuboidParticles(Player player, Location pos1, Location pos2, Particle particle) {
+    private void createParticlesAtCuboidEdges(Player player, Location pos1, Location pos2, Particle particle) {
         Cuboid cuboid = new Cuboid(pos1, pos2);
         int x1 = pos1.getBlockX();
         int y1 = pos1.getBlockY();

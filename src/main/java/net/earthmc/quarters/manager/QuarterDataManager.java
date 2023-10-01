@@ -1,6 +1,6 @@
 package net.earthmc.quarters.manager;
 
-import com.palmergames.bukkit.towny.object.TownBlock;
+import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuarterListDataField;
@@ -10,9 +10,9 @@ import java.util.List;
 public class QuarterDataManager {
     private static final String keyName = "quarters_qldf";
 
-    public static List<Quarter> getQuarterListFromTownBlock(TownBlock townBlock) {
-        if (townBlock.hasMeta(keyName)) {
-            CustomDataField<?> cdf = townBlock.getMetadata(keyName);
+    public static List<Quarter> getQuarterListFromTown(Town town) {
+        if (town.hasMeta(keyName)) {
+            CustomDataField<?> cdf = town.getMetadata(keyName);
             if (cdf instanceof QuarterListDataField) {
                 QuarterListDataField qldf = (QuarterListDataField) cdf;
 
@@ -23,17 +23,17 @@ public class QuarterDataManager {
         return null;
     }
 
-    public static void updateQuarterListOfTownBlock(TownBlock townBlock, List<Quarter> updatedVal) {
-        if (!townBlock.hasMeta(keyName))
-            townBlock.addMetaData(new QuarterListDataField("quarters_qldf", null, "Quarter List Data Field"));
+    public static void updateQuarterListOfTown(Town town, List<Quarter> updatedVal) {
+        if (!town.hasMeta(keyName))
+            town.addMetaData(new QuarterListDataField("quarters_qldf", null, "Quarter List Data Field"));
 
-        if (townBlock.hasMeta(keyName)) {
-            CustomDataField<?> cdf = townBlock.getMetadata(keyName);
+        if (town.hasMeta(keyName)) {
+            CustomDataField<?> cdf = town.getMetadata(keyName);
             if (cdf instanceof QuarterListDataField) {
                 QuarterListDataField qldf = (QuarterListDataField) cdf;
 
                 qldf.setValue(updatedVal);
-                townBlock.addMetaData(qldf);
+                town.addMetaData(qldf);
             }
         }
     }

@@ -6,8 +6,8 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.TownySettings;
-import com.palmergames.bukkit.towny.object.TownBlock;
+import com.palmergames.bukkit.towny.object.Town;
+import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.manager.QuarterDataManager;
 import net.earthmc.quarters.object.Cuboid;
@@ -40,17 +40,21 @@ public class CreateCommand extends BaseCommand {
         World world = pos1.getWorld();
         Cuboid selectedCuboid = new Cuboid(pos1, pos2);
 
-        int townBlockSize = TownySettings.getTownBlockSize();
+        int maxVolume = Quarters.instance.getConfig().getInt("max_volume");
 
-        if (selectedCuboid.getMaxX() - selectedCuboid.getMinX() > townBlockSize | selectedCuboid.getMaxZ() - selectedCuboid.getMinZ() > townBlockSize) {
-            QuartersMessaging.sendErrorMessage(player, "Selected area is larger than the server's town block size");
+        if (selectedCuboid.getLength() * selectedCuboid.getHeight() * selectedCuboid.getWidth() > maxVolume) {
+            QuartersMessaging.sendErrorMessage(player, "Selected area is larger than the server's configured max volume");
             return;
         }
 
         TownyAPI townyAPI = TownyAPI.getInstance();
-        TownBlock pos1TownBlock = TownyAPI.getInstance().getTownBlock(selection.getPos1());
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTownBlock(pos1TownBlock);
+        Town pos1Town = townyAPI.getTown(selection.getPos1());
+        if (pos1Town == null) {
+            QuartersMessaging.sendErrorMessage(player, "Could not resolve a town from the first selected position");
+            return;
+        }
 
+        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(pos1Town);
         for (int x = selectedCuboid.getMinX(); x <= selectedCuboid.getMaxX(); x++) {
             for (int y = selectedCuboid.getMinY(); y <= selectedCuboid.getMaxY(); y++) {
                 for (int z = selectedCuboid.getMinZ(); z <= selectedCuboid.getMaxZ(); z++) {
@@ -61,9 +65,9 @@ public class CreateCommand extends BaseCommand {
                         return;
                     }
 
-                    TownBlock currentPosTownBlock = townyAPI.getTownBlock(new Location(world, x, y, z));
-                    if (pos1TownBlock != currentPosTownBlock) {
-                        QuartersMessaging.sendErrorMessage(player, "Selected area contains multiple town blocks");
+                    Town currentPosTown = townyAPI.getTown(new Location(world, x, y, z));
+                    if (pos1Town != currentPosTown) {
+                        QuartersMessaging.sendErrorMessage(player, "Selected area contains multiple towns");
                         return;
                     }
 
@@ -88,19 +92,17 @@ public class CreateCommand extends BaseCommand {
         newQuarter.setPos1(pos1);
         newQuarter.setPos2(pos2);
         newQuarter.setUUID(UUID.randomUUID());
-        newQuarter.setTown(pos1TownBlock.getTownOrNull().getUUID());
+        newQuarter.setTown(pos1Town.getUUID());
         newQuarter.setOwner(null);
-        newQuarter.setTrustedPlayers(null);
+        newQuarter.setTrustedResidents(new ArrayList<>());
+        newQuarter.setPrice(-1);
 
-        List<Quarter> updatedVal = new ArrayList<>();
-        if (quarterList != null) {
-            updatedVal.addAll(quarterList);
-            updatedVal.add(newQuarter);
-        } else {
-            updatedVal.add(newQuarter);
+        if (quarterList == null) {
+            quarterList = new ArrayList<>();
         }
+        quarterList.add(newQuarter);
 
-        QuarterDataManager.updateQuarterListOfTownBlock(pos1TownBlock, updatedVal);
+        QuarterDataManager.updateQuarterListOfTown(pos1Town, quarterList);
 
         QuartersMessaging.sendSuccessMessage(player, "Selected quarter has been successfully created");
     }

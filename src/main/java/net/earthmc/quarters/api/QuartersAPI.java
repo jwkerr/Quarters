@@ -1,7 +1,7 @@
 package net.earthmc.quarters.api;
 
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.object.TownBlock;
+import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.manager.QuarterDataManager;
 import net.earthmc.quarters.object.Cuboid;
@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class QuartersAPI {
@@ -34,13 +35,13 @@ public class QuartersAPI {
     }
 
     /**
-     * Gets a boolean representing whether there is at least one quarter in the specified TownBlock
+     * Gets a boolean representing whether there is at least one quarter in the specified town
      *
-     * @param townBlock TownBlock to check
-     * @return True if there is at least one quarter defined within the TownBlock
+     * @param town Town to check
+     * @return True if there is at least one quarter defined within the town
      */
-    public boolean hasQuarter(TownBlock townBlock) {
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTownBlock(townBlock);
+    public boolean hasQuarter(Town town) {
+        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
 
         return quarterList != null && !quarterList.isEmpty();
     }
@@ -53,14 +54,14 @@ public class QuartersAPI {
      */
     public boolean isPlayerInQuarter(Player player) {
         Location location = player.getLocation();
-        if (townyAPI.getTown(location) == null)
+        Town town = townyAPI.getTown(location);
+        if (town == null)
             return false;
 
-        TownBlock townBlock = townyAPI.getTownBlock(location);
-        if (!hasQuarter(townBlock))
+        if (!hasQuarter(town))
             return false;
 
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTownBlock(townBlock);
+        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
 
         if (quarterList == null)
             return false;
@@ -83,13 +84,16 @@ public class QuartersAPI {
      * @param location Location to check
      * @return The quarter at the specified location or null if there is none
      */
-    public Quarter getQuarterAtLocation(Location location) {
-        TownBlock townBlock = townyAPI.getTownBlock(location);
-        if (!hasQuarter(townBlock))
+    @Nullable
+    public Quarter getQuarter(Location location) {
+        Town town = townyAPI.getTown(location);
+        if (town == null)
             return null;
 
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTownBlock(townBlock);
+        if (!hasQuarter(town))
+            return null;
 
+        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
         if (quarterList == null)
             return null;
 
@@ -105,12 +109,26 @@ public class QuartersAPI {
     }
 
     /**
-     * Gets all the quarters within a TownBlock
+     * Gets a quarter at a player's location
      *
-     * @param townBlock TownBlock to check
-     * @return A list of all quarters within the specified TownBlock or null if there are none
+     * @param player Player to check location of
+     * @return The quarter at the specified player's location or null if there is none
      */
-    public List<Quarter> getQuartersInTownBlock(TownBlock townBlock) {
-        return QuarterDataManager.getQuarterListFromTownBlock(townBlock);
+    @Nullable
+    public Quarter getQuarter(Player player) {
+        if (player != null)
+            return getQuarter(player.getLocation());
+
+        return null;
+    }
+
+    /**
+     * Gets all the quarters within a town
+     *
+     * @param town Town to check
+     * @return A list of all quarters within the specified town or null if there are none
+     */
+    public List<Quarter> getQuartersInTown(Town town) {
+        return QuarterDataManager.getQuarterListFromTown(town);
     }
 }

@@ -16,6 +16,10 @@ permissions:
     description: "Grants permission to use the Quarters selection wand"
     default: true
 
+  quarters.command.buy:
+    description: "Grants permissions to buy quarters"
+    default: true
+
   quarters.command.clear:
     description: "Grants permission to clear current selection"
     default: true
@@ -36,6 +40,10 @@ permissions:
     description: "Grants permission to select areas with commands"
     default: true
 
+  quarters.command.sell:
+    description: "Grants permission to sell quarters"
+    default: true
+
   quarters.command.trust:
-    description: "Grants permission to trust other users in your plot"
+    description: "Grants permission to manage trusted users in your quarter"
     default: true

@@ -5,6 +5,8 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
@@ -25,11 +27,26 @@ public class HereCommand extends BaseCommand {
             return;
         }
 
-        Quarter quarter = QuartersAPI.getInstance().getQuarterAtLocation(player.getLocation());
+        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
+
+        String trustedString = "None";
+        if (!quarter.getTrustedResidents().isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (Resident resident : quarter.getTrustedResidents()) {
+                if (sb.length() > 0)
+                    sb.append(", ");
+
+                sb.append(resident.getName());
+            }
+
+            trustedString = sb.toString();
+        }
 
         TextComponent component = Component.text()
                 .append(Component.text("Owner: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))
-                .append(Component.text(quarter.getOwner() == null ? "null" : quarter.getOwner().getName() + "\n")).color(NamedTextColor.GRAY)
+                .append(Component.text(quarter.getOwner() == null ? "None\n" : quarter.getOwner().getName() + "\n")).color(NamedTextColor.GRAY)
+                .append(Component.text("Trusted: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))
+                .append(Component.text(trustedString)).color(NamedTextColor.GRAY)
                 .build();
 
         QuartersMessaging.sendInfoWall(player, component);
