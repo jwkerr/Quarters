@@ -42,7 +42,7 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
 
     @Override
     protected String displayFormattedValue() {
-       return this.getValue().toString();
+       return String.valueOf(this.getValue().size());
     }
 
     @Override

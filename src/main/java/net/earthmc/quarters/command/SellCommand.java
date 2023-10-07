@@ -36,7 +36,7 @@ public class SellCommand extends BaseCommand {
         }
 
         Town town = TownyAPI.getInstance().getTown(player.getLocation());
-        if (!QuarterUtils.hasSufficientPerms(resident, town) && quarterAtLocation.getOwner() != resident) {
+        if (!QuarterUtils.hasSufficientPerms(player, town) && quarterAtLocation.getOwner() != resident) {
             QuartersMessaging.sendErrorMessage(player, "You do not have sufficient permissions to sell this quarter");
             return;
         }

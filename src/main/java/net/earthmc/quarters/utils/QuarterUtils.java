@@ -8,6 +8,7 @@ import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Quarter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,10 +91,10 @@ public class QuarterUtils {
         return quarterList;
     }
 
-    public static boolean hasSufficientPerms(Resident resident, Town town) {
-        boolean isMayor = resident.hasPermissionNode(PermissionNodes.TOWNY_COMMAND_TOWN_MAYOR.getNode());
+    public static boolean hasSufficientPerms(Player player, Town town) {
+        boolean isTownOwner = player.hasPermission("quarters.as_owner");
 
-        return isMayor && resident.hasTown() && resident.getTownOrNull() == town;
+        return isTownOwner && town.hasResident(player);
     }
 
     public static boolean isLocationInsideCuboidBounds(Location location, Cuboid cuboid) {

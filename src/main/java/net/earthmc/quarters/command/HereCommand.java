@@ -46,7 +46,9 @@ public class HereCommand extends BaseCommand {
                 .append(Component.text("Owner: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))
                 .append(Component.text(quarter.getOwner() == null ? "None\n" : quarter.getOwner().getName() + "\n")).color(NamedTextColor.GRAY)
                 .append(Component.text("Trusted: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))
-                .append(Component.text(trustedString)).color(NamedTextColor.GRAY)
+                .append(Component.text(trustedString + "\n")).color(NamedTextColor.GRAY)
+                .append(Component.text("Price: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))
+                .append(Component.text(quarter.getPrice() < 0 ? "Not for sale\n" : quarter.getPrice() + "\n")).color(NamedTextColor.GRAY)
                 .build();
 
         QuartersMessaging.sendInfoWall(player, component);

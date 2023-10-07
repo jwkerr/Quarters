@@ -43,8 +43,8 @@ public class SelectionManager {
         if (resident == null)
             return false;
 
-        if (!QuarterUtils.hasSufficientPerms(resident, town)) {
-            QuartersMessaging.sendErrorMessage(player, "Selected area must be a town block where you have sufficient permissions");
+        if (!QuarterUtils.hasSufficientPerms(player, town)) {
+            QuartersMessaging.sendErrorMessage(player, "Selected area must be a town where you have sufficient permissions");
             return false;
         }
 

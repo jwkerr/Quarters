@@ -25,7 +25,7 @@ public class QuarterDataManager {
 
     public static void updateQuarterListOfTown(Town town, List<Quarter> updatedVal) {
         if (!town.hasMeta(keyName))
-            town.addMetaData(new QuarterListDataField("quarters_qldf", null, "Quarter List Data Field"));
+            town.addMetaData(new QuarterListDataField("quarters_qldf", null, "Quarters"));
 
         if (town.hasMeta(keyName)) {
             CustomDataField<?> cdf = town.getMetadata(keyName);

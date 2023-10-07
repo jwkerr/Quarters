@@ -19,7 +19,7 @@ public class TrustCommand extends BaseCommand {
     @Description("Manage access of other players to a quarter")
     @CommandPermission("quarters.command.trust")
     @CommandCompletion("add|remove|clear @players")
-    public void onTrust(Player player, String method, String target) {
+    public void onTrust(Player player, String method, @Optional String target) {
         if (!(method.equals("add") || method.equals("remove") || method.equals("clear"))) {
             QuartersMessaging.sendErrorMessage(player, "Invalid argument");
             return;
@@ -42,7 +42,7 @@ public class TrustCommand extends BaseCommand {
             return;
         }
 
-        Town town = TownyAPI.getInstance().getTown(player);
+        Town town = TownyAPI.getInstance().getTown(player.getLocation());
         if (town == null) {
             QuartersMessaging.sendErrorMessage(player, "Could not resolve a town from your current location");
             return;
@@ -64,7 +64,6 @@ public class TrustCommand extends BaseCommand {
                         }
 
                         break;
-
                     case "remove":
                         if (trustedList.contains(targetResident)) {
                             trustedList.remove(targetResident);
@@ -75,7 +74,6 @@ public class TrustCommand extends BaseCommand {
                         }
 
                         break;
-
                     case "clear":
                         trustedList.clear();
                         QuartersMessaging.sendSuccessMessage(player, "All trusted players have been removed from this quarter");
