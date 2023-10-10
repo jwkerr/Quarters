@@ -6,15 +6,13 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.Town;
+import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
-import net.earthmc.quarters.manager.QuarterDataManager;
 import net.earthmc.quarters.object.Quarter;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 @CommandAlias("quarters|q")
 public class BuyCommand extends BaseCommand {
@@ -26,33 +24,29 @@ public class BuyCommand extends BaseCommand {
         if (resident == null)
             return;
 
-        Quarter quarterAtLocation = QuartersAPI.getInstance().getQuarter(player);
-        if (!QuartersAPI.getInstance().isPlayerInQuarter(player) || quarterAtLocation == null) {
+        Quarter quarter = QuartersAPI.getInstance().getQuarter(player);
+        if (!QuartersAPI.getInstance().isPlayerInQuarter(player) || quarter == null) {
             QuartersMessaging.sendErrorMessage(player, "You are not standing within a quarter");
             return;
         }
 
-        if (quarterAtLocation.getPrice() <= -1) {
+        if (quarter.getPrice() <= -1) {
             QuartersMessaging.sendErrorMessage(player, "This quarter is not for sale");
             return;
         }
 
-        if (resident.getAccount().getHoldingBalance() < quarterAtLocation.getPrice()) {
+        if (TownyEconomyHandler.isActive() && resident.getAccount().getHoldingBalance() < quarter.getPrice()) {
             QuartersMessaging.sendErrorMessage(player, "You do not have sufficient funds to buy this quarter");
             return;
         }
 
-        // check balance here
+        if (quarter.getPrice() > 0)
+            resident.getAccount().withdraw(quarter.getPrice(), "Payment for quarter " + quarter.getUUID());
 
-        Town town = TownyAPI.getInstance().getTown(player.getLocation());
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
-        for (Quarter quarter : quarterList) {
-            if (quarter.getUUID().equals(quarterAtLocation.getUUID())) {
-                quarter.setOwner(resident);
-                quarter.setPrice(-1);
-                QuarterDataManager.updateQuarterListOfTown(town, quarterList);
-                QuartersMessaging.sendSuccessMessage(player, "You are now the owner of this quarter");
-            }
-        }
+        quarter.setOwner(resident);
+        quarter.setPrice(-1);
+        quarter.save();
+
+        QuartersMessaging.sendSuccessMessage(player, "You are now the owner of this quarter");
     }
 }

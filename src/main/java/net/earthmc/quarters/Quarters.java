@@ -22,7 +22,7 @@ public final class Quarters extends JavaPlugin {
         saveConfig();
 
         instance = this;
-        wand = Material.valueOf(getConfig().getString("wand"));
+        wand = Material.valueOf(getConfig().getString("wand_material"));
 
         MetadataLoader.getInstance()
                         .registerDeserializer(QuarterListDataField.typeID(), new QuarterListDFDeserializer());

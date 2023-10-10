@@ -3,6 +3,7 @@ package net.earthmc.quarters.object;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import net.earthmc.quarters.manager.QuarterDataManager;
 import org.bukkit.Location;
 
 import java.util.List;
@@ -16,6 +17,21 @@ public class Quarter {
     Resident owner;
     List<Resident> trustedResidents;
     double price;
+
+    public void save() {
+        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
+        if (quarterList ==  null)
+            return;
+
+        for (int i = 0; i < quarterList.size(); i++) {
+            Quarter quarter = quarterList.get(i);
+            if (quarter.getUUID().equals(uuid)) {
+                quarterList.set(i, this);
+            }
+        }
+
+        QuarterDataManager.updateQuarterListOfTown(town, quarterList);
+    }
 
     public void setPos1(Location location) {
         this.pos1 = location;
