@@ -1,7 +1,7 @@
 package net.earthmc.quarters.object;
 
 import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
-import net.earthmc.quarters.utils.QuarterUtils;
+import net.earthmc.quarters.util.QuarterUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +29,7 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
 
     @Override
     public void setValueFromString(String string) {
-        this.setValue(QuarterUtils.deserializeQuarterListString(string));
+        this.setValue(QuarterUtil.deserializeQuarterListString(string));
     }
 
     @Override
@@ -49,8 +49,8 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
             if (sb.length() > 0)
                 sb.append("|");
 
-            String pos1 = QuarterUtils.serializeLocation(quarter.getPos1());
-            String pos2 = QuarterUtils.serializeLocation(quarter.getPos2());
+            String pos1 = QuarterUtil.serializeLocation(quarter.getPos1());
+            String pos2 = QuarterUtil.serializeLocation(quarter.getPos2());
             String uuid = quarter.getUUID().toString();
             String town = quarter.getTown().getUUID().toString();
 
@@ -61,7 +61,7 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
                 owner = "null";
             }
 
-            String trustedPlayers = QuarterUtils.serializeResidentList(quarter.getTrustedResidents());
+            String trustedPlayers = QuarterUtil.serializeResidentList(quarter.getTrustedResidents());
 
             String price;
             if (quarter.getPrice() != null) {

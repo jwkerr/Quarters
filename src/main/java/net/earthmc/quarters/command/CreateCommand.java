@@ -15,7 +15,7 @@ import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuarterType;
 import net.earthmc.quarters.object.Selection;
 import net.earthmc.quarters.manager.SelectionManager;
-import net.earthmc.quarters.utils.CommandUtils;
+import net.earthmc.quarters.util.CommandUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -29,11 +29,10 @@ public class CreateCommand extends BaseCommand {
     @Description("Turn selected area into a quarter")
     @CommandPermission("quarters.command.quarters.create")
     public void onCreate(Player player) {
-        if (!CommandUtils.hasPermission(player, "quarters.action.create"))
+        if (!CommandUtil.hasPermission(player, "quarters.action.create"))
             return;
 
         Selection selection = SelectionManager.selectionMap.get(player);
-
         Location pos1 = selection.getPos1();
         Location pos2 = selection.getPos2();
         if (pos1 == null || pos2 == null) {
@@ -44,17 +43,17 @@ public class CreateCommand extends BaseCommand {
         Cuboid selectedCuboid = new Cuboid(pos1, pos2);
         int maxVolume = Quarters.INSTANCE.getConfig().getInt("max_quarter_volume");
         if (selectedCuboid.getLength() * selectedCuboid.getHeight() * selectedCuboid.getWidth() > maxVolume) {
-            QuartersMessaging.sendErrorMessage(player, "Selected area is larger than the server's configured max volume");
+            QuartersMessaging.sendErrorMessage(player, "Selected area is larger than the server's configured max quarter volume");
             return;
         }
 
-        Town pos1Town = TownyAPI.getInstance().getTown(selection.getPos1());
-        if (pos1Town == null) {
+        Town town = TownyAPI.getInstance().getTown(selection.getPos1());
+        if (town == null) {
             QuartersMessaging.sendErrorMessage(player, "Could not resolve a town from the first selected position");
             return;
         }
 
-        if (!isCuboidInValidLocation(selectedCuboid, player, pos1Town))
+        if (!isCuboidInValidLocation(selectedCuboid, player, town))
             return;
 
         selection.setPos1(null);
@@ -64,19 +63,19 @@ public class CreateCommand extends BaseCommand {
         newQuarter.setPos1(pos1);
         newQuarter.setPos2(pos2);
         newQuarter.setUUID(UUID.randomUUID());
-        newQuarter.setTown(pos1Town.getUUID());
+        newQuarter.setTown(town.getUUID());
         newQuarter.setOwner(null);
         newQuarter.setTrustedResidents(new ArrayList<>());
         newQuarter.setPrice(null);
         newQuarter.setType(QuarterType.APARTMENT);
 
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(pos1Town);
+        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
         if (quarterList == null) {
             quarterList = new ArrayList<>();
         }
         quarterList.add(newQuarter);
 
-        QuarterDataManager.updateQuarterListOfTown(pos1Town, quarterList);
+        QuarterDataManager.updateQuarterListOfTown(town, quarterList);
 
         QuartersMessaging.sendSuccessMessage(player, "Selected quarter has been successfully created");
     }
@@ -100,14 +99,15 @@ public class CreateCommand extends BaseCommand {
                         return false;
                     }
 
-                    if (quarterList != null) {
-                        for (Quarter quarter : quarterList) {
-                            Cuboid currentQuarterCuboid = new Cuboid(quarter.getPos1(), quarter.getPos2());
+                    if (quarterList == null)
+                        continue;
 
-                            if (doCuboidBoundsIntersect(cuboid, currentQuarterCuboid)) {
-                                QuartersMessaging.sendErrorMessage(player, "Selected area intersects with a pre-existing quarter");
-                                return false;
-                            }
+                    for (Quarter quarter : quarterList) {
+                        Cuboid currentQuarterCuboid = new Cuboid(quarter.getPos1(), quarter.getPos2());
+
+                        if (doCuboidBoundsIntersect(cuboid, currentQuarterCuboid)) {
+                            QuartersMessaging.sendErrorMessage(player, "Selected area intersects with a pre-existing quarter");
+                            return false;
                         }
                     }
                 }

@@ -8,7 +8,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
-import net.earthmc.quarters.utils.CommandUtils;
+import net.earthmc.quarters.util.CommandUtil;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class TrustCommand extends BaseCommand {
         }
 
         Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
-        if (!CommandUtils.isPlayerInQuarter(player, quarter))
+        if (!CommandUtil.isPlayerInQuarter(player, quarter))
             return;
 
         assert quarter != null;

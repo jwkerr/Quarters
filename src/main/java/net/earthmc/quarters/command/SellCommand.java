@@ -8,7 +8,7 @@ import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
-import net.earthmc.quarters.utils.CommandUtils;
+import net.earthmc.quarters.util.CommandUtil;
 import org.bukkit.entity.Player;
 
 @CommandAlias("quarters|q")
@@ -17,15 +17,15 @@ public class SellCommand extends BaseCommand {
     @Description("Sell a quarter")
     @CommandPermission("quarters.command.quarters.sell")
     public void onSell(Player player, @Optional Double price) {
-        if (!CommandUtils.hasPermission(player, "quarters.action.sell"))
+        if (!CommandUtil.hasPermission(player, "quarters.action.sell"))
             return;
 
         Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
-        if (!CommandUtils.isPlayerInQuarter(player, quarter))
+        if (!CommandUtil.isPlayerInQuarter(player, quarter))
             return;
 
         assert quarter != null;
-        if (!CommandUtils.isQuarterInPlayerTown(player, quarter))
+        if (!CommandUtil.isQuarterInPlayerTown(player, quarter))
             return;
 
         if (quarter.getPrice() >= 0) { // Set price to null if it is already for sale, so it is no longer for sale

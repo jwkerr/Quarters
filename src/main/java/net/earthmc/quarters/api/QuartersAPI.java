@@ -6,7 +6,7 @@ import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.manager.QuarterDataManager;
 import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Quarter;
-import net.earthmc.quarters.utils.QuarterUtils;
+import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -71,7 +71,7 @@ public class QuartersAPI {
             Location pos2 = quarter.getPos2();
 
             Location playerLocation = player.getLocation();
-            if (QuarterUtils.isLocationInsideCuboidBounds(playerLocation, new Cuboid(pos1, pos2)))
+            if (QuarterUtil.isLocationInsideCuboidBounds(playerLocation, new Cuboid(pos1, pos2)))
                 return true;
         }
 
@@ -101,7 +101,7 @@ public class QuartersAPI {
             Location pos1 = quarter.getPos1();
             Location pos2 = quarter.getPos2();
 
-            if (QuarterUtils.isLocationInsideCuboidBounds(location, new Cuboid(pos1, pos2)))
+            if (QuarterUtil.isLocationInsideCuboidBounds(location, new Cuboid(pos1, pos2)))
                 return quarter;
         }
 

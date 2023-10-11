@@ -1,4 +1,4 @@
-package net.earthmc.quarters.utils;
+package net.earthmc.quarters.util;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class QuarterUtils {
+public class QuarterUtil {
     public static Location getLocationFromString(String string) {
         String[] split = string.split("\\+");
 

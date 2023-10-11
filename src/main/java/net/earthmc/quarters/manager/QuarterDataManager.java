@@ -5,7 +5,6 @@ import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuarterListDataField;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class QuarterDataManager {

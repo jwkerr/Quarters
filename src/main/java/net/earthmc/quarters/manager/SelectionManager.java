@@ -5,7 +5,6 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.object.Selection;
 import net.earthmc.quarters.api.QuartersMessaging;
-import net.earthmc.quarters.utils.QuarterUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;

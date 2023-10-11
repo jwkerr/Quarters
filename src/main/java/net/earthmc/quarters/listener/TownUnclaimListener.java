@@ -3,7 +3,6 @@ package net.earthmc.quarters.listener;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.object.Town;
-import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.manager.QuarterDataManager;
 import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Quarter;
