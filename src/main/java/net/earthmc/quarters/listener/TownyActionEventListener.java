@@ -15,26 +15,7 @@ import java.util.List;
 
 public class TownyActionEventListener implements Listener {
     @EventHandler
-    public void onBuild(TownyBuildEvent event) {
-        parseEvent(event);
-    }
-
-    @EventHandler
-    public void onDestroy(TownyDestroyEvent event) {
-        parseEvent(event);
-    }
-
-    @EventHandler
-    public void onSwitch(TownySwitchEvent event) {
-        parseEvent(event);
-    }
-
-    @EventHandler
-    public void onItemUse(TownyItemuseEvent event) {
-        parseEvent(event);
-    }
-
-    private void parseEvent(TownyActionEvent event) {
+    private void onTownyActionEvent(TownyActionEvent event) {
         if (event.isInWilderness())
             return;
 
@@ -52,7 +33,7 @@ public class TownyActionEventListener implements Listener {
 
         List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
         for (Quarter quarter : quarterList) {
-            if (quarter.getUUID() == quarterAtLocation.getUUID()) {
+            if (quarter.getUUID().equals(quarterAtLocation.getUUID())) {
                 Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
                 if (resident == quarter.getOwner() || quarter.getTrustedResidents().contains(resident)) {
                     event.setCancelled(false);

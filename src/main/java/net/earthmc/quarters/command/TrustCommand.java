@@ -7,8 +7,8 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
-import net.earthmc.quarters.manager.QuarterDataManager;
 import net.earthmc.quarters.object.Quarter;
+import net.earthmc.quarters.utils.CommandUtils;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 public class TrustCommand extends BaseCommand {
     @Subcommand("trust")
     @Description("Manage access of other players to a quarter")
-    @CommandPermission("quarters.command.trust")
+    @CommandPermission("quarters.command.quarters.trust")
     @CommandCompletion("add|remove|clear @players")
     public void onTrust(Player player, String method, @Optional String target) {
         if (!(method.equals("add") || method.equals("remove") || method.equals("clear"))) {
@@ -26,11 +26,10 @@ public class TrustCommand extends BaseCommand {
         }
 
         Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
-        if (!QuartersAPI.getInstance().isPlayerInQuarter(player) || quarter == null) {
-            QuartersMessaging.sendErrorMessage(player, "You are not standing within a quarter");
+        if (!CommandUtils.isPlayerInQuarter(player, quarter))
             return;
-        }
 
+        assert quarter != null;
         if (quarter.getOwner() != null && !quarter.getOwner().equals(TownyAPI.getInstance().getResident(player))) {
             QuartersMessaging.sendErrorMessage(player, "You do not own this quarter");
             return;

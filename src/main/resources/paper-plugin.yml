@@ -16,34 +16,81 @@ permissions:
     description: "Grants permission to use the Quarters selection wand"
     default: true
 
-  quarters.command.buy:
+  quarters.action.*:
+    description: "Grants permission to all the dangerous permissions for quarters in a town, should only be given to powerful ranks in a town"
+    default: false
+    children:
+      quarters.action.create: true
+      quarters.action.delete: true
+      quarters.action.sell: true
+      quarters.action.type: true
+
+  quarters.action.create:
+    description: "Grants permission to create a quarter"
+    default: false
+
+  quarters.action.delete:
+    description: "Grants permission to delete a quarter"
+    default: false
+
+  quarters.action.sell:
+    description: "Grants permission to sell quarters"
+    default: false
+
+  quarters.action.type:
+    description: "Grants permission to change a quarter's type"
+    default: false
+
+  quarters.command.quarters.*:
+    description: "Grants permission to all standard commands"
+    default: false
+    children:
+      quarters.command.quarters.buy: true
+      quarters.command.quarters.clear: true
+      quarters.command.quarters.create: true
+      quarters.command.quarters.delete: true
+      quarters.command.quarters.here: true
+      quarters.command.quarters.info: true
+      quarters.command.quarters.pos: true
+      quarters.command.quarters.sell: true
+      quarters.command.quarters.trust: true
+
+  quarters.command.quarters.buy:
     description: "Grants permissions to buy quarters"
     default: true
 
-  quarters.command.clear:
+  quarters.command.quarters.clear:
     description: "Grants permission to clear current selection"
     default: true
 
-  quarters.command.create:
-    description: "Grants permission to create a quarter"
+  quarters.command.quarters.create:
+    description: "Grants permission to use the create command"
     default: true
 
-  quarters.command.here:
+  quarters.command.quarters.delete:
+    description: "Grants permission to use the delete command"
+    default: true
+
+  quarters.command.quarters.here:
     description: "Grants permission to view info about the quarter you are standing in"
     default: true
 
-  quarters.command.info:
+  quarters.command.quarters.info:
     description: "Grants permission to show basic info about the Quarters installation"
     default: true
 
-  quarters.command.pos:
+  quarters.command.quarters.pos:
     description: "Grants permission to select areas with commands"
     default: true
 
-  quarters.command.sell:
-    description: "Grants permission to sell quarters"
+  quarters.command.quarters.sell:
+    description: "Grants permission to use the sell command"
     default: true
 
-  quarters.command.trust:
+  quarters.command.quarters.trust:
     description: "Grants permission to manage trusted users in your quarter"
+    default: true
+
+  quarters.command.quarters.type:
+    description: "Grants permission to use the type command"
     default: true

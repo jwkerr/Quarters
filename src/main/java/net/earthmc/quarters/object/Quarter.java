@@ -17,6 +17,7 @@ public class Quarter {
     Resident owner;
     List<Resident> trustedResidents;
     double price;
+    QuarterType type;
 
     public void save() {
         List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
@@ -27,10 +28,25 @@ public class Quarter {
             Quarter quarter = quarterList.get(i);
             if (quarter.getUUID().equals(uuid)) {
                 quarterList.set(i, this);
+                QuarterDataManager.updateQuarterListOfTown(town, quarterList);
+                break;
             }
         }
+    }
 
-        QuarterDataManager.updateQuarterListOfTown(town, quarterList);
+    public void delete() {
+        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
+        if (quarterList ==  null)
+            return;
+
+        for (int i = 0; i < quarterList.size(); i++) {
+            Quarter quarter = quarterList.get(i);
+            if (quarter.getUUID().equals(uuid)) {
+                quarterList.remove(i);
+                QuarterDataManager.updateQuarterListOfTown(town, quarterList);
+                break;
+            }
+        }
     }
 
     public void setPos1(Location location) {
@@ -88,5 +104,13 @@ public class Quarter {
 
     public double getPrice() {
         return price;
+    }
+
+    public void setType(QuarterType type) {
+        this.type = type;
+    }
+
+    public QuarterType getType() {
+        return type;
     }
 }

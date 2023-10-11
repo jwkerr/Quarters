@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class PlayerInteractListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getMaterial() != Quarters.wand)
+        if (event.getMaterial() != Quarters.WAND)
             return;
 
         Player player = event.getPlayer();

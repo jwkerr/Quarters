@@ -21,33 +21,42 @@ public class OutlineParticleTask extends BukkitRunnable {
     @Override
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.getInventory().getItemInMainHand().getType() != Quarters.wand)
+            if (player.getInventory().getItemInMainHand().getType() != Quarters.WAND)
                 continue;
 
-            Selection selection = SelectionManager.selectionMap.get(player);
+            createParticlesIfSelectionExists(player);
 
-            if (selection != null) {
-                Location pos1 = selection.getPos1();
-                Location pos2 = selection.getPos2();
+            createParticlesIfQuartersExist(player);
+        }
+    }
 
-                if (pos1 != null && pos2 != null) {
-                    createParticlesAtCuboidEdges(player, pos1, pos2, Particle.valueOf(Quarters.instance.getConfig().getString("selection_particle")));
-                }
+    public static void createParticlesIfSelectionExists(Player player) {
+        Selection selection = SelectionManager.selectionMap.get(player);
+
+        if (selection != null) {
+            Location pos1 = selection.getPos1();
+            Location pos2 = selection.getPos2();
+
+            if (pos1 != null && pos2 != null) {
+                createParticlesAtCuboidEdges(player, pos1, pos2, Particle.valueOf(Quarters.INSTANCE.getConfig().getString("selection_particle")));
             }
+        }
+    }
 
-            Town town = TownyAPI.getInstance().getTown(player);
-            if (town != null) {
-                List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
-                if (quarterList != null) {
-                    for (Quarter quarter : quarterList) {
-                        createParticlesAtCuboidEdges(player, quarter.getPos1(), quarter.getPos2(), Particle.valueOf(Quarters.instance.getConfig().getString("created_particle")));
-                    }
+    public static void createParticlesIfQuartersExist(Player player) {
+        Town town = TownyAPI.getInstance().getTown(player);
+
+        if (town != null) {
+            List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
+            if (quarterList != null) {
+                for (Quarter quarter : quarterList) {
+                    createParticlesAtCuboidEdges(player, quarter.getPos1(), quarter.getPos2(), Particle.valueOf(Quarters.INSTANCE.getConfig().getString("created_particle")));
                 }
             }
         }
     }
 
-    private void createParticlesAtCuboidEdges(Player player, Location pos1, Location pos2, Particle particle) {
+    private static void createParticlesAtCuboidEdges(Player player, Location pos1, Location pos2, Particle particle) {
         Cuboid cuboid = new Cuboid(pos1, pos2);
         int x1 = pos1.getBlockX();
         int y1 = pos1.getBlockY();
@@ -58,7 +67,7 @@ public class OutlineParticleTask extends BukkitRunnable {
 
         int volume = cuboid.getLength() * cuboid.getHeight() * cuboid.getWidth();
 
-        if (volume > Quarters.instance.getConfig().getInt("max_volume"))
+        if (volume > Quarters.INSTANCE.getConfig().getInt("max_particle_volume"))
             return;
 
         List<int[]> edges = new ArrayList<>();

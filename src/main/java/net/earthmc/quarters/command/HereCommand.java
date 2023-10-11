@@ -5,7 +5,6 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
-import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
@@ -20,7 +19,7 @@ import org.bukkit.entity.Player;
 public class HereCommand extends BaseCommand {
     @Subcommand("here")
     @Description("Get info about the quarter you are standing in")
-    @CommandPermission("quarters.command.here")
+    @CommandPermission("quarters.command.quarters.here")
     public void onHere(Player player) {
         if (!QuartersAPI.getInstance().isPlayerInQuarter(player)) {
             QuartersMessaging.sendErrorMessage(player, "You are not standing within a quarter");

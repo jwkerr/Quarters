@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 public class ClearCommand extends BaseCommand {
     @Subcommand("clear")
     @Description("Clear current Quarters selection")
-    @CommandPermission("quarters.command.clear")
+    @CommandPermission("quarters.command.quarters.clear")
     public void onClear(Player player) {
         Selection selection = SelectionManager.selectionMap.computeIfAbsent(player, k -> new Selection());
 

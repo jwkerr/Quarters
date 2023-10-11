@@ -8,28 +8,27 @@ import co.aikar.commands.annotation.Subcommand;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Resident;
-import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
+import net.earthmc.quarters.utils.CommandUtils;
 import org.bukkit.entity.Player;
 
 @CommandAlias("quarters|q")
 public class BuyCommand extends BaseCommand {
     @Subcommand("buy")
     @Description("Buy a quarter")
-    @CommandPermission("quarters.command.buy")
+    @CommandPermission("quarters.command.quarters.buy")
     public void onBuy(Player player) {
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null)
             return;
 
-        Quarter quarter = QuartersAPI.getInstance().getQuarter(player);
-        if (!QuartersAPI.getInstance().isPlayerInQuarter(player) || quarter == null) {
-            QuartersMessaging.sendErrorMessage(player, "You are not standing within a quarter");
+        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
+        if (!CommandUtils.isPlayerInQuarter(player, quarter))
             return;
-        }
 
+        assert quarter != null;
         if (quarter.getPrice() <= -1) {
             QuartersMessaging.sendErrorMessage(player, "This quarter is not for sale");
             return;

@@ -31,7 +31,7 @@ public class QuartersAPI {
      * @return Material of the configured Quarters wand
      */
     public Material getWand() {
-        return Quarters.wand;
+        return Quarters.WAND;
     }
 
     /**
@@ -104,20 +104,6 @@ public class QuartersAPI {
             if (QuarterUtils.isLocationInsideCuboidBounds(location, new Cuboid(pos1, pos2)))
                 return quarter;
         }
-
-        return null;
-    }
-
-    /**
-     * Gets a quarter at a player's location
-     *
-     * @param player Player to check location of
-     * @return The quarter at the specified player's location or null if there is none
-     */
-    @Nullable
-    public Quarter getQuarter(Player player) {
-        if (player != null)
-            return getQuarter(player.getLocation());
 
         return null;
     }

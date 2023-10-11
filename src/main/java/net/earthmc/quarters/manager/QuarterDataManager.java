@@ -5,6 +5,7 @@ import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuarterListDataField;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuarterDataManager {
@@ -16,7 +17,12 @@ public class QuarterDataManager {
             if (cdf instanceof QuarterListDataField) {
                 QuarterListDataField qldf = (QuarterListDataField) cdf;
 
-                return qldf.getValue();
+                List<Quarter> quarterList = qldf.getValue();
+                if (quarterList.isEmpty()) {
+                    return null;
+                } else {
+                    return quarterList;
+                }
             }
         }
 

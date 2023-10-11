@@ -27,14 +27,6 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
         return typeID();
     }
 
-    /**
-     * Example input string: world+23+71+70,world+17+62+76,2563fe14-4843-4f16-b28c-e3b7e59fb8f2,02158d9e-2f71-4750-a27b-96493413d09e,fed0ec4a-f1ad-4b97-9443-876391668b34,f17d77ab-aed4-44e7-96ef-ec9cd473eda3+7395d056-536a-4cf3-9c96-6c7a7df6897a|world+23+71+70,world+17+62+76,2563fe14-4843-4f16-b28c-e3b7e59fb8f2,02158d9e-2f71-4750-a27b-96493413d09e,fed0ec4a-f1ad-4b97-9443-876391668b34,f17d77ab-aed4-44e7-96ef-ec9cd473eda3+7395d056-536a-4cf3-9c96-6c7a7df6897a
-     * Above string represented by name: pos1,pos2,uuid,town,owner,trustedPlayers
-     * The "+" between trustedPlayers delimits a new entry in the list, owner and trustedPlayers can have the values of "null"
-     * The "|" delimits different quarter lists, this will represent a whole new entry of type "Quarter" in the final list
-     *
-     * @param string Input string to set value from
-     */
     @Override
     public void setValueFromString(String string) {
         this.setValue(QuarterUtils.deserializeQuarterListString(string));
@@ -73,7 +65,9 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
 
             double price = quarter.getPrice();
 
-            String quarterString = pos1 + "," + pos2 + "," + uuid + "," + town + "," + owner + "," + trustedPlayers + "," + price;
+            String type = quarter.getType().getName();
+
+            String quarterString = pos1 + "," + pos2 + "," + uuid + "," + town + "," + owner + "," + trustedPlayers + "," + price + "," + type;
 
             sb.append(quarterString);
         }

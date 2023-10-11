@@ -6,6 +6,8 @@ import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.permissions.PermissionNodes;
 import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Quarter;
+import net.earthmc.quarters.object.QuarterType;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -77,6 +79,8 @@ public class QuarterUtils {
 
             double price = Double.parseDouble(quarterSplit[6]);
 
+            QuarterType type = QuarterType.valueOf(quarterSplit[7]);
+
             Quarter quarter = new Quarter();
             quarter.setPos1(pos1);
             quarter.setPos2(pos2);
@@ -85,16 +89,11 @@ public class QuarterUtils {
             quarter.setOwner(owner);
             quarter.setTrustedResidents(trustedPlayers);
             quarter.setPrice(price);
+            quarter.setType(type);
             quarterList.add(quarter);
         }
 
         return quarterList;
-    }
-
-    public static boolean hasSufficientPerms(Player player, Town town) {
-        boolean isTownOwner = player.hasPermission("quarters.as_owner");
-
-        return isTownOwner && town.hasResident(player);
     }
 
     public static boolean isLocationInsideCuboidBounds(Location location, Cuboid cuboid) {

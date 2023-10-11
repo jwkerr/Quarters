@@ -5,6 +5,8 @@ import com.palmergames.bukkit.towny.object.metadata.MetadataLoader;
 import net.earthmc.quarters.command.*;
 import net.earthmc.quarters.config.Config;
 import net.earthmc.quarters.listener.PlayerInteractListener;
+import net.earthmc.quarters.listener.PlayerItemHeldListener;
+import net.earthmc.quarters.listener.TownUnclaimListener;
 import net.earthmc.quarters.listener.TownyActionEventListener;
 import net.earthmc.quarters.object.QuarterListDFDeserializer;
 import net.earthmc.quarters.object.QuarterListDataField;
@@ -13,19 +15,18 @@ import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Quarters extends JavaPlugin {
-    public static JavaPlugin instance;
-    public static Material wand;
+    public static Quarters INSTANCE;
+    public static Material WAND;
 
     @Override
     public void onEnable() {
+        INSTANCE = this;
+        WAND = Material.valueOf(getConfig().getString("wand_material"));
+
         Config.init(getConfig());
         saveConfig();
 
-        instance = this;
-        wand = Material.valueOf(getConfig().getString("wand_material"));
-
-        MetadataLoader.getInstance()
-                        .registerDeserializer(QuarterListDataField.typeID(), new QuarterListDFDeserializer());
+        MetadataLoader.getInstance().registerDeserializer(QuarterListDataField.typeID(), new QuarterListDFDeserializer());
 
         initListeners();
         initCommands();
@@ -43,6 +44,8 @@ public final class Quarters extends JavaPlugin {
 
     public void initListeners() {
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerItemHeldListener(), this);
+        getServer().getPluginManager().registerEvents(new TownUnclaimListener(), this);
         getServer().getPluginManager().registerEvents(new TownyActionEventListener(), this);
     }
 
@@ -52,10 +55,10 @@ public final class Quarters extends JavaPlugin {
         manager.registerCommand(new BuyCommand());
         manager.registerCommand(new ClearCommand());
         manager.registerCommand(new CreateCommand());
+        manager.registerCommand(new DeleteCommand());
         manager.registerCommand(new HereCommand());
         manager.registerCommand(new InfoCommand());
-        manager.registerCommand(new Pos1Command());
-        manager.registerCommand(new Pos2Command());
+        manager.registerCommand(new PosCommand());
         manager.registerCommand(new SellCommand());
         manager.registerCommand(new TrustCommand());
     }
