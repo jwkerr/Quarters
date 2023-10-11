@@ -5,17 +5,16 @@ import com.palmergames.bukkit.towny.event.actions.*;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.QuartersAPI;
-import net.earthmc.quarters.manager.QuarterDataManager;
 import net.earthmc.quarters.object.Quarter;
+import net.earthmc.quarters.object.QuarterType;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.List;
-
 public class TownyActionEventListener implements Listener {
     @EventHandler
-    private void onTownyActionEvent(TownyActionEvent event) {
+    public void onTownyActionEvent(TownyActionEvent event) {
         if (event.isInWilderness())
             return;
 
@@ -27,18 +26,49 @@ public class TownyActionEventListener implements Listener {
         if (!QuartersAPI.getInstance().hasQuarter(town))
             return;
 
-        Quarter quarterAtLocation = QuartersAPI.getInstance().getQuarter(location);
-        if (quarterAtLocation == null)
+        Quarter quarter = QuartersAPI.getInstance().getQuarter(location);
+        if (quarter == null)
             return;
 
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
-        for (Quarter quarter : quarterList) {
-            if (quarter.getUUID().equals(quarterAtLocation.getUUID())) {
-                Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
-                if (resident == quarter.getOwner() || quarter.getTrustedResidents().contains(resident)) {
-                    event.setCancelled(false);
-                }
-            }
-        }
+        allowEventIfOwnerOrTrusted(event, quarter);
+
+        if (event instanceof TownyItemuseEvent)
+            allowVehiclePlacementIfStation((TownyItemuseEvent) event, quarter);
+    }
+
+    private void allowEventIfOwnerOrTrusted(TownyActionEvent event, Quarter quarter) {
+        Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
+        if (resident == quarter.getOwner() || quarter.getTrustedResidents().contains(resident))
+            event.setCancelled(false);
+    }
+
+    private void allowVehiclePlacementIfStation(TownyItemuseEvent event, Quarter quarter) {
+        if (!isVehicle(event.getMaterial()))
+            return;
+
+        if (quarter.getType() == QuarterType.STATION)
+            event.setCancelled(false);
+    }
+
+    private boolean isVehicle(Material material) {
+        return material == Material.ACACIA_BOAT ||
+                material == Material.BAMBOO_RAFT ||
+                material == Material.BIRCH_BOAT ||
+                material == Material.CHERRY_BOAT ||
+                material == Material.DARK_OAK_BOAT ||
+                material == Material.JUNGLE_BOAT ||
+                material == Material.MANGROVE_BOAT ||
+                material == Material.OAK_BOAT ||
+                material == Material.SPRUCE_BOAT ||
+                material == Material.ACACIA_CHEST_BOAT ||
+                material == Material.BAMBOO_CHEST_RAFT ||
+                material == Material.BIRCH_CHEST_BOAT ||
+                material == Material.CHERRY_CHEST_BOAT ||
+                material == Material.DARK_OAK_CHEST_BOAT ||
+                material == Material.JUNGLE_CHEST_BOAT ||
+                material == Material.MANGROVE_CHEST_BOAT ||
+                material == Material.OAK_CHEST_BOAT ||
+                material == Material.SPRUCE_CHEST_BOAT ||
+                material == Material.MINECART;
     }
 }
