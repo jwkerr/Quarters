@@ -34,17 +34,12 @@ public class SelectionManager {
     }
 
     public static boolean canSelectPosition(Player player, Town town) {
-        if (town == null) {
-            QuartersMessaging.sendErrorMessage(player, "Selected area must be part of a town");
-            return false;
-        }
-
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null)
             return false;
 
-        if (!QuarterUtils.hasSufficientPerms(player, town)) {
-            QuartersMessaging.sendErrorMessage(player, "Selected area must be a town where you have sufficient permissions");
+        if (town == null || !town.hasResident(player)) {
+            QuartersMessaging.sendErrorMessage(player, "Selected area must be part of your town");
             return false;
         }
 
