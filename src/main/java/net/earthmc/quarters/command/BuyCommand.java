@@ -43,7 +43,7 @@ public class BuyCommand extends BaseCommand {
             resident.getAccount().withdraw(quarter.getPrice(), "Payment for quarter " + quarter.getUUID());
 
         quarter.setOwner(resident);
-        quarter.setPrice(-1);
+        quarter.setPrice(null);
         quarter.save();
 
         QuartersMessaging.sendSuccessMessage(player, "You are now the owner of this quarter");

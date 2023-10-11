@@ -63,7 +63,12 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
 
             String trustedPlayers = QuarterUtils.serializeResidentList(quarter.getTrustedResidents());
 
-            double price = quarter.getPrice();
+            String price;
+            if (quarter.getPrice() != null) {
+                price = quarter.getPrice().toString();
+            } else {
+                price = "null";
+            }
 
             String type = quarter.getType().getName();
 

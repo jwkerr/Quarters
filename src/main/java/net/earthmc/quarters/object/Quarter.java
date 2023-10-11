@@ -16,7 +16,7 @@ public class Quarter {
     Town town;
     Resident owner;
     List<Resident> trustedResidents;
-    double price;
+    Double price;
     QuarterType type;
 
     public void save() {
@@ -98,11 +98,11 @@ public class Quarter {
         return trustedResidents;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 

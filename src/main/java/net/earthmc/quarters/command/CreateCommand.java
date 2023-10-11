@@ -67,7 +67,7 @@ public class CreateCommand extends BaseCommand {
         newQuarter.setTown(pos1Town.getUUID());
         newQuarter.setOwner(null);
         newQuarter.setTrustedResidents(new ArrayList<>());
-        newQuarter.setPrice(-1);
+        newQuarter.setPrice(null);
         newQuarter.setType(QuarterType.APARTMENT);
 
         List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(pos1Town);

@@ -28,8 +28,8 @@ public class SellCommand extends BaseCommand {
         if (!CommandUtils.isQuarterInPlayerTown(player, quarter))
             return;
 
-        if (quarter.getPrice() >= 0) { // Set price to -1 if it is already for sale, so it is no longer for sale
-            quarter.setPrice(-1);
+        if (quarter.getPrice() >= 0) { // Set price to null if it is already for sale, so it is no longer for sale
+            quarter.setPrice(null);
             quarter.save();
             return;
         }

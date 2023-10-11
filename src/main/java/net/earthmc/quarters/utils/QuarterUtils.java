@@ -2,15 +2,11 @@ package net.earthmc.quarters.utils;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.permissions.PermissionNodes;
 import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuarterType;
-import org.apache.logging.log4j.util.TriConsumer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +32,13 @@ public class QuarterUtils {
         }
 
         return residentList;
+    }
+
+    public static Double getDoubleFromString(String string) {
+        if (string.equals("null"))
+            return null;
+
+        return Double.parseDouble(string);
     }
 
     public static String serializeResidentList(List<Resident> residentList) {
@@ -68,16 +71,14 @@ public class QuarterUtils {
             UUID town = UUID.fromString(quarterSplit[3]);
 
             Resident owner = null;
-            if (!quarterSplit[4].equals("null")) {
+            if (!quarterSplit[4].equals("null"))
                 owner = TownyAPI.getInstance().getResident(quarterSplit[4]);
-            }
 
             List<Resident> trustedPlayers = new ArrayList<>();
-            if (!quarterSplit[5].equals("null")) {
+            if (!quarterSplit[5].equals("null"))
                 trustedPlayers = getResidentListFromString(quarterSplit[5]);
-            }
 
-            double price = Double.parseDouble(quarterSplit[6]);
+            Double price = getDoubleFromString(quarterSplit[6]);
 
             QuarterType type = QuarterType.valueOf(quarterSplit[7]);
 
