@@ -10,7 +10,7 @@
 - SeexyyRed
 - dres2 (Dres2)
 
-and 2 other private sponsors
+...and 2 other private sponsors
 
 ⭐ If you would like to support my development efforts and get special consideration for features, you can sponsor me on [GitHub](https://github.com/sponsors/Fruitloopins) or [Patreon](https://patreon.com/Fruitloopins).
 </details>
