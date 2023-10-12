@@ -1,6 +1,21 @@
 # Quarters
 <sup>Because residents deserve the bare minimum.</sup>
 
+<details>
+<summary>A special thank you to my sponsors who are helping to make development possible.</summary>
+
+- CorruptedGreed
+- Lumpooni (Lumpeeh)
+- sab2003 
+- OISARJR (YOUHAVENORIGHTS3)
+- Colt_44_magnum
+- ccryptae (Cryptae)
+
+and 2 other private sponsors
+
+If you would like to support my development efforts and get special consideration for features, you can sponsor me on [GitHub](https://github.com/sponsors/Fruitloopins) or [Patreon](https://patreon.com/Fruitloopins)
+</details>
+
 Quarters allows for much finer control over properties within a Towny town.
 
 Players can use a wand or a series of user-friendly commands to subdivide their town into 3D areas. The advantage this provides over stock Towny is not being limited by the perms applying to an entire town block, you can give players permissions to much more specific areas and stop wasting your land.
