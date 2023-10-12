@@ -7,6 +7,8 @@
 - OISARJR (YOUHAVENORIGHTS3)
 - Colt_44_magnum
 - ccryptae (Cryptae)
+- SeexyyRed
+- dres2 (Dres2)
 
 and 2 other private sponsors
 
