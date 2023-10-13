@@ -14,7 +14,26 @@ import org.bukkit.event.Listener;
 
 public class TownyActionEventListener implements Listener {
     @EventHandler
-    public void onTownyActionEvent(TownyActionEvent event) {
+    public void onBuild(TownyBuildEvent event) {
+        parseEvent(event);
+    }
+
+    @EventHandler
+    public void onDestroy(TownyDestroyEvent event) {
+        parseEvent(event);
+    }
+
+    @EventHandler
+    public void onSwitch(TownySwitchEvent event) {
+        parseEvent(event);
+    }
+
+    @EventHandler
+    public void onItemUse(TownyItemuseEvent event) {
+        parseEvent(event);
+    }
+
+    public void parseEvent(TownyActionEvent event) {
         if (event.isInWilderness())
             return;
 
@@ -33,7 +52,7 @@ public class TownyActionEventListener implements Listener {
         allowEventIfOwnerOrTrusted(event, quarter);
 
         if (event instanceof TownyItemuseEvent)
-            allowVehiclePlacementIfStation((TownyItemuseEvent) event, quarter);
+            allowVehicleActionIfStation(event, quarter);
     }
 
     private void allowEventIfOwnerOrTrusted(TownyActionEvent event, Quarter quarter) {
@@ -42,7 +61,10 @@ public class TownyActionEventListener implements Listener {
             event.setCancelled(false);
     }
 
-    private void allowVehiclePlacementIfStation(TownyItemuseEvent event, Quarter quarter) {
+    private void allowVehicleActionIfStation(TownyActionEvent event, Quarter quarter) {
+        if (!(event instanceof TownyItemuseEvent || event instanceof TownyDestroyEvent || event instanceof TownySwitchEvent))
+            return;
+
         if (!isVehicle(event.getMaterial()))
             return;
 
@@ -51,24 +73,15 @@ public class TownyActionEventListener implements Listener {
     }
 
     private boolean isVehicle(Material material) {
-        return material == Material.ACACIA_BOAT ||
-                material == Material.BAMBOO_RAFT ||
-                material == Material.BIRCH_BOAT ||
-                material == Material.CHERRY_BOAT ||
-                material == Material.DARK_OAK_BOAT ||
-                material == Material.JUNGLE_BOAT ||
-                material == Material.MANGROVE_BOAT ||
-                material == Material.OAK_BOAT ||
-                material == Material.SPRUCE_BOAT ||
-                material == Material.ACACIA_CHEST_BOAT ||
-                material == Material.BAMBOO_CHEST_RAFT ||
-                material == Material.BIRCH_CHEST_BOAT ||
-                material == Material.CHERRY_CHEST_BOAT ||
-                material == Material.DARK_OAK_CHEST_BOAT ||
-                material == Material.JUNGLE_CHEST_BOAT ||
-                material == Material.MANGROVE_CHEST_BOAT ||
-                material == Material.OAK_CHEST_BOAT ||
-                material == Material.SPRUCE_CHEST_BOAT ||
+        return material == Material.ACACIA_BOAT || material == Material.BAMBOO_RAFT ||
+                material == Material.BIRCH_BOAT || material == Material.CHERRY_BOAT ||
+                material == Material.DARK_OAK_BOAT || material == Material.JUNGLE_BOAT ||
+                material == Material.MANGROVE_BOAT || material == Material.OAK_BOAT ||
+                material == Material.SPRUCE_BOAT || material == Material.ACACIA_CHEST_BOAT ||
+                material == Material.BAMBOO_CHEST_RAFT || material == Material.BIRCH_CHEST_BOAT ||
+                material == Material.CHERRY_CHEST_BOAT || material == Material.DARK_OAK_CHEST_BOAT ||
+                material == Material.JUNGLE_CHEST_BOAT || material == Material.MANGROVE_CHEST_BOAT ||
+                material == Material.OAK_CHEST_BOAT || material == Material.SPRUCE_CHEST_BOAT ||
                 material == Material.MINECART;
     }
 }
