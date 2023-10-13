@@ -29,7 +29,12 @@ public class BuyCommand extends BaseCommand {
             return;
 
         assert quarter != null;
-        if (quarter.getPrice() <= -1) {
+        if (quarter.getOwner() == resident) {
+            QuartersMessaging.sendErrorMessage(player, "You already own this quarter");
+            return;
+        }
+
+        if (quarter.getPrice() == null) {
             QuartersMessaging.sendErrorMessage(player, "This quarter is not for sale");
             return;
         }
