@@ -70,8 +70,7 @@ public class QuartersAPI {
             Location pos1 = quarter.getPos1();
             Location pos2 = quarter.getPos2();
 
-            Location playerLocation = player.getLocation();
-            if (QuarterUtil.isLocationInsideCuboidBounds(playerLocation, new Cuboid(pos1, pos2)))
+            if (QuarterUtil.isLocationInsideCuboidBounds(player.getLocation(), new Cuboid(pos1, pos2)))
                 return true;
         }
 

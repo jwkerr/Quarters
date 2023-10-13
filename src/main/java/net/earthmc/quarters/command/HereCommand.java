@@ -41,13 +41,24 @@ public class HereCommand extends BaseCommand {
             trustedString = sb.toString();
         }
 
+        String price;
+        if (quarter.getPrice() == null) {
+            price = "Not for sale";
+        } else if (quarter.getPrice() == 0) {
+            price = "Free";
+        } else {
+            price = String.valueOf(quarter.getPrice());
+        }
+
         TextComponent component = Component.text()
                 .append(Component.text("Owner: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))
                 .append(Component.text(quarter.getOwner() == null ? "None\n" : quarter.getOwner().getName() + "\n")).color(NamedTextColor.GRAY)
                 .append(Component.text("Trusted: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))
                 .append(Component.text(trustedString + "\n")).color(NamedTextColor.GRAY)
                 .append(Component.text("Price: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))
-                .append(Component.text(quarter.getPrice() < 0 ? "Not for sale\n" : quarter.getPrice() + "\n")).color(NamedTextColor.GRAY)
+                .append(Component.text(price + "\n")).color(NamedTextColor.GRAY)
+                .append(Component.text("Type: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))
+                .append(Component.text(quarter.getType().getFormattedName())).color(NamedTextColor.GRAY)
                 .build();
 
         QuartersMessaging.sendInfoWall(player, component);

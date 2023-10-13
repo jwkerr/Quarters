@@ -17,7 +17,7 @@ public class SellCommand extends BaseCommand {
     @Description("Sell a quarter")
     @CommandPermission("quarters.command.quarters.sell")
     public void onSell(Player player, @Optional Double price) {
-        if (!CommandUtil.hasPermission(player, "quarters.action.sell"))
+        if (!CommandUtil.hasPermissionOrMayor(player, "quarters.action.sell"))
             return;
 
         Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
@@ -28,9 +28,10 @@ public class SellCommand extends BaseCommand {
         if (!CommandUtil.isQuarterInPlayerTown(player, quarter))
             return;
 
-        if (quarter.getPrice() >= 0) { // Set price to null if it is already for sale, so it is no longer for sale
+        if (quarter.getPrice() != null && price == null) { // Set price to null if it is already for sale, so it is no longer for sale
             quarter.setPrice(null);
             quarter.save();
+            QuartersMessaging.sendSuccessMessage(player, "This quarter is no longer for sale");
             return;
         }
 
@@ -52,13 +53,10 @@ public class SellCommand extends BaseCommand {
         quarter.setPrice(price);
         quarter.save();
 
-        if (TownyEconomyHandler.isActive() && price != 0) {
+        if (TownyEconomyHandler.isActive()) {
             QuartersMessaging.sendSuccessMessage(player, "This quarter has been set for sale for " + TownyEconomyHandler.getFormattedBalance(price));
         } else if (!TownyEconomyHandler.isActive()) {
-            QuartersMessaging.sendSuccessMessage(player, "This quarter is now claimable using /q buy, it will be free as Towny is not using an economy plugin");
-        } else {
-            QuartersMessaging.sendSuccessMessage(player, "This quarter is now claimable using /q buy");
+            QuartersMessaging.sendSuccessMessage(player, "This quarter is now claimable using /q buy, it will be free as Towny is not currently using an economy plugin");
         }
-
     }
 }

@@ -9,6 +9,9 @@
 - ccryptae (Cryptae)
 - SeexyyRed
 - dres2 (Dres2)
+- Aylywyn
+- Maxxiimus
+- pymsrps3213
 
 ...and 2 other private sponsors
 

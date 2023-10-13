@@ -4,10 +4,7 @@ import co.aikar.commands.PaperCommandManager;
 import com.palmergames.bukkit.towny.object.metadata.MetadataLoader;
 import net.earthmc.quarters.command.*;
 import net.earthmc.quarters.config.Config;
-import net.earthmc.quarters.listener.PlayerInteractListener;
-import net.earthmc.quarters.listener.PlayerItemHeldListener;
-import net.earthmc.quarters.listener.TownUnclaimListener;
-import net.earthmc.quarters.listener.TownyActionEventListener;
+import net.earthmc.quarters.listener.*;
 import net.earthmc.quarters.object.QuarterListDFDeserializer;
 import net.earthmc.quarters.object.QuarterListDataField;
 import net.earthmc.quarters.task.OutlineParticleTask;
@@ -21,10 +18,11 @@ public final class Quarters extends JavaPlugin {
     @Override
     public void onEnable() {
         INSTANCE = this;
-        WAND = Material.valueOf(getConfig().getString("wand_material"));
 
         Config.init(getConfig());
         saveConfig();
+
+        WAND = Material.valueOf(getConfig().getString("wand_material"));
 
         MetadataLoader.getInstance().registerDeserializer(QuarterListDataField.typeID(), new QuarterListDFDeserializer());
 
@@ -43,6 +41,7 @@ public final class Quarters extends JavaPlugin {
     }
 
     public void initListeners() {
+        getServer().getPluginManager().registerEvents(new DeletePlayerListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerItemHeldListener(), this);
         getServer().getPluginManager().registerEvents(new TownUnclaimListener(), this);
@@ -61,5 +60,6 @@ public final class Quarters extends JavaPlugin {
         manager.registerCommand(new PosCommand());
         manager.registerCommand(new SellCommand());
         manager.registerCommand(new TrustCommand());
+        manager.registerCommand(new TypeCommand());
     }
 }

@@ -26,7 +26,7 @@ public class CommandUtil {
         return true;
     }
 
-    public static boolean hasPermission(Player player, String permission) {
+    public static boolean hasPermissionOrMayor(Player player, String permission) {
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null)
             return false;

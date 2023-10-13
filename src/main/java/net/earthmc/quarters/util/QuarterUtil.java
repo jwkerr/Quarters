@@ -72,7 +72,7 @@ public class QuarterUtil {
 
             Resident owner = null;
             if (!quarterSplit[4].equals("null"))
-                owner = TownyAPI.getInstance().getResident(quarterSplit[4]);
+                owner = TownyAPI.getInstance().getResident(UUID.fromString(quarterSplit[4]));
 
             List<Resident> trustedPlayers = new ArrayList<>();
             if (!quarterSplit[5].equals("null"))
@@ -80,7 +80,7 @@ public class QuarterUtil {
 
             Double price = getDoubleFromString(quarterSplit[6]);
 
-            QuarterType type = QuarterType.valueOf(quarterSplit[7]);
+            QuarterType type = QuarterType.getByName(quarterSplit[7]);
 
             Quarter quarter = new Quarter();
             quarter.setPos1(pos1);
@@ -98,13 +98,13 @@ public class QuarterUtil {
     }
 
     public static boolean isLocationInsideCuboidBounds(Location location, Cuboid cuboid) {
-        if (location.getY() < cuboid.getMinY() || location.getY() > cuboid.getMaxY())
+        if (location.getY() < cuboid.getMinY() || location.getY() > cuboid.getMaxY() + 0.99999)
             return false;
 
-        if (location.getX() < cuboid.getMinX() || location.getX() > cuboid.getMaxX())
+        if (location.getX() < cuboid.getMinX() || location.getX() > cuboid.getMaxX() + 0.99999)
             return false;
 
-        if (location.getZ() < cuboid.getMinZ() || location.getZ() > cuboid.getMaxZ())
+        if (location.getZ() < cuboid.getMinZ() || location.getZ() > cuboid.getMaxZ() + 0.99999)
             return false;
 
         return true;

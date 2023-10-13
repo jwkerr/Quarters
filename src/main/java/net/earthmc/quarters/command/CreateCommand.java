@@ -29,7 +29,7 @@ public class CreateCommand extends BaseCommand {
     @Description("Turn selected area into a quarter")
     @CommandPermission("quarters.command.quarters.create")
     public void onCreate(Player player) {
-        if (!CommandUtil.hasPermission(player, "quarters.action.create"))
+        if (!CommandUtil.hasPermissionOrMayor(player, "quarters.action.create"))
             return;
 
         Selection selection = SelectionManager.selectionMap.get(player);

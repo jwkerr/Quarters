@@ -17,8 +17,18 @@ public class TypeCommand extends BaseCommand {
     @Description("Change a quarter's type")
     @CommandPermission("quarters.command.quarters.type")
     @CommandCompletion("apartment|shop|station")
-    public void onType(Player player, String type) {
-        if (!CommandUtil.hasPermission(player, "quarters.action.type"))
+    public void onType(Player player, @Optional String type) {
+        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
+        if (!CommandUtil.isPlayerInQuarter(player, quarter))
+            return;
+
+        assert quarter != null;
+        if (type == null) {
+            QuartersMessaging.sendInfoMessage(player, "This quarter is of type: " + quarter.getType().getFormattedName());
+            return;
+        }
+
+        if (!CommandUtil.hasPermissionOrMayor(player, "quarters.action.type"))
             return;
 
         if (Arrays.stream(QuarterType.values()).noneMatch(e -> e.name().equalsIgnoreCase(type))) {
@@ -26,15 +36,12 @@ public class TypeCommand extends BaseCommand {
             return;
         }
 
-        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
-        if (!CommandUtil.isPlayerInQuarter(player, quarter))
-            return;
-
-        assert quarter != null;
         if (!CommandUtil.isQuarterInPlayerTown(player, quarter))
             return;
 
-        quarter.setType(QuarterType.valueOf(type));
+        quarter.setType(QuarterType.getByName(type));
         quarter.save();
+
+        QuartersMessaging.sendSuccessMessage(player, "This quarter has been set to type: " + quarter.getType().getFormattedName());
     }
 }
