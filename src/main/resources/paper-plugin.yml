@@ -45,7 +45,7 @@ permissions:
     description: "Grants permission to all standard commands"
     default: false
     children:
-      quarters.command.quarters.buy: true
+      quarters.command.quarters.claim: true
       quarters.command.quarters.clear: true
       quarters.command.quarters.create: true
       quarters.command.quarters.delete: true
@@ -55,8 +55,8 @@ permissions:
       quarters.command.quarters.sell: true
       quarters.command.quarters.trust: true
 
-  quarters.command.quarters.buy:
-    description: "Grants permissions to buy quarters"
+  quarters.command.quarters.claim:
+    description: "Grants permissions to claim quarters"
     default: true
 
   quarters.command.quarters.clear:

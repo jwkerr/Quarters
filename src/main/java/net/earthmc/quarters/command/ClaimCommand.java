@@ -15,10 +15,10 @@ import net.earthmc.quarters.util.CommandUtil;
 import org.bukkit.entity.Player;
 
 @CommandAlias("quarters|q")
-public class BuyCommand extends BaseCommand {
-    @Subcommand("buy")
-    @Description("Buy a quarter")
-    @CommandPermission("quarters.command.quarters.buy")
+public class ClaimCommand extends BaseCommand {
+    @Subcommand("claim")
+    @Description("Claim a quarter")
+    @CommandPermission("quarters.command.quarters.claim")
     public void onBuy(Player player) {
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null)
