@@ -16,13 +16,43 @@ import java.util.List;
 import java.util.UUID;
 
 public class QuarterUtil {
-    public static Location getLocationFromString(String string) {
+    public static List<Cuboid> getCuboidsFromString(String string) {
+        List<Cuboid> cuboids = new ArrayList<>();
+
+        String[] split = string.split(":");
+        for (String cuboidString : split) {
+            String[] locationSplit = cuboidString.split(";");
+
+            Location pos1 = getLocationFromString(locationSplit[0]);
+            Location pos2 = getLocationFromString(locationSplit[1]);
+
+            cuboids.add(new Cuboid(pos1, pos2));
+        }
+
+        return cuboids;
+    }
+
+    public static String serializeCuboids(List<Cuboid> cuboids) {
+        StringBuilder sb = new StringBuilder();
+        for (Cuboid cuboid : cuboids) {
+            if (sb.length() > 0)
+                sb.append(":");
+
+            sb.append(serializeLocation(cuboid.getPos1()));
+            sb.append(";");
+            sb.append(serializeLocation(cuboid.getPos2()));
+        }
+
+        return sb.toString();
+    }
+
+    private static Location getLocationFromString(String string) {
         String[] split = string.split("\\+");
 
         return new Location(Bukkit.getWorld(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]));
     }
 
-    public static String serializeLocation(Location location) {
+    private static String serializeLocation(Location location) {
         return location.getWorld().getName() + "+" + location.getBlockX() + "+" + location.getBlockY() + "+" + location.getBlockZ();
     }
 
@@ -68,26 +98,24 @@ public class QuarterUtil {
         for (String quarterString : quarterListSplit) {
             final String[] quarterSplit = quarterString.split(",");
 
-            Location pos1 = getLocationFromString(quarterSplit[0]);
-            Location pos2 = getLocationFromString(quarterSplit[1]);
-            UUID uuid = UUID.fromString(quarterSplit[2]);
-            UUID town = UUID.fromString(quarterSplit[3]);
+            List<Cuboid> cuboids = getCuboidsFromString(quarterSplit[0]);
+            UUID uuid = UUID.fromString(quarterSplit[1]);
+            UUID town = UUID.fromString(quarterSplit[2]);
 
             Resident owner = null;
-            if (!quarterSplit[4].equals("null"))
-                owner = TownyAPI.getInstance().getResident(UUID.fromString(quarterSplit[4]));
+            if (!quarterSplit[3].equals("null"))
+                owner = TownyAPI.getInstance().getResident(UUID.fromString(quarterSplit[3]));
 
             List<Resident> trustedPlayers = new ArrayList<>();
-            if (!quarterSplit[5].equals("null"))
-                trustedPlayers = getResidentListFromString(quarterSplit[5]);
+            if (!quarterSplit[4].equals("null"))
+                trustedPlayers = getResidentListFromString(quarterSplit[4]);
 
-            Double price = getDoubleFromString(quarterSplit[6]);
+            Double price = getDoubleFromString(quarterSplit[5]);
 
-            QuarterType type = QuarterType.getByName(quarterSplit[7]);
+            QuarterType type = QuarterType.getByName(quarterSplit[6]);
 
             Quarter quarter = new Quarter();
-            quarter.setPos1(pos1);
-            quarter.setPos2(pos2);
+            quarter.setCuboids(cuboids);
             quarter.setUUID(uuid);
             quarter.setTown(town);
             quarter.setOwner(owner);

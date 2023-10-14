@@ -3,6 +3,8 @@ package net.earthmc.quarters.object;
 import org.bukkit.Location;
 
 public class Cuboid {
+    private final Location pos1;
+    private final Location pos2;
     private final int minX;
     private final int minY;
     private final int minZ;
@@ -14,6 +16,8 @@ public class Cuboid {
     private final int width;
 
     public Cuboid(Location pos1, Location pos2) {
+        this.pos1 = pos1;
+        this.pos2 = pos2;
         this.minX = Math.min(pos1.getBlockX(), pos2.getBlockX());
         this.maxX = Math.max(pos1.getBlockX(), pos2.getBlockX());
         this.minY = Math.min(pos1.getBlockY(), pos2.getBlockY());
@@ -23,6 +27,14 @@ public class Cuboid {
         this.length = Math.abs(pos1.getBlockX() - pos2.getBlockZ());
         this.height = Math.abs(pos1.getBlockY() - pos2.getBlockY());
         this.width = Math.abs(pos1.getBlockZ() - pos2.getBlockZ());
+    }
+
+    public Location getPos1() {
+        return pos1;
+    }
+
+    public Location getPos2() {
+        return pos2;
     }
 
     public int getMinX() {

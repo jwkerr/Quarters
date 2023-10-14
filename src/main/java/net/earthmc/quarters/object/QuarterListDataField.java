@@ -49,8 +49,7 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
             if (sb.length() > 0)
                 sb.append("|");
 
-            String pos1 = QuarterUtil.serializeLocation(quarter.getPos1());
-            String pos2 = QuarterUtil.serializeLocation(quarter.getPos2());
+            String cuboids = QuarterUtil.serializeCuboids(quarter.getCuboids());
             String uuid = quarter.getUUID().toString();
             String town = quarter.getTown().getUUID().toString();
 
@@ -72,7 +71,7 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
 
             String type = quarter.getType().getName();
 
-            String quarterString = pos1 + "," + pos2 + "," + uuid + "," + town + "," + owner + "," + trustedPlayers + "," + price + "," + type;
+            String quarterString = cuboids + "," + uuid + "," + town + "," + owner + "," + trustedPlayers + "," + price + "," + type;
 
             sb.append(quarterString);
         }

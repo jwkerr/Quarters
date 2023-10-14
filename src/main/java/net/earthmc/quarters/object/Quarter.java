@@ -4,14 +4,12 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.manager.TownMetadataManager;
-import org.bukkit.Location;
 
 import java.util.List;
 import java.util.UUID;
 
 public class Quarter {
-    Location pos1;
-    Location pos2;
+    List<Cuboid> cuboids;
     UUID uuid;
     Town town;
     Resident owner;
@@ -49,20 +47,12 @@ public class Quarter {
         }
     }
 
-    public void setPos1(Location location) {
-        this.pos1 = location;
+    public void setCuboids(List<Cuboid> cuboids) {
+        this.cuboids = cuboids;
     }
 
-    public Location getPos1() {
-        return pos1;
-    }
-
-    public void setPos2(Location location) {
-        this.pos2 = location;
-    }
-
-    public Location getPos2() {
-        return pos2;
+    public List<Cuboid> getCuboids() {
+        return this.cuboids;
     }
 
     public void setUUID(UUID uuid) {
