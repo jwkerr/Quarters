@@ -7,6 +7,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuarterType;
+import net.earthmc.quarters.object.QuartersTown;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -42,7 +43,8 @@ public class TownyActionListener implements Listener {
         if (town == null)
             return;
 
-        if (!QuartersAPI.getInstance().hasQuarter(town))
+        QuartersTown quartersTown = QuartersAPI.getInstance().getQuartersTown(town);
+        if (!quartersTown.hasQuarter())
             return;
 
         Quarter quarter = QuartersAPI.getInstance().getQuarter(location);
@@ -51,8 +53,7 @@ public class TownyActionListener implements Listener {
 
         allowEventIfOwnerOrTrusted(event, quarter);
 
-        if (event instanceof TownyItemuseEvent)
-            allowVehicleActionIfStation(event, quarter);
+        allowVehicleActionIfStation(event, quarter);
     }
 
     private void allowEventIfOwnerOrTrusted(TownyActionEvent event, Quarter quarter) {
