@@ -1,17 +1,20 @@
 package net.earthmc.quarters.api;
 
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownyPermission;
+import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
 import net.earthmc.quarters.Quarters;
-import net.earthmc.quarters.manager.QuarterDataManager;
-import net.earthmc.quarters.object.Cuboid;
-import net.earthmc.quarters.object.Quarter;
+import net.earthmc.quarters.manager.TownMetadataManager;
+import net.earthmc.quarters.object.*;
 import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuartersAPI {
@@ -26,55 +29,13 @@ public class QuartersAPI {
     }
 
     /**
-     * Gets the wand item's material
+     * Gets the default wand item's material
+     * This can be overridden by player choice
      *
      * @return Material of the configured Quarters wand
      */
     public Material getWand() {
         return Quarters.WAND;
-    }
-
-    /**
-     * Gets a boolean representing whether there is at least one quarter in the specified town
-     *
-     * @param town Town to check
-     * @return True if there is at least one quarter defined within the town
-     */
-    public boolean hasQuarter(Town town) {
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
-
-        return quarterList != null && !quarterList.isEmpty();
-    }
-
-    /**
-     * Gets a boolean representing if the specified player is inside a quarter or not
-     *
-     * @param player Player to check
-     * @return True if the player is inside a quarter
-     */
-    public boolean isPlayerInQuarter(Player player) {
-        Location location = player.getLocation();
-        Town town = townyAPI.getTown(location);
-        if (town == null)
-            return false;
-
-        if (!hasQuarter(town))
-            return false;
-
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
-
-        if (quarterList == null)
-            return false;
-
-        for (Quarter quarter : quarterList) {
-            Location pos1 = quarter.getPos1();
-            Location pos2 = quarter.getPos2();
-
-            if (QuarterUtil.isLocationInsideCuboidBounds(player.getLocation(), new Cuboid(pos1, pos2)))
-                return true;
-        }
-
-        return false;
     }
 
     /**
@@ -89,10 +50,11 @@ public class QuartersAPI {
         if (town == null)
             return null;
 
-        if (!hasQuarter(town))
+        QuartersTown quartersTown = getQuartersTown(town);
+        if (!quartersTown.hasQuarter())
             return null;
 
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
+        List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
         if (quarterList == null)
             return null;
 
@@ -107,13 +69,65 @@ public class QuartersAPI {
         return null;
     }
 
+    public QuartersPlayer getQuartersPlayer(Resident resident) {
+        return new QuartersPlayer(resident);
+    }
+
+    public QuartersPlayer getQuartersPlayer(Player player) {
+        if (player == null)
+            return null;
+
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null)
+            return null;
+
+        return new QuartersPlayer(resident);
+    }
+
+    public QuartersTown getQuartersTown(Town town) {
+        return new QuartersTown(town);
+    }
+
     /**
-     * Gets all the quarters within a town
+     * Gets all the quarters within the server
      *
-     * @param town Town to check
-     * @return A list of all quarters within the specified town or null if there are none
+     * @return A list of all quarters within the server
      */
-    public List<Quarter> getQuartersInTown(Town town) {
-        return QuarterDataManager.getQuarterListFromTown(town);
+    public List<Quarter> getAllQuarters() {
+        List<Quarter> quarterList = new ArrayList<>();
+
+        for (Town town : TownyAPI.getInstance().getTowns()) {
+            List<Quarter> currentTownQuarterList = getQuartersTown(town).getQuarters();
+            if (currentTownQuarterList != null) {
+                quarterList.addAll(currentTownQuarterList);
+            }
+        }
+
+        return quarterList;
+    }
+
+    /**
+     * Check if a player can edit a shop at a location
+     *
+     * @param player Player to check the permissions of
+     * @param location Block location to check permissions at
+     * @param material Block material being placed/edited
+     * @param actionType Towny action type. Build, destroy etc.
+     * @return True if the player can build there
+     */
+    public boolean canPlayerEditShopAtLocation(Player player, Location location, Material material, TownyPermission.ActionType actionType) {
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        QuartersPlayer quartersPlayer = getQuartersPlayer(resident);
+        if (!quartersPlayer.isInQuarter())
+            return false;
+
+        Quarter quarter = getQuarter(player.getLocation());
+        assert quarter != null;
+        if (quarter.getType() != QuarterType.SHOP)
+            return false;
+
+        return quarter.getOwner() == resident ||
+                quarter.getTrustedResidents().contains(resident) ||
+                PlayerCacheUtil.getCachePermission(player, location, material, actionType);
     }
 }

@@ -5,11 +5,14 @@ import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
+import net.earthmc.quarters.object.QuartersPlayer;
 import org.bukkit.entity.Player;
 
 public class CommandUtil {
-    public static boolean isPlayerInQuarter(Player player, Quarter quarter) {
-        if (!QuartersAPI.getInstance().isPlayerInQuarter(player) || quarter == null) {
+    public static boolean isPlayerInQuarter(Player player) {
+        QuartersPlayer quartersPlayer = QuartersAPI.getInstance().getQuartersPlayer(player);
+
+        if (!quartersPlayer.isInQuarter()) {
             QuartersMessaging.sendErrorMessage(player, "You are not standing within a quarter");
             return false;
         }

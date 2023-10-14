@@ -55,6 +55,7 @@ public final class Quarters extends JavaPlugin {
         manager.registerCommand(new ClearCommand());
         manager.registerCommand(new CreateCommand());
         manager.registerCommand(new DeleteCommand());
+        manager.registerCommand(new EvictCommand());
         manager.registerCommand(new HereCommand());
         manager.registerCommand(new InfoCommand());
         manager.registerCommand(new PosCommand());

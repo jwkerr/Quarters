@@ -2,11 +2,14 @@ package net.earthmc.quarters.util;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
+import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuarterType;
+import net.earthmc.quarters.object.QuartersPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +109,19 @@ public class QuarterUtil {
 
         if (location.getZ() < cuboid.getMinZ() || location.getZ() > cuboid.getMaxZ() + 0.99999)
             return false;
+
+        return true;
+    }
+
+    public static boolean shouldRenderOutlines(QuartersPlayer quartersPlayer, Material itemHeld) {
+        if (!quartersPlayer.hasConstantOutlines()) {
+            if (quartersPlayer.getCustomWand() != null && itemHeld != quartersPlayer.getCustomWand()) {
+                return false;
+            } else {
+                if (itemHeld != Quarters.WAND)
+                    return false;
+            }
+        }
 
         return true;
     }

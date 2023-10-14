@@ -3,11 +3,14 @@ package net.earthmc.quarters.task;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.Quarters;
-import net.earthmc.quarters.manager.QuarterDataManager;
+import net.earthmc.quarters.api.QuartersAPI;
+import net.earthmc.quarters.manager.TownMetadataManager;
 import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Quarter;
+import net.earthmc.quarters.object.QuartersPlayer;
 import net.earthmc.quarters.object.Selection;
 import net.earthmc.quarters.manager.SelectionManager;
+import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -21,7 +24,8 @@ public class OutlineParticleTask extends BukkitRunnable {
     @Override
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.getInventory().getItemInMainHand().getType() != Quarters.WAND)
+            QuartersPlayer quartersPlayer = QuartersAPI.getInstance().getQuartersPlayer(player);
+            if (!QuarterUtil.shouldRenderOutlines(quartersPlayer, player.getInventory().getItemInMainHand().getType()))
                 continue;
 
             createParticlesIfSelectionExists(player);
@@ -44,10 +48,10 @@ public class OutlineParticleTask extends BukkitRunnable {
     }
 
     public static void createParticlesIfQuartersExist(Player player) {
-        Town town = TownyAPI.getInstance().getTown(player);
+        Town town = TownyAPI.getInstance().getTown(player.getLocation());
 
         if (town != null) {
-            List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
+            List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
             if (quarterList != null) {
                 for (Quarter quarter : quarterList) {
                     createParticlesAtCuboidEdges(player, quarter.getPos1(), quarter.getPos2(), Particle.valueOf(Quarters.INSTANCE.getConfig().getString("created_particle")));

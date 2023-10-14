@@ -3,7 +3,7 @@ package net.earthmc.quarters.listener;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.object.Town;
-import net.earthmc.quarters.manager.QuarterDataManager;
+import net.earthmc.quarters.manager.TownMetadataManager;
 import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Quarter;
 import org.bukkit.Location;
@@ -19,7 +19,7 @@ public class TownUnclaimListener implements Listener {
         if (town == null)
             return;
 
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
+        List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
         if (quarterList == null)
             return;
 

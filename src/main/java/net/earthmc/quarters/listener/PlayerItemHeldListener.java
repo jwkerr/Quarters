@@ -1,7 +1,9 @@
 package net.earthmc.quarters.listener;
 
-import net.earthmc.quarters.Quarters;
+import net.earthmc.quarters.api.QuartersAPI;
+import net.earthmc.quarters.object.QuartersPlayer;
 import net.earthmc.quarters.task.OutlineParticleTask;
+import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,7 +19,8 @@ public class PlayerItemHeldListener implements Listener {
         if (item == null)
             return;
 
-        if (item.getType() != Quarters.WAND)
+        QuartersPlayer quartersPlayer = QuartersAPI.getInstance().getQuartersPlayer(player);
+        if (!QuarterUtil.shouldRenderOutlines(quartersPlayer, item.getType()))
             return;
 
         OutlineParticleTask.createParticlesIfSelectionExists(player);

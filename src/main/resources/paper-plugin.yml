@@ -22,6 +22,7 @@ permissions:
     children:
       quarters.action.create: true
       quarters.action.delete: true
+      quarters.action.evict: true
       quarters.action.sell: true
       quarters.action.type: true
 
@@ -31,6 +32,10 @@ permissions:
 
   quarters.action.delete:
     description: "Grants permission to delete a quarter"
+    default: false
+
+  quarters.action.evict:
+    description: "Grants permission to evict the owner of a quarter"
     default: false
 
   quarters.action.sell:
@@ -69,6 +74,10 @@ permissions:
 
   quarters.command.quarters.delete:
     description: "Grants permission to use the delete command"
+    default: true
+
+  quarters.command.quarters.evict:
+    description: "Grants permission to use the evict command"
     default: true
 
   quarters.command.quarters.here:

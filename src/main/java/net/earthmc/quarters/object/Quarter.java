@@ -3,7 +3,7 @@ package net.earthmc.quarters.object;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import net.earthmc.quarters.manager.QuarterDataManager;
+import net.earthmc.quarters.manager.TownMetadataManager;
 import org.bukkit.Location;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class Quarter {
     QuarterType type;
 
     public void save() {
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
+        List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
         if (quarterList ==  null)
             return;
 
@@ -28,14 +28,14 @@ public class Quarter {
             Quarter quarter = quarterList.get(i);
             if (quarter.getUUID().equals(uuid)) {
                 quarterList.set(i, this);
-                QuarterDataManager.updateQuarterListOfTown(town, quarterList);
+                TownMetadataManager.setQuarterListOfTown(town, quarterList);
                 break;
             }
         }
     }
 
     public void delete() {
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
+        List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
         if (quarterList ==  null)
             return;
 
@@ -43,7 +43,7 @@ public class Quarter {
             Quarter quarter = quarterList.get(i);
             if (quarter.getUUID().equals(uuid)) {
                 quarterList.remove(i);
-                QuarterDataManager.updateQuarterListOfTown(town, quarterList);
+                TownMetadataManager.setQuarterListOfTown(town, quarterList);
                 break;
             }
         }

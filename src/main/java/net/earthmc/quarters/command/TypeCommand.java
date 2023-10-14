@@ -18,10 +18,10 @@ public class TypeCommand extends BaseCommand {
     @CommandPermission("quarters.command.quarters.type")
     @CommandCompletion("apartment|shop|station")
     public void onType(Player player, @Optional String type) {
-        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
-        if (!CommandUtil.isPlayerInQuarter(player, quarter))
+        if (!CommandUtil.isPlayerInQuarter(player))
             return;
 
+        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
         assert quarter != null;
         if (type == null) {
             QuartersMessaging.sendInfoMessage(player, "This quarter is of type: " + quarter.getType().getFormattedName());

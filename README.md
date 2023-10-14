@@ -12,6 +12,9 @@
 - Aylywyn
 - Maxxiimus
 - pymsrps3213
+- exploding_turtle
+- Proser
+- TiowoiT
 
 ...and 2 other private sponsors
 

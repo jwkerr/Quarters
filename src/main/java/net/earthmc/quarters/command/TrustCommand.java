@@ -25,10 +25,10 @@ public class TrustCommand extends BaseCommand {
             return;
         }
 
-        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
-        if (!CommandUtil.isPlayerInQuarter(player, quarter))
+        if (!CommandUtil.isPlayerInQuarter(player))
             return;
 
+        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
         assert quarter != null;
         if (quarter.getOwner() != null && !quarter.getOwner().equals(TownyAPI.getInstance().getResident(player))) {
             QuartersMessaging.sendErrorMessage(player, "You do not own this quarter");

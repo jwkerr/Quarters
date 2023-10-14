@@ -9,7 +9,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.api.QuartersMessaging;
-import net.earthmc.quarters.manager.QuarterDataManager;
+import net.earthmc.quarters.manager.TownMetadataManager;
 import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuarterType;
@@ -69,19 +69,19 @@ public class CreateCommand extends BaseCommand {
         newQuarter.setPrice(null);
         newQuarter.setType(QuarterType.APARTMENT);
 
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
+        List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
         if (quarterList == null) {
             quarterList = new ArrayList<>();
         }
         quarterList.add(newQuarter);
 
-        QuarterDataManager.updateQuarterListOfTown(town, quarterList);
+        TownMetadataManager.setQuarterListOfTown(town, quarterList);
 
         QuartersMessaging.sendSuccessMessage(player, "Selected quarter has been successfully created");
     }
 
     private boolean isCuboidInValidLocation(Cuboid cuboid, Player player, Town town) {
-        List<Quarter> quarterList = QuarterDataManager.getQuarterListFromTown(town);
+        List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
 
         for (int x = cuboid.getMinX(); x <= cuboid.getMaxX(); x++) {
             for (int y = cuboid.getMinY(); y <= cuboid.getMaxY(); y++) {
