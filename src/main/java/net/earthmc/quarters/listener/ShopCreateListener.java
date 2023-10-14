@@ -7,11 +7,11 @@ import net.earthmc.quarters.api.QuartersAPI;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.Optional;
-
 public class ShopCreateListener implements Listener {
+    @EventHandler
     public void onShopCreate(ShopCreateEvent event) {
         Player player = event.getCreator().getBukkitPlayer().orElse(null);
         if (player == null)
@@ -25,6 +25,7 @@ public class ShopCreateListener implements Listener {
             event.setCancelled(false);
     }
 
+    @EventHandler
     public void onShopDelete(ShopDeleteEvent event) {
 
     }
