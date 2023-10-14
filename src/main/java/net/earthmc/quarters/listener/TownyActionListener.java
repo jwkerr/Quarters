@@ -12,7 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class TownyActionEventListener implements Listener {
+public class TownyActionListener implements Listener {
     @EventHandler
     public void onBuild(TownyBuildEvent event) {
         parseEvent(event);

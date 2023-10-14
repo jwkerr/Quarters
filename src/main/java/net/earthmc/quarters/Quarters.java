@@ -45,7 +45,7 @@ public final class Quarters extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerItemHeldListener(), this);
         getServer().getPluginManager().registerEvents(new TownUnclaimListener(), this);
-        getServer().getPluginManager().registerEvents(new TownyActionEventListener(), this);
+        getServer().getPluginManager().registerEvents(new TownyActionListener(), this);
     }
 
     public void initCommands() {
