@@ -128,19 +128,6 @@ public class QuarterUtil {
         return quarterList;
     }
 
-    public static boolean isLocationInsideCuboidBounds(Location location, Cuboid cuboid) {
-        if (location.getY() < cuboid.getMinY() || location.getY() > cuboid.getMaxY() + 0.99999)
-            return false;
-
-        if (location.getX() < cuboid.getMinX() || location.getX() > cuboid.getMaxX() + 0.99999)
-            return false;
-
-        if (location.getZ() < cuboid.getMinZ() || location.getZ() > cuboid.getMaxZ() + 0.99999)
-            return false;
-
-        return true;
-    }
-
     public static boolean shouldRenderOutlines(QuartersPlayer quartersPlayer, Material itemHeld) {
         if (!quartersPlayer.hasConstantOutlines()) {
             if (quartersPlayer.getCustomWand() != null && itemHeld != quartersPlayer.getCustomWand()) {
@@ -150,6 +137,19 @@ public class QuarterUtil {
                     return false;
             }
         }
+
+        return true;
+    }
+
+    public static boolean isLocationInsideCuboidBounds(Location location, Cuboid cuboid) {
+        if (location.getY() < cuboid.getMinY() || location.getY() > cuboid.getMaxY() + 0.99999)
+            return false;
+
+        if (location.getX() < cuboid.getMinX() || location.getX() > cuboid.getMaxX() + 0.99999)
+            return false;
+
+        if (location.getZ() < cuboid.getMinZ() || location.getZ() > cuboid.getMaxZ() + 0.99999)
+            return false;
 
         return true;
     }

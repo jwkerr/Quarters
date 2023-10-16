@@ -15,6 +15,7 @@
 - exploding_turtle
 - Proser
 - TiowoiT
+- Lgos
 
 ...and 2 other private sponsors
 

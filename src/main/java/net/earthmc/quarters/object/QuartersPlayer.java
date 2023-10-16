@@ -38,6 +38,9 @@ public class QuartersPlayer {
      * @return True if they have constant outlines enabled
      */
     public Boolean hasConstantOutlines() {
+        if (this.constantOutlines == null)
+            return false;
+
         return this.constantOutlines;
     }
 
@@ -70,11 +73,13 @@ public class QuartersPlayer {
             return false;
 
         for (Quarter quarter : quarterList) {
-            Location pos1 = quarter.getPos1();
-            Location pos2 = quarter.getPos2();
+            for (Cuboid cuboid : quarter.cuboids) {
+                Location pos1 = cuboid.getPos1();
+                Location pos2 = cuboid.getPos2();
 
-            if (QuarterUtil.isLocationInsideCuboidBounds(player.getLocation(), new Cuboid(pos1, pos2)))
-                return true;
+                if (QuarterUtil.isLocationInsideCuboidBounds(player.getLocation(), new Cuboid(pos1, pos2)))
+                    return true;
+            }
         }
 
         return false;

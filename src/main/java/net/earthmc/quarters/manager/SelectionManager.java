@@ -3,6 +3,7 @@ package net.earthmc.quarters.manager;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Selection;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.kyori.adventure.text.Component;
@@ -12,9 +13,11 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class SelectionManager {
     public static HashMap<Player, Selection> selectionMap = new HashMap<>();
+    public static HashMap<Player, List<Cuboid>> cuboidsMap = new HashMap<>();
 
     public static void selectPosition(Player player, Location location, boolean isPos1) {
         Selection selection = selectionMap.computeIfAbsent(player, k -> new Selection());

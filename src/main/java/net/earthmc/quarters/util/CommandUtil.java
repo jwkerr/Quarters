@@ -6,6 +6,7 @@ import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuartersPlayer;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class CommandUtil {
@@ -14,6 +15,15 @@ public class CommandUtil {
 
         if (!quartersPlayer.isInQuarter()) {
             QuartersMessaging.sendErrorMessage(player, "You are not standing within a quarter");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean isSelectionValid(Player player, Location pos1, Location pos2) {
+        if (pos1 == null || pos2 == null) {
+            QuartersMessaging.sendErrorMessage(player, "You must select two valid positions using the Quarters wand, or by using /quarters {pos1/pos2}");
             return false;
         }
 

@@ -24,16 +24,17 @@ public class TownUnclaimListener implements Listener {
             return;
 
         for (Quarter quarter : quarterList) {
-            Cuboid cuboid = new Cuboid(quarter.getPos1(), quarter.getPos2());
-            for (int x = cuboid.getMinX(); x <= cuboid.getMaxX(); x++) {
-                for (int y = cuboid.getMinY(); y <= cuboid.getMaxY(); y++) {
-                    for (int z = cuboid.getMinZ(); z <= cuboid.getMaxZ(); z++) {
-                        Location location = new Location(town.getWorld(), x, y, z);
+            for (Cuboid cuboid : quarter.getCuboids()) {
+                for (int x = cuboid.getMinX(); x <= cuboid.getMaxX(); x++) {
+                    for (int y = cuboid.getMinY(); y <= cuboid.getMaxY(); y++) {
+                        for (int z = cuboid.getMinZ(); z <= cuboid.getMaxZ(); z++) {
+                            Location location = new Location(town.getWorld(), x, y, z);
 
-                        Town currentPosTown = TownyAPI.getInstance().getTown(location);
-                        if (currentPosTown == null || currentPosTown != town) {
-                            quarter.delete();
-                            return;
+                            Town currentPosTown = TownyAPI.getInstance().getTown(location);
+                            if (currentPosTown == null || currentPosTown != town) {
+                                quarter.delete();
+                                return;
+                            }
                         }
                     }
                 }

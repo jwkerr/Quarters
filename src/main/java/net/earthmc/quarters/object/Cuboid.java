@@ -1,6 +1,12 @@
 package net.earthmc.quarters.object;
 
+import net.earthmc.quarters.util.QuarterUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Cuboid {
     private final Location pos1;
@@ -27,6 +33,28 @@ public class Cuboid {
         this.length = Math.abs(pos1.getBlockX() - pos2.getBlockZ());
         this.height = Math.abs(pos1.getBlockY() - pos2.getBlockY());
         this.width = Math.abs(pos1.getBlockZ() - pos2.getBlockZ());
+    }
+
+    public boolean doesIntersectWith(Cuboid cuboid) {
+        if (pos1.getWorld() != cuboid.getPos1().getWorld())
+            return false;
+
+        boolean overlapX = (maxX >= cuboid.getMinX()) && (cuboid.getMaxX() >= minX);
+        boolean overlapY = (maxY >= cuboid.getMinY()) && (cuboid.getMaxY() >= minY);
+        boolean overlapZ = (maxZ >= cuboid.getMinZ()) && (cuboid.getMaxZ() >= minZ);
+
+        return overlapX && overlapY && overlapZ;
+    }
+
+    public List<Player> getPlayersInCuboid() {
+        List<Player> playersInCuboid = new ArrayList<>();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (QuarterUtil.isLocationInsideCuboidBounds(player.getLocation(), this))
+                playersInCuboid.add(player);
+        }
+
+        return playersInCuboid;
     }
 
     public Location getPos1() {

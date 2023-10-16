@@ -54,7 +54,9 @@ public class OutlineParticleTask extends BukkitRunnable {
             List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
             if (quarterList != null) {
                 for (Quarter quarter : quarterList) {
-                    createParticlesAtCuboidEdges(player, quarter.getPos1(), quarter.getPos2(), Particle.valueOf(Quarters.INSTANCE.getConfig().getString("created_particle")));
+                    for (Cuboid cuboid : quarter.getCuboids()) {
+                        createParticlesAtCuboidEdges(player, cuboid.getPos1(), cuboid.getPos2(), Particle.valueOf(Quarters.INSTANCE.getConfig().getString("created_particle")));
+                    }
                 }
             }
         }

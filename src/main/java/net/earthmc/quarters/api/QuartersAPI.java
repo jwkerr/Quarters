@@ -59,11 +59,13 @@ public class QuartersAPI {
             return null;
 
         for (Quarter quarter : quarterList) {
-            Location pos1 = quarter.getPos1();
-            Location pos2 = quarter.getPos2();
+            for (Cuboid cuboid : quarter.getCuboids()) {
+                Location pos1 = cuboid.getPos1();
+                Location pos2 = cuboid.getPos2();
 
-            if (QuarterUtil.isLocationInsideCuboidBounds(location, new Cuboid(pos1, pos2)))
-                return quarter;
+                if (QuarterUtil.isLocationInsideCuboidBounds(location, new Cuboid(pos1, pos2)))
+                    return quarter;
+            }
         }
 
         return null;

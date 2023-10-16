@@ -7,7 +7,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
-import net.earthmc.quarters.Quarters;
+import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.manager.TownMetadataManager;
 import net.earthmc.quarters.object.Cuboid;
@@ -35,16 +35,14 @@ public class CreateCommand extends BaseCommand {
         Selection selection = SelectionManager.selectionMap.get(player);
         Location pos1 = selection.getPos1();
         Location pos2 = selection.getPos2();
-        if (pos1 == null || pos2 == null) {
-            QuartersMessaging.sendErrorMessage(player, "You must select two valid positions using the Quarters wand, or by using /quarters {pos1/pos2}");
-            return;
-        }
 
-        Cuboid selectedCuboid = new Cuboid(pos1, pos2);
-        int maxVolume = Quarters.INSTANCE.getConfig().getInt("max_quarter_volume");
-        if (selectedCuboid.getLength() * selectedCuboid.getHeight() * selectedCuboid.getWidth() > maxVolume) {
-            QuartersMessaging.sendErrorMessage(player, "Selected area is larger than the server's configured max quarter volume");
-            return;
+        List<Cuboid> cuboids = SelectionManager.cuboidsMap.get(player);
+        if (cuboids.isEmpty()) {
+            if (pos1 != null && pos2 != null) {
+                cuboids.add(new Cuboid(pos1, pos2));
+            } else {
+                QuartersMessaging.sendErrorMessage(player, "You have not selected any areas");
+            }
         }
 
         Town town = TownyAPI.getInstance().getTown(selection.getPos1());
@@ -53,15 +51,16 @@ public class CreateCommand extends BaseCommand {
             return;
         }
 
-        if (!isCuboidInValidLocation(selectedCuboid, player, town))
+        if (!isCuboidListInValidLocation(cuboids, town)) { // TODO: add a "why?" message (check was generalised to allow for simpler reuse of valid location check)
+            QuartersMessaging.sendErrorMessage(player, "Selected quarter is not in a valid location");
             return;
+        }
 
         selection.setPos1(null);
         selection.setPos2(null);
 
         Quarter newQuarter = new Quarter();
-        newQuarter.setPos1(pos1);
-        newQuarter.setPos2(pos2);
+        newQuarter.setCuboids(cuboids);
         newQuarter.setUUID(UUID.randomUUID());
         newQuarter.setTown(town.getUUID());
         newQuarter.setOwner(null);
@@ -80,36 +79,17 @@ public class CreateCommand extends BaseCommand {
         QuartersMessaging.sendSuccessMessage(player, "Selected quarter has been successfully created");
     }
 
-    private boolean isCuboidInValidLocation(Cuboid cuboid, Player player, Town town) {
-        List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
+    private boolean isCuboidListInValidLocation(List<Cuboid> cuboids, Town town) {
+        List<Quarter> quarterList = QuartersAPI.getInstance().getQuartersTown(town).getQuarters();
 
-        for (int x = cuboid.getMinX(); x <= cuboid.getMaxX(); x++) {
-            for (int y = cuboid.getMinY(); y <= cuboid.getMaxY(); y++) {
-                for (int z = cuboid.getMinZ(); z <= cuboid.getMaxZ(); z++) {
-                    Location location = new Location(town.getWorld(), x, y, z);
+        for (Cuboid cuboid : cuboids) {
+            if (!isCuboidEntirelyInOneTown(cuboid, town)) {
+                return false;
+            }
 
-                    if (TownyAPI.getInstance().getTown(location) == null) {
-                        QuartersMessaging.sendErrorMessage(player, "Selected area contains wilderness");
-                        return false;
-                    }
-
-                    Town currentPosTown = TownyAPI.getInstance().getTown(location);
-                    if (town != currentPosTown) {
-                        QuartersMessaging.sendErrorMessage(player, "Selected area contains multiple towns");
-                        return false;
-                    }
-
-                    if (quarterList == null)
-                        continue;
-
-                    for (Quarter quarter : quarterList) {
-                        Cuboid currentQuarterCuboid = new Cuboid(quarter.getPos1(), quarter.getPos2());
-
-                        if (doCuboidBoundsIntersect(cuboid, currentQuarterCuboid)) {
-                            QuartersMessaging.sendErrorMessage(player, "Selected area intersects with a pre-existing quarter");
-                            return false;
-                        }
-                    }
+            if (quarterList != null) {
+                if (!isCuboidIntersectingPreExistingQuarter(cuboid, quarterList)) {
+                    return false;
                 }
             }
         }
@@ -117,11 +97,33 @@ public class CreateCommand extends BaseCommand {
         return true;
     }
 
-    private boolean doCuboidBoundsIntersect(Cuboid cuboid1, Cuboid cuboid2) {
-        boolean overlapX = (cuboid1.getMaxX() >= cuboid2.getMinX()) && (cuboid2.getMaxX() >= cuboid1.getMinX());
-        boolean overlapY = (cuboid1.getMaxY() >= cuboid2.getMinY()) && (cuboid2.getMaxY() >= cuboid1.getMinY());
-        boolean overlapZ = (cuboid1.getMaxZ() >= cuboid2.getMinZ()) && (cuboid2.getMaxZ() >= cuboid1.getMinZ());
+    private boolean isCuboidEntirelyInOneTown(Cuboid cuboid, Town town) {
+        for (int x = cuboid.getMinX(); x <= cuboid.getMaxX(); x++) {
+            for (int y = cuboid.getMinY(); y <= cuboid.getMaxY(); y++) {
+                for (int z = cuboid.getMinZ(); z <= cuboid.getMaxZ(); z++) {
+                    Location location = new Location(town.getWorld(), x, y, z);
 
-        return overlapX && overlapY && overlapZ;
+                    if (TownyAPI.getInstance().getTown(location) == null)
+                        return false;
+
+                    Town currentPosTown = TownyAPI.getInstance().getTown(location);
+                    if (town != currentPosTown)
+                        return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isCuboidIntersectingPreExistingQuarter(Cuboid cuboid, List<Quarter> quarterList) {
+        for (Quarter quarter : quarterList) {
+            for (Cuboid oldCuboid : quarter.getCuboids()) {
+                if (cuboid.doesIntersectWith(oldCuboid))
+                    return false;
+            }
+        }
+
+        return true;
     }
 }

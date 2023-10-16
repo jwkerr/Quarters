@@ -54,13 +54,13 @@ public final class Quarters extends JavaPlugin {
         PaperCommandManager manager = new PaperCommandManager(this);
 
         manager.registerCommand(new ClaimCommand());
-        manager.registerCommand(new ClearCommand());
         manager.registerCommand(new CreateCommand());
         manager.registerCommand(new DeleteCommand());
         manager.registerCommand(new EvictCommand());
         manager.registerCommand(new HereCommand());
         manager.registerCommand(new InfoCommand());
         manager.registerCommand(new PosCommand());
+        manager.registerCommand(new SelectionCommand());
         manager.registerCommand(new SellCommand());
         manager.registerCommand(new TrustCommand());
         manager.registerCommand(new TypeCommand());
