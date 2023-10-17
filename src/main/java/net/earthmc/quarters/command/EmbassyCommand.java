@@ -27,6 +27,10 @@ public class EmbassyCommand extends BaseCommand {
             return;
 
         quarter.setEmbassy(!quarter.isEmbassy());
+
+        if (quarter.getOwner().getTownOrNull() != quarter.getTown())
+            quarter.setOwner(null);
+
         quarter.save();
 
         if (quarter.isEmbassy()) {
