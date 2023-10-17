@@ -4,10 +4,10 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.actions.*;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuarterType;
 import net.earthmc.quarters.object.QuartersTown;
+import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -43,18 +43,18 @@ public class TownyActionListener implements Listener {
         if (town == null)
             return;
 
-        QuartersTown quartersTown = QuartersAPI.getInstance().getQuartersTown(town);
+        QuartersTown quartersTown = new QuartersTown(town);
         if (!quartersTown.hasQuarter())
             return;
 
-        Quarter quarter = QuartersAPI.getInstance().getQuarter(location);
+        Quarter quarter = QuarterUtil.getQuarter(location);
         if (quarter == null)
             return;
 
         allowActionIfOwnerOrTrusted(event, quarter);
 
         // Extra tolerance on Y coordinate to check for boats placed in the lowest quadrant of a quarter
-        allowVehicleActionIfStation(event, QuartersAPI.getInstance().getQuarter(location.add(0, 0.25, 0)));
+        allowVehicleActionIfStation(event, QuarterUtil.getQuarter(location.add(0, 0.25, 0)));
 
         allowActionIfCommons(event, quarter);
     }

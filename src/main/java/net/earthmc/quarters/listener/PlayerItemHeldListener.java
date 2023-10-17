@@ -1,6 +1,5 @@
 package net.earthmc.quarters.listener;
 
-import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.object.QuartersPlayer;
 import net.earthmc.quarters.task.OutlineParticleTask;
 import net.earthmc.quarters.util.QuarterUtil;
@@ -19,7 +18,7 @@ public class PlayerItemHeldListener implements Listener {
         if (item == null)
             return;
 
-        QuartersPlayer quartersPlayer = QuartersAPI.getInstance().getQuartersPlayer(player);
+        QuartersPlayer quartersPlayer = new QuartersPlayer(player);
         if (!QuarterUtil.shouldRenderOutlines(quartersPlayer, item.getType()))
             return;
 

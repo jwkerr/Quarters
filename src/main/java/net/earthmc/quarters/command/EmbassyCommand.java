@@ -2,10 +2,10 @@ package net.earthmc.quarters.command;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
-import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.util.CommandUtil;
+import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.entity.Player;
 
 @CommandAlias("quarters|q")
@@ -17,7 +17,7 @@ public class EmbassyCommand extends BaseCommand {
         if (!CommandUtil.isPlayerInQuarter(player))
             return;
 
-        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
+        Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
 
         if (!CommandUtil.hasPermissionOrMayor(player, "quarters.action.embassy"))

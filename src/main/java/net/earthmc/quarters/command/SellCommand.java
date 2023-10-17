@@ -5,12 +5,11 @@ import co.aikar.commands.annotation.*;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Resident;
-import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
-import net.earthmc.quarters.manager.TownMetadataManager;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuartersTown;
 import net.earthmc.quarters.util.CommandUtil;
+import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.entity.Player;
 
 @CommandAlias("quarters|q")
@@ -23,7 +22,7 @@ public class SellCommand extends BaseCommand {
         if (!CommandUtil.hasPermissionOrMayor(player, "quarters.action.sell"))
             return;
 
-        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
+        Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         if (!CommandUtil.isPlayerInQuarter(player))
             return;
 
@@ -41,7 +40,7 @@ public class SellCommand extends BaseCommand {
         double price;
         try {
             if (arg == null) { // If the user has specified no argument we will set it to the configured default price or to 0
-                QuartersTown quartersTown = QuartersAPI.getInstance().getQuartersTown(TownyAPI.getInstance().getTown(player));
+                QuartersTown quartersTown = new QuartersTown(TownyAPI.getInstance().getTown(player));
                 Double defaultPrice = quartersTown.getDefaultSellPrice();
                 if (defaultPrice != null) {
                     price = defaultPrice;

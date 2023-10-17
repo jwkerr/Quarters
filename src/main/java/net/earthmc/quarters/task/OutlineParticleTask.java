@@ -3,8 +3,6 @@ package net.earthmc.quarters.task;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.Quarters;
-import net.earthmc.quarters.api.QuartersAPI;
-import net.earthmc.quarters.manager.TownMetadataManager;
 import net.earthmc.quarters.object.*;
 import net.earthmc.quarters.manager.SelectionManager;
 import net.earthmc.quarters.util.QuarterUtil;
@@ -21,7 +19,7 @@ public class OutlineParticleTask extends BukkitRunnable {
     @Override
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            QuartersPlayer quartersPlayer = QuartersAPI.getInstance().getQuartersPlayer(player);
+            QuartersPlayer quartersPlayer = new QuartersPlayer(player);
             if (!QuarterUtil.shouldRenderOutlines(quartersPlayer, player.getInventory().getItemInMainHand().getType()))
                 continue;
 
@@ -53,15 +51,15 @@ public class OutlineParticleTask extends BukkitRunnable {
 
     public static void createParticlesIfQuartersExist(Player player) {
         Town town = TownyAPI.getInstance().getTown(player.getLocation());
-        QuartersTown quartersTown = QuartersAPI.getInstance().getQuartersTown(town);
+        if (town == null)
+            return;
 
-        if (quartersTown != null) {
-            List<Quarter> quarterList = quartersTown.getQuarters();
-            if (quarterList != null) {
-                for (Quarter quarter : quarterList) {
-                    for (Cuboid cuboid : quarter.getCuboids()) {
-                        createParticlesAtCuboidEdges(player, cuboid.getPos1(), cuboid.getPos2(), Particle.valueOf(Quarters.INSTANCE.getConfig().getString("created_particle")));
-                    }
+        QuartersTown quartersTown = new QuartersTown(town);
+        List<Quarter> quarterList = quartersTown.getQuarters();
+        if (quarterList != null) {
+            for (Quarter quarter : quarterList) {
+                for (Cuboid cuboid : quarter.getCuboids()) {
+                    createParticlesAtCuboidEdges(player, cuboid.getPos1(), cuboid.getPos2(), Particle.valueOf(Quarters.INSTANCE.getConfig().getString("created_particle")));
                 }
             }
         }

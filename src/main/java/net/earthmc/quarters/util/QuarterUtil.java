@@ -2,11 +2,10 @@ package net.earthmc.quarters.util;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.Quarters;
-import net.earthmc.quarters.object.Cuboid;
-import net.earthmc.quarters.object.Quarter;
-import net.earthmc.quarters.object.QuarterType;
-import net.earthmc.quarters.object.QuartersPlayer;
+import net.earthmc.quarters.manager.TownMetadataManager;
+import net.earthmc.quarters.object.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -154,5 +153,31 @@ public class QuarterUtil {
             return false;
 
         return true;
+    }
+
+    public static Quarter getQuarter(Location location) {
+        Town town = TownyAPI.getInstance().getTown(location);
+        if (town == null)
+            return null;
+
+        QuartersTown quartersTown = new QuartersTown(town);
+        if (!quartersTown.hasQuarter())
+            return null;
+
+        List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
+        if (quarterList == null)
+            return null;
+
+        for (Quarter quarter : quarterList) {
+            for (Cuboid cuboid : quarter.getCuboids()) {
+                Location pos1 = cuboid.getPos1();
+                Location pos2 = cuboid.getPos2();
+
+                if (QuarterUtil.isLocationInsideCuboidBounds(location, new Cuboid(pos1, pos2)))
+                    return quarter;
+            }
+        }
+
+        return null;
     }
 }

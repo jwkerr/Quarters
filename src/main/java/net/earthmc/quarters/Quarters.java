@@ -29,8 +29,8 @@ public final class Quarters extends JavaPlugin {
         initListeners();
         initCommands();
 
-        OutlineParticleTask task = new OutlineParticleTask();
-        task.runTaskTimer(this, 0, 10);
+        OutlineParticleTask outlineTask = new OutlineParticleTask();
+        outlineTask.runTaskTimer(this, 0, 10);
 
         getLogger().info("Quarters enabled :3");
     }
@@ -42,7 +42,6 @@ public final class Quarters extends JavaPlugin {
 
     public void initListeners() {
         getServer().getPluginManager().registerEvents(new DeletePlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerConnectionListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerItemHeldListener(), this);
 

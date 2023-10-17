@@ -7,10 +7,10 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Resident;
-import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.util.CommandUtil;
+import net.earthmc.quarters.util.QuarterUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,7 +26,7 @@ public class HereCommand extends BaseCommand {
         if (!CommandUtil.isPlayerInQuarter(player))
             return;
 
-        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
+        Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
 
         String trustedString = "None";

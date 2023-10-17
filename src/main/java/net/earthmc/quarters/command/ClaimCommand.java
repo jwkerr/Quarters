@@ -8,10 +8,10 @@ import co.aikar.commands.annotation.Subcommand;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Resident;
-import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.util.CommandUtil;
+import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.entity.Player;
 
 @CommandAlias("quarters|q")
@@ -27,7 +27,7 @@ public class ClaimCommand extends BaseCommand {
         if (!CommandUtil.isPlayerInQuarter(player))
             return;
 
-        Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
+        Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
         if (quarter.getOwner() == resident) {
             QuartersMessaging.sendErrorMessage(player, "You already own this quarter");

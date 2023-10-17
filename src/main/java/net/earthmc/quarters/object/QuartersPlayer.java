@@ -15,9 +15,9 @@ public class QuartersPlayer {
     private final Player player;
     private final Boolean constantOutlines;
 
-    public QuartersPlayer(Resident resident) {
-        this.resident = resident;
-        this.player = resident.getPlayer();
+    public QuartersPlayer(Player player) {
+        this.resident = TownyAPI.getInstance().getResident(player);
+        this.player = player;
         this.constantOutlines = ResidentMetadataManager.hasConstantOutlines(resident);
     }
 

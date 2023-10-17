@@ -8,13 +8,13 @@ import co.aikar.commands.annotation.Subcommand;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.Quarters;
-import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.manager.TownMetadataManager;
 import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuarterType;
 import net.earthmc.quarters.manager.SelectionManager;
+import net.earthmc.quarters.object.QuartersTown;
 import net.earthmc.quarters.util.CommandUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -82,7 +82,8 @@ public class CreateCommand extends BaseCommand {
     }
 
     private boolean isCuboidListInValidLocation(List<Cuboid> cuboids, Town town) {
-        List<Quarter> quarterList = QuartersAPI.getInstance().getQuartersTown(town).getQuarters();
+        QuartersTown quartersTown = new QuartersTown(town);
+        List<Quarter> quarterList = quartersTown.getQuarters();
 
         for (Cuboid cuboid : cuboids) {
             if (!isCuboidEntirelyInOneTown(cuboid, town)) {
