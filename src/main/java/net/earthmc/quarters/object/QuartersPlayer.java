@@ -5,7 +5,6 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.manager.ResidentMetadataManager;
 import net.earthmc.quarters.manager.SelectionManager;
-import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -72,7 +71,7 @@ public class QuartersPlayer {
 
         for (Quarter quarter : quarterList) {
             for (Cuboid cuboid : quarter.getCuboids()) {
-                if (QuarterUtil.isLocationInsideCuboidBounds(player.getLocation(), cuboid))
+                if (cuboid.isLocationInsideBounds(player.getLocation()))
                     return true;
             }
         }

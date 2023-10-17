@@ -142,19 +142,6 @@ public class QuarterUtil {
         return itemHeld == Quarters.WAND;
     }
 
-    public static boolean isLocationInsideCuboidBounds(Location location, Cuboid cuboid) {
-        if (location.getY() < cuboid.getMinY() || location.getY() > cuboid.getMaxY() + 0.99999)
-            return false;
-
-        if (location.getX() < cuboid.getMinX() || location.getX() > cuboid.getMaxX() + 0.99999)
-            return false;
-
-        if (location.getZ() < cuboid.getMinZ() || location.getZ() > cuboid.getMaxZ() + 0.99999)
-            return false;
-
-        return true;
-    }
-
     public static Quarter getQuarter(Location location) {
         Town town = TownyAPI.getInstance().getTown(location);
         if (town == null)
@@ -170,10 +157,7 @@ public class QuarterUtil {
 
         for (Quarter quarter : quarterList) {
             for (Cuboid cuboid : quarter.getCuboids()) {
-                Location pos1 = cuboid.getPos1();
-                Location pos2 = cuboid.getPos2();
-
-                if (QuarterUtil.isLocationInsideCuboidBounds(location, new Cuboid(pos1, pos2)))
+                if (cuboid.isLocationInsideBounds(location))
                     return quarter;
             }
         }

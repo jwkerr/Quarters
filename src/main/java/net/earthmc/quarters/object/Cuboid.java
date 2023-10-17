@@ -1,6 +1,5 @@
 package net.earthmc.quarters.object;
 
-import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -46,11 +45,24 @@ public class Cuboid {
         return overlapX && overlapY && overlapZ;
     }
 
+    public boolean isLocationInsideBounds(Location location) {
+        if (location.getY() < minY || location.getY() > maxY + 0.99999)
+            return false;
+
+        if (location.getX() < minX || location.getX() > maxX + 0.99999)
+            return false;
+
+        if (location.getZ() < minZ || location.getZ() > maxZ + 0.99999)
+            return false;
+
+        return true;
+    }
+
     public List<Player> getPlayersInCuboid() {
         List<Player> playersInCuboid = new ArrayList<>();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (QuarterUtil.isLocationInsideCuboidBounds(player.getLocation(), this))
+            if (isLocationInsideBounds(player.getLocation()))
                 playersInCuboid.add(player);
         }
 
