@@ -7,13 +7,13 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
+import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.manager.TownMetadataManager;
 import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuarterType;
-import net.earthmc.quarters.object.Selection;
 import net.earthmc.quarters.manager.SelectionManager;
 import net.earthmc.quarters.util.CommandUtil;
 import org.bukkit.Location;
@@ -45,7 +45,7 @@ public class CreateCommand extends BaseCommand {
             return;
         }
 
-        if (!isCuboidListInValidLocation(cuboids, town)) { // TODO: add a "why?" message (check was generalised to allow for simpler reuse of valid location check)
+        if (!isCuboidListInValidLocation(cuboids, town)) {
             QuartersMessaging.sendErrorMessage(player, "Selected quarter is not in a valid location");
             return;
         }
@@ -61,6 +61,12 @@ public class CreateCommand extends BaseCommand {
         newQuarter.setEmbassy(false);
         newQuarter.setRegistered(Instant.now().toEpochMilli());
         newQuarter.setClaimedAt(null);
+
+        int maxVolume = Quarters.INSTANCE.getConfig().getInt("max_quarter_volume");
+        if (newQuarter.getVolume() > maxVolume) {
+            QuartersMessaging.sendErrorMessage(player, "This quarter is too large, the max configured volume is " + maxVolume + " blocks");
+            return;
+        }
 
         List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
         if (quarterList == null) {

@@ -50,6 +50,16 @@ public class Quarter {
         }
     }
 
+    public int getVolume() {
+        int volume = 0;
+
+        for (Cuboid cuboid : cuboids) {
+            volume = volume + (cuboid.getLength() * cuboid.getHeight() * cuboid.getWidth());
+        }
+
+        return volume;
+    }
+
     public void setCuboids(List<Cuboid> cuboids) {
         this.cuboids = cuboids;
     }
