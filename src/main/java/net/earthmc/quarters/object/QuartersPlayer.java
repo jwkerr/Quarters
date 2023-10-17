@@ -4,10 +4,12 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.manager.ResidentMetadataManager;
+import net.earthmc.quarters.manager.SelectionManager;
 import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuartersPlayer {
@@ -19,6 +21,14 @@ public class QuartersPlayer {
         this.resident = TownyAPI.getInstance().getResident(player);
         this.player = player;
         this.constantOutlines = ResidentMetadataManager.hasConstantOutlines(resident);
+    }
+
+    public Selection getSelection() {
+        return SelectionManager.selectionMap.computeIfAbsent(player, k -> new Selection());
+    }
+
+    public List<Cuboid> getCuboids() {
+        return SelectionManager.cuboidsMap.computeIfAbsent(player, k -> new ArrayList<>());
     }
 
     public Resident getResident() {
@@ -62,10 +72,7 @@ public class QuartersPlayer {
 
         for (Quarter quarter : quarterList) {
             for (Cuboid cuboid : quarter.getCuboids()) {
-                Location pos1 = cuboid.getPos1();
-                Location pos2 = cuboid.getPos2();
-
-                if (QuarterUtil.isLocationInsideCuboidBounds(player.getLocation(), new Cuboid(pos1, pos2)))
+                if (QuarterUtil.isLocationInsideCuboidBounds(player.getLocation(), cuboid))
                     return true;
             }
         }
