@@ -39,6 +39,11 @@ public class ClaimCommand extends BaseCommand {
             return;
         }
 
+        if (!quarter.isEmbassy() && quarter.getTown() != resident.getTownOrNull()) {
+            QuartersMessaging.sendErrorMessage(player, "You cannot buy this quarter as it is not an embassy and it is not part of your town");
+            return;
+        }
+
         if (TownyEconomyHandler.isActive() && resident.getAccount().getHoldingBalance() < quarter.getPrice()) {
             QuartersMessaging.sendErrorMessage(player, "You do not have sufficient funds to buy this quarter");
             return;

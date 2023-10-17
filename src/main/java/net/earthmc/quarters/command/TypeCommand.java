@@ -17,24 +17,20 @@ public class TypeCommand extends BaseCommand {
     @Description("Change a quarter's type")
     @CommandPermission("quarters.command.quarters.type")
     @CommandCompletion("apartment|shop|station")
-    public void onType(Player player, @Optional String type) {
+    public void onType(Player player, String type) {
+        if (Arrays.stream(QuarterType.values()).noneMatch(e -> e.name().equalsIgnoreCase(type))) {
+            QuartersMessaging.sendErrorMessage(player, "Invalid argument");
+            return;
+        }
+
         if (!CommandUtil.isPlayerInQuarter(player))
             return;
 
         Quarter quarter = QuartersAPI.getInstance().getQuarter(player.getLocation());
         assert quarter != null;
-        if (type == null) {
-            QuartersMessaging.sendInfoMessage(player, "This quarter is of type: " + quarter.getType().getFormattedName());
-            return;
-        }
 
         if (!CommandUtil.hasPermissionOrMayor(player, "quarters.action.type"))
             return;
-
-        if (Arrays.stream(QuarterType.values()).noneMatch(e -> e.name().equalsIgnoreCase(type))) {
-            QuartersMessaging.sendErrorMessage(player, "Invalid argument");
-            return;
-        }
 
         if (!CommandUtil.isQuarterInPlayerTown(player, quarter))
             return;

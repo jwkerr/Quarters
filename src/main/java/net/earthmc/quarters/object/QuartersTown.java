@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class QuartersTown {
-    private Town town;
+    private final Town town;
 
     public QuartersTown(Town town) {
         this.town = town;

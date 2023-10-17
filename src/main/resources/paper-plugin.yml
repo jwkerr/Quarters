@@ -22,6 +22,7 @@ permissions:
     children:
       quarters.action.create: true
       quarters.action.delete: true
+      quarters.action.embassy: true
       quarters.action.evict: true
       quarters.action.sell: true
       quarters.action.type: true
@@ -32,6 +33,10 @@ permissions:
 
   quarters.action.delete:
     description: "Grants permission to delete a quarter"
+    default: false
+
+  quarters.action.embassy:
+    description: "Grants permission to toggle a quarter's embassy status"
     default: false
 
   quarters.action.evict:
@@ -54,6 +59,8 @@ permissions:
       quarters.command.quarters.selection: true
       quarters.command.quarters.create: true
       quarters.command.quarters.delete: true
+      quarters.command.quarters.embassy: true
+      quarters.command.quarters.evict: true
       quarters.command.quarters.here: true
       quarters.command.quarters.info: true
       quarters.command.quarters.pos: true
@@ -74,6 +81,10 @@ permissions:
 
   quarters.command.quarters.delete:
     description: "Grants permission to use the delete command"
+    default: true
+
+  quarters.command.quarters.embassy:
+    description: "Grants permission to use the embassy command"
     default: true
 
   quarters.command.quarters.evict:
