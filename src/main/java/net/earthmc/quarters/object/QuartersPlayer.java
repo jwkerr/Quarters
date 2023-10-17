@@ -6,22 +6,19 @@ import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.manager.ResidentMetadataManager;
 import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class QuartersPlayer {
-    Resident resident;
-    Player player;
-    Boolean constantOutlines;
-    Material customWand;
+    private final Resident resident;
+    private final Player player;
+    private final Boolean constantOutlines;
 
     public QuartersPlayer(Resident resident) {
         this.resident = resident;
         this.player = resident.getPlayer();
         this.constantOutlines = ResidentMetadataManager.hasConstantOutlines(resident);
-        this.customWand = ResidentMetadataManager.getCustomWand(resident);
     }
 
     public Resident getResident() {

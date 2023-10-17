@@ -28,24 +28,4 @@ public class ResidentMetadataManager {
         bdf.setValue(value);
         resident.addMetaData(bdf);
     }
-
-    public static Material getCustomWand(Resident resident) {
-        StringDataField sdf = (StringDataField) resident.getMetadata(WAND);
-        if (sdf == null)
-            return null;
-
-        return Material.valueOf(sdf.getValue());
-    }
-
-    public static void setCustomWand(Resident resident, String value) { //TODO: make sure this can be null
-        if (!resident.hasMeta(WAND))
-            resident.addMetaData(new StringDataField(WAND, null));
-
-        StringDataField sdf = (StringDataField) resident.getMetadata(WAND);
-        if (sdf == null)
-            return;
-
-        sdf.setValue(value);
-        resident.addMetaData(sdf);
-    }
 }
