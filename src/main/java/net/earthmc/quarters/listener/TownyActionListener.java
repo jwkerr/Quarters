@@ -47,13 +47,19 @@ public class TownyActionListener implements Listener {
         if (!quartersTown.hasQuarter())
             return;
 
-        allowEventIfOwnerOrTrusted(event, QuartersAPI.getInstance().getQuarter(location));
+        Quarter quarter = QuartersAPI.getInstance().getQuarter(location);
+        if (quarter == null)
+            return;
+
+        allowActionIfOwnerOrTrusted(event, quarter);
 
         // Extra tolerance on Y coordinate to check for boats placed in the lowest quadrant of a quarter
         allowVehicleActionIfStation(event, QuartersAPI.getInstance().getQuarter(location.add(0, 0.25, 0)));
+
+        allowActionIfCommons(event, quarter);
     }
 
-    private void allowEventIfOwnerOrTrusted(TownyActionEvent event, Quarter quarter) {
+    private void allowActionIfOwnerOrTrusted(TownyActionEvent event, Quarter quarter) {
         Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
         if (resident == quarter.getOwner() || quarter.getTrustedResidents().contains(resident))
             event.setCancelled(false);
@@ -66,10 +72,30 @@ public class TownyActionListener implements Listener {
         if (!isVehicle(event.getMaterial()))
             return;
 
-        if (!(quarter.getType() == QuarterType.STATION))
+        if (quarter.getType() != QuarterType.STATION)
             return;
 
         if (quarter.isEmbassy()) { // We use embassy status to represent that this station is for anyone's use
+            event.setCancelled(false);
+            return;
+        }
+
+        Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
+        if (resident == null)
+            return;
+
+        if (quarter.getTown() == resident.getTownOrNull())
+            event.setCancelled(false);
+    }
+
+    private void allowActionIfCommons(TownyActionEvent event, Quarter quarter) {
+        if (!(event instanceof TownySwitchEvent))
+            return;
+
+        if (quarter.getType() != QuarterType.COMMONS)
+            return;
+
+        if (quarter.isEmbassy()) {
             event.setCancelled(false);
             return;
         }

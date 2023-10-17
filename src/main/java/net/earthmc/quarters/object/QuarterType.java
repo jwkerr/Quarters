@@ -2,6 +2,7 @@ package net.earthmc.quarters.object;
 
 public enum QuarterType {
     APARTMENT("apartment"),
+    COMMONS("commons"),
     SHOP("shop"),
     STATION("station");
 
