@@ -45,15 +45,6 @@ public class QuartersPlayer {
     }
 
     /**
-     * Gets the material of the player's custom wand
-     *
-     * @return The player's configured custom wand or null
-     */
-    public Material getCustomWand() {
-        return this.customWand;
-    }
-
-    /**
      * Gets a boolean representing if the player is inside a quarter or not
      *
      * @return True if the player is inside a quarter
@@ -73,7 +64,7 @@ public class QuartersPlayer {
             return false;
 
         for (Quarter quarter : quarterList) {
-            for (Cuboid cuboid : quarter.cuboids) {
+            for (Cuboid cuboid : quarter.getCuboids()) {
                 Location pos1 = cuboid.getPos1();
                 Location pos2 = cuboid.getPos2();
 

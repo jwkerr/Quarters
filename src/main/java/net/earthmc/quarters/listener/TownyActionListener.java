@@ -47,13 +47,10 @@ public class TownyActionListener implements Listener {
         if (!quartersTown.hasQuarter())
             return;
 
-        Quarter quarter = QuartersAPI.getInstance().getQuarter(location);
-        if (quarter == null)
-            return;
+        allowEventIfOwnerOrTrusted(event, QuartersAPI.getInstance().getQuarter(location));
 
-        allowEventIfOwnerOrTrusted(event, quarter);
-
-        allowVehicleActionIfStation(event, quarter);
+        // Extra tolerance on Y coordinate to check for boats placed in the lowest quadrant of a quarter
+        allowVehicleActionIfStation(event, QuartersAPI.getInstance().getQuarter(location.add(0, 0.25, 0)));
     }
 
     private void allowEventIfOwnerOrTrusted(TownyActionEvent event, Quarter quarter) {
@@ -69,7 +66,19 @@ public class TownyActionListener implements Listener {
         if (!isVehicle(event.getMaterial()))
             return;
 
-        if (quarter.getType() == QuarterType.STATION)
+        if (!(quarter.getType() == QuarterType.STATION))
+            return;
+
+        if (quarter.isEmbassy()) { // We use embassy status to represent that this station is for anyone's use
+            event.setCancelled(false);
+            return;
+        }
+
+        Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
+        if (resident == null)
+            return;
+
+        if (quarter.getTown() == resident.getTownOrNull())
             event.setCancelled(false);
     }
 

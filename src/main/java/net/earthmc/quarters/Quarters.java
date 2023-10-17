@@ -45,7 +45,10 @@ public final class Quarters extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerConnectionListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerItemHeldListener(), this);
-        getServer().getPluginManager().registerEvents(new ShopCreateListener(), this);
+
+        if (getServer().getPluginManager().isPluginEnabled("quickshops"))
+            getServer().getPluginManager().registerEvents(new ShopCreateListener(), this);
+
         getServer().getPluginManager().registerEvents(new TownUnclaimListener(), this);
         getServer().getPluginManager().registerEvents(new TownyActionListener(), this);
     }

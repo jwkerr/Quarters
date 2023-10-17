@@ -19,6 +19,7 @@ import net.earthmc.quarters.util.CommandUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -32,20 +33,13 @@ public class CreateCommand extends BaseCommand {
         if (!CommandUtil.hasPermissionOrMayor(player, "quarters.action.create"))
             return;
 
-        Selection selection = SelectionManager.selectionMap.get(player);
-        Location pos1 = selection.getPos1();
-        Location pos2 = selection.getPos2();
-
-        List<Cuboid> cuboids = SelectionManager.cuboidsMap.get(player);
+        List<Cuboid> cuboids = SelectionManager.cuboidsMap.computeIfAbsent(player, k -> new ArrayList<>());
         if (cuboids.isEmpty()) {
-            if (pos1 != null && pos2 != null) {
-                cuboids.add(new Cuboid(pos1, pos2));
-            } else {
-                QuartersMessaging.sendErrorMessage(player, "You have not selected any areas");
-            }
+            QuartersMessaging.sendErrorMessage(player, "You have not selected any areas, add your current selection with /quarters selection add");
+            return;
         }
 
-        Town town = TownyAPI.getInstance().getTown(selection.getPos1());
+        Town town = TownyAPI.getInstance().getTown(cuboids.get(0).getPos1());
         if (town == null) {
             QuartersMessaging.sendErrorMessage(player, "Could not resolve a town from the first selected position");
             return;
@@ -56,9 +50,6 @@ public class CreateCommand extends BaseCommand {
             return;
         }
 
-        selection.setPos1(null);
-        selection.setPos2(null);
-
         Quarter newQuarter = new Quarter();
         newQuarter.setCuboids(cuboids);
         newQuarter.setUUID(UUID.randomUUID());
@@ -67,6 +58,9 @@ public class CreateCommand extends BaseCommand {
         newQuarter.setTrustedResidents(new ArrayList<>());
         newQuarter.setPrice(null);
         newQuarter.setType(QuarterType.APARTMENT);
+        newQuarter.setEmbassy(false);
+        newQuarter.setRegistered(Instant.now().toEpochMilli());
+        newQuarter.setClaimedAt(null);
 
         List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
         if (quarterList == null) {
@@ -75,6 +69,8 @@ public class CreateCommand extends BaseCommand {
         quarterList.add(newQuarter);
 
         TownMetadataManager.setQuarterListOfTown(town, quarterList);
+
+        cuboids.clear();
 
         QuartersMessaging.sendSuccessMessage(player, "Selected quarter has been successfully created");
     }

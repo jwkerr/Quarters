@@ -9,6 +9,7 @@ import net.earthmc.quarters.api.QuartersAPI;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.manager.TownMetadataManager;
 import net.earthmc.quarters.object.Quarter;
+import net.earthmc.quarters.object.QuartersTown;
 import net.earthmc.quarters.util.CommandUtil;
 import org.bukkit.entity.Player;
 
@@ -40,7 +41,8 @@ public class SellCommand extends BaseCommand {
         double price;
         try {
             if (arg == null) { // If the user has specified no argument we will set it to the configured default price or to 0
-                Double defaultPrice = TownMetadataManager.getDefaultSellPriceOfTown(TownyAPI.getInstance().getTown(player));
+                QuartersTown quartersTown = QuartersAPI.getInstance().getQuartersTown(TownyAPI.getInstance().getTown(player));
+                Double defaultPrice = quartersTown.getDefaultSellPrice();
                 if (defaultPrice != null) {
                     price = defaultPrice;
                 } else {
@@ -53,7 +55,6 @@ public class SellCommand extends BaseCommand {
             QuartersMessaging.sendErrorMessage(player, "Invalid argument");
             return;
         }
-
 
         if (price < 0) {
             QuartersMessaging.sendErrorMessage(player, "Price must be greater than or equal to 0");

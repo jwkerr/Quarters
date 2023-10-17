@@ -28,6 +28,7 @@ public class SelectionCommand extends BaseCommand {
                 break;
             case "remove":
                 removeSelection(player);
+                break;
             default:
                 QuartersMessaging.sendErrorMessage(player, "Invalid argument");
         }
@@ -50,7 +51,12 @@ public class SelectionCommand extends BaseCommand {
             }
         }
 
+        selection.setPos1(null);
+        selection.setPos2(null);
+
         cuboids.add(newCuboid);
+
+        QuartersMessaging.sendSuccessMessage(player, "Successfully added cuboid to selection");
     }
 
     private void clearSelection(Player player) {

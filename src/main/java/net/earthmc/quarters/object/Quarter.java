@@ -9,13 +9,16 @@ import java.util.List;
 import java.util.UUID;
 
 public class Quarter {
-    List<Cuboid> cuboids;
-    UUID uuid;
-    Town town;
-    Resident owner;
-    List<Resident> trustedResidents;
-    Double price;
-    QuarterType type;
+    private List<Cuboid> cuboids;
+    private UUID uuid;
+    private Town town;
+    private Resident owner;
+    private List<Resident> trustedResidents;
+    private Double price;
+    private QuarterType type;
+    private boolean isEmbassy;
+    private Long registered;
+    private Long claimedAt;
 
     public void save() {
         List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
@@ -102,5 +105,29 @@ public class Quarter {
 
     public QuarterType getType() {
         return type;
+    }
+
+    public void setEmbassy(boolean isEmbassy) {
+        this.isEmbassy = isEmbassy;
+    }
+
+    public boolean isEmbassy() {
+        return isEmbassy;
+    }
+
+    public void setRegistered(Long registered) {
+        this.registered = registered;
+    }
+
+    public Long getRegistered() {
+        return registered;
+    }
+
+    public void setClaimedAt(Long claimedAt) {
+        this.claimedAt = claimedAt;
+    }
+
+    public Long getClaimedAt() {
+        return claimedAt;
     }
 }

@@ -71,7 +71,23 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
 
             String type = quarter.getType().getName();
 
-            String quarterString = cuboids + "," + uuid + "," + town + "," + owner + "," + trustedPlayers + "," + price + "," + type;
+            String embassy;
+            if (quarter.isEmbassy()) {
+                embassy = "true";
+            } else {
+                embassy = "false";
+            }
+
+            String registered = quarter.getRegistered().toString();
+
+            String claimedAt;
+            if (quarter.getClaimedAt() == null) {
+                claimedAt = "null";
+            } else {
+                claimedAt = quarter.getClaimedAt().toString();
+            }
+
+            String quarterString = cuboids + "," + uuid + "," + town + "," + owner + "," + trustedPlayers + "," + price + "," + type + "," + embassy + "," + registered + "," + claimedAt;
 
             sb.append(quarterString);
         }

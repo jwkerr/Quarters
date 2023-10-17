@@ -111,8 +111,13 @@ public class QuarterUtil {
                 trustedPlayers = getResidentListFromString(quarterSplit[4]);
 
             Double price = getDoubleFromString(quarterSplit[5]);
-
             QuarterType type = QuarterType.getByName(quarterSplit[6]);
+            boolean isEmbassy = Boolean.parseBoolean(quarterSplit[7]);
+            Long registered = Long.parseLong(quarterSplit[8]);
+
+            Long claimedAt = null;
+            if (!quarterSplit[9].equals("null"))
+                claimedAt = Long.parseLong(quarterSplit[9]);
 
             Quarter quarter = new Quarter();
             quarter.setCuboids(cuboids);
@@ -122,6 +127,9 @@ public class QuarterUtil {
             quarter.setTrustedResidents(trustedPlayers);
             quarter.setPrice(price);
             quarter.setType(type);
+            quarter.setEmbassy(isEmbassy);
+            quarter.setRegistered(registered);
+            quarter.setClaimedAt(claimedAt);
             quarterList.add(quarter);
         }
 
@@ -129,16 +137,10 @@ public class QuarterUtil {
     }
 
     public static boolean shouldRenderOutlines(QuartersPlayer quartersPlayer, Material itemHeld) {
-        if (!quartersPlayer.hasConstantOutlines()) {
-            if (quartersPlayer.getCustomWand() != null && itemHeld != quartersPlayer.getCustomWand()) {
-                return false;
-            } else {
-                if (itemHeld != Quarters.WAND)
-                    return false;
-            }
-        }
+        if (quartersPlayer.hasConstantOutlines())
+            return true;
 
-        return true;
+        return itemHeld == Quarters.WAND;
     }
 
     public static boolean isLocationInsideCuboidBounds(Location location, Cuboid cuboid) {

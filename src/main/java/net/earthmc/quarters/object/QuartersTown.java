@@ -35,4 +35,8 @@ public class QuartersTown {
     public List<Quarter> getQuarters() {
         return TownMetadataManager.getQuarterListOfTown(town);
     }
+
+    public Double getDefaultSellPrice() {
+        return TownMetadataManager.getDefaultSellPriceOfTown(town);
+    }
 }

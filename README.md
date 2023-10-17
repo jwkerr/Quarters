@@ -16,6 +16,9 @@
 - Proser
 - TiowoiT
 - Lgos
+- PoppyK (PoppyKai)
+- Ghostyuuu (Ghostyuu)
+- NixWolvercraft
 
 ...and 2 other private sponsors
 
