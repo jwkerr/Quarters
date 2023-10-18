@@ -1,5 +1,7 @@
 package net.earthmc.quarters.object;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -56,6 +58,45 @@ public class Cuboid {
             return false;
 
         return true;
+    }
+
+    public boolean isEntirelyWithinTown() {
+        Town town = TownyAPI.getInstance().getTown(pos1);
+        if (town == null)
+            return false;
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    Location location = new Location(town.getWorld(), x, y, z);
+
+                    if (TownyAPI.getInstance().getTown(location) == null)
+                        return false;
+
+                    Town currentPosTown = TownyAPI.getInstance().getTown(location);
+                    if (town != currentPosTown)
+                        return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public boolean isIntersectingPreexistingQuarter() {
+        QuartersTown quartersTown = new QuartersTown(TownyAPI.getInstance().getTown(pos1));
+        List<Quarter> quarterList = quartersTown.getQuarters();
+        if (quarterList == null)
+            return false;
+
+        for (Quarter quarter : quarterList) {
+            for (Cuboid oldCuboid : quarter.getCuboids()) {
+                if (doesIntersectWith(oldCuboid))
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     public List<Player> getPlayersInCuboid() {
