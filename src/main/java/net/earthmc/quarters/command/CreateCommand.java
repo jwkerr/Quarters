@@ -50,21 +50,21 @@ public class CreateCommand extends BaseCommand {
             return;
         }
 
-        Quarter newQuarter = new Quarter();
-        newQuarter.setCuboids(cuboids);
-        newQuarter.setUUID(UUID.randomUUID());
-        newQuarter.setTown(town.getUUID());
-        newQuarter.setOwner(null);
-        newQuarter.setTrustedResidents(new ArrayList<>());
-        newQuarter.setPrice(null);
-        newQuarter.setType(QuarterType.APARTMENT);
-        newQuarter.setEmbassy(false);
-        newQuarter.setRegistered(Instant.now().toEpochMilli());
-        newQuarter.setClaimedAt(null);
-        newQuarter.setRGB(getRandomRGB());
+        Quarter quarter = new Quarter();
+        quarter.setCuboids(new ArrayList<>(cuboids));
+        quarter.setUUID(UUID.randomUUID());
+        quarter.setTown(town.getUUID());
+        quarter.setOwner(null);
+        quarter.setTrustedResidents(new ArrayList<>());
+        quarter.setPrice(null);
+        quarter.setType(QuarterType.APARTMENT);
+        quarter.setEmbassy(false);
+        quarter.setRegistered(Instant.now().toEpochMilli());
+        quarter.setClaimedAt(null);
+        quarter.setRGB(getRandomRGB());
 
         int maxVolume = Quarters.INSTANCE.getConfig().getInt("max_quarter_volume");
-        if (newQuarter.getVolume() > maxVolume) {
+        if (quarter.getVolume() > maxVolume) {
             QuartersMessaging.sendErrorMessage(player, "This quarter is too large, the max configured volume is " + maxVolume + " blocks");
             return;
         }
@@ -73,7 +73,7 @@ public class CreateCommand extends BaseCommand {
         if (quarterList == null) {
             quarterList = new ArrayList<>();
         }
-        quarterList.add(newQuarter);
+        quarterList.add(quarter);
 
         TownMetadataManager.setQuarterListOfTown(town, quarterList);
 
