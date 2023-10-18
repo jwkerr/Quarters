@@ -1,5 +1,6 @@
 package net.earthmc.quarters.command;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
@@ -12,7 +13,7 @@ import net.earthmc.quarters.util.CommandUtil;
 import org.bukkit.entity.Player;
 
 @CommandAlias("quarters|q")
-public class DefaultSellPriceCommand {
+public class DefaultSellPriceCommand extends BaseCommand {
     @Subcommand("defaultsellprice")
     @Description("Set the default sell price of quarters in your town")
     @CommandPermission("quarters.command.quarters.defaultsellprice")
@@ -27,5 +28,7 @@ public class DefaultSellPriceCommand {
             return;
 
         TownMetadataManager.setDefaultSellPriceOfTown(town, price);
+
+        QuartersMessaging.sendSuccessMessage(player, "Successfully changed the default quarter sale price of " + town.getName() + " to " + price);
     }
 }
