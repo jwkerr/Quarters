@@ -4,7 +4,6 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.util.CommandUtil;
@@ -12,6 +11,7 @@ import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.UUID;
 
 @CommandAlias("quarters|q")
 public class TrustCommand extends BaseCommand {
@@ -31,7 +31,7 @@ public class TrustCommand extends BaseCommand {
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
 
-        if (quarter.getOwner() != null && !quarter.getOwner().equals(TownyAPI.getInstance().getResident(player))) {
+        if (quarter.getOwnerResident() != null && !quarter.getOwnerResident().equals(TownyAPI.getInstance().getResident(player))) {
             QuartersMessaging.sendErrorMessage(player, "You do not own this quarter");
             return;
         }
@@ -45,17 +45,17 @@ public class TrustCommand extends BaseCommand {
             }
         }
 
-        List<Resident> trustedList = getTrustedList(player, targetResident, quarter.getTrustedResidents(), arg);
+        List<UUID> trustedList = getTrustedList(player, targetResident, quarter.getTrustedResidentsUUIDs(), arg);
 
-        quarter.setTrustedResidents(trustedList);
+        quarter.setTrustedResidentsUUIDs(trustedList);
         quarter.save();
     }
 
-    public static List<Resident> getTrustedList(Player player, Resident targetResident, List<Resident> trustedList, String arg) {
+    public static List<UUID> getTrustedList(Player player, Resident targetResident, List<UUID> trustedList, String arg) {
         switch (arg) {
             case "add":
-                if (!trustedList.contains(targetResident)) {
-                    trustedList.add(targetResident);
+                if (!trustedList.contains(targetResident.getUUID())) {
+                    trustedList.add(targetResident.getUUID());
 
                     QuartersMessaging.sendSuccessMessage(player, "Specified player has been added to this quarter's trusted list");
                 } else {
@@ -63,8 +63,8 @@ public class TrustCommand extends BaseCommand {
                 }
                 break;
             case "remove":
-                if (trustedList.contains(targetResident)) {
-                    trustedList.remove(targetResident);
+                if (trustedList.contains(targetResident.getUUID())) {
+                    trustedList.remove(targetResident.getUUID());
 
                     QuartersMessaging.sendSuccessMessage(player, "Specified player has been removed from this quarter's trusted list");
                 } else {

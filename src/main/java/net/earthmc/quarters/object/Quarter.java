@@ -5,6 +5,7 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.manager.TownMetadataManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,8 +13,8 @@ public class Quarter {
     private List<Cuboid> cuboids;
     private UUID uuid;
     private Town town;
-    private Resident owner;
-    private List<Resident> trustedResidents;
+    private UUID ownerUUID;
+    private List<UUID> trustedResidentsUUIDs;
     private Double price;
     private QuarterType type;
     private boolean isEmbassy;
@@ -85,19 +86,21 @@ public class Quarter {
         return town;
     }
 
-    public void setOwner(Resident resident) {
-        this.owner = resident;
-    }
+    public Resident getOwnerResident() {
+        UUID ownerUUID = getOwnerUUID();
+        if (ownerUUID == null)
+            return null;
 
-    public Resident getOwner() {
-        return owner;
-    }
-
-    public void setTrustedResidents(List<Resident> residentList) {
-        this.trustedResidents = residentList;
+        return TownyAPI.getInstance().getResident(ownerUUID);
     }
 
     public List<Resident> getTrustedResidents() {
+        List<Resident> trustedResidents = new ArrayList<>();
+
+        for (UUID trustedUUID : getTrustedResidentsUUIDs()) {
+            trustedResidents.add(TownyAPI.getInstance().getResident(trustedUUID));
+        }
+
         return trustedResidents;
     }
 
@@ -147,5 +150,21 @@ public class Quarter {
 
     public int[] getRGB() {
         return rgb;
+    }
+
+    public void setOwnerUUID(UUID uuid) {
+        this.ownerUUID = uuid;
+    }
+
+    public UUID getOwnerUUID() {
+        return ownerUUID;
+    }
+
+    public void setTrustedResidentsUUIDs(List<UUID> uuidList) {
+        this.trustedResidentsUUIDs = uuidList;
+    }
+
+    public List<UUID> getTrustedResidentsUUIDs() {
+        return trustedResidentsUUIDs;
     }
 }

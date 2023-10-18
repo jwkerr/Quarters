@@ -54,13 +54,13 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
             String town = quarter.getTown().getUUID().toString();
 
             String owner;
-            if (quarter.getOwner() != null) {
-                owner = quarter.getOwner().getUUID().toString();
+            if (quarter.getOwnerUUID() != null) {
+                owner = quarter.getOwnerUUID().toString();
             } else {
                 owner = "null";
             }
 
-            String trustedPlayers = QuarterUtil.serializeResidentList(quarter.getTrustedResidents());
+            String trustedPlayers = QuarterUtil.serializeUUIDList(quarter.getTrustedResidentsUUIDs());
 
             String price;
             if (quarter.getPrice() != null) {

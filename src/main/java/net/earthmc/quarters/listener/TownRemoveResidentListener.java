@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 /**
  * Class to remove ownership of quarters that are not embassies on town leave
  */
-public class TownRemoveResidentListener implements Listener {
+public class TownRemoveResidentListener implements Listener { // TODO: Fix this
     @EventHandler
     public void onTownRemoveResident(TownRemoveResidentEvent event) {
         QuartersTown quartersTown = new QuartersTown(event.getTown());
@@ -19,8 +19,8 @@ public class TownRemoveResidentListener implements Listener {
 
         Resident resident = event.getResident();
         for (Quarter quarter : quartersTown.getQuarters()) {
-            if (quarter.getOwner().equals(resident) && !quarter.isEmbassy()) {
-                quarter.setOwner(null);
+            if (quarter.getOwnerResident().equals(resident) && !quarter.isEmbassy()) {
+                quarter.setOwnerUUID(null);
                 quarter.setClaimedAt(null);
                 quarter.save();
             }

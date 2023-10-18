@@ -13,7 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class QuartersAPI {
@@ -84,7 +83,7 @@ public class QuartersAPI {
         if (quarter.getType() != QuarterType.SHOP)
             return false;
 
-        return quarter.getOwner() == resident ||
+        return quarter.getOwnerResident() == resident ||
                 quarter.getTrustedResidents().contains(resident) ||
                 PlayerCacheUtil.getCachePermission(player, location, material, actionType);
     }

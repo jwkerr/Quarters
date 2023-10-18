@@ -19,6 +19,7 @@
 - PoppyK (PoppyKai)
 - Ghostyuuu (Ghostyuu)
 - NixWolvercraft
+- nidomas
 
 ...and 2 other private sponsors
 

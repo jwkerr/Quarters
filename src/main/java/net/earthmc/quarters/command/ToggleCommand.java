@@ -67,9 +67,9 @@ public class ToggleCommand extends BaseCommand {
     public static void toggleQuarterEmbassyStatus(Player player, Quarter quarter) {
         quarter.setEmbassy(!quarter.isEmbassy());
 
-        Resident resident = quarter.getOwner();
+        Resident resident = quarter.getOwnerResident();
         if (resident != null && resident.getTownOrNull() != quarter.getTown())
-            quarter.setOwner(null);
+            quarter.setOwnerUUID(null);
 
         quarter.save();
 

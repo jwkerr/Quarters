@@ -24,7 +24,7 @@ public class AdminEvictCommand extends BaseCommand {
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
 
-        if (quarter.getOwner() == null) {
+        if (quarter.getOwnerResident() == null) {
             QuartersMessaging.sendErrorMessage(player, "This quarter has no owner");
             return;
         }

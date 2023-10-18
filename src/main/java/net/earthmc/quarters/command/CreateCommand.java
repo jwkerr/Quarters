@@ -54,8 +54,8 @@ public class CreateCommand extends BaseCommand {
         quarter.setCuboids(new ArrayList<>(cuboids));
         quarter.setUUID(UUID.randomUUID());
         quarter.setTown(town.getUUID());
-        quarter.setOwner(null);
-        quarter.setTrustedResidents(new ArrayList<>());
+        quarter.setOwnerUUID(null);
+        quarter.setTrustedResidentsUUIDs(new ArrayList<>());
         quarter.setPrice(null);
         quarter.setType(QuarterType.APARTMENT);
         quarter.setEmbassy(false);

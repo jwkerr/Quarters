@@ -1,7 +1,6 @@
 package net.earthmc.quarters.util;
 
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.manager.TownMetadataManager;
@@ -55,15 +54,15 @@ public class QuarterUtil {
         return location.getWorld().getName() + "+" + location.getBlockX() + "+" + location.getBlockY() + "+" + location.getBlockZ();
     }
 
-    public static List<Resident> getResidentListFromString(String string) {
+    public static List<UUID> getUUIDListFromString(String string) {
         String[] split = string.split("\\+");
 
-        List<Resident> residentList = new ArrayList<>();
+        List<UUID> uuidList = new ArrayList<>();
         for (String uuid : split) {
-            residentList.add(TownyAPI.getInstance().getResident(UUID.fromString(uuid)));
+            uuidList.add(UUID.fromString(uuid));
         }
 
-        return residentList;
+        return uuidList;
     }
 
     public static Double getDoubleFromString(String string) {
@@ -73,16 +72,16 @@ public class QuarterUtil {
         return Double.parseDouble(string);
     }
 
-    public static String serializeResidentList(List<Resident> residentList) {
-        if (residentList == null || residentList.isEmpty())
+    public static String serializeUUIDList(List<UUID> uuidList) {
+        if (uuidList == null || uuidList.isEmpty())
             return "null";
 
         StringBuilder sb = new StringBuilder();
-        for (Resident resident : residentList) {
+        for (UUID uuidFromList : uuidList) {
             if (sb.length() > 0)
                 sb.append("+");
 
-            String uuid = resident.getUUID().toString();
+            String uuid = uuidFromList.toString();
 
             sb.append(uuid);
         }
@@ -101,13 +100,13 @@ public class QuarterUtil {
             UUID uuid = UUID.fromString(quarterSplit[1]);
             UUID town = UUID.fromString(quarterSplit[2]);
 
-            Resident owner = null;
+            UUID ownerUUID = null;
             if (!quarterSplit[3].equals("null"))
-                owner = TownyAPI.getInstance().getResident(UUID.fromString(quarterSplit[3]));
+                ownerUUID = UUID.fromString(quarterSplit[3]);
 
-            List<Resident> trustedPlayers = new ArrayList<>();
+            List<UUID> trustedResidentsUUIDs = new ArrayList<>();
             if (!quarterSplit[4].equals("null"))
-                trustedPlayers = getResidentListFromString(quarterSplit[4]);
+                trustedResidentsUUIDs = getUUIDListFromString(quarterSplit[4]);
 
             Double price = getDoubleFromString(quarterSplit[5]);
             QuarterType type = QuarterType.getByName(quarterSplit[6]);
@@ -128,8 +127,8 @@ public class QuarterUtil {
             quarter.setCuboids(cuboids);
             quarter.setUUID(uuid);
             quarter.setTown(town);
-            quarter.setOwner(owner);
-            quarter.setTrustedResidents(trustedPlayers);
+            quarter.setOwnerUUID(ownerUUID);
+            quarter.setTrustedResidentsUUIDs(trustedResidentsUUIDs);
             quarter.setPrice(price);
             quarter.setType(type);
             quarter.setEmbassy(isEmbassy);

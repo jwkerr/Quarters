@@ -31,7 +31,7 @@ public class AdminSetOwnerCommand extends BaseCommand {
             return;
         }
 
-        quarter.setOwner(targetResident);
+        quarter.setOwnerUUID(targetResident.getUUID());
         quarter.setClaimedAt(Instant.now().toEpochMilli());
         quarter.save();
 

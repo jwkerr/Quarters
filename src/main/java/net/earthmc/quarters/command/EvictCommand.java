@@ -24,7 +24,7 @@ public class EvictCommand extends BaseCommand {
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
 
-        if (quarter.getOwner() == null) {
+        if (quarter.getOwnerResident() == null) {
             QuartersMessaging.sendErrorMessage(player, "This quarter has no owner");
             return;
         }
@@ -36,9 +36,9 @@ public class EvictCommand extends BaseCommand {
     }
 
     public static void evictQuarterOwner(Player player, Quarter quarter) {
-        Resident owner = quarter.getOwner();
+        Resident owner = quarter.getOwnerResident();
 
-        quarter.setOwner(null);
+        quarter.setOwnerUUID(null);
         quarter.setClaimedAt(null);
         quarter.save();
 

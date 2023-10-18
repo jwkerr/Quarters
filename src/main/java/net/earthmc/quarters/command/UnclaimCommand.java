@@ -26,12 +26,12 @@ public class UnclaimCommand extends BaseCommand {
         assert quarter != null;
 
         Resident resident = TownyAPI.getInstance().getResident(player);
-        if (!quarter.getOwner().equals(resident)) {
+        if (!quarter.getOwnerResident().equals(resident)) {
             QuartersMessaging.sendErrorMessage(player, "You do not own this quarter");
             return;
         }
 
-        quarter.setOwner(null);
+        quarter.setOwnerUUID(null);
         quarter.setClaimedAt(null);
         quarter.save();
 

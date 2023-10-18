@@ -16,7 +16,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
 
 import java.time.Instant;
@@ -46,7 +45,7 @@ public class HereCommand extends BaseCommand {
 
         TextComponent component = Component.text()
                 .append(Component.text("Owner: ").color(NamedTextColor.DARK_GRAY))
-                .append(getFormattedName(quarter.getOwner()))
+                .append(getFormattedName(quarter.getOwnerResident()))
                 .append(Component.text(" "))
                 .append(Component.text("Type: ").color(NamedTextColor.DARK_GRAY))
                 .append(Component.text(quarter.getType().getFormattedName() + " ")).color(NamedTextColor.GRAY)

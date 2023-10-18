@@ -12,6 +12,7 @@ import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.UUID;
 
 @CommandAlias("quartersadmin|qa")
 public class AdminTrustCommand extends BaseCommand {
@@ -40,9 +41,9 @@ public class AdminTrustCommand extends BaseCommand {
             }
         }
 
-        List<Resident> trustedList = TrustCommand.getTrustedList(player, targetResident, quarter.getTrustedResidents(), arg);
+        List<UUID> trustedList = TrustCommand.getTrustedList(player, targetResident, quarter.getTrustedResidentsUUIDs(), arg);
 
-        quarter.setTrustedResidents(trustedList);
+        quarter.setTrustedResidentsUUIDs(trustedList);
         quarter.save();
     }
 }

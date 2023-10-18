@@ -31,7 +31,7 @@ public class ClaimCommand extends BaseCommand {
 
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
-        if (quarter.getOwner() == resident) {
+        if (quarter.getOwnerResident() == resident) {
             QuartersMessaging.sendErrorMessage(player, "You already own this quarter");
             return;
         }
@@ -56,7 +56,7 @@ public class ClaimCommand extends BaseCommand {
             quarter.getTown().getAccount().deposit(quarter.getPrice(), "Payment for quarter " + quarter.getUUID());
         }
 
-        quarter.setOwner(resident);
+        quarter.setOwnerUUID(resident.getUUID());
         quarter.setClaimedAt(Instant.now().toEpochMilli());
         quarter.setPrice(null);
         quarter.save();

@@ -1,14 +1,14 @@
 package net.earthmc.quarters.listener;
 
-import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.DeletePlayerEvent;
-import com.palmergames.bukkit.towny.object.Resident;
+import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Class to handle clean-up of residents that no longer exist
@@ -16,18 +16,20 @@ import java.util.List;
 public class DeletePlayerListener implements Listener {
     @EventHandler
     public void onDeletePlayer(DeletePlayerEvent event) {
-        for (Quarter quarter : QuarterUtil.getAllQuarters()) {
-            Resident resident = TownyAPI.getInstance().getResident(event.getPlayerUUID());
+        UUID uuid = event.getPlayerUUID();
 
-            if (quarter.getOwner() == resident) {
-                quarter.setOwner(null);
+        for (Quarter quarter : QuarterUtil.getAllQuarters()) {
+            if (quarter.getOwnerUUID() != null && quarter.getOwnerUUID().equals(uuid)) {
+                quarter.setOwnerUUID(null);
+                quarter.setClaimedAt(null);
                 quarter.save();
             }
 
-            List<Resident> trustedList = quarter.getTrustedResidents();
-            if (trustedList.contains(resident)) {
-                trustedList.remove(resident);
-                quarter.setTrustedResidents(trustedList);
+            List<UUID> trustedList = quarter.getTrustedResidentsUUIDs();
+            if (trustedList.contains(uuid)) {
+                Quarters.INSTANCE.getLogger().info("here");
+                trustedList.remove(uuid);
+                quarter.setTrustedResidentsUUIDs(trustedList);
                 quarter.save();
             }
         }
