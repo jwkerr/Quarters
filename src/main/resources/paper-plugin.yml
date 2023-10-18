@@ -21,6 +21,7 @@ permissions:
     default: false
     children:
       quarters.action.constantoutlines: true
+      quarters.action.colour: true
       quarters.action.create: true
       quarters.action.delete: true
       quarters.action.embassy: true
@@ -31,6 +32,10 @@ permissions:
   quarters.action.constantoutlines:
     description: "Grants permission to toggle constant quarter outlines"
     default: true
+
+  quarters.action.colour:
+    description: "Grants permission to change a quarter's outline colour"
+    default: false
 
   quarters.action.create:
     description: "Grants permission to create a quarter"
@@ -61,6 +66,7 @@ permissions:
     default: false
     children:
       quarters.command.quarters.claim: true
+      quarters.command.quarters.colour: true
       quarters.command.quarters.selection: true
       quarters.command.quarters.create: true
       quarters.command.quarters.delete: true
@@ -75,6 +81,10 @@ permissions:
 
   quarters.command.quarters.claim:
     description: "Grants permissions to claim quarters"
+    default: true
+
+  quarters.command.quarters.colour:
+    description: "Grants permission to use the colour command"
     default: true
 
   quarters.command.quarters.selection:
