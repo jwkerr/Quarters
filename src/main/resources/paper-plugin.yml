@@ -17,7 +17,7 @@ permissions:
     default: true
 
   quarters.action.*:
-    description: "Grants permission to all the dangerous permissions for quarters in a town, should only be given to powerful ranks in a town"
+    description: "Grants permission to all the permission checks called by standard commands, should only be given to powerful ranks in a town"
     default: false
     children:
       quarters.action.constantoutlines: true
@@ -135,3 +135,58 @@ permissions:
   quarters.command.quarters.unclaim:
     description: "Grants permission to unclaim owned quarters"
     default: true
+
+  quarters.command.quartersadmin.*:
+    description: "Grants permission to all admin commands"
+    default: op
+    children:
+      quarters.command.quartersadmin.colour: true
+      quarters.command.quartersadmin.delete: true
+      quarters.command.quartersadmin.evict: true
+      quarters.command.quartersadmin.sell: true
+      quarters.command.quartersadmin.setowner: true
+      quarters.command.quartersadmin.toggle: true
+      quarters.command.quartersadmin.trust: true
+      quarters.command.quartersadmin.type: true
+
+  quarters.command.quartersadmin.colour:
+    description: "Grants permission to forcefully change a quarter's outline colour"
+    default: op
+
+  quarters.command.quartersadmin.delete:
+    description: "Grants permission to forcefully delete quarters"
+    default: op
+
+  quarters.command.quartersadmin.evict:
+    description: "Grants permission to forcefully evict the owner of a quarter"
+    default: op
+
+  quarters.command.quartersadmin.sell:
+    description: "Grants permission to forcefully set a quarter for sale"
+    default: op
+
+  quarters.command.quartersadmin.setowner:
+    description: "Grants permission to forcefully change a quarter's owner"
+    default: op
+
+  quarters.command.quartersadmin.toggle:
+    description: "Grants permission to use the admin toggle command"
+    default: op
+
+  quarters.command.quartersadmin.trust:
+    description: "Grants permission to forcefully manage trusted players in a quarter"
+    default: op
+
+  quarters.command.quartersadmin.type:
+    description: "Grants permission to forcefully change a quarter's type"
+    default: op
+
+  quarters.action.admin.*:
+    description: "Grants permission to all admin actions, this does not give access to the command that checks for these permissions"
+    default: op
+    children:
+      quarters.action.admin.embassy: true
+
+  quarters.action.admin.embassy:
+    description: "Grants permission to forcefully toggle a quarter's embassy status"
+    default: op

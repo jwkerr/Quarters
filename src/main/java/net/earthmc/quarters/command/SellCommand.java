@@ -4,7 +4,6 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
-import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuartersTown;
@@ -22,21 +21,38 @@ public class SellCommand extends BaseCommand {
         if (!CommandUtil.hasPermissionOrMayor(player, "quarters.action.sell"))
             return;
 
-        Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         if (!CommandUtil.isPlayerInQuarter(player))
             return;
 
+        Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
         if (!CommandUtil.isQuarterInPlayerTown(player, quarter))
             return;
 
         if (arg != null && arg.equals("cancel")) {
-            quarter.setPrice(null);
-            quarter.save();
-            QuartersMessaging.sendSuccessMessage(player, "This quarter is no longer for sale");
+            cancelQuarterSale(player, quarter);
             return;
         }
 
+        Double price = getSellPrice(player, arg);
+        if (price == null)
+            return;
+
+        if (price < 0) {
+            QuartersMessaging.sendErrorMessage(player, "Price must be greater than or equal to 0");
+            return;
+        }
+
+        setQuarterForSale(player, quarter, price);
+    }
+
+    public static void cancelQuarterSale(Player player, Quarter quarter) {
+        quarter.setPrice(null);
+        quarter.save();
+        QuartersMessaging.sendSuccessMessage(player, "This quarter is no longer for sale");
+    }
+
+    public static Double getSellPrice(Player player, String arg) {
         double price;
         try {
             if (arg == null) { // If the user has specified no argument we will set it to the configured default price or to 0
@@ -52,20 +68,15 @@ public class SellCommand extends BaseCommand {
             }
         } catch (NumberFormatException e) {
             QuartersMessaging.sendErrorMessage(player, "Invalid argument");
-            return;
+            return null;
         }
 
-        if (price < 0) {
-            QuartersMessaging.sendErrorMessage(player, "Price must be greater than or equal to 0");
-            return;
-        }
+        return price;
+    }
 
+    public static void setQuarterForSale(Player player, Quarter quarter, double price) {
         if (!TownyEconomyHandler.isActive()) // If the server is using economy then we set it for sale at the designated price, otherwise it defaults to free
             price = 0.0;
-
-        Resident resident = TownyAPI.getInstance().getResident(player);
-        if (resident == null)
-            return;
 
         quarter.setPrice(price);
         quarter.save();

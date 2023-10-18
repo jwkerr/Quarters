@@ -19,8 +19,8 @@ public class TrustCommand extends BaseCommand {
     @Description("Manage access of other players to a quarter")
     @CommandPermission("quarters.command.quarters.trust")
     @CommandCompletion("add|remove|clear @players")
-    public void onTrust(Player player, String method, @Optional String target) {
-        if (!(method.equals("add") || method.equals("remove") || method.equals("clear"))) {
+    public void onTrust(Player player, String arg, @Optional String target) {
+        if (!(arg.equals("add") || arg.equals("remove") || arg.equals("clear"))) {
             QuartersMessaging.sendErrorMessage(player, "Invalid argument");
             return;
         }
@@ -30,6 +30,7 @@ public class TrustCommand extends BaseCommand {
 
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
+
         if (quarter.getOwner() != null && !quarter.getOwner().equals(TownyAPI.getInstance().getResident(player))) {
             QuartersMessaging.sendErrorMessage(player, "You do not own this quarter");
             return;
@@ -41,14 +42,14 @@ public class TrustCommand extends BaseCommand {
             return;
         }
 
-        Town town = TownyAPI.getInstance().getTown(player.getLocation());
-        if (town == null) {
-            QuartersMessaging.sendErrorMessage(player, "Could not resolve a town from your current location");
-            return;
-        }
+        List<Resident> trustedList = getTrustedList(player, targetResident, quarter.getTrustedResidents(), arg);
 
-        List<Resident> trustedList = quarter.getTrustedResidents();
-        switch (method) {
+        quarter.setTrustedResidents(trustedList);
+        quarter.save();
+    }
+
+    public static List<Resident> getTrustedList(Player player, Resident targetResident, List<Resident> trustedList, String arg) {
+        switch (arg) {
             case "add":
                 if (!trustedList.contains(targetResident)) {
                     trustedList.add(targetResident);
@@ -56,11 +57,8 @@ public class TrustCommand extends BaseCommand {
                     QuartersMessaging.sendSuccessMessage(player, "Specified player has been added to this quarter's trusted list");
                 } else {
                     QuartersMessaging.sendErrorMessage(player, "Specified player is already trusted in this quarter");
-                    return;
                 }
-
                 break;
-
             case "remove":
                 if (trustedList.contains(targetResident)) {
                     trustedList.remove(targetResident);
@@ -68,19 +66,17 @@ public class TrustCommand extends BaseCommand {
                     QuartersMessaging.sendSuccessMessage(player, "Specified player has been removed from this quarter's trusted list");
                 } else {
                     QuartersMessaging.sendErrorMessage(player, "Specified player is not trusted in this quarter");
-                    return;
                 }
-
                 break;
-
             case "clear":
                 trustedList.clear();
 
                 QuartersMessaging.sendSuccessMessage(player, "All trusted players have been removed from this quarter");
                 break;
+            default:
+                QuartersMessaging.sendErrorMessage(player, "Invalid argument");
         }
 
-        quarter.setTrustedResidents(trustedList);
-        quarter.save();
+        return trustedList;
     }
 }

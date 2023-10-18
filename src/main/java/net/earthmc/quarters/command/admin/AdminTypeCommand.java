@@ -1,8 +1,9 @@
-package net.earthmc.quarters.command;
+package net.earthmc.quarters.command.admin;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import net.earthmc.quarters.api.QuartersMessaging;
+import net.earthmc.quarters.command.TypeCommand;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuarterType;
 import net.earthmc.quarters.util.CommandUtil;
@@ -11,11 +12,11 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-@CommandAlias("quarters|q")
-public class TypeCommand extends BaseCommand {
+@CommandAlias("quartersadmin|qa")
+public class AdminTypeCommand extends BaseCommand {
     @Subcommand("type")
     @Description("Change a quarter's type")
-    @CommandPermission("quarters.command.quarters.type")
+    @CommandPermission("quarters.command.quartersadmin.type")
     @CommandCompletion("apartment|commons|shop|station")
     public void onType(Player player, String type) {
         if (Arrays.stream(QuarterType.values()).noneMatch(e -> e.name().equalsIgnoreCase(type))) {
@@ -29,19 +30,6 @@ public class TypeCommand extends BaseCommand {
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
 
-        if (!CommandUtil.hasPermissionOrMayor(player, "quarters.action.type"))
-            return;
-
-        if (!CommandUtil.isQuarterInPlayerTown(player, quarter))
-            return;
-
-        setQuarterType(player, quarter, QuarterType.getByName(type));
-    }
-
-    public static void setQuarterType(Player player, Quarter quarter, QuarterType quarterType) {
-        quarter.setType(quarterType);
-        quarter.save();
-
-        QuartersMessaging.sendSuccessMessage(player, "This quarter has been set to type: " + quarter.getType().getFormattedName());
+        TypeCommand.setQuarterType(player, quarter, QuarterType.getByName(type));
     }
 }

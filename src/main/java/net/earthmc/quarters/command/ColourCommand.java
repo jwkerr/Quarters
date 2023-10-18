@@ -27,13 +27,24 @@ public class ColourCommand extends BaseCommand {
 
         int[] rgb = new int[]{r, g, b};
 
+        if (!isRGBArrayValid(player, rgb))
+            return;
+
+        setQuarterColour(player, quarter, rgb);
+    }
+
+    public static boolean isRGBArrayValid(Player player, int[] rgb) {
         for (int colour : rgb) {
             if (colour < 0 || colour > 255) {
                 QuartersMessaging.sendErrorMessage(player, "Specified int is out of range, value must be between 0-255");
-                return;
+                return false;
             }
         }
 
+        return true;
+    }
+
+    public static void setQuarterColour(Player player, Quarter quarter, int[] rgb) {
         quarter.setRGB(rgb);
         quarter.save();
 

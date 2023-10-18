@@ -3,6 +3,7 @@ package net.earthmc.quarters;
 import co.aikar.commands.PaperCommandManager;
 import com.palmergames.bukkit.towny.object.metadata.MetadataLoader;
 import net.earthmc.quarters.command.*;
+import net.earthmc.quarters.command.admin.*;
 import net.earthmc.quarters.config.Config;
 import net.earthmc.quarters.listener.*;
 import net.earthmc.quarters.object.QuarterListDFDeserializer;
@@ -58,6 +59,7 @@ public final class Quarters extends JavaPlugin {
     public void initCommands() {
         PaperCommandManager manager = new PaperCommandManager(this);
 
+        // Standard commands
         manager.registerCommand(new ClaimCommand());
         manager.registerCommand(new ColourCommand());
         manager.registerCommand(new CreateCommand());
@@ -72,5 +74,15 @@ public final class Quarters extends JavaPlugin {
         manager.registerCommand(new TrustCommand());
         manager.registerCommand(new TypeCommand());
         manager.registerCommand(new UnclaimCommand());
+
+        // Admin commands
+        manager.registerCommand(new AdminColourCommand());
+        manager.registerCommand(new AdminDeleteCommand());
+        manager.registerCommand(new AdminEvictCommand());
+        manager.registerCommand(new AdminSellCommand());
+        manager.registerCommand(new AdminSetOwnerCommand());
+        manager.registerCommand(new AdminToggleCommand());
+        manager.registerCommand(new AdminTrustCommand());
+        manager.registerCommand(new AdminTypeCommand());
     }
 }

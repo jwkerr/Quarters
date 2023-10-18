@@ -26,6 +26,10 @@ public class EvictCommand extends BaseCommand {
         if (!CommandUtil.isQuarterInPlayerTown(player, quarter))
             return;
 
+        evictQuarterOwner(player, quarter);
+    }
+
+    public static void evictQuarterOwner(Player player, Quarter quarter) {
         Resident owner = quarter.getOwner();
 
         quarter.setOwner(null);
