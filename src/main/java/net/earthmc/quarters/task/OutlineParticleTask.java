@@ -7,6 +7,7 @@ import net.earthmc.quarters.object.*;
 import net.earthmc.quarters.manager.SelectionManager;
 import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -38,13 +39,13 @@ public class OutlineParticleTask extends BukkitRunnable {
             Location pos2 = selection.getPos2();
 
             if (pos1 != null && pos2 != null) {
-                createParticlesAtCuboidEdges(player, pos1, pos2, Particle.valueOf(Quarters.INSTANCE.getConfig().getString("current_selection_particle")));
+                createParticlesAtCuboidEdges(player, pos1, pos2, Particle.valueOf(Quarters.INSTANCE.getConfig().getString("current_selection_particle")), null);
             }
         }
 
         if (cuboids != null) {
             for (Cuboid cuboid : cuboids) {
-                createParticlesAtCuboidEdges(player, cuboid.getPos1(), cuboid.getPos2(), Particle.valueOf(Quarters.INSTANCE.getConfig().getString("current_cuboids_particle")));
+                createParticlesAtCuboidEdges(player, cuboid.getPos1(), cuboid.getPos2(), Particle.valueOf(Quarters.INSTANCE.getConfig().getString("current_cuboids_particle")), null);
             }
         }
     }
@@ -59,13 +60,16 @@ public class OutlineParticleTask extends BukkitRunnable {
         if (quarterList != null) {
             for (Quarter quarter : quarterList) {
                 for (Cuboid cuboid : quarter.getCuboids()) {
-                    createParticlesAtCuboidEdges(player, cuboid.getPos1(), cuboid.getPos2(), Particle.valueOf(Quarters.INSTANCE.getConfig().getString("created_particle")));
+                    int[] rgb = quarter.getRGB();
+                    Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(rgb[0], rgb[1], rgb[2]), 1f);
+
+                    createParticlesAtCuboidEdges(player, cuboid.getPos1(), cuboid.getPos2(), Particle.REDSTONE, dustOptions);
                 }
             }
         }
     }
 
-    private static void createParticlesAtCuboidEdges(Player player, Location pos1, Location pos2, Particle particle) {
+    private static void createParticlesAtCuboidEdges(Player player, Location pos1, Location pos2, Particle particle, Particle.DustOptions dustOptions) {
         int x1 = pos1.getBlockX();
         int y1 = pos1.getBlockY();
         int z1 = pos1.getBlockZ();
@@ -96,7 +100,12 @@ public class OutlineParticleTask extends BukkitRunnable {
         }
 
         for (int[] coordinate : edges) {
-            player.spawnParticle(particle, coordinate[0] + 0.5, coordinate[1] + 0.5, coordinate[2] + 0.5, 1, 0, 0, 0, 0);
+            Location location = new Location(player.getWorld(), coordinate[0] + 0.5, coordinate[1] + 0.5, coordinate[2] + 0.5);
+            if (dustOptions == null) {
+                player.spawnParticle(particle, location, 1, 0, 0, 0, 0);
+            } else {
+                player.spawnParticle(particle, location, 1, dustOptions);
+            }
         }
     }
 }

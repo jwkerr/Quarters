@@ -16,12 +16,12 @@ import net.earthmc.quarters.object.QuarterType;
 import net.earthmc.quarters.manager.SelectionManager;
 import net.earthmc.quarters.object.QuartersTown;
 import net.earthmc.quarters.util.CommandUtil;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 @CommandAlias("quarters|q")
@@ -61,6 +61,7 @@ public class CreateCommand extends BaseCommand {
         newQuarter.setEmbassy(false);
         newQuarter.setRegistered(Instant.now().toEpochMilli());
         newQuarter.setClaimedAt(null);
+        newQuarter.setRGB(getRandomRGB());
 
         int maxVolume = Quarters.INSTANCE.getConfig().getInt("max_quarter_volume");
         if (newQuarter.getVolume() > maxVolume) {
@@ -86,12 +87,12 @@ public class CreateCommand extends BaseCommand {
         List<Quarter> quarterList = quartersTown.getQuarters();
 
         for (Cuboid cuboid : cuboids) {
-            if (!isCuboidEntirelyInOneTown(cuboid, town)) {
+            if (!cuboid.isEntirelyWithinTown()) {
                 return false;
             }
 
             if (quarterList != null) {
-                if (!isCuboidIntersectingPreExistingQuarter(cuboid, quarterList)) {
+                if (cuboid.isIntersectingPreexistingQuarter()) {
                     return false;
                 }
             }
@@ -100,33 +101,13 @@ public class CreateCommand extends BaseCommand {
         return true;
     }
 
-    private boolean isCuboidEntirelyInOneTown(Cuboid cuboid, Town town) {
-        for (int x = cuboid.getMinX(); x <= cuboid.getMaxX(); x++) {
-            for (int y = cuboid.getMinY(); y <= cuboid.getMaxY(); y++) {
-                for (int z = cuboid.getMinZ(); z <= cuboid.getMaxZ(); z++) {
-                    Location location = new Location(town.getWorld(), x, y, z);
+    private int[] getRandomRGB() {
+        Random random = new Random();
 
-                    if (TownyAPI.getInstance().getTown(location) == null)
-                        return false;
+        int r = random.nextInt(256);
+        int g = random.nextInt(256);
+        int b = random.nextInt(256);
 
-                    Town currentPosTown = TownyAPI.getInstance().getTown(location);
-                    if (town != currentPosTown)
-                        return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    private boolean isCuboidIntersectingPreExistingQuarter(Cuboid cuboid, List<Quarter> quarterList) {
-        for (Quarter quarter : quarterList) {
-            for (Cuboid oldCuboid : quarter.getCuboids()) {
-                if (cuboid.doesIntersectWith(oldCuboid))
-                    return false;
-            }
-        }
-
-        return true;
+        return new int[]{r, g, b};
     }
 }

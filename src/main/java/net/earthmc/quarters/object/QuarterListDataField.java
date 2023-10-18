@@ -87,7 +87,10 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
                 claimedAt = quarter.getClaimedAt().toString();
             }
 
-            String quarterString = cuboids + "," + uuid + "," + town + "," + owner + "," + trustedPlayers + "," + price + "," + type + "," + embassy + "," + registered + "," + claimedAt;
+            int[] rgbArray = quarter.getRGB();
+            String rgb = rgbArray[0] + "+" + rgbArray[1] + "+" + rgbArray[2];
+
+            String quarterString = cuboids + "," + uuid + "," + town + "," + owner + "," + trustedPlayers + "," + price + "," + type + "," + embassy + "," + registered + "," + claimedAt + "," + rgb;
 
             sb.append(quarterString);
         }

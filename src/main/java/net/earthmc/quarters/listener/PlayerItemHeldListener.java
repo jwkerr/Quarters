@@ -9,6 +9,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Class to render particles when item is switched before waiting for next OutlineParticleTask tick
+ */
 public class PlayerItemHeldListener implements Listener {
     @EventHandler
     public void onItemHeld(PlayerItemHeldEvent event) {

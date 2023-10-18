@@ -118,6 +118,12 @@ public class QuarterUtil {
             if (!quarterSplit[9].equals("null"))
                 claimedAt = Long.parseLong(quarterSplit[9]);
 
+            final String[] rgbSplit = quarterSplit[10].split("\\+");
+            int r = Integer.parseInt(rgbSplit[0]);
+            int g = Integer.parseInt(rgbSplit[1]);
+            int b = Integer.parseInt(rgbSplit[2]);
+            int[] rgb = new int[]{r, g, b};
+
             Quarter quarter = new Quarter();
             quarter.setCuboids(cuboids);
             quarter.setUUID(uuid);
@@ -129,6 +135,7 @@ public class QuarterUtil {
             quarter.setEmbassy(isEmbassy);
             quarter.setRegistered(registered);
             quarter.setClaimedAt(claimedAt);
+            quarter.setRGB(rgb);
             quarterList.add(quarter);
         }
 
@@ -163,5 +170,18 @@ public class QuarterUtil {
         }
 
         return null;
+    }
+
+    public static List<Quarter> getAllQuarters() {
+        List<Quarter> quarterList = new ArrayList<>();
+
+        for (Town town : TownyAPI.getInstance().getTowns()) {
+            List<Quarter> currentTownQuarterList = new QuartersTown(town).getQuarters();
+            if (currentTownQuarterList != null) {
+                quarterList.addAll(currentTownQuarterList);
+            }
+        }
+
+        return quarterList;
     }
 }
