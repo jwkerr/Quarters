@@ -27,6 +27,11 @@ public class DefaultSellPriceCommand extends BaseCommand {
         if (!CommandUtil.hasPermissionOrMayor(player, "quarters.action.defaultsellprice"))
             return;
 
+        if (price < 0) {
+            QuartersMessaging.sendErrorMessage(player, "Price must be greater than or equal to 0");
+            return;
+        }
+
         TownMetadataManager.setDefaultSellPriceOfTown(town, price);
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully changed the default quarter sale price of " + town.getName() + " to " + price);
