@@ -14,8 +14,12 @@ import net.earthmc.quarters.util.QuarterUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
+
+import java.time.Instant;
+import java.time.ZoneId;
 
 @CommandAlias("quarters|q")
 public class HereCommand extends BaseCommand {
@@ -29,18 +33,7 @@ public class HereCommand extends BaseCommand {
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
 
-        String trustedString = "None";
-        if (!quarter.getTrustedResidents().isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            for (Resident resident : quarter.getTrustedResidents()) {
-                if (sb.length() > 0)
-                    sb.append(", ");
-
-                sb.append(resident.getName());
-            }
-
-            trustedString = sb.toString();
-        }
+        Component trustedComponent = getTrustedComponent(quarter);
 
         String price;
         if (quarter.getPrice() == null) {
@@ -52,16 +45,46 @@ public class HereCommand extends BaseCommand {
         }
 
         TextComponent component = Component.text()
-                .append(Component.text("Owner: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))
-                .append(Component.text(quarter.getOwner() == null ? "None\n" : quarter.getOwner().getName() + "\n")).color(NamedTextColor.GRAY)
-                .append(Component.text("Trusted: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))
-                .append(Component.text(trustedString + "\n")).color(NamedTextColor.GRAY)
-                .append(Component.text("Price: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))
-                .append(Component.text(price + "\n")).color(NamedTextColor.GRAY)
-                .append(Component.text("Type: ").color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC))
-                .append(Component.text(quarter.getType().getFormattedName())).color(NamedTextColor.GRAY)
+                .append(Component.text("Owner: ").color(NamedTextColor.DARK_GRAY))
+                .append(Component.text(quarter.getOwner() == null ? "None " : quarter.getOwner().getName() + " ")).color(NamedTextColor.GRAY)
+                .append(Component.text("Type: ").color(NamedTextColor.DARK_GRAY))
+                .append(Component.text(quarter.getType().getFormattedName() + "\n")).color(NamedTextColor.GRAY)
+                .append(Component.text("Price: ").color(NamedTextColor.DARK_GRAY))
+                .append(Component.text(price + " ")).color(NamedTextColor.GRAY)
+                .append(Component.text("Cuboids: ").color(NamedTextColor.DARK_GRAY))
+                .append(Component.text(quarter.getCuboids().size() + "\n")).color(NamedTextColor.GRAY)
+                .append(Component.text("Registered: ").color(NamedTextColor.DARK_GRAY))
+                .append(Component.text(quarter.getRegistered() == null ? "N/A" : Instant.ofEpochMilli(quarter.getRegistered()).atZone(ZoneId.systemDefault()).toLocalDate() + " ")).color(NamedTextColor.GRAY)
+                .append(Component.text("Claimed at: ").color(NamedTextColor.DARK_GRAY))
+                .append(Component.text(quarter.getClaimedAt() == null ? "N/A\n" : Instant.ofEpochMilli(quarter.getClaimedAt()).atZone(ZoneId.systemDefault()).toLocalDate() + "\n")).color(NamedTextColor.GRAY)
+                .append(trustedComponent)
                 .build();
 
         QuartersMessaging.sendInfoWall(player, component);
+    }
+
+    private Component getTrustedComponent(Quarter quarter) {
+        Component trustedComponent = Component.empty()
+                .append(Component.text("[", NamedTextColor.DARK_GRAY))
+                .append(Component.text("Trusted", TextColor.color(0x9655FF)))
+                .append(Component.text("]", NamedTextColor.DARK_GRAY));
+
+        Component hoverComponent;
+
+        if (!quarter.getTrustedResidents().isEmpty() && quarter.getTrustedResidents() != null) {
+            StringBuilder sb = new StringBuilder();
+            for (Resident resident : quarter.getTrustedResidents()) {
+                if (sb.length() > 0)
+                    sb.append(", ");
+
+                sb.append(resident.getName());
+            }
+
+            hoverComponent = Component.text(sb.toString()).color(NamedTextColor.GRAY);
+        } else {
+            hoverComponent = Component.text("None").color(NamedTextColor.GRAY);
+        }
+
+        return trustedComponent.hoverEvent(hoverComponent);
     }
 }
