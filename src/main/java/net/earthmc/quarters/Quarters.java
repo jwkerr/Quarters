@@ -6,6 +6,7 @@ import net.earthmc.quarters.command.*;
 import net.earthmc.quarters.command.admin.*;
 import net.earthmc.quarters.config.Config;
 import net.earthmc.quarters.listener.*;
+import net.earthmc.quarters.manager.SponsorCosmeticsManager;
 import net.earthmc.quarters.object.QuarterListDFDeserializer;
 import net.earthmc.quarters.object.QuarterListDataField;
 import net.earthmc.quarters.task.OutlineParticleTask;
@@ -27,6 +28,8 @@ public final class Quarters extends JavaPlugin {
         WAND = Material.valueOf(getConfig().getString("wand_material"));
 
         MetadataLoader.getInstance().registerDeserializer(QuarterListDataField.typeID(), new QuarterListDFDeserializer());
+
+        SponsorCosmeticsManager.init();
 
         initListeners();
         initCommands();

@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.Subcommand;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.quarters.api.QuartersMessaging;
+import net.earthmc.quarters.manager.SponsorCosmeticsManager;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.util.CommandUtil;
 import net.earthmc.quarters.util.QuarterUtil;
@@ -20,6 +21,7 @@ import org.bukkit.entity.Player;
 
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.UUID;
 
 @CommandAlias("quarters|q")
 public class HereCommand extends BaseCommand {
@@ -44,7 +46,8 @@ public class HereCommand extends BaseCommand {
 
         TextComponent component = Component.text()
                 .append(Component.text("Owner: ").color(NamedTextColor.DARK_GRAY))
-                .append(Component.text(quarter.getOwner() == null ? "None " : quarter.getOwner().getName() + " ")).color(NamedTextColor.GRAY)
+                .append(getFormattedName(quarter.getOwner()))
+                .append(Component.text(" "))
                 .append(Component.text("Type: ").color(NamedTextColor.DARK_GRAY))
                 .append(Component.text(quarter.getType().getFormattedName() + " ")).color(NamedTextColor.GRAY)
                 .append(Component.text("Town: ").color(NamedTextColor.DARK_GRAY))
@@ -71,22 +74,40 @@ public class HereCommand extends BaseCommand {
                 .append(Component.text("Trusted", TextColor.color(0x9655FF)))
                 .append(Component.text("]", NamedTextColor.DARK_GRAY));
 
-        Component hoverComponent;
+        Component hoverComponent = Component.empty();
 
         if (!quarter.getTrustedResidents().isEmpty() && quarter.getTrustedResidents() != null) {
-            StringBuilder sb = new StringBuilder();
+            int iteration = 0;
             for (Resident resident : quarter.getTrustedResidents()) {
-                if (sb.length() > 0)
-                    sb.append(", ");
+                if (iteration != 0)
+                    hoverComponent = hoverComponent.append(Component.text(", ").color(NamedTextColor.GRAY));
 
-                sb.append(resident.getName());
+                hoverComponent = hoverComponent.append(getFormattedName(resident));
+
+                iteration++;
             }
-
-            hoverComponent = Component.text(sb.toString()).color(NamedTextColor.GRAY);
         } else {
             hoverComponent = Component.text("None").color(NamedTextColor.GRAY);
         }
 
         return trustedComponent.hoverEvent(hoverComponent);
+    }
+
+    private Component getFormattedName(Resident resident) {
+        if (resident == null)
+            return Component.text("None", NamedTextColor.GRAY);
+
+        UUID uuid = resident.getUUID();
+        String type = SponsorCosmeticsManager.sponsorMap.get(uuid);
+        if (type != null) {
+            switch (type) {
+                case "authors":
+                    return Component.text(resident.getName(), TextColor.color(0xF6003C));
+                case "early_supporters":
+                    return Component.text(resident.getName(), NamedTextColor.GOLD);
+            }
+        }
+
+        return Component.text(resident.getName(), NamedTextColor.GRAY);
     }
 }
