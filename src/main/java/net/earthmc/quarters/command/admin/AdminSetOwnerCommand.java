@@ -34,5 +34,7 @@ public class AdminSetOwnerCommand extends BaseCommand {
         quarter.setOwner(targetResident);
         quarter.setClaimedAt(Instant.now().toEpochMilli());
         quarter.save();
+
+        QuartersMessaging.sendSuccessMessage(player, "Successfully set this quarter's owner to " + targetResident.getName());
     }
 }
