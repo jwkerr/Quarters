@@ -10,6 +10,7 @@ import net.earthmc.quarters.object.QuarterListDFDeserializer;
 import net.earthmc.quarters.object.QuarterListDataField;
 import net.earthmc.quarters.task.OutlineParticleTask;
 import org.bukkit.Material;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Quarters extends JavaPlugin {
@@ -42,12 +43,14 @@ public final class Quarters extends JavaPlugin {
     }
 
     public void initListeners() {
+        PluginManager pm = getServer().getPluginManager();
+
         getServer().getPluginManager().registerEvents(new DeletePlayerListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerItemHeldListener(), this);
         getServer().getPluginManager().registerEvents(new PlotPreClaimListener(), this);
 
-        if (getServer().getPluginManager().isPluginEnabled("QuickShop") || getServer().getPluginManager().isPluginEnabled("QuickShop-Hikari"))
+        if (pm.isPluginEnabled("QuickShop") || pm.isPluginEnabled("QuickShop-Hikari"))
             getServer().getPluginManager().registerEvents(new ShopCreateListener(), this);
 
         getServer().getPluginManager().registerEvents(new TownRemoveResidentListener(), this);
