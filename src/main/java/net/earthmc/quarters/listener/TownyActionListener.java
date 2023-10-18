@@ -13,6 +13,9 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+/**
+ * Class to override Towny's cancellation of certain tasks when the player has permission in a quarter
+ */
 public class TownyActionListener implements Listener {
     @EventHandler
     public void onBuild(TownyBuildEvent event) {

@@ -10,6 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+/**
+ * QuickShops compatibility
+ */
 public class ShopCreateListener implements Listener {
     @EventHandler
     public void onShopCreate(ShopCreateEvent event) {

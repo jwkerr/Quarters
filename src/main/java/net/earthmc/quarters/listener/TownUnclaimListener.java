@@ -12,6 +12,9 @@ import org.bukkit.event.Listener;
 
 import java.util.List;
 
+/**
+ * Class to clean-up quarters when a townblock is unclaimed
+ */
 public class TownUnclaimListener implements Listener {
     @EventHandler
     public void onTownUnclaim(TownUnclaimEvent event) {
