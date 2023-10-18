@@ -49,6 +49,7 @@ public final class Quarters extends JavaPlugin {
         if (getServer().getPluginManager().isPluginEnabled("QuickShop") || getServer().getPluginManager().isPluginEnabled("QuickShop-Hikari"))
             getServer().getPluginManager().registerEvents(new ShopCreateListener(), this);
 
+        getServer().getPluginManager().registerEvents(new TownRemoveResidentListener(), this);
         getServer().getPluginManager().registerEvents(new TownStatusScreenListener(), this);
         getServer().getPluginManager().registerEvents(new TownUnclaimListener(), this);
         getServer().getPluginManager().registerEvents(new TownyActionListener(), this);
