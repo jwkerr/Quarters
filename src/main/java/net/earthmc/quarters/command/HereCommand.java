@@ -33,8 +33,6 @@ public class HereCommand extends BaseCommand {
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
 
-        Component trustedComponent = getTrustedComponent(quarter);
-
         String price;
         if (quarter.getPrice() == null) {
             price = "Not for sale";
@@ -61,7 +59,7 @@ public class HereCommand extends BaseCommand {
                 .append(Component.text(quarter.getRegistered() == null ? "N/A" : Instant.ofEpochMilli(quarter.getRegistered()).atZone(ZoneId.systemDefault()).toLocalDate() + " ")).color(NamedTextColor.GRAY)
                 .append(Component.text("Claimed at: ").color(NamedTextColor.DARK_GRAY))
                 .append(Component.text(quarter.getClaimedAt() == null ? "N/A\n" : Instant.ofEpochMilli(quarter.getClaimedAt()).atZone(ZoneId.systemDefault()).toLocalDate() + "\n")).color(NamedTextColor.GRAY)
-                .append(trustedComponent)
+                .append(getTrustedComponent(quarter))
                 .build();
 
         QuartersMessaging.sendInfoWall(player, component);
