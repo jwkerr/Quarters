@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
+import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.command.EvictCommand;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.util.CommandUtil;
@@ -22,6 +23,11 @@ public class AdminEvictCommand extends BaseCommand {
 
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
+
+        if (quarter.getOwner() == null) {
+            QuartersMessaging.sendErrorMessage(player, "This quarter has no owner");
+            return;
+        }
 
         EvictCommand.evictQuarterOwner(player, quarter);
     }
