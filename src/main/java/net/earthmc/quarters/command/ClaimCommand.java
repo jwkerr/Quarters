@@ -14,6 +14,8 @@ import net.earthmc.quarters.util.CommandUtil;
 import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.entity.Player;
 
+import java.time.Instant;
+
 @CommandAlias("quarters|q")
 public class ClaimCommand extends BaseCommand {
     @Subcommand("claim")
@@ -55,6 +57,7 @@ public class ClaimCommand extends BaseCommand {
         }
 
         quarter.setOwner(resident);
+        quarter.setClaimedAt(Instant.now().toEpochMilli());
         quarter.setPrice(null);
         quarter.save();
 

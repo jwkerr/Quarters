@@ -78,6 +78,7 @@ permissions:
       quarters.command.quarters.toggle: true
       quarters.command.quarters.trust: true
       quarters.command.quarters.type: true
+      quarters.command.quarters.unclaim: true
 
   quarters.command.quarters.claim:
     description: "Grants permissions to claim quarters"
@@ -129,4 +130,8 @@ permissions:
 
   quarters.command.quarters.type:
     description: "Grants permission to use the type command"
+    default: true
+
+  quarters.command.quarters.unclaim:
+    description: "Grants permission to unclaim owned quarters"
     default: true

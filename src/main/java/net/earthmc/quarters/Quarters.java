@@ -70,5 +70,6 @@ public final class Quarters extends JavaPlugin {
         manager.registerCommand(new ToggleCommand());
         manager.registerCommand(new TrustCommand());
         manager.registerCommand(new TypeCommand());
+        manager.registerCommand(new UnclaimCommand());
     }
 }

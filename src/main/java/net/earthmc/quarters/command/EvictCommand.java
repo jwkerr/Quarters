@@ -29,6 +29,7 @@ public class EvictCommand extends BaseCommand {
         Resident owner = quarter.getOwner();
 
         quarter.setOwner(null);
+        quarter.setClaimedAt(null);
         quarter.save();
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully evicted " + owner.getName());
