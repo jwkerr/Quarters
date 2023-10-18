@@ -18,7 +18,7 @@ public class QuartersMessaging {
 
     private static Component getHeaderComponent() {
         TextComponent lineComponent = Component.text()
-                .content("-----")
+                .content("------------")
                 .color(NamedTextColor.DARK_GRAY)
                 .build();
 

@@ -49,8 +49,10 @@ public class ClaimCommand extends BaseCommand {
             return;
         }
 
-        if (quarter.getPrice() > 0)
+        if (quarter.getPrice() > 0) {
             resident.getAccount().withdraw(quarter.getPrice(), "Payment for quarter " + quarter.getUUID());
+            quarter.getTown().getAccount().deposit(quarter.getPrice(), "Payment for quarter " + quarter.getUUID());
+        }
 
         quarter.setOwner(resident);
         quarter.setPrice(null);

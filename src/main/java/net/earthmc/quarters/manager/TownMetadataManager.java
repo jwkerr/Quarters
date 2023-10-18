@@ -32,7 +32,7 @@ public class TownMetadataManager {
 
     public static void setQuarterListOfTown(Town town, List<Quarter> value) {
         if (!town.hasMeta(QLDF))
-            town.addMetaData(new QuarterListDataField("quarters_qldf", null, "Quarters"));
+            town.addMetaData(new QuarterListDataField("quarters_qldf", null));
 
         if (town.hasMeta(QLDF)) {
             CustomDataField<?> cdf = town.getMetadata(QLDF);

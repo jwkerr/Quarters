@@ -61,16 +61,7 @@ public class QuartersAPI {
      * @return A list of all quarters within the server
      */
     public List<Quarter> getAllQuarters() {
-        List<Quarter> quarterList = new ArrayList<>();
-
-        for (Town town : TownyAPI.getInstance().getTowns()) {
-            List<Quarter> currentTownQuarterList = new QuartersTown(town).getQuarters();
-            if (currentTownQuarterList != null) {
-                quarterList.addAll(currentTownQuarterList);
-            }
-        }
-
-        return quarterList;
+        return QuarterUtil.getAllQuarters();
     }
 
     /**

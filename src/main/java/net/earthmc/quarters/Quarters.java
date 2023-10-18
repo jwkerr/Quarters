@@ -30,7 +30,7 @@ public final class Quarters extends JavaPlugin {
         initCommands();
 
         OutlineParticleTask outlineTask = new OutlineParticleTask();
-        outlineTask.runTaskTimer(this, 0, 10);
+        outlineTask.runTaskTimer(this, 0, 5);
 
         getLogger().info("Quarters enabled :3");
     }
@@ -44,10 +44,12 @@ public final class Quarters extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DeletePlayerListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerItemHeldListener(), this);
+        getServer().getPluginManager().registerEvents(new PlotPreClaimListener(), this);
 
-        if (getServer().getPluginManager().isPluginEnabled("quickshops"))
+        if (getServer().getPluginManager().isPluginEnabled("QuickShop") || getServer().getPluginManager().isPluginEnabled("QuickShop-Hikari"))
             getServer().getPluginManager().registerEvents(new ShopCreateListener(), this);
 
+        getServer().getPluginManager().registerEvents(new TownStatusScreenListener(), this);
         getServer().getPluginManager().registerEvents(new TownUnclaimListener(), this);
         getServer().getPluginManager().registerEvents(new TownyActionListener(), this);
     }
@@ -56,6 +58,7 @@ public final class Quarters extends JavaPlugin {
         PaperCommandManager manager = new PaperCommandManager(this);
 
         manager.registerCommand(new ClaimCommand());
+        manager.registerCommand(new ColourCommand());
         manager.registerCommand(new CreateCommand());
         manager.registerCommand(new DeleteCommand());
         manager.registerCommand(new EvictCommand());

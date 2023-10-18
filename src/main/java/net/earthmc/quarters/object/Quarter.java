@@ -19,6 +19,7 @@ public class Quarter {
     private boolean isEmbassy;
     private Long registered;
     private Long claimedAt;
+    private int[] rgb;
 
     public void save() {
         List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
@@ -85,8 +86,7 @@ public class Quarter {
     }
 
     public void setOwner(Resident resident) {
-        if (resident != null)
-            this.owner = resident;
+        this.owner = resident;
     }
 
     public Resident getOwner() {
@@ -139,5 +139,13 @@ public class Quarter {
 
     public Long getClaimedAt() {
         return claimedAt;
+    }
+
+    public void setRGB(int[] rgb) {
+        this.rgb = rgb;
+    }
+
+    public int[] getRGB() {
+        return rgb;
     }
 }

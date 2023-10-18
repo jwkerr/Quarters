@@ -16,7 +16,7 @@ public class ToggleCommand extends BaseCommand {
     @Subcommand("toggle")
     @Description("Toggle quarters settings")
     @CommandPermission("quarters.command.quarters.toggle")
-    @CommandCompletion("constantoutlines")
+    @CommandCompletion("constantoutlines|embassy")
     public void onToggle(Player player, String arg) {
         switch (arg) {
             case "constantoutlines":
@@ -24,6 +24,7 @@ public class ToggleCommand extends BaseCommand {
                 break;
             case "embassy":
                 setQuarterAtLocationEmbassyStatus(player);
+                break;
             default:
                 QuartersMessaging.sendErrorMessage(player, "Invalid argument");
         }
@@ -62,7 +63,8 @@ public class ToggleCommand extends BaseCommand {
 
         quarter.setEmbassy(!quarter.isEmbassy());
 
-        if (quarter.getOwner().getTownOrNull() != quarter.getTown())
+        Resident resident = quarter.getOwner();
+        if (resident != null && resident.getTownOrNull() != quarter.getTown())
             quarter.setOwner(null);
 
         quarter.save();
