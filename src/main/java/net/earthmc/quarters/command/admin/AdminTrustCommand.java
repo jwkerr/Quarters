@@ -31,10 +31,13 @@ public class AdminTrustCommand extends BaseCommand {
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
 
-        Resident targetResident = TownyAPI.getInstance().getResident(target);
-        if (targetResident == null || targetResident.isNPC()) {
-            QuartersMessaging.sendErrorMessage(player, "Specified player does not exist");
-            return;
+        Resident targetResident = null;
+        if (target != null) {
+            targetResident = TownyAPI.getInstance().getResident(target);
+            if (targetResident == null || targetResident.isNPC()) {
+                QuartersMessaging.sendErrorMessage(player, "Specified player does not exist");
+                return;
+            }
         }
 
         List<Resident> trustedList = TrustCommand.getTrustedList(player, targetResident, quarter.getTrustedResidents(), arg);

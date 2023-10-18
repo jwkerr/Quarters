@@ -36,10 +36,13 @@ public class TrustCommand extends BaseCommand {
             return;
         }
 
-        Resident targetResident = TownyAPI.getInstance().getResident(target);
-        if (targetResident == null || targetResident.isNPC()) {
-            QuartersMessaging.sendErrorMessage(player, "Specified player does not exist");
-            return;
+        Resident targetResident = null;
+        if (target != null) {
+            targetResident = TownyAPI.getInstance().getResident(target);
+            if (targetResident == null || targetResident.isNPC()) {
+                QuartersMessaging.sendErrorMessage(player, "Specified player does not exist");
+                return;
+            }
         }
 
         List<Resident> trustedList = getTrustedList(player, targetResident, quarter.getTrustedResidents(), arg);
