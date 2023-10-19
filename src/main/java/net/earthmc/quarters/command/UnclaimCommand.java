@@ -31,7 +31,7 @@ public class UnclaimCommand extends BaseCommand {
             return;
         }
 
-        quarter.setOwnerUUID(null);
+        quarter.setOwner(null);
         quarter.setClaimedAt(null);
         quarter.save();
 

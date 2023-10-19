@@ -13,8 +13,8 @@ public class Quarter {
     private List<Cuboid> cuboids;
     private UUID uuid;
     private Town town;
-    private UUID ownerUUID;
-    private List<UUID> trustedResidentsUUIDs;
+    private UUID owner;
+    private List<UUID> trusted;
     private Double price;
     private QuarterType type;
     private boolean isEmbassy;
@@ -87,7 +87,7 @@ public class Quarter {
     }
 
     public Resident getOwnerResident() {
-        UUID ownerUUID = getOwnerUUID();
+        UUID ownerUUID = getOwner();
         if (ownerUUID == null)
             return null;
 
@@ -97,7 +97,7 @@ public class Quarter {
     public List<Resident> getTrustedResidents() {
         List<Resident> trustedResidents = new ArrayList<>();
 
-        for (UUID trustedUUID : getTrustedResidentsUUIDs()) {
+        for (UUID trustedUUID : getTrusted()) {
             trustedResidents.add(TownyAPI.getInstance().getResident(trustedUUID));
         }
 
@@ -152,19 +152,19 @@ public class Quarter {
         return rgb;
     }
 
-    public void setOwnerUUID(UUID uuid) {
-        this.ownerUUID = uuid;
+    public void setOwner(UUID uuid) {
+        this.owner = uuid;
     }
 
-    public UUID getOwnerUUID() {
-        return ownerUUID;
+    public UUID getOwner() {
+        return owner;
     }
 
-    public void setTrustedResidentsUUIDs(List<UUID> uuidList) {
-        this.trustedResidentsUUIDs = uuidList;
+    public void setTrusted(List<UUID> uuidList) {
+        this.trusted = uuidList;
     }
 
-    public List<UUID> getTrustedResidentsUUIDs() {
-        return trustedResidentsUUIDs;
+    public List<UUID> getTrusted() {
+        return trusted;
     }
 }

@@ -67,10 +67,6 @@
             <id>aikar</id>
             <url>https://repo.aikar.co/content/groups/aikar/</url>
         </repository>
-        <repository>
-            <id>codemc</id>
-            <url>https://repo.codemc.io/repository/maven-public/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -90,13 +86,6 @@
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
             <version>0.5.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ghostchu</groupId>
-            <artifactId>quickshop-bukkit</artifactId>
-            <version>5.2.0.4</version>
-            <scope>provided</scope>
-            <classifier>shaded</classifier>
         </dependency>
     </dependencies>
 </project>

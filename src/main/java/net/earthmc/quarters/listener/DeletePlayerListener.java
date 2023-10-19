@@ -19,17 +19,17 @@ public class DeletePlayerListener implements Listener {
         UUID uuid = event.getPlayerUUID();
 
         for (Quarter quarter : QuarterUtil.getAllQuarters()) {
-            if (quarter.getOwnerUUID() != null && quarter.getOwnerUUID().equals(uuid)) {
-                quarter.setOwnerUUID(null);
+            if (quarter.getOwner() != null && quarter.getOwner().equals(uuid)) {
+                quarter.setOwner(null);
                 quarter.setClaimedAt(null);
                 quarter.save();
             }
 
-            List<UUID> trustedList = quarter.getTrustedResidentsUUIDs();
+            List<UUID> trustedList = quarter.getTrusted();
             if (trustedList.contains(uuid)) {
                 Quarters.INSTANCE.getLogger().info("here");
                 trustedList.remove(uuid);
-                quarter.setTrustedResidentsUUIDs(trustedList);
+                quarter.setTrusted(trustedList);
                 quarter.save();
             }
         }

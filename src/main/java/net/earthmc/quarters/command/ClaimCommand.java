@@ -56,7 +56,7 @@ public class ClaimCommand extends BaseCommand {
             quarter.getTown().getAccount().deposit(quarter.getPrice(), "Payment for quarter " + quarter.getUUID());
         }
 
-        quarter.setOwnerUUID(resident.getUUID());
+        quarter.setOwner(resident.getUUID());
         quarter.setClaimedAt(Instant.now().toEpochMilli());
         quarter.setPrice(null);
         quarter.save();

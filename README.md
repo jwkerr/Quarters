@@ -22,6 +22,7 @@
 - nidomas
 - 9DF
 - w1shful (wishful_)
+- Veyronity
 
 ...and 2 other private sponsors
 

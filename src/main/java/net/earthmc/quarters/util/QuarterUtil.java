@@ -127,8 +127,8 @@ public class QuarterUtil {
             quarter.setCuboids(cuboids);
             quarter.setUUID(uuid);
             quarter.setTown(town);
-            quarter.setOwnerUUID(ownerUUID);
-            quarter.setTrustedResidentsUUIDs(trustedResidentsUUIDs);
+            quarter.setOwner(ownerUUID);
+            quarter.setTrusted(trustedResidentsUUIDs);
             quarter.setPrice(price);
             quarter.setType(type);
             quarter.setEmbassy(isEmbassy);

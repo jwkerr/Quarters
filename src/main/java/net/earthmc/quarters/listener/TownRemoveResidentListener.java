@@ -24,7 +24,7 @@ public class TownRemoveResidentListener implements Listener {
                 continue;
 
             if (quarter.getOwnerResident().equals(resident) && !quarter.isEmbassy()) {
-                quarter.setOwnerUUID(null);
+                quarter.setOwner(null);
                 quarter.setClaimedAt(null);
                 quarter.save();
             }

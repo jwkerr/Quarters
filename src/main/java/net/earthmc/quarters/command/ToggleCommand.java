@@ -69,7 +69,7 @@ public class ToggleCommand extends BaseCommand {
 
         Resident resident = quarter.getOwnerResident();
         if (resident != null && resident.getTownOrNull() != quarter.getTown())
-            quarter.setOwnerUUID(null);
+            quarter.setOwner(null);
 
         quarter.save();
 

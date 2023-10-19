@@ -38,7 +38,7 @@ public class EvictCommand extends BaseCommand {
     public static void evictQuarterOwner(Player player, Quarter quarter) {
         Resident owner = quarter.getOwnerResident();
 
-        quarter.setOwnerUUID(null);
+        quarter.setOwner(null);
         quarter.setClaimedAt(null);
         quarter.save();
 

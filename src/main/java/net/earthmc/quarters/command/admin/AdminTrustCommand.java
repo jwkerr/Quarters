@@ -41,9 +41,9 @@ public class AdminTrustCommand extends BaseCommand {
             }
         }
 
-        List<UUID> trustedList = TrustCommand.getTrustedList(player, targetResident, quarter.getTrustedResidentsUUIDs(), arg);
+        List<UUID> trustedList = TrustCommand.getTrustedList(player, targetResident, quarter.getTrusted(), arg);
 
-        quarter.setTrustedResidentsUUIDs(trustedList);
+        quarter.setTrusted(trustedList);
         quarter.save();
     }
 }
