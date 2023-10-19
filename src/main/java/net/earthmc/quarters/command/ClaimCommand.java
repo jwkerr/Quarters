@@ -22,16 +22,17 @@ public class ClaimCommand extends BaseCommand {
     @Description("Claim a quarter")
     @CommandPermission("quarters.command.quarters.claim")
     public void onClaim(Player player) {
-        Resident resident = TownyAPI.getInstance().getResident(player);
-        if (resident == null)
-            return;
-
         if (!CommandUtil.isPlayerInQuarter(player))
             return;
 
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
-        if (quarter.getOwnerResident() == resident) {
+
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null)
+            return;
+
+        if (quarter.getOwnerResident().equals(resident)) {
             QuartersMessaging.sendErrorMessage(player, "You already own this quarter");
             return;
         }

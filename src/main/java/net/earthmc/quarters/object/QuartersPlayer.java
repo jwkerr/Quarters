@@ -92,17 +92,4 @@ public class QuartersPlayer {
 
         return false;
     }
-
-    /**
-     * Check if the player can edit a shop at a location
-     *
-     * @param quarter Quarter to check the player's permissions in
-     * @return True if the player can perform the action
-     */
-    public boolean canEditShopInQuarter(Quarter quarter) {
-        if (quarter.getType() != QuarterType.SHOP)
-            return false;
-
-        return quarter.getOwnerResident().equals(resident) || quarter.getTrustedResidents().contains(resident);
-    }
 }

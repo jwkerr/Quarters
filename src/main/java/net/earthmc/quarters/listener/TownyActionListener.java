@@ -49,7 +49,10 @@ public class TownyActionListener implements Listener {
             return;
 
         Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
-        if (resident == quarter.getOwnerResident() || quarter.getTrustedResidents().contains(resident)) {
+        if (resident == null)
+            return;
+
+        if (quarter.getOwnerResident().equals(resident) || quarter.getTrustedResidents().contains(resident)) {
             event.setCancelled(false);
             return;
         }

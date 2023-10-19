@@ -29,6 +29,9 @@ public class ShopCreateListener implements Listener {
             return;
 
         Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null)
+            return;
+
         if (quarter.getOwnerResident().equals(resident) || quarter.getTrustedResidents().contains(resident))
             event.setCancelled(false, "Overridden by Quarter's shop type");
     }

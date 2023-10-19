@@ -23,6 +23,7 @@
 - 9DF
 - w1shful (wishful_)
 - Veyronity
+- Joixe776 (Joigrama)
 
 ...and 2 other private sponsors
 
