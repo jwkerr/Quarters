@@ -50,6 +50,16 @@ public class CreateCommand extends BaseCommand {
             return;
         }
 
+        int maxQuarters = Quarters.INSTANCE.getConfig().getInt("max_quarters_per_town");
+        if (maxQuarters > 0) {
+            QuartersTown quartersTown = new QuartersTown(town);
+            List<Quarter> quarterList = quartersTown.getQuarters();
+            if (quarterList != null && quarterList.size() == maxQuarters) {
+                QuartersMessaging.sendErrorMessage(player, "Selected quarter could not be created as " + town.getName() + " will exceed the configured quarter limit of " + maxQuarters);
+                return;
+            }
+        }
+
         Quarter quarter = new Quarter();
         quarter.setCuboids(new ArrayList<>(cuboids));
         quarter.setUUID(UUID.randomUUID());

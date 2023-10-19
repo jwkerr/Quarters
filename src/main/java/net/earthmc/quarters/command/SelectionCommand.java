@@ -2,6 +2,7 @@ package net.earthmc.quarters.command;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Selection;
 import net.earthmc.quarters.api.QuartersMessaging;
@@ -37,6 +38,15 @@ public class SelectionCommand extends BaseCommand {
     private void addCuboidToQuarter(Player player) {
         Selection selection = SelectionManager.selectionMap.computeIfAbsent(player, k -> new Selection());
         List<Cuboid> cuboids = SelectionManager.cuboidsMap.computeIfAbsent(player, k -> new ArrayList<>());
+
+
+        int maxCuboids = Quarters.INSTANCE.getConfig().getInt("max_cuboids_per_quarter");
+        if (maxCuboids > 0) {
+            if (cuboids.size() == maxCuboids) {
+                QuartersMessaging.sendErrorMessage(player, "Selection could not be added as it will exceed the configured cuboid limit of " + maxCuboids);
+                return;
+            }
+        }
 
         if (!CommandUtil.isSelectionValid(player, selection.getPos1(), selection.getPos2()))
             return;
