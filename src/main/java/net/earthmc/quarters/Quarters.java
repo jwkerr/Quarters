@@ -11,6 +11,7 @@ import net.earthmc.quarters.object.QuarterListDFDeserializer;
 import net.earthmc.quarters.object.QuarterListDataField;
 import net.earthmc.quarters.task.OutlineParticleTask;
 import org.bukkit.Material;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Quarters extends JavaPlugin {
@@ -46,14 +47,20 @@ public final class Quarters extends JavaPlugin {
     }
 
     public void initListeners() {
-        getServer().getPluginManager().registerEvents(new DeletePlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerItemHeldListener(), this);
-        getServer().getPluginManager().registerEvents(new PlotPreClaimListener(), this);
-        getServer().getPluginManager().registerEvents(new TownRemoveResidentListener(), this);
-        getServer().getPluginManager().registerEvents(new TownStatusScreenListener(), this);
-        getServer().getPluginManager().registerEvents(new TownUnclaimListener(), this);
-        getServer().getPluginManager().registerEvents(new TownyActionListener(), this);
+        PluginManager pm = getServer().getPluginManager();
+
+        pm.registerEvents(new DeletePlayerListener(), this);
+        pm.registerEvents(new PlayerInteractListener(), this);
+        pm.registerEvents(new PlayerItemHeldListener(), this);
+        pm.registerEvents(new PlotPreClaimListener(), this);
+
+        if (pm.isPluginEnabled("QuickShop") || pm.isPluginEnabled("QuickShop-Hikari"))
+            pm.registerEvents(new ShopCreateListener(), this);
+
+        pm.registerEvents(new TownRemoveResidentListener(), this);
+        pm.registerEvents(new TownStatusScreenListener(), this);
+        pm.registerEvents(new TownUnclaimListener(), this);
+        pm.registerEvents(new TownyActionListener(), this);
     }
 
     public void initCommands() {

@@ -4,12 +4,11 @@ main: net.earthmc.quarters.Quarters
 api-version: "1.20"
 prefix: Quarters
 authors: [Fruitloopins]
-description: Because residents deserve the bare minimum
+description: The modern "apartment" plugin for Towny
 website: https://earthmc.net
 
-dependencies:
-  - name: Towny
-    required: true
+depend: [Towny]
+softdepend: [QuickShop, QuickShop-Hikari]
 
 permissions:
   quarters.wand:
