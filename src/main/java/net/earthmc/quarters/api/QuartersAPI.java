@@ -26,8 +26,7 @@ public class QuartersAPI {
     }
 
     /**
-     * Gets the default wand item's material
-     * This can be overridden by player choice
+     * Gets the wand item's material
      *
      * @return Material of the configured Quarters wand
      */

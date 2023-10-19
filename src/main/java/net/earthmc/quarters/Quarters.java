@@ -34,8 +34,9 @@ public final class Quarters extends JavaPlugin {
         initListeners();
         initCommands();
 
+        int ticksBetweenParticles = getConfig().getInt("ticks_between_outline_particles");
         OutlineParticleTask outlineTask = new OutlineParticleTask();
-        outlineTask.runTaskTimer(this, 0, 5);
+        outlineTask.runTaskTimer(this, 0, ticksBetweenParticles);
 
         getLogger().info("Quarters enabled :3");
     }
