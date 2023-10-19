@@ -45,7 +45,7 @@ public class CreateCommand extends BaseCommand {
             return;
         }
 
-        if (!isCuboidListInValidLocation(cuboids, town)) {
+        if (!isCuboidListInValidLocation(cuboids)) {
             QuartersMessaging.sendErrorMessage(player, "Selected quarter is not in a valid location");
             return;
         }
@@ -92,20 +92,10 @@ public class CreateCommand extends BaseCommand {
         QuartersMessaging.sendSuccessMessage(player, "Selected quarter has been successfully created");
     }
 
-    private boolean isCuboidListInValidLocation(List<Cuboid> cuboids, Town town) {
-        QuartersTown quartersTown = new QuartersTown(town);
-        List<Quarter> quarterList = quartersTown.getQuarters();
-
+    private boolean isCuboidListInValidLocation(List<Cuboid> cuboids) {
         for (Cuboid cuboid : cuboids) {
-            if (!cuboid.isEntirelyWithinOneTown()) {
+            if (!cuboid.isInValidLocation())
                 return false;
-            }
-
-            if (quarterList != null) {
-                if (cuboid.isIntersectingPreexistingQuarter()) {
-                    return false;
-                }
-            }
         }
 
         return true;

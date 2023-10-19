@@ -71,14 +71,29 @@ public class Cuboid {
     }
 
     /**
+     * Runs a few checks to ensure the cuboid isn't in a "wrong" location such as wilderness or spanning across multiple towns
      *
-     * @return True if the cuboid is entirely within a singular town and no wilderness
+     * @return True if the cuboid instance is in a valid location to be part of a quarter
      */
-    public boolean isEntirelyWithinOneTown() {
+    public boolean isInValidLocation() {
+        // Check that the cuboid is not intersecting with any other cuboids that already exist in the town
         Town town = TownyAPI.getInstance().getTown(pos1);
         if (town == null)
             return false;
 
+        QuartersTown quartersTown = new QuartersTown(town);
+        List<Quarter> quarterList = quartersTown.getQuarters();
+
+        if (quarterList != null) {
+            for (Quarter quarter : quarterList) {
+                for (Cuboid oldCuboid : quarter.getCuboids()) {
+                    if (doesIntersectWith(oldCuboid))
+                        return false;
+                }
+            }
+        }
+
+        // Check that the cuboid is entirely within a singular town
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
@@ -95,26 +110,6 @@ public class Cuboid {
         }
 
         return true;
-    }
-
-    /**
-     *
-     * @return True if the cuboid's location intersects a pre-existing quarter
-     */
-    public boolean isIntersectingPreexistingQuarter() {
-        QuartersTown quartersTown = new QuartersTown(TownyAPI.getInstance().getTown(pos1));
-        List<Quarter> quarterList = quartersTown.getQuarters();
-        if (quarterList == null)
-            return false;
-
-        for (Quarter quarter : quarterList) {
-            for (Cuboid oldCuboid : quarter.getCuboids()) {
-                if (doesIntersectWith(oldCuboid))
-                    return true;
-            }
-        }
-
-        return false;
     }
 
     /**

@@ -17,15 +17,15 @@ public class ShopCreateListener implements Listener {
         if (!event.isCancelled())
             return;
 
-        Player player = event.getCreator().getBukkitPlayer().orElse(null);
-        if (player == null)
-            return;
-
         Quarter quarter = QuarterUtil.getQuarter(event.getShop().getLocation());
         if (quarter == null)
             return;
 
         if (quarter.getType() != QuarterType.SHOP)
+            return;
+
+        Player player = event.getCreator().getBukkitPlayer().orElse(null);
+        if (player == null)
             return;
 
         Resident resident = TownyAPI.getInstance().getResident(player);
