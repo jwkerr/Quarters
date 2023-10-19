@@ -6,13 +6,13 @@ import com.palmergames.bukkit.towny.object.metadata.BooleanDataField;
 public class ResidentMetadataManager {
     private static final String CONSTANT_OUTLINES = "quarters_constant_outlines";
 
-    public static Boolean hasConstantOutlines(Resident resident) {
+    public static boolean hasConstantOutlines(Resident resident) {
         if (resident == null)
-            return null;
+            return false;
 
         BooleanDataField bdf = (BooleanDataField) resident.getMetadata(CONSTANT_OUTLINES);
         if (bdf == null)
-            return null;
+            return false;
 
         return bdf.getValue();
     }

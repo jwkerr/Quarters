@@ -110,6 +110,10 @@ public class Quarter {
         return town;
     }
 
+    public QuartersTown getQuartersTown() {
+        return new QuartersTown(town);
+    }
+
     /**
      *
      * @return Gets the quarter owner's resident instance, if you want to change the owner use the setOwner() method that takes in a UUID

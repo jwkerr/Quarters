@@ -27,6 +27,7 @@ permissions:
       quarters.action.embassy: true
       quarters.action.evict: true
       quarters.action.sell: true
+      quarters.action.sellondelete: true
       quarters.action.type: true
 
   quarters.action.constantoutlines:
@@ -59,6 +60,10 @@ permissions:
 
   quarters.action.sell:
     description: "Grants permission to sell quarters"
+    default: false
+
+  quarters.action.sellondelete:
+    description: "Grants permission to toggle selling quarters on resident delete"
     default: false
 
   quarters.action.type:

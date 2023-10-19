@@ -1,6 +1,7 @@
 package net.earthmc.quarters.manager;
 
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.metadata.BooleanDataField;
 import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
 import com.palmergames.bukkit.towny.object.metadata.StringDataField;
 import net.earthmc.quarters.object.Quarter;
@@ -11,6 +12,7 @@ import java.util.List;
 public class TownMetadataManager {
     private static final String QLDF = "quarters_qldf";
     private static final String SELL_PRICE = "quarters_sell_price";
+    private static final String SELL_ON_DELETE = "quarters_sell_on_delete";
 
     public static List<Quarter> getQuarterListOfTown(Town town) {
         if (town.hasMeta(QLDF)) {
@@ -70,5 +72,25 @@ public class TownMetadataManager {
 
         sdf.setValue(price.toString());
         town.addMetaData(sdf);
+    }
+
+    public static boolean shouldSellOnDelete(Town town) {
+        BooleanDataField bdf = (BooleanDataField) town.getMetadata(SELL_ON_DELETE);
+        if (bdf == null)
+            return false;
+
+        return bdf.getValue();
+    }
+
+    public static void setSellOnDelete(Town town, boolean value) {
+        if (!town.hasMeta(SELL_ON_DELETE))
+            town.addMetaData(new BooleanDataField(SELL_ON_DELETE, null));
+
+        BooleanDataField bdf = (BooleanDataField) town.getMetadata(SELL_ON_DELETE);
+        if (bdf == null)
+            return;
+
+        bdf.setValue(value);
+        town.addMetaData(bdf);
     }
 }

@@ -8,9 +8,11 @@ import java.util.List;
 
 public class QuartersTown {
     private final Town town;
+    private final boolean shouldSellOnDelete;
 
     public QuartersTown(Town town) {
         this.town = town;
+        this.shouldSellOnDelete = TownMetadataManager.shouldSellOnDelete(town);
     }
 
     /**
@@ -49,5 +51,14 @@ public class QuartersTown {
     @Nullable
     public Double getDefaultSellPrice() {
         return TownMetadataManager.getDefaultSellPriceOfTown(town);
+    }
+
+    /**
+     * Gets a boolean representing whether quarters in this town should automatically go for sale when the owner is deleted
+     *
+     * @return True if quarters should go for sale on resident delete
+     */
+    public boolean shouldSellOnDelete() {
+        return this.shouldSellOnDelete;
     }
 }

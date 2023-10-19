@@ -50,7 +50,7 @@ public class CreateCommand extends BaseCommand {
             return;
         }
 
-        int maxQuarters = Quarters.INSTANCE.getConfig().getInt("max_quarters_per_town");
+        int maxQuarters = Quarters.INSTANCE.getConfig().getInt("quarters.max_quarters_per_town");
         if (maxQuarters > 0) {
             QuartersTown quartersTown = new QuartersTown(town);
             List<Quarter> quarterList = quartersTown.getQuarters();
@@ -73,10 +73,12 @@ public class CreateCommand extends BaseCommand {
         quarter.setClaimedAt(null);
         quarter.setRGB(getRandomRGB());
 
-        int maxVolume = Quarters.INSTANCE.getConfig().getInt("max_quarter_volume");
-        if (quarter.getVolume() > maxVolume) {
-            QuartersMessaging.sendErrorMessage(player, "This quarter is too large, the max configured volume is " + maxVolume + " blocks");
-            return;
+        int maxVolume = Quarters.INSTANCE.getConfig().getInt("quarters.max_quarter_volume");
+        if (maxVolume > 0) {
+            if (quarter.getVolume() > maxVolume) {
+                QuartersMessaging.sendErrorMessage(player, "This quarter is too large, the max configured volume is " + maxVolume + " blocks");
+                return;
+            }
         }
 
         List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);

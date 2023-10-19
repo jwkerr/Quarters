@@ -40,7 +40,7 @@ public class SelectionCommand extends BaseCommand {
         List<Cuboid> cuboids = SelectionManager.cuboidsMap.computeIfAbsent(player, k -> new ArrayList<>());
 
 
-        int maxCuboids = Quarters.INSTANCE.getConfig().getInt("max_cuboids_per_quarter");
+        int maxCuboids = Quarters.INSTANCE.getConfig().getInt("quarters.max_cuboids_per_quarter");
         if (maxCuboids > 0) {
             if (cuboids.size() == maxCuboids) {
                 QuartersMessaging.sendErrorMessage(player, "Selection could not be added as it will exceed the configured cuboid limit of " + maxCuboids);

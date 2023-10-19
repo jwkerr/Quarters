@@ -32,7 +32,8 @@ public class ClaimCommand extends BaseCommand {
         if (resident == null)
             return;
 
-        if (quarter.getOwnerResident().equals(resident)) {
+        Resident ownerResident = quarter.getOwnerResident();
+        if (ownerResident != null && ownerResident.equals(resident)) {
             QuartersMessaging.sendErrorMessage(player, "You already own this quarter");
             return;
         }

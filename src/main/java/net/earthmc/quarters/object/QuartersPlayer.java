@@ -14,12 +14,12 @@ import java.util.List;
 public class QuartersPlayer {
     private final Resident resident;
     private final Player player;
-    private final Boolean constantOutlines;
+    private final boolean hasConstantOutlines;
 
     public QuartersPlayer(Player player) {
         this.resident = TownyAPI.getInstance().getResident(player);
         this.player = player;
-        this.constantOutlines = ResidentMetadataManager.hasConstantOutlines(resident);
+        this.hasConstantOutlines = ResidentMetadataManager.hasConstantOutlines(resident);
     }
 
     /**
@@ -57,11 +57,8 @@ public class QuartersPlayer {
      *
      * @return True if they have constant outlines enabled
      */
-    public Boolean hasConstantOutlines() {
-        if (this.constantOutlines == null)
-            return false;
-
-        return this.constantOutlines;
+    public boolean hasConstantOutlines() {
+        return this.hasConstantOutlines;
     }
 
     /**

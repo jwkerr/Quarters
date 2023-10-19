@@ -39,13 +39,13 @@ public class OutlineParticleTask extends BukkitRunnable {
             Location pos2 = selection.getPos2();
 
             if (pos1 != null && pos2 != null) {
-                createParticlesAtCuboidEdges(player, pos1, pos2, Particle.valueOf(Quarters.INSTANCE.getConfig().getString("current_selection_particle")), null);
+                createParticlesAtCuboidEdges(player, pos1, pos2, Particle.valueOf(Quarters.INSTANCE.getConfig().getString("particles.current_selection_particle")), null);
             }
         }
 
         if (cuboids != null) {
             for (Cuboid cuboid : cuboids) {
-                createParticlesAtCuboidEdges(player, cuboid.getPos1(), cuboid.getPos2(), Particle.valueOf(Quarters.INSTANCE.getConfig().getString("current_cuboids_particle")), null);
+                createParticlesAtCuboidEdges(player, cuboid.getPos1(), cuboid.getPos2(), Particle.valueOf(Quarters.INSTANCE.getConfig().getString("particles.current_cuboids_particle")), null);
             }
         }
     }
@@ -70,6 +70,11 @@ public class OutlineParticleTask extends BukkitRunnable {
     }
 
     private static void createParticlesAtCuboidEdges(Player player, Location pos1, Location pos2, Particle particle, Particle.DustOptions dustOptions) {
+        int maxDistance = Quarters.INSTANCE.getConfig().getInt("particles.max_distance_from_cuboid"); // Skip sending particles if the cuboid is too far to save performance
+        Location playerLocation = player.getLocation();
+        if (playerLocation.distance(pos1) > maxDistance && playerLocation.distance(pos2) > maxDistance)
+            return;
+
         int x1 = pos1.getBlockX();
         int y1 = pos1.getBlockY();
         int z1 = pos1.getBlockZ();

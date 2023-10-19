@@ -32,7 +32,8 @@ public class ShopCreateListener implements Listener {
         if (resident == null)
             return;
 
-        if (quarter.getOwnerResident().equals(resident) || quarter.getTrustedResidents().contains(resident))
+        Resident ownerResident = quarter.getOwnerResident();
+        if ((ownerResident != null && quarter.getOwnerResident().equals(resident)) || quarter.getTrustedResidents().contains(resident))
             event.setCancelled(false, "Overridden by Quarter's shop type");
     }
 }
