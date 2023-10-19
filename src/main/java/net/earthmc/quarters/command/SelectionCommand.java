@@ -52,7 +52,7 @@ public class SelectionCommand extends BaseCommand {
             return;
 
         Cuboid newCuboid = new Cuboid(selection.getPos1(), selection.getPos2());
-        if (!newCuboid.isEntirelyWithinTown() || newCuboid.isIntersectingPreexistingQuarter()) {
+        if (!newCuboid.isEntirelyWithinOneTown() || newCuboid.isIntersectingPreexistingQuarter()) {
             QuartersMessaging.sendErrorMessage(player, "Selection is not in a valid location");
             return;
         }

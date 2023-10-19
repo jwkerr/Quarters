@@ -36,6 +36,11 @@ public class Cuboid {
         this.width = Math.abs(pos1.getBlockZ() - pos2.getBlockZ());
     }
 
+    /**
+     *
+     * @param cuboid Cuboid to check this cuboid instance against
+     * @return True if the specified cuboid has any intersection with this cuboid instance
+     */
     public boolean doesIntersectWith(Cuboid cuboid) {
         if (pos1.getWorld() != cuboid.getPos1().getWorld())
             return false;
@@ -47,6 +52,11 @@ public class Cuboid {
         return overlapX && overlapY && overlapZ;
     }
 
+    /**
+     *
+     * @param location Location to check
+     * @return True if the specified location is within this cuboid
+     */
     public boolean isLocationInsideBounds(Location location) {
         if (location.getY() < minY || location.getY() > maxY + 0.99999)
             return false;
@@ -60,7 +70,11 @@ public class Cuboid {
         return true;
     }
 
-    public boolean isEntirelyWithinTown() {
+    /**
+     *
+     * @return True if the cuboid is entirely within a singular town and no wilderness
+     */
+    public boolean isEntirelyWithinOneTown() {
         Town town = TownyAPI.getInstance().getTown(pos1);
         if (town == null)
             return false;
@@ -83,6 +97,10 @@ public class Cuboid {
         return true;
     }
 
+    /**
+     *
+     * @return True if the cuboid's location intersects a pre-existing quarter
+     */
     public boolean isIntersectingPreexistingQuarter() {
         QuartersTown quartersTown = new QuartersTown(TownyAPI.getInstance().getTown(pos1));
         List<Quarter> quarterList = quartersTown.getQuarters();
@@ -99,6 +117,10 @@ public class Cuboid {
         return false;
     }
 
+    /**
+     *
+     * @return A list of all players currently in this cuboid
+     */
     public List<Player> getPlayersInCuboid() {
         List<Player> playersInCuboid = new ArrayList<>();
 

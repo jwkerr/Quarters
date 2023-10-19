@@ -10,6 +10,10 @@ public class Selection {
         this.pos1 = location;
     }
 
+    /**
+     *
+     * @return The first position selected (left click with wand or /quarters pos1)
+     */
     public Location getPos1() {
         return pos1;
     }
@@ -18,6 +22,10 @@ public class Selection {
         this.pos2 = location;
     }
 
+    /**
+     *
+     * @return The second position selected (right click with wand or /quarters pos2)
+     */
     public Location getPos2() {
         return pos2;
     }

@@ -97,7 +97,7 @@ public class CreateCommand extends BaseCommand {
         List<Quarter> quarterList = quartersTown.getQuarters();
 
         for (Cuboid cuboid : cuboids) {
-            if (!cuboid.isEntirelyWithinTown()) {
+            if (!cuboid.isEntirelyWithinOneTown()) {
                 return false;
             }
 
