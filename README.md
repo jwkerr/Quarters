@@ -21,6 +21,7 @@
 - NixWolvercraft
 - nidomas
 - 9DF
+- w1shful (wishful_)
 
 ...and 2 other private sponsors
 

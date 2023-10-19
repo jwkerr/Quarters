@@ -31,6 +31,11 @@ public class AdminSetOwnerCommand extends BaseCommand {
             return;
         }
 
+        if (!quarter.isEmbassy() && targetResident.getTownOrNull() != quarter.getTown()) {
+            QuartersMessaging.sendErrorMessage(player, "Specified player could not be set as this quarter's owner as they are not in the town and the quarter is not an embassy");
+            return;
+        }
+
         quarter.setOwnerUUID(targetResident.getUUID());
         quarter.setClaimedAt(Instant.now().toEpochMilli());
         quarter.save();
