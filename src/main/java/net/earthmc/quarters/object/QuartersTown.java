@@ -13,6 +13,10 @@ public class QuartersTown {
         this.town = town;
     }
 
+    /**
+     *
+     * @return The town's Towny town instance
+     */
     public Town getTown() {
         return this.town;
     }
@@ -36,6 +40,13 @@ public class QuartersTown {
         return TownMetadataManager.getQuarterListOfTown(town);
     }
 
+    /**
+     * Gets the towns configured default sell price
+     * This determines the sale price of quarters when using /q sell with no number specified
+     *
+     * @return A Double representing the default sell price, null if it is not configured
+     */
+    @Nullable
     public Double getDefaultSellPrice() {
         return TownMetadataManager.getDefaultSellPriceOfTown(town);
     }

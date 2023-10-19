@@ -45,10 +45,22 @@ public class QuartersAPI {
         return QuarterUtil.getQuarter(location);
     }
 
+    /**
+     * Gets Quarters' "player" instance with Quarters specific methods
+     *
+     * @param player Player to resolve QuartersPlayer from
+     * @return The specified player's QuartersPlayer instance
+     */
     public QuartersPlayer getQuartersPlayer(Player player) {
         return new QuartersPlayer(player);
     }
 
+    /**
+     * Gets Quarters' "town" instance with Quarters specific methods
+     *
+     * @param town Town to resolve QuartersTown from
+     * @return The specified town's QuartersTown instance
+     */
     public QuartersTown getQuartersTown(Town town) {
         return new QuartersTown(town);
     }
@@ -60,30 +72,5 @@ public class QuartersAPI {
      */
     public List<Quarter> getAllQuarters() {
         return QuarterUtil.getAllQuarters();
-    }
-
-    /**
-     * Check if a player can edit a shop at a location
-     *
-     * @param player Player to check the permissions of
-     * @param location Block location to check permissions at
-     * @param material Block material being placed/edited
-     * @param actionType Towny action type. Build, destroy etc.
-     * @return True if the player can build there
-     */
-    public boolean canPlayerEditShopAtLocation(Player player, Location location, Material material, TownyPermission.ActionType actionType) {
-        Resident resident = TownyAPI.getInstance().getResident(player);
-        QuartersPlayer quartersPlayer = new QuartersPlayer(player);
-        if (!quartersPlayer.isInQuarter())
-            return false;
-
-        Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
-        assert quarter != null;
-        if (quarter.getType() != QuarterType.SHOP)
-            return false;
-
-        return quarter.getOwnerResident() == resident ||
-                quarter.getTrustedResidents().contains(resident) ||
-                PlayerCacheUtil.getCachePermission(player, location, material, actionType);
     }
 }

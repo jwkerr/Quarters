@@ -22,14 +22,28 @@ public class QuartersPlayer {
         this.constantOutlines = ResidentMetadataManager.hasConstantOutlines(resident);
     }
 
+    /**
+     * Gets the player's selected area, selected using the wand item or commands
+     *
+     * @return The player's current {@link Selection}
+     */
     public Selection getSelection() {
         return SelectionManager.selectionMap.computeIfAbsent(player, k -> new Selection());
     }
 
+    /**
+     * Gets the player's currently added cuboids, added with /quarters selection add
+     *
+     * @return The player's currently added cuboid selections
+     */
     public List<Cuboid> getCuboids() {
         return SelectionManager.cuboidsMap.computeIfAbsent(player, k -> new ArrayList<>());
     }
 
+    /**
+     *
+     * @return The player's Towny resident instance
+     */
     public Resident getResident() {
         return this.resident;
     }
@@ -77,5 +91,18 @@ public class QuartersPlayer {
         }
 
         return false;
+    }
+
+    /**
+     * Check if the player can edit a shop at a location
+     *
+     * @param quarter Quarter to check the player's permissions in
+     * @return True if the player can perform the action
+     */
+    public boolean canEditShopInQuarter(Quarter quarter) {
+        if (quarter.getType() != QuarterType.SHOP)
+            return false;
+
+        return quarter.getOwnerResident().equals(resident) || quarter.getTrustedResidents().contains(resident);
     }
 }
