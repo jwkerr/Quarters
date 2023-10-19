@@ -5,8 +5,6 @@ import com.palmergames.bukkit.towny.event.actions.*;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.object.Quarter;
-import net.earthmc.quarters.object.QuarterType;
-import net.earthmc.quarters.object.QuartersTown;
 import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -46,66 +44,45 @@ public class TownyActionListener implements Listener {
         if (town == null)
             return;
 
-        QuartersTown quartersTown = new QuartersTown(town);
-        if (!quartersTown.hasQuarter())
-            return;
-
         Quarter quarter = QuarterUtil.getQuarter(location);
         if (quarter == null)
             return;
 
-        allowActionIfOwnerOrTrusted(event, quarter);
-
-        // Extra tolerance on Y coordinate to check for boats placed in the lowest quadrant of a quarter
-        allowVehicleActionIfStation(event, QuarterUtil.getQuarter(location.add(0, 0.25, 0)));
-
-        allowActionIfCommons(event, quarter);
-    }
-
-    private void allowActionIfOwnerOrTrusted(TownyActionEvent event, Quarter quarter) {
         Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
-        if (resident == quarter.getOwnerResident() || quarter.getTrustedResidents().contains(resident))
+        if (resident == quarter.getOwnerResident() || quarter.getTrustedResidents().contains(resident)) {
             event.setCancelled(false);
+            return;
+        }
+
+        switch (quarter.getType()) {
+            case COMMONS:
+                if (!(event instanceof TownySwitchEvent || event instanceof TownyItemuseEvent))
+                    return;
+
+                handleEvent(event, quarter, resident);
+                break;
+            case STATION:
+                if (!(event instanceof TownyItemuseEvent || event instanceof TownyDestroyEvent || event instanceof TownySwitchEvent))
+                    return;
+
+                // Extra tolerance on Y coordinate to check for boats placed in the lowest quadrant of a quarter
+                handleStation(event, QuarterUtil.getQuarter(location.add(0, 0.25, 0)), resident);
+                break;
+        }
     }
 
-    private void allowVehicleActionIfStation(TownyActionEvent event, Quarter quarter) {
-        if (!(event instanceof TownyItemuseEvent || event instanceof TownyDestroyEvent || event instanceof TownySwitchEvent))
-            return;
-
+    private void handleStation(TownyActionEvent event, Quarter quarter, Resident resident) {
         if (!isVehicle(event.getMaterial()))
             return;
 
-        if (quarter.getType() != QuarterType.STATION)
-            return;
-
-        if (quarter.isEmbassy()) { // We use embassy status to represent that this station is for anyone's use
-            event.setCancelled(false);
-            return;
-        }
-
-        Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
-        if (resident == null)
-            return;
-
-        if (quarter.getTown() == resident.getTownOrNull())
-            event.setCancelled(false);
+        handleEvent(event, quarter, resident);
     }
-
-    private void allowActionIfCommons(TownyActionEvent event, Quarter quarter) {
-        if (!(event instanceof TownySwitchEvent))
-            return;
-
-        if (quarter.getType() != QuarterType.COMMONS)
-            return;
-
-        if (quarter.isEmbassy()) {
+    
+    private void handleEvent(TownyActionEvent event, Quarter quarter, Resident resident) {
+        if (quarter.isEmbassy()) { // We use embassy status to represent that certain quarter types are for anyone's use
             event.setCancelled(false);
             return;
         }
-
-        Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
-        if (resident == null)
-            return;
 
         if (quarter.getTown() == resident.getTownOrNull())
             event.setCancelled(false);
