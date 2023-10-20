@@ -27,7 +27,7 @@ class QuarterTest {
     }
 
     @Test
-    void testGetVolumeReturnsCorrectValue() {
+    void getVolumeReturnsCorrectValue() {
         Quarter quarter = new Quarter();
         World world = new WorldMock(Material.DIRT, 3);
 
@@ -51,7 +51,7 @@ class QuarterTest {
     }
 
     @Test
-    void testRGBArrayClampsCorrectly() {
+    void getRGBArrayClampsCorrectly() {
         Quarter quarter = new Quarter();
 
         int[] inputRGB = {256, 0, -10};

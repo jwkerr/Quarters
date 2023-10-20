@@ -58,6 +58,9 @@ public class Cuboid {
      * @return True if the specified location is within this cuboid
      */
     public boolean isLocationInsideBounds(Location location) {
+        if (pos1.getWorld() != location.getWorld())
+            return false;
+
         if (location.getY() < minY || location.getY() > maxY + 0.99999)
             return false;
 

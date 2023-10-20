@@ -1,10 +1,6 @@
 package net.earthmc.quarters.api;
 
-import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.TownyPermission;
-import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
 import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.object.*;
 import net.earthmc.quarters.util.QuarterUtil;
