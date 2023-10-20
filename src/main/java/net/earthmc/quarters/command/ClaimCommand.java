@@ -15,6 +15,7 @@ import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.entity.Player;
 
 import java.time.Instant;
+import java.util.Objects;
 
 @CommandAlias("quarters|q")
 public class ClaimCommand extends BaseCommand {
@@ -32,8 +33,7 @@ public class ClaimCommand extends BaseCommand {
         if (resident == null)
             return;
 
-        Resident ownerResident = quarter.getOwnerResident();
-        if (ownerResident != null && ownerResident.equals(resident)) {
+        if (Objects.equals(quarter.getOwnerResident(), resident)) {
             QuartersMessaging.sendErrorMessage(player, "You already own this quarter");
             return;
         }

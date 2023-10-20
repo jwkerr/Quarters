@@ -13,6 +13,8 @@ import net.earthmc.quarters.util.CommandUtil;
 import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
+
 @CommandAlias("quarters|q")
 public class UnclaimCommand extends BaseCommand {
     @Subcommand("unclaim")
@@ -26,7 +28,7 @@ public class UnclaimCommand extends BaseCommand {
         assert quarter != null;
 
         Resident resident = TownyAPI.getInstance().getResident(player);
-        if (quarter.getOwnerResident() == null || !quarter.getOwnerResident().equals(resident)) {
+        if (!Objects.equals(quarter.getOwnerResident(), resident)) {
             QuartersMessaging.sendErrorMessage(player, "You do not own this quarter");
             return;
         }

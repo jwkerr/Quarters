@@ -11,6 +11,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import java.util.Objects;
+
 public class ShopCreateListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onShopCreate(ShopCreateEvent event) {
@@ -32,8 +34,7 @@ public class ShopCreateListener implements Listener {
         if (resident == null)
             return;
 
-        Resident ownerResident = quarter.getOwnerResident();
-        if ((ownerResident != null && quarter.getOwnerResident().equals(resident)) || quarter.getTrustedResidents().contains(resident))
+        if (Objects.equals(quarter.getOwnerResident(), resident) || quarter.getTrustedResidents().contains(resident))
             event.setCancelled(false, "Overridden by Quarter's shop type");
     }
 }

@@ -2,7 +2,6 @@ package net.earthmc.quarters.listener;
 
 import com.palmergames.bukkit.towny.event.DeletePlayerEvent;
 import net.earthmc.quarters.object.Quarter;
-import net.earthmc.quarters.object.QuartersTown;
 import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,17 +21,6 @@ public class DeletePlayerListener implements Listener {
             if (quarter.getOwner() != null && quarter.getOwner().equals(uuid)) {
                 quarter.setOwner(null);
                 quarter.setClaimedAt(null);
-
-                QuartersTown quartersTown = new QuartersTown(quarter.getTown());
-                if (quartersTown.shouldSellOnDelete() && quarter.getPrice() == null) {
-                    Double price = quartersTown.getDefaultSellPrice();
-                    if (price != null) {
-                        quarter.setPrice(price);
-                    } else {
-                        quarter.setPrice(0.0);
-                    }
-                }
-
                 quarter.save();
             }
 

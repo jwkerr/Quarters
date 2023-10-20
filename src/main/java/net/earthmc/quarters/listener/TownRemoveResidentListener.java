@@ -7,6 +7,8 @@ import net.earthmc.quarters.object.QuartersTown;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.Objects;
+
 /**
  * Class to remove ownership of quarters that are not embassies on town leave
  */
@@ -19,11 +21,7 @@ public class TownRemoveResidentListener implements Listener {
 
         Resident resident = event.getResident();
         for (Quarter quarter : quartersTown.getQuarters()) {
-            Resident ownerResident = quarter.getOwnerResident();
-            if (ownerResident == null)
-                continue;
-
-            if (quarter.getOwnerResident().equals(resident) && !quarter.isEmbassy()) {
+            if (Objects.equals(quarter.getOwnerResident(), resident) && !quarter.isEmbassy()) {
                 quarter.setOwner(null);
                 quarter.setClaimedAt(null);
                 quarter.save();

@@ -11,6 +11,7 @@ import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @CommandAlias("quarters|q")
@@ -31,8 +32,7 @@ public class TrustCommand extends BaseCommand {
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
 
-        Resident ownerResident = quarter.getOwnerResident();
-        if (ownerResident != null && !ownerResident.equals(TownyAPI.getInstance().getResident(player))) {
+        if (!Objects.equals(quarter.getOwnerResident(), TownyAPI.getInstance().getResident(player))) {
             QuartersMessaging.sendErrorMessage(player, "You do not own this quarter");
             return;
         }
