@@ -68,7 +68,7 @@ public class Quarter {
         int volume = 0;
 
         for (Cuboid cuboid : cuboids) {
-            volume = volume + (cuboid.getLength() * cuboid.getHeight() * cuboid.getWidth());
+            volume = volume + cuboid.getVolume();
         }
 
         return volume;
