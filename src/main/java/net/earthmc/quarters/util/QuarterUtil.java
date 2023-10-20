@@ -14,15 +14,15 @@ import java.util.List;
 import java.util.UUID;
 
 public class QuarterUtil {
-    public static List<Cuboid> getCuboidsFromString(String string) {
+    public static List<Cuboid> deserializeCuboidList(String string) {
         List<Cuboid> cuboids = new ArrayList<>();
 
         String[] split = string.split(":");
         for (String cuboidString : split) {
             String[] locationSplit = cuboidString.split(";");
 
-            Location pos1 = getLocationFromString(locationSplit[0]);
-            Location pos2 = getLocationFromString(locationSplit[1]);
+            Location pos1 = deserializeLocation(locationSplit[0]);
+            Location pos2 = deserializeLocation(locationSplit[1]);
 
             cuboids.add(new Cuboid(pos1, pos2));
         }
@@ -44,17 +44,17 @@ public class QuarterUtil {
         return sb.toString();
     }
 
-    private static Location getLocationFromString(String string) {
+    public static Location deserializeLocation(String string) {
         String[] split = string.split("\\+");
 
         return new Location(Bukkit.getWorld(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]));
     }
 
-    private static String serializeLocation(Location location) {
+    public static String serializeLocation(Location location) {
         return location.getWorld().getName() + "+" + location.getBlockX() + "+" + location.getBlockY() + "+" + location.getBlockZ();
     }
 
-    public static List<UUID> getUUIDListFromString(String string) {
+    public static List<UUID> deserializeUUIDList(String string) {
         String[] split = string.split("\\+");
 
         List<UUID> uuidList = new ArrayList<>();
@@ -63,13 +63,6 @@ public class QuarterUtil {
         }
 
         return uuidList;
-    }
-
-    public static Double getDoubleFromString(String string) {
-        if (string.equals("null"))
-            return null;
-
-        return Double.parseDouble(string);
     }
 
     public static String serializeUUIDList(List<UUID> uuidList) {
@@ -89,6 +82,13 @@ public class QuarterUtil {
         return sb.toString();
     }
 
+    public static Double deserializeDouble(String string) {
+        if (string.equals("null"))
+            return null;
+
+        return Double.parseDouble(string);
+    }
+
     public static List<Quarter> deserializeQuarterListString(String string) {
         final String[] quarterListSplit = string.split("\\|");
         List<Quarter> quarterList = new ArrayList<>();
@@ -96,7 +96,7 @@ public class QuarterUtil {
         for (String quarterString : quarterListSplit) {
             final String[] quarterSplit = quarterString.split(",");
 
-            List<Cuboid> cuboids = getCuboidsFromString(quarterSplit[0]);
+            List<Cuboid> cuboids = deserializeCuboidList(quarterSplit[0]);
             UUID uuid = UUID.fromString(quarterSplit[1]);
             UUID town = UUID.fromString(quarterSplit[2]);
 
@@ -106,9 +106,9 @@ public class QuarterUtil {
 
             List<UUID> trustedResidentsUUIDs = new ArrayList<>();
             if (!quarterSplit[4].equals("null"))
-                trustedResidentsUUIDs = getUUIDListFromString(quarterSplit[4]);
+                trustedResidentsUUIDs = deserializeUUIDList(quarterSplit[4]);
 
-            Double price = getDoubleFromString(quarterSplit[5]);
+            Double price = deserializeDouble(quarterSplit[5]);
             QuarterType type = QuarterType.getByName(quarterSplit[6]);
             boolean isEmbassy = Boolean.parseBoolean(quarterSplit[7]);
             Long registered = Long.parseLong(quarterSplit[8]);
