@@ -39,6 +39,8 @@ public class SelectionCommand extends BaseCommand {
         Selection selection = SelectionManager.selectionMap.computeIfAbsent(player, k -> new Selection());
         List<Cuboid> cuboids = SelectionManager.cuboidsMap.computeIfAbsent(player, k -> new ArrayList<>());
 
+        if (!CommandUtil.isSelectionValid(player, selection.getPos1(), selection.getPos2()))
+            return;
 
         int maxCuboids = Quarters.INSTANCE.getConfig().getInt("quarters.max_cuboids_per_quarter");
         if (maxCuboids > 0) {
@@ -48,10 +50,15 @@ public class SelectionCommand extends BaseCommand {
             }
         }
 
-        if (!CommandUtil.isSelectionValid(player, selection.getPos1(), selection.getPos2()))
-            return;
-
         Cuboid newCuboid = new Cuboid(selection.getPos1(), selection.getPos2());
+        int maxCuboidVolume = Quarters.INSTANCE.getConfig().getInt("quarters.max_cuboid_volume");
+        if (maxCuboidVolume > 0) {
+            if (newCuboid.getVolume() > maxCuboidVolume) {
+                QuartersMessaging.sendErrorMessage(player, "Selection could not be added as it exceeds the configured cuboid volume limit of " + maxCuboidVolume + " blocks");
+                return;
+            }
+        }
+
         if (!newCuboid.isInValidLocation()) {
             QuartersMessaging.sendErrorMessage(player, "Selection is not in a valid location");
             return;

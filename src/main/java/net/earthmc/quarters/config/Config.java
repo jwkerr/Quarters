@@ -12,8 +12,10 @@ public class Config {
 
         config.addDefault("quarters.max_quarter_volume", 0); config.setInlineComments("quarters.max_quarter_volume", Collections.singletonList("Maximum block volume of all cuboids in a quarter combined, set to 0 for no limit"));
         config.addDefault("quarters.max_quarters_per_town", 0); config.setInlineComments("quarters.max_quarters_per_town", Collections.singletonList("Maximum amount of quarters that can be in a single town, set to 0 for no limit"));
+        config.addDefault("quarters.max_cuboid_volume", 0); config.setInlineComments("quarters.max_cuboid_volume", Collections.singletonList("Maximum block volume of individual cuboids, set to 0 for no limit"));
         config.addDefault("quarters.max_cuboids_per_quarter", 0); config.setInlineComments("quarters.max_cuboids_per_quarter", Collections.singletonList("Maximum amount of cuboids that can be in each quarter, set to 0 for no limit"));
 
+        config.addDefault("particles.enabled", true); config.setInlineComments("particles.enabled", Collections.singletonList("Set to false to completely disable particle outlines around cuboids"));
         config.addDefault("particles.current_selection_particle", "SCRAPE"); config.setInlineComments("particles.current_selection_particle", Collections.singletonList("Particle outline of the currently selected area"));
         config.addDefault("particles.current_cuboids_particle", "WAX_OFF"); config.setInlineComments("particles.current_cuboids_particle", Collections.singletonList("Particle outline of current cuboids added to selection"));
         config.addDefault("particles.ticks_between_outline", 5); config.setInlineComments("particles.ticks_between_outline", Collections.singletonList("The number of ticks between when the particle outlines of quarters will appear"));

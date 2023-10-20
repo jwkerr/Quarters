@@ -142,6 +142,9 @@ public class QuarterUtil {
     }
 
     public static boolean shouldRenderOutlines(QuartersPlayer quartersPlayer, Material itemHeld) {
+        if (!Quarters.INSTANCE.getConfig().getBoolean("particles.enabled"))
+            return false;
+
         if (quartersPlayer.hasConstantOutlines() && Quarters.INSTANCE.getConfig().getBoolean("particles.allow_constant_outlines"))
             return true;
 

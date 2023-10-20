@@ -127,6 +127,14 @@ public class Cuboid {
         return playersInCuboid;
     }
 
+    /**
+     *
+     * @return An int representing the total number of blocks inside the cuboid
+     */
+    public int getVolume() {
+        return getLength() * getHeight() * getWidth();
+    }
+
     public Location getPos1() {
         return pos1;
     }
