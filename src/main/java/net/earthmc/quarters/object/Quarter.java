@@ -211,6 +211,14 @@ public class Quarter {
     }
 
     public void setRGB(int[] rgb) {
+        for (int i = 0; i < rgb.length; i++) {
+            if (rgb[i] < 0) {
+                rgb[i] = 0;
+            } else if (rgb[i] > 255) {
+                rgb[i] = 255;
+            }
+        }
+
         this.rgb = rgb;
     }
 
