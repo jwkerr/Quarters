@@ -111,7 +111,7 @@ class CuboidTest {
     }
 
     @Test
-    void getPlayersInCuboid() {
+    void getPlayersInCuboidReturnsCorrectValue() {
         World world1 = new WorldMock(Material.DIRT, 3);
         World world2 = new WorldMock(Material.DIRT, 3);
 
