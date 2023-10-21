@@ -36,7 +36,6 @@ public class TownUnclaimListener implements Listener {
                             Town currentPosTown = TownyAPI.getInstance().getTown(location);
                             if (currentPosTown == null || currentPosTown != town) {
                                 quarter.delete();
-                                return;
                             }
                         }
                     }
