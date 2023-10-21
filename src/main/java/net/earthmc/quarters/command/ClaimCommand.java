@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
+import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
@@ -53,16 +54,40 @@ public class ClaimCommand extends BaseCommand {
             return;
         }
 
-        if (quarter.getPrice() > 0) {
-            resident.getAccount().withdraw(quarter.getPrice(), "Payment for quarter " + quarter.getUUID());
-            quarter.getTown().getAccount().deposit(quarter.getPrice(), "Payment for quarter " + quarter.getUUID());
-        }
+        sendClaimConfirmation(quarter, resident);
+    }
 
+    private void sendClaimConfirmation(Quarter quarter, Resident resident) {
+        double currentPrice = quarter.getPrice();
+        Player player = resident.getPlayer();
+
+        if (currentPrice > 0) {
+            Confirmation.runOnAccept(() -> {
+                if (quarter.getPrice() != currentPrice) {
+                    QuartersMessaging.sendErrorMessage(player, "Quarter purchase cancelled as the quarter's price has changed");
+                    return;
+                }
+
+                resident.getAccount().withdraw(quarter.getPrice(), "Payment for quarter " + quarter.getUUID());
+                quarter.getTown().getAccount().deposit(quarter.getPrice(), "Payment for quarter " + quarter.getUUID());
+
+                setAndSaveQuarter(quarter, resident);
+
+                QuartersMessaging.sendSuccessMessage(player, "You are now the owner of this quarter");
+            })
+            .setTitle("Purchasing this quarter will cost " + quarter.getPrice() + ", are you sure you want to purchase it?")
+            .sendTo(resident.getPlayer());
+        } else {
+            setAndSaveQuarter(quarter, resident);
+
+            QuartersMessaging.sendSuccessMessage(player, "You are now the owner of this quarter");
+        }
+    }
+
+    private void setAndSaveQuarter(Quarter quarter, Resident resident) {
         quarter.setOwner(resident.getUUID());
         quarter.setClaimedAt(Instant.now().toEpochMilli());
         quarter.setPrice(null);
         quarter.save();
-
-        QuartersMessaging.sendSuccessMessage(player, "You are now the owner of this quarter");
     }
 }

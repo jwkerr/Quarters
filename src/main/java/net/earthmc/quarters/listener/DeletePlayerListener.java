@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -18,7 +19,7 @@ public class DeletePlayerListener implements Listener {
         UUID uuid = event.getPlayerUUID();
 
         for (Quarter quarter : QuarterUtil.getAllQuarters()) {
-            if (quarter.getOwner() != null && quarter.getOwner().equals(uuid)) {
+            if (Objects.equals(quarter.getOwner(), uuid)) {
                 quarter.setOwner(null);
                 quarter.setClaimedAt(null);
                 quarter.save();
