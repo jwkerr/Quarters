@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +27,11 @@ public class TownUnclaimListener implements Listener {
         if (quarterList == null)
             return;
 
+        List<Quarter> quartersToDelete = new ArrayList<>();
         for (Quarter quarter : quarterList) {
+            if (quartersToDelete.contains(quarter))
+                continue;
+
             for (Cuboid cuboid : quarter.getCuboids()) {
                 for (int x = cuboid.getMinX(); x <= cuboid.getMaxX(); x++) {
                     for (int y = cuboid.getMinY(); y <= cuboid.getMaxY(); y++) {
@@ -35,12 +40,16 @@ public class TownUnclaimListener implements Listener {
 
                             Town currentPosTown = TownyAPI.getInstance().getTown(location);
                             if (currentPosTown == null || currentPosTown != town) {
-                                quarter.delete();
+                                quartersToDelete.add(quarter);
                             }
                         }
                     }
                 }
             }
+        }
+
+        for (Quarter quarter : quartersToDelete) {
+            quarter.delete();
         }
     }
 }
