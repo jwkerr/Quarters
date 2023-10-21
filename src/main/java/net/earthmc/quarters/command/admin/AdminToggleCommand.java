@@ -26,7 +26,7 @@ public class AdminToggleCommand extends BaseCommand {
     }
 
     private void setQuarterAtLocationEmbassyStatus(Player player) {
-        if (!CommandUtil.hasPermission(player, "quarters.action.admin.embassy"))
+        if (!CommandUtil.hasPermission(player, "quarters.action.quartersadmin.embassy"))
             return;
 
         if (!CommandUtil.isPlayerInQuarter(player))

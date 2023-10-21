@@ -190,12 +190,12 @@ permissions:
     description: "Grants permission to forcefully change a quarter's type"
     default: op
 
-  quarters.action.admin.*:
+  quarters.action.quartersadmin.*:
     description: "Grants permission to all admin actions, this does not give access to the command that checks for these permissions"
     default: op
     children:
-      quarters.action.admin.embassy: true
+      quarters.action.quartersadmin.embassy: true
 
-  quarters.action.admin.embassy:
+  quarters.action.quartersadmin.embassy:
     description: "Grants permission to forcefully toggle a quarter's embassy status"
     default: op
