@@ -2,20 +2,22 @@ package net.earthmc.quarters.listener;
 
 import com.palmergames.adventure.text.Component;
 import com.palmergames.adventure.text.format.NamedTextColor;
-import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
+import com.palmergames.bukkit.towny.event.statusscreen.ResidentStatusScreenEvent;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuarterType;
-import net.earthmc.quarters.object.QuartersTown;
+import net.earthmc.quarters.object.QuartersPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-/**
- * Adds a [Quarters] component to town status screens
- */
-public class TownStatusScreenListener implements Listener {
+import java.util.List;
+
+public class ResidentStatusScreenListener implements Listener {
     @EventHandler
-    public void onTownStatusScreen(TownStatusScreenEvent event) {
+    public void onResidentStatusScreen(ResidentStatusScreenEvent event) {
         Component hoverComponent = Component.empty();
+
+        QuartersPlayer quartersPlayer = new QuartersPlayer(event.getResident().getPlayer());
+        List<Quarter> quarterList = quartersPlayer.getQuartersOwnedByPlayer();
 
         int iteration = 0;
         for (QuarterType quarterType : QuarterType.values()) {
@@ -24,12 +26,9 @@ public class TownStatusScreenListener implements Listener {
 
             int numOfQuarterType = 0;
 
-            QuartersTown quartersTown = new QuartersTown(event.getTown());
-            if (quartersTown.hasQuarter()) {
-                for (Quarter quarter : quartersTown.getQuarters()) {
-                    if (quarter.getType().equals(quarterType))
-                        numOfQuarterType++;
-                }
+            for (Quarter quarter : quarterList) {
+                if (quarter.getType().equals(quarterType))
+                    numOfQuarterType++;
             }
 
             hoverComponent = hoverComponent.append(Component.text(quarterType.getFormattedName() + ": ", NamedTextColor.DARK_GREEN));
@@ -44,6 +43,6 @@ public class TownStatusScreenListener implements Listener {
                 .append(Component.text("]", NamedTextColor.GRAY))
                 .hoverEvent(hoverComponent);
 
-        event.getStatusScreen().addComponentOf("quarters_town_status", component);
+        event.getStatusScreen().addComponentOf("quarters_resident_status", component);
     }
 }
