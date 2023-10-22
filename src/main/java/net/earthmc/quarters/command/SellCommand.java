@@ -16,7 +16,7 @@ public class SellCommand extends BaseCommand {
     @Subcommand("sell")
     @Description("Sell a quarter")
     @CommandPermission("quarters.command.quarters.sell")
-    @CommandCompletion("cancel")
+    @CommandCompletion("{price}|cancel")
     public void onSell(Player player, @Optional @Single String arg) {
         if (!CommandUtil.hasPermissionOrMayor(player, "quarters.action.sell"))
             return;

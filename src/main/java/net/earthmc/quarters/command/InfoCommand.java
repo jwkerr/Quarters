@@ -9,6 +9,7 @@ import net.earthmc.quarters.util.QuarterUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.CommandSender;
 
 @CommandAlias("quarters|q")
@@ -22,7 +23,7 @@ public class InfoCommand extends BaseCommand {
 
         TextComponent component = Component.text()
                 .append(Component.text("Author: ").color(NamedTextColor.DARK_GRAY))
-                .append(Component.text("Fruitloopins ")).color(NamedTextColor.GRAY)
+                .append(Component.text("Fruitloopins ", TextColor.color(0xF6003c)))
                 .append(Component.text("Version: ").color(NamedTextColor.DARK_GRAY))
                 .append(Component.text(meta.getVersion() + "\n")).color(NamedTextColor.GRAY)
                 .append(Component.text("Quarters: ").color(NamedTextColor.DARK_GRAY))
