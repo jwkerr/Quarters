@@ -5,11 +5,13 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.manager.ResidentMetadataManager;
 import net.earthmc.quarters.manager.SelectionManager;
+import net.earthmc.quarters.util.QuarterUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class QuartersPlayer {
     private final Resident resident;
@@ -88,5 +90,17 @@ public class QuartersPlayer {
         }
 
         return false;
+    }
+
+    public List<Quarter> getQuartersOwnedByPlayer() {
+        List<Quarter> quarterList = new ArrayList<>();
+
+        for (Quarter quarter : QuarterUtil.getAllQuarters()) {
+            if (Objects.equals(quarter.getOwnerResident(), resident)) {
+                quarterList.add(quarter);
+            }
+        }
+
+        return quarterList;
     }
 }

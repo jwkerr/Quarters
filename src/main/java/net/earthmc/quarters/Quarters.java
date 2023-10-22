@@ -52,9 +52,14 @@ public final class Quarters extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
 
         pm.registerEvents(new DeletePlayerListener(), this);
+        pm.registerEvents(new PlayerDeniedBedUseListener(), this);
         pm.registerEvents(new PlayerInteractListener(), this);
-        pm.registerEvents(new PlayerItemHeldListener(), this);
+
+        if (getConfig().getBoolean("particles.enabled"))
+            pm.registerEvents(new PlayerItemHeldListener(), this);
+
         pm.registerEvents(new PlotPreClaimListener(), this);
+        pm.registerEvents(new ResidentStatusScreenListener(), this);
 
         if (pm.isPluginEnabled("QuickShop") || pm.isPluginEnabled("QuickShop-Hikari"))
             pm.registerEvents(new ShopCreateListener(), this);
