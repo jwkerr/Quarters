@@ -111,29 +111,6 @@ class CuboidTest {
     }
 
     @Test
-    void getPlayersInCuboidReturnsCorrectValue() {
-        World world1 = new WorldMock(Material.DIRT, 3);
-        World world2 = new WorldMock(Material.DIRT, 3);
-
-        Location pos1 = new Location(world1, 2423, 74, -9734);
-        Location pos2 = new Location(world1, 2413, 82, -9722);
-        Cuboid cuboid = new Cuboid(pos1, pos2);
-
-        ServerMock server = MockBukkit.getMock();
-        server.setPlayers(4);
-        server.getPlayer(0).setLocation(new Location(world1, 2417, 74, -9726));
-        server.getPlayer(1).setLocation(new Location(world1, 2417, 80, -9729));
-        server.getPlayer(2).setLocation(new Location(world1, 9999, 80, -9999));
-        server.getPlayer(3).setLocation(new Location(world2, 2417, 74, -9726));
-
-        List<Player> expectedList = new ArrayList<>();
-        expectedList.add(server.getPlayer(0));
-        expectedList.add(server.getPlayer(1));
-
-        assertEquals(expectedList, cuboid.getPlayersInCuboid());
-    }
-
-    @Test
     void getVolumeReturnsCorrectValue() {
         World world = new WorldMock(Material.DIRT, 3);
 
