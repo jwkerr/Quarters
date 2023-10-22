@@ -25,7 +25,7 @@
 - Veyronity
 - Joixe776 (Joigrama)
 
-...and 2 other private sponsors
+...and 4 other private sponsors
 
 ⭐ If you would like to support my development efforts, you can sponsor me on [GitHub](https://github.com/sponsors/Fruitloopins) or [Patreon](https://patreon.com/Fruitloopins).
 </details>
