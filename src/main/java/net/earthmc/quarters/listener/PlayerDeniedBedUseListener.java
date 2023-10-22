@@ -20,7 +20,22 @@ public class PlayerDeniedBedUseListener implements Listener {
             return;
 
         Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
-        if (quarter.getType() == QuarterType.COMMONS || Objects.equals(quarter.getOwnerResident(), resident) || quarter.getTrustedResidents().contains(resident))
+        if (resident == null)
+            return;
+
+        if (quarter.getType() == QuarterType.COMMONS) {
+            if (quarter.isEmbassy()) {
+                event.setCancelled(true);
+                return;
+            } else {
+                if (resident.getTownOrNull() == quarter.getTown()) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
+
+        if (Objects.equals(quarter.getOwnerResident(), resident) || quarter.getTrustedResidents().contains(resident))
             event.setCancelled(true);
     }
 }
