@@ -24,6 +24,12 @@ public class QuartersPlayer {
         this.hasConstantOutlines = ResidentMetadataManager.hasConstantOutlines(resident);
     }
 
+    public QuartersPlayer(Resident resident) {
+        this.resident = resident;
+        this.player = resident.getPlayer();
+        this.hasConstantOutlines = ResidentMetadataManager.hasConstantOutlines(resident);
+    }
+
     /**
      * Gets the player's selected area, selected using the wand item or commands
      *

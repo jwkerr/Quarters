@@ -1,5 +1,6 @@
 package net.earthmc.quarters.api;
 
+import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.object.*;
@@ -49,6 +50,16 @@ public class QuartersAPI {
      */
     public QuartersPlayer getQuartersPlayer(Player player) {
         return new QuartersPlayer(player);
+    }
+
+    /**
+     * Gets Quarters' "player" instance with Quarters specific methods
+     *
+     * @param resident Resident to resolve QuartersPlayer from
+     * @return The specified player's QuartersPlayer instance
+     */
+    public QuartersPlayer getQuartersPlayer(Resident resident) {
+        return new QuartersPlayer(resident);
     }
 
     /**
