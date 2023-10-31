@@ -18,6 +18,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
 
+import java.awt.*;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.UUID;
@@ -62,16 +63,45 @@ public class HereCommand extends BaseCommand {
                 .append(Component.text("Claimed at: ").color(NamedTextColor.DARK_GRAY))
                 .append(Component.text(quarter.getClaimedAt() == null ? "N/A\n" : Instant.ofEpochMilli(quarter.getClaimedAt()).atZone(ZoneId.systemDefault()).toLocalDate() + "\n")).color(NamedTextColor.GRAY)
                 .append(getTrustedComponent(quarter))
+                .append(Component.text(" "))
+                .append(getColourComponent(quarter))
                 .build();
 
         QuartersMessaging.sendInfoWall(player, component);
     }
 
-    private Component getTrustedComponent(Quarter quarter) {
-        Component trustedComponent = Component.empty()
+    private Component getSquareBracketComponet(String text) {
+        return Component.empty()
                 .append(Component.text("[", NamedTextColor.DARK_GRAY))
-                .append(Component.text("Trusted", TextColor.color(0x9655FF)))
+                .append(Component.text(text, TextColor.color(0x9655FF)))
                 .append(Component.text("]", NamedTextColor.DARK_GRAY));
+    }
+
+    private Component getColourComponent(Quarter quarter) {
+        Component colourComponent = getSquareBracketComponet("Colour");
+
+        int[] rgb = quarter.getRGB();
+        int colour = arrayToRGBHex(rgb);
+        Component hoverComponent = Component.empty()
+                .append(Component.text(String.valueOf(rgb[0]), TextColor.color(colour)))
+                .append(Component.text(", ", NamedTextColor.GRAY))
+                .append(Component.text(String.valueOf(rgb[1]), TextColor.color(colour)))
+                .append(Component.text(", ", NamedTextColor.GRAY))
+                .append(Component.text(String.valueOf(rgb[2]), TextColor.color(colour)));
+
+        return colourComponent.hoverEvent(hoverComponent);
+    }
+
+    private int arrayToRGBHex(int[] rgb) {
+        Color colour = new Color(rgb[0], rgb[1], rgb[2]);
+
+        String hex = Integer.toHexString(colour.getRGB()).substring(2);
+
+        return Integer.parseInt(hex, 16);
+    }
+
+    private Component getTrustedComponent(Quarter quarter) {
+        Component trustedComponent = getSquareBracketComponet("Trusted");
 
         Component hoverComponent = Component.empty();
 
@@ -79,14 +109,14 @@ public class HereCommand extends BaseCommand {
             int iteration = 0;
             for (Resident resident : quarter.getTrustedResidents()) {
                 if (iteration != 0)
-                    hoverComponent = hoverComponent.append(Component.text(", ").color(NamedTextColor.GRAY));
+                    hoverComponent = hoverComponent.append(Component.text(", ", NamedTextColor.GRAY));
 
                 hoverComponent = hoverComponent.append(getFormattedName(resident));
 
                 iteration++;
             }
         } else {
-            hoverComponent = Component.text("None").color(NamedTextColor.GRAY);
+            hoverComponent = Component.text("None", NamedTextColor.GRAY);
         }
 
         return trustedComponent.hoverEvent(hoverComponent);
