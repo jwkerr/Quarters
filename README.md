@@ -32,6 +32,8 @@
 
 ---
 
+[Download Quarters on Modrinth](https://modrinth.com/plugin/quarters)
+
 # Quarters
 <sup>Because residents deserve the bare minimum.</sup>
 
