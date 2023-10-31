@@ -31,14 +31,9 @@ public final class Quarters extends JavaPlugin {
 
         SponsorCosmeticsManager.init();
 
-        initListeners();
         initCommands();
-
-        if (getConfig().getBoolean("particles.enabled")) {
-            int ticksBetweenParticles = getConfig().getInt("particles.ticks_between_outline");
-            OutlineParticleTask outlineTask = new OutlineParticleTask();
-            outlineTask.runTaskTimer(this, 0, ticksBetweenParticles);
-        }
+        initListeners();
+        initTasks();
 
         getLogger().info("Quarters enabled :3");
     }
@@ -48,29 +43,7 @@ public final class Quarters extends JavaPlugin {
         getLogger().info("Quarters disabled :v");
     }
 
-    public void initListeners() {
-        PluginManager pm = getServer().getPluginManager();
-
-        pm.registerEvents(new DeletePlayerListener(), this);
-        pm.registerEvents(new PlayerDeniedBedUseListener(), this);
-        pm.registerEvents(new PlayerInteractListener(), this);
-
-        if (getConfig().getBoolean("particles.enabled"))
-            pm.registerEvents(new PlayerItemHeldListener(), this);
-
-        pm.registerEvents(new PlotPreClaimListener(), this);
-        pm.registerEvents(new ResidentStatusScreenListener(), this);
-
-        if (pm.isPluginEnabled("QuickShop") || pm.isPluginEnabled("QuickShop-Hikari"))
-            pm.registerEvents(new ShopCreateListener(), this);
-
-        pm.registerEvents(new TownRemoveResidentListener(), this);
-        pm.registerEvents(new TownStatusScreenListener(), this);
-        pm.registerEvents(new TownUnclaimListener(), this);
-        pm.registerEvents(new TownyActionListener(), this);
-    }
-
-    public void initCommands() {
+    private void initCommands() {
         PaperCommandManager manager = new PaperCommandManager(this);
 
         // Standard commands
@@ -99,5 +72,35 @@ public final class Quarters extends JavaPlugin {
         manager.registerCommand(new AdminToggleCommand());
         manager.registerCommand(new AdminTrustCommand());
         manager.registerCommand(new AdminTypeCommand());
+    }
+
+    private void initListeners() {
+        PluginManager pm = getServer().getPluginManager();
+
+        pm.registerEvents(new DeletePlayerListener(), this);
+        pm.registerEvents(new PlayerDeniedBedUseListener(), this);
+        pm.registerEvents(new PlayerInteractListener(), this);
+
+        if (getConfig().getBoolean("particles.enabled"))
+            pm.registerEvents(new PlayerItemHeldListener(), this);
+
+        pm.registerEvents(new PlotPreClaimListener(), this);
+        pm.registerEvents(new ResidentStatusScreenListener(), this);
+
+        if (pm.isPluginEnabled("QuickShop") || pm.isPluginEnabled("QuickShop-Hikari"))
+            pm.registerEvents(new ShopCreateListener(), this);
+
+        pm.registerEvents(new TownRemoveResidentListener(), this);
+        pm.registerEvents(new TownStatusScreenListener(), this);
+        pm.registerEvents(new TownUnclaimListener(), this);
+        pm.registerEvents(new TownyActionListener(), this);
+    }
+
+    private void initTasks() {
+        if (getConfig().getBoolean("particles.enabled")) {
+            int ticksBetweenParticles = getConfig().getInt("particles.ticks_between_outline");
+            OutlineParticleTask outlineTask = new OutlineParticleTask();
+            outlineTask.runTaskTimer(this, 0, ticksBetweenParticles);
+        }
     }
 }
