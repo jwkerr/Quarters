@@ -33,7 +33,7 @@ public class InfoCommand extends BaseCommand {
 
         TextComponent component = Component.text()
                 .append(Component.text("Author: ", NamedTextColor.DARK_GRAY))
-                .append(Component.text("Fruitloopins ", TextColor.color(0xF6003C)))
+                .append(Component.text("Fruitloopins ", TextColor.color(0xF6003C)).clickEvent(ClickEvent.openUrl("https://github.com/Fruitloopins")))
                 .append(Component.text("Version: ", NamedTextColor.DARK_GRAY))
                 .append(Component.text(meta.getVersion() + "\n", NamedTextColor.GRAY))
                 .append(Component.text("Quarters: ", NamedTextColor.DARK_GRAY))
