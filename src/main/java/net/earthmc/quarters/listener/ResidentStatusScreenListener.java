@@ -10,6 +10,9 @@ import org.bukkit.event.Listener;
 
 import java.util.List;
 
+/**
+ * Adds a Quarters: n section to resident status screens
+ */
 public class ResidentStatusScreenListener implements Listener {
     @EventHandler
     public void onResidentStatusScreen(ResidentStatusScreenEvent event) {

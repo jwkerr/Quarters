@@ -11,6 +11,9 @@ import org.bukkit.event.Listener;
 
 import java.util.Objects;
 
+/**
+ * Class to allow usage of beds within quarters
+ */
 public class PlayerDeniedBedUseListener implements Listener {
     @EventHandler
     public void onPlayerDeniedBedUse(PlayerDeniedBedUseEvent event) {
