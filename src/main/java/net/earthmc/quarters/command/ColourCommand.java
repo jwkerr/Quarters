@@ -15,14 +15,11 @@ public class ColourCommand extends BaseCommand {
     @CommandPermission("quarters.command.quarters.colour")
     @CommandCompletion("@range:0-255 @range:0-255 @range:0-255")
     public void onColour(Player player, int r, int g, int b) {
-        if (!CommandUtil.hasPermissionOrMayor(player, "quarters.action.colour"))
-            return;
-
         if (!CommandUtil.isPlayerInQuarter(player))
             return;
 
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
-        if (!CommandUtil.isQuarterInPlayerTown(player, quarter))
+        if (!CommandUtil.hasPermissionOrMayorOrQuarterOwner(player, quarter, "quarters.action.colour"))
             return;
 
         int[] rgb = new int[]{r, g, b};

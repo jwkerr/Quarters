@@ -8,6 +8,8 @@ import net.earthmc.quarters.object.QuartersPlayer;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
+
 public class CommandUtil {
     public static boolean isPlayerInQuarter(Player player) {
         QuartersPlayer quartersPlayer = new QuartersPlayer(player);
@@ -53,6 +55,21 @@ public class CommandUtil {
             return false;
 
         if (!(player.hasPermission(permission) || resident.isMayor())) {
+            QuartersMessaging.sendErrorMessage(player, "You do not have permission to perform this action");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean hasPermissionOrMayorOrQuarterOwner(Player player, Quarter quarter, String permission) {
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null)
+            return false;
+
+        if (!Objects.equals(quarter.getOwnerResident(), resident)
+                && (!player.hasPermission(permission) || !quarter.getTown().equals(resident.getTownOrNull()))
+                && !quarter.getTown().getMayor().equals(resident)) {
             QuartersMessaging.sendErrorMessage(player, "You do not have permission to perform this action");
             return false;
         }

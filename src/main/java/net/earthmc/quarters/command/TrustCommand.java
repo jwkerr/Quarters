@@ -32,13 +32,8 @@ public class TrustCommand extends BaseCommand {
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
         assert quarter != null;
 
-        Resident resident = TownyAPI.getInstance().getResident(player);
-        if (!Objects.equals(quarter.getOwnerResident(), resident)
-                && (!player.hasPermission("quarters.action.trust") || !quarter.getTown().equals(resident.getTownOrNull()))
-                && !quarter.getTown().getMayor().equals(resident)) {
-            QuartersMessaging.sendErrorMessage(player, "You do not have permission to perform this action");
+        if (!CommandUtil.hasPermissionOrMayorOrQuarterOwner(player, quarter, "quarters.action.trust"))
             return;
-        }
 
         Resident targetResident = null;
         if (target != null) {
