@@ -14,6 +14,7 @@ import net.earthmc.quarters.util.CommandUtil;
 import net.earthmc.quarters.util.QuarterUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
@@ -44,6 +45,8 @@ public class HereCommand extends BaseCommand {
             price = TownyEconomyHandler.getFormattedBalance(quarter.getPrice());
         }
 
+        int[] rgb = quarter.getRGB();
+
         TextComponent component = Component.text()
                 .append(Component.text("Owner: ").color(NamedTextColor.DARK_GRAY))
                 .append(getFormattedName(quarter.getOwnerResident()))
@@ -64,7 +67,7 @@ public class HereCommand extends BaseCommand {
                 .append(Component.text(quarter.getClaimedAt() == null ? "N/A\n" : Instant.ofEpochMilli(quarter.getClaimedAt()).atZone(ZoneId.systemDefault()).toLocalDate() + "\n")).color(NamedTextColor.GRAY)
                 .append(getTrustedComponent(quarter))
                 .append(Component.text(" "))
-                .append(getColourComponent(quarter))
+                .append(getColourComponent(rgb)).clickEvent(ClickEvent.copyToClipboard("/q colour " + rgb[0] + " " + rgb[1] + " " + rgb[2]))
                 .build();
 
         QuartersMessaging.sendInfoWall(player, component);
@@ -77,17 +80,17 @@ public class HereCommand extends BaseCommand {
                 .append(Component.text("]", NamedTextColor.DARK_GRAY));
     }
 
-    private Component getColourComponent(Quarter quarter) {
+    private Component getColourComponent(int[] rgb) {
         Component colourComponent = getSquareBracketComponet("Colour");
 
-        int[] rgb = quarter.getRGB();
         int colour = arrayToRGBHex(rgb);
         Component hoverComponent = Component.empty()
                 .append(Component.text(String.valueOf(rgb[0]), TextColor.color(colour)))
                 .append(Component.text(", ", NamedTextColor.GRAY))
                 .append(Component.text(String.valueOf(rgb[1]), TextColor.color(colour)))
                 .append(Component.text(", ", NamedTextColor.GRAY))
-                .append(Component.text(String.valueOf(rgb[2]), TextColor.color(colour)));
+                .append(Component.text(String.valueOf(rgb[2]), TextColor.color(colour)))
+                .append(Component.text("\nClick to copy command", NamedTextColor.GRAY));
 
         return colourComponent.hoverEvent(hoverComponent);
     }
