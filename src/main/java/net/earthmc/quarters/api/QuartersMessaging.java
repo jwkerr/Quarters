@@ -7,6 +7,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 
 public class QuartersMessaging {
     private static Component getPrefixComponent() {
@@ -35,11 +36,35 @@ public class QuartersMessaging {
     }
 
     /**
+     * Sends a prefixed message to the specified player
+     *
+     * @param player Player that will receive the message
+     * @param message Message that will be sent to the specified player
+     */
+    public static void sendComponentWithPrefix(Player player, Component message) {
+        player.sendMessage(getPrefixComponent()
+                .append(message));
+    }
+
+    /**
+     * Sends a header message with your attached text appended below it to the specified sender
+     *
+     * @param sender Player that will receive the message
+     * @param message Message that will be sent to the specified player
+     */
+    public static void sendComponentWithHeader(CommandSender sender, Component message) {
+        sender.sendMessage(getHeaderComponent()
+                .append(message));
+    }
+
+    /**
      * Sends a neutral, single-line, grey message to the specified player
      *
      * @param player Player that will receive the message
      * @param message Message that will be sent to the specified player
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "0.4.0")
     public static void sendInfoMessage(Player player, Component message) {
         player.sendMessage(getPrefixComponent()
                 .append(message));
@@ -51,6 +76,8 @@ public class QuartersMessaging {
      * @param player Player that will receive the message
      * @param message Message that will be sent to the specified player
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "0.4.0")
     public static void sendInfoMessage(Player player, String message) {
         player.sendMessage(getPrefixComponent()
                 .append(Component.text(message).color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)));
@@ -62,6 +89,8 @@ public class QuartersMessaging {
      * @param sender Player that will receive the message
      * @param message Message that will be sent to the specified player
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "0.4.0")
     public static void sendInfoWall(CommandSender sender, Component message) {
         sender.sendMessage(getHeaderComponent()
                 .append(message));

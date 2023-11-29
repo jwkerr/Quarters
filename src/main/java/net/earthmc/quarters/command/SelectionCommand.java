@@ -91,7 +91,7 @@ public class SelectionCommand extends BaseCommand {
 
         cuboids.clear();
 
-        QuartersMessaging.sendInfoMessage(player, "Selection cleared");
+        QuartersMessaging.sendSuccessMessage(player, "Selection cleared");
     }
 
     private void removeSelection(Player player) {

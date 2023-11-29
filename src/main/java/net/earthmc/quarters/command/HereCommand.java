@@ -72,7 +72,7 @@ public class HereCommand extends BaseCommand {
                 .append(getColourComponent(rgb)).clickEvent(ClickEvent.copyToClipboard("/q colour " + rgb[0] + " " + rgb[1] + " " + rgb[2]))
                 .build();
 
-        QuartersMessaging.sendInfoWall(player, component);
+        QuartersMessaging.sendComponentWithHeader(player, component);
     }
 
     private Component getSquareBracketComponent(String text) {

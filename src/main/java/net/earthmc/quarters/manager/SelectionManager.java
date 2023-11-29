@@ -35,7 +35,7 @@ public class SelectionManager {
         if (!isPos1)
             selection.setPos2(location);
 
-        QuartersMessaging.sendInfoMessage(player, getSelectedPositionComponent(isPos1, location));
+        QuartersMessaging.sendComponentWithPrefix(player, getSelectedPositionComponent(isPos1, location));
     }
 
     private static boolean canSelectPosition(Player player, Town town) {

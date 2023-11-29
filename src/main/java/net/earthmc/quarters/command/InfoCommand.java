@@ -5,14 +5,12 @@ import co.aikar.commands.annotation.*;
 import io.papermc.paper.plugin.configuration.PluginMeta;
 import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.api.QuartersMessaging;
-import net.earthmc.quarters.object.Cuboid;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.util.QuarterUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.CommandSender;
@@ -45,6 +43,6 @@ public class InfoCommand extends BaseCommand {
                 .append(Component.text("Discord", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://discord.gg/ey6ZvnwAJp")))
                 .build();
 
-        QuartersMessaging.sendInfoWall(sender, component);
+        QuartersMessaging.sendComponentWithHeader(sender, component);
     }
 }
