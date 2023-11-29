@@ -48,23 +48,25 @@ public class HereCommand extends BaseCommand {
         int[] rgb = quarter.getRGB();
 
         TextComponent component = Component.text()
-                .append(Component.text("Owner: ").color(NamedTextColor.DARK_GRAY))
+                .append(Component.text("Owner: ", NamedTextColor.DARK_GRAY))
                 .append(getFormattedName(quarter.getOwnerResident()))
                 .append(Component.text(" "))
-                .append(Component.text("Type: ").color(NamedTextColor.DARK_GRAY))
-                .append(Component.text(quarter.getType().getFormattedName() + " ")).color(NamedTextColor.GRAY)
-                .append(Component.text("Town: ").color(NamedTextColor.DARK_GRAY))
-                .append(Component.text(quarter.getTown().getName() + "\n")).color(NamedTextColor.GRAY)
-                .append(Component.text("Price: ").color(NamedTextColor.DARK_GRAY))
-                .append(Component.text(price + " ")).color(NamedTextColor.GRAY)
-                .append(Component.text("Embassy: ").color(NamedTextColor.DARK_GRAY))
-                .append(Component.text(quarter.isEmbassy() ? "True " : "False ")).color(NamedTextColor.GRAY)
-                .append(Component.text("Cuboids: ").color(NamedTextColor.DARK_GRAY))
-                .append(Component.text(quarter.getCuboids().size() + "\n")).color(NamedTextColor.GRAY)
-                .append(Component.text("Registered: ").color(NamedTextColor.DARK_GRAY))
-                .append(Component.text(quarter.getRegistered() == null ? "N/A" : Instant.ofEpochMilli(quarter.getRegistered()).atZone(ZoneId.systemDefault()).toLocalDate() + " ")).color(NamedTextColor.GRAY)
-                .append(Component.text("Claimed at: ").color(NamedTextColor.DARK_GRAY))
-                .append(Component.text(quarter.getClaimedAt() == null ? "N/A\n" : Instant.ofEpochMilli(quarter.getClaimedAt()).atZone(ZoneId.systemDefault()).toLocalDate() + "\n")).color(NamedTextColor.GRAY)
+                .append(Component.text("Type: ", NamedTextColor.DARK_GRAY))
+                .append(Component.text(quarter.getType().getFormattedName() + " ", NamedTextColor.GRAY))
+                .append(Component.text("Town: ", NamedTextColor.DARK_GRAY))
+                .append(Component.text(quarter.getTown().getName() + "\n", NamedTextColor.GRAY))
+                .append(Component.text("Price: ", NamedTextColor.DARK_GRAY))
+                .append(Component.text(price + " ", NamedTextColor.GRAY))
+                .append(Component.text("Embassy: ", NamedTextColor.DARK_GRAY))
+                .append(Component.text(quarter.isEmbassy() ? "True " : "False ", NamedTextColor.GRAY))
+                .append(Component.text("Cuboids: ", NamedTextColor.DARK_GRAY))
+                .append(Component.text(quarter.getCuboids().size() + "\n", NamedTextColor.GRAY))
+                .append(Component.text("Volume: ", NamedTextColor.DARK_GRAY))
+                .append(Component.text(quarter.getVolume() + " blocks ", NamedTextColor.GRAY))
+                .append(Component.text("Registered: ", NamedTextColor.DARK_GRAY))
+                .append(Component.text(quarter.getRegistered() == null ? "N/A\n" : Instant.ofEpochMilli(quarter.getRegistered()).atZone(ZoneId.systemDefault()).toLocalDate().toString() + "\n")).color(NamedTextColor.GRAY)
+                .append(Component.text("Claimed at: ", NamedTextColor.DARK_GRAY))
+                .append(Component.text(quarter.getClaimedAt() == null ? "N/A\n" : Instant.ofEpochMilli(quarter.getClaimedAt()).atZone(ZoneId.systemDefault()).toLocalDate().toString() + "\n", NamedTextColor.GRAY))
                 .append(getTrustedComponent(quarter))
                 .append(Component.text(" "))
                 .append(getColourComponent(rgb)).clickEvent(ClickEvent.copyToClipboard("/q colour " + rgb[0] + " " + rgb[1] + " " + rgb[2]))
@@ -73,7 +75,7 @@ public class HereCommand extends BaseCommand {
         QuartersMessaging.sendInfoWall(player, component);
     }
 
-    private Component getSquareBracketComponet(String text) {
+    private Component getSquareBracketComponent(String text) {
         return Component.empty()
                 .append(Component.text("[", NamedTextColor.DARK_GRAY))
                 .append(Component.text(text, TextColor.color(0x9655FF)))
@@ -81,7 +83,7 @@ public class HereCommand extends BaseCommand {
     }
 
     private Component getColourComponent(int[] rgb) {
-        Component colourComponent = getSquareBracketComponet("Colour");
+        Component colourComponent = getSquareBracketComponent("Colour");
 
         int colour = arrayToRGBHex(rgb);
         Component hoverComponent = Component.empty()
@@ -104,7 +106,7 @@ public class HereCommand extends BaseCommand {
     }
 
     private Component getTrustedComponent(Quarter quarter) {
-        Component trustedComponent = getSquareBracketComponet("Trusted");
+        Component trustedComponent = getSquareBracketComponent("Trusted");
 
         Component hoverComponent = Component.empty();
 
