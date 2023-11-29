@@ -111,9 +111,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.MockBukkit</groupId>
-            <artifactId>MockBukkit</artifactId>
-            <version>v1.20-SNAPSHOT</version>
+            <groupId>com.github.seeseemelk</groupId>
+            <artifactId>MockBukkit-v1.20</artifactId>
+            <version>3.9.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
