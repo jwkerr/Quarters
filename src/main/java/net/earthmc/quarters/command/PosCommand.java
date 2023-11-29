@@ -11,6 +11,7 @@ public class PosCommand extends BaseCommand {
     @Subcommand("pos1")
     @Description("Select 1st position of a quarter")
     @CommandPermission("quarters.command.quarters.pos")
+    @CommandCompletion("x y z")
     public void onPos1(Player player, @Default("0") int x, @Default("0") int y, @Default("0") int z) {
         Location location = adjustLocation(player.getLocation(), x, y, z);
 
@@ -20,6 +21,7 @@ public class PosCommand extends BaseCommand {
     @Subcommand("pos2")
     @Description("Select 2nd position of a quarter")
     @CommandPermission("quarters.command.quarters.pos")
+    @CommandCompletion("x y z")
     public void onPos2(Player player, @Default("0") int x, @Default("0") int y, @Default("0") int z) {
         Location location = adjustLocation(player.getLocation(), x, y, z);
 
