@@ -66,12 +66,21 @@ public class TownyActionListener implements Listener {
 
                 handleEvent(event, quarter, resident);
                 break;
+            case PUBLIC:
+                handleEvent(event, quarter, resident);
+                break;
             case STATION:
                 if (!(event instanceof TownyItemuseEvent || event instanceof TownyDestroyEvent || event instanceof TownySwitchEvent))
                     return;
 
                 // Extra tolerance on Y coordinate to check for boats placed in the lowest quadrant of a quarter
                 handleStation(event, QuarterUtil.getQuarter(location.add(0, 0.25, 0)), resident);
+                break;
+            case WORKSITE:
+                if (!(event instanceof TownyBuildEvent || event instanceof TownyDestroyEvent))
+                    return;
+
+                handleEvent(event, quarter, resident);
                 break;
         }
     }

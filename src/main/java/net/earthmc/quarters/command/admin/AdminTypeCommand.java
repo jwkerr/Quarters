@@ -17,7 +17,7 @@ public class AdminTypeCommand extends BaseCommand {
     @Subcommand("type")
     @Description("Change a quarter's type")
     @CommandPermission("quarters.command.quartersadmin.type")
-    @CommandCompletion("apartment|commons|shop|station")
+    @CommandCompletion("apartment|commons|public|shop|station|worksite")
     public void onType(Player player, String type) {
         if (Arrays.stream(QuarterType.values()).noneMatch(e -> e.name().equalsIgnoreCase(type))) {
             QuartersMessaging.sendErrorMessage(player, "Invalid argument");
