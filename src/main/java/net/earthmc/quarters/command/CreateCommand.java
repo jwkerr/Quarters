@@ -16,6 +16,7 @@ import net.earthmc.quarters.object.QuarterType;
 import net.earthmc.quarters.manager.SelectionManager;
 import net.earthmc.quarters.object.QuartersTown;
 import net.earthmc.quarters.util.CommandUtil;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -90,9 +91,11 @@ public class CreateCommand extends BaseCommand {
 
         TownMetadataManager.setQuarterListOfTown(town, quarterList);
 
+        Location location = cuboids.get(0).getPos1();
         cuboids.clear();
 
         QuartersMessaging.sendSuccessMessage(player, "Selected quarter has been successfully created");
+        QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " has created a quarter " + QuartersMessaging.getLocationString(location));
     }
 
     private boolean isCuboidListInValidLocation(List<Cuboid> cuboids) {

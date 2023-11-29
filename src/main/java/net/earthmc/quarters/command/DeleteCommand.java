@@ -9,6 +9,7 @@ import net.earthmc.quarters.manager.TownMetadataManager;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.util.CommandUtil;
 import net.earthmc.quarters.util.QuarterUtil;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -28,9 +29,8 @@ public class DeleteCommand extends BaseCommand {
         if (!CommandUtil.hasPermissionOrMayor(player, "quarters.action.delete"))
             return;
 
+        Town town = TownyAPI.getInstance().getTown(player);
         if (arg != null) {
-            Town town = TownyAPI.getInstance().getTown(player);
-
             TownMetadataManager.setQuarterListOfTown(town, new ArrayList<>());
             QuartersMessaging.sendSuccessMessage(player, "Successfully deleted all quarters in " + town.getName());
             return;
@@ -40,11 +40,13 @@ public class DeleteCommand extends BaseCommand {
             return;
 
         Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
-        assert quarter != null;
         if (!CommandUtil.isQuarterInPlayerTown(player, quarter))
             return;
 
         quarter.delete();
+
+        Location location = player.getLocation();
         QuartersMessaging.sendSuccessMessage(player, "Successfully deleted this quarter");
+        QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " has deleted a quarter " + QuartersMessaging.getLocationString(location));
     }
 }

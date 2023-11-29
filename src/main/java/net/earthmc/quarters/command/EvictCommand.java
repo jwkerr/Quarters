@@ -7,6 +7,7 @@ import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.util.CommandUtil;
 import net.earthmc.quarters.util.QuarterUtil;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 @CommandAlias("quarters|q")
@@ -32,7 +33,11 @@ public class EvictCommand extends BaseCommand {
         if (!CommandUtil.isQuarterInPlayerTown(player, quarter))
             return;
 
+        String ownerName = quarter.getOwnerResident().getName();
         evictQuarterOwner(player, quarter);
+
+        Location location = player.getLocation();
+        QuartersMessaging.sendInfoMessageToTown(quarter.getTown(), player, player.getName() + " has evicted " + ownerName + " from a quarter " + QuartersMessaging.getLocationString(location));
     }
 
     public static void evictQuarterOwner(Player player, Quarter quarter) {

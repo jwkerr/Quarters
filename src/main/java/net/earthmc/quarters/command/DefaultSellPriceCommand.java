@@ -35,5 +35,6 @@ public class DefaultSellPriceCommand extends BaseCommand {
         TownMetadataManager.setDefaultSellPriceOfTown(town, price);
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully changed the default quarter sale price of " + town.getName() + " to " + price);
+        QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " has changed the default quarter sale price of " + town.getName() + " to " + price);
     }
 }

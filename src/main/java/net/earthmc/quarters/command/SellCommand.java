@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
+import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.object.QuartersTown;
@@ -29,8 +30,11 @@ public class SellCommand extends BaseCommand {
         if (!CommandUtil.isQuarterInPlayerTown(player, quarter))
             return;
 
+        Town town = quarter.getTown();
         if (arg != null && arg.equals("cancel")) {
             cancelQuarterSale(player, quarter);
+
+            QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " has set a quarter not for sale " + QuartersMessaging.getLocationString(player.getLocation()));
             return;
         }
 
@@ -44,6 +48,7 @@ public class SellCommand extends BaseCommand {
         }
 
         setQuarterForSale(player, quarter, price);
+        QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " has set a quarter for sale " + QuartersMessaging.getLocationString(player.getLocation()));
     }
 
     public static void cancelQuarterSale(Player player, Quarter quarter) {

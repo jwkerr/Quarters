@@ -13,6 +13,7 @@ import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.Quarter;
 import net.earthmc.quarters.util.CommandUtil;
 import net.earthmc.quarters.util.QuarterUtil;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.time.Instant;
@@ -74,6 +75,9 @@ public class ClaimCommand extends BaseCommand {
                 setAndSaveQuarter(quarter, resident);
 
                 QuartersMessaging.sendSuccessMessage(player, "You are now the owner of this quarter");
+
+                Location location = player.getLocation();
+                QuartersMessaging.sendInfoMessageToTown(quarter.getTown(), player, player.getName() + " has claimed a quarter " + QuartersMessaging.getLocationString(location));
             })
             .setTitle("Purchasing this quarter will cost " + quarter.getPrice() + ", are you sure you want to purchase it?")
             .sendTo(resident.getPlayer());
@@ -81,6 +85,9 @@ public class ClaimCommand extends BaseCommand {
             setAndSaveQuarter(quarter, resident);
 
             QuartersMessaging.sendSuccessMessage(player, "You are now the owner of this quarter");
+
+            Location location = player.getLocation();
+            QuartersMessaging.sendInfoMessageToTown(quarter.getTown(), player, player.getName() + " has claimed a quarter " + QuartersMessaging.getLocationString(location));
         }
     }
 
