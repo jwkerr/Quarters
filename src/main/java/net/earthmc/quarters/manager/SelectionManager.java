@@ -26,6 +26,9 @@ public class SelectionManager {
         if (!canSelectPosition(player, town))
             return;
 
+        if (!isPositionInBounds(player, location))
+            return;
+
         if (isPos1)
             selection.setPos1(location);
 
@@ -35,13 +38,27 @@ public class SelectionManager {
         QuartersMessaging.sendInfoMessage(player, getSelectedPositionComponent(isPos1, location));
     }
 
-    public static boolean canSelectPosition(Player player, Town town) {
+    private static boolean canSelectPosition(Player player, Town town) {
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null)
             return false;
 
         if (town == null || !town.hasResident(player)) {
             QuartersMessaging.sendErrorMessage(player, "Selected area must be part of your town");
+            return false;
+        }
+
+        return true;
+    }
+
+    private static boolean isPositionInBounds(Player player, Location location) {
+        if (location.getY() > player.getWorld().getMaxHeight()) {
+            QuartersMessaging.sendErrorMessage(player, "Selected position is greater than the world's maximum height");
+            return false;
+        }
+
+        if (location.getY() < player.getWorld().getMinHeight()) {
+            QuartersMessaging.sendErrorMessage(player, "Selected position is less than the world's minimum height");
             return false;
         }
 
