@@ -14,6 +14,10 @@ public class Config {
         config.addDefault("quarters.max_quarters_per_town", 0); config.setInlineComments("quarters.max_quarters_per_town", Collections.singletonList("Maximum amount of quarters that can be in a single town, set to 0 for no limit"));
         config.addDefault("quarters.max_cuboid_volume", 0); config.setInlineComments("quarters.max_cuboid_volume", Collections.singletonList("Maximum block volume of individual cuboids, set to 0 for no limit"));
         config.addDefault("quarters.max_cuboids_per_quarter", 0); config.setInlineComments("quarters.max_cuboids_per_quarter", Collections.singletonList("Maximum amount of cuboids that can be in each quarter, set to 0 for no limit"));
+        config.addDefault("quarters.default_colour.enabled", false); config.setInlineComments("quarters.default_colour.enabled", Collections.singletonList("Enable to make quarters a certain colour by default, configure colour below"));
+        config.addDefault("quarters.default_colour.red", 63);
+        config.addDefault("quarters.default_colour.green", 180);
+        config.addDefault("quarters.default_colour.blue", 255);
 
         config.addDefault("particles.enabled", true); config.setInlineComments("particles.enabled", Collections.singletonList("Set to false to completely disable particle outlines around cuboids"));
         config.addDefault("particles.current_selection_particle", "SCRAPE"); config.setInlineComments("particles.current_selection_particle", Collections.singletonList("Particle outline of the currently selected area"));

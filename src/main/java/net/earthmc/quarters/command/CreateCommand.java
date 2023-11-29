@@ -16,6 +16,7 @@ import net.earthmc.quarters.object.QuarterType;
 import net.earthmc.quarters.manager.SelectionManager;
 import net.earthmc.quarters.object.QuartersTown;
 import net.earthmc.quarters.util.CommandUtil;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.time.Instant;
@@ -71,7 +72,7 @@ public class CreateCommand extends BaseCommand {
         quarter.setEmbassy(false);
         quarter.setRegistered(Instant.now().toEpochMilli());
         quarter.setClaimedAt(null);
-        quarter.setRGB(getRandomRGB());
+        quarter.setRGB(getRGBValue());
 
         int maxVolume = Quarters.INSTANCE.getConfig().getInt("quarters.max_quarter_volume");
         if (maxVolume > 0) {
@@ -103,12 +104,22 @@ public class CreateCommand extends BaseCommand {
         return true;
     }
 
-    private int[] getRandomRGB() {
-        Random random = new Random();
+    private int[] getRGBValue() {
+        int r;
+        int g;
+        int b;
 
-        int r = random.nextInt(256);
-        int g = random.nextInt(256);
-        int b = random.nextInt(256);
+        FileConfiguration config = Quarters.INSTANCE.getConfig();
+        if (config.getBoolean("quarters.default_colour.enabled")) {
+            r = config.getInt("quarters.default_colour.red");
+            g = config.getInt("quarters.default_colour.green");
+            b = config.getInt("quarters.default_colour.blue");
+        } else {
+            Random random = new Random();
+            r = random.nextInt(256);
+            g = random.nextInt(256);
+            b = random.nextInt(256);
+        }
 
         return new int[]{r, g, b};
     }
