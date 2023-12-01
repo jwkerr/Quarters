@@ -48,7 +48,12 @@ public class SellCommand extends BaseCommand {
         }
 
         setQuarterForSale(player, quarter, price);
-        QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " has set a quarter for sale " + QuartersMessaging.getLocationString(player.getLocation()));
+
+        if (TownyEconomyHandler.isActive()) {
+            QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " has set a quarter for sale for " + TownyEconomyHandler.getFormattedBalance(price) + " " + QuartersMessaging.getLocationString(player.getLocation()));
+        } else if (!TownyEconomyHandler.isActive()) {
+            QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " has set a quarter for sale " + QuartersMessaging.getLocationString(player.getLocation()));
+        }
     }
 
     public static void cancelQuarterSale(Player player, Quarter quarter) {
