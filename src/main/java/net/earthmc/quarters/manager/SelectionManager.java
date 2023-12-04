@@ -73,12 +73,12 @@ public class SelectionManager {
         int z = location.getBlockZ();
 
         return Component.text()
-                .append(Component.text(String.format("Position %s: ", pos)).color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC))
-                .append(Component.text("X=" + x).color(NamedTextColor.RED)).resetStyle()
-                .append(Component.text("/").color(NamedTextColor.GRAY))
-                .append(Component.text("Y=" + y).color(NamedTextColor.GREEN))
-                .append(Component.text("/").color(NamedTextColor.GRAY))
-                .append(Component.text("Z=" + z).color(NamedTextColor.BLUE))
+                .append(Component.text(String.format("Position %s: ", pos), NamedTextColor.GRAY, TextDecoration.ITALIC))
+                .append(Component.text("X=" + x, NamedTextColor.RED)).resetStyle()
+                .append(Component.text("/", NamedTextColor.GRAY))
+                .append(Component.text("Y=" + y, NamedTextColor.GREEN))
+                .append(Component.text("/", NamedTextColor.GRAY))
+                .append(Component.text("Z=" + z, NamedTextColor.BLUE))
                 .build();
     }
 }
