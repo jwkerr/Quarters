@@ -31,9 +31,9 @@ public class Cuboid {
         this.maxY = Math.max(pos1.getBlockY(), pos2.getBlockY());
         this.minZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ());
         this.maxZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ());
-        this.length = Math.abs(pos1.getBlockX() - pos2.getBlockX());
-        this.height = Math.abs(pos1.getBlockY() - pos2.getBlockY());
-        this.width = Math.abs(pos1.getBlockZ() - pos2.getBlockZ());
+        this.length = Math.abs(pos1.getBlockX() - pos2.getBlockX()) + 1;
+        this.height = Math.abs(pos1.getBlockY() - pos2.getBlockY()) + 1;
+        this.width = Math.abs(pos1.getBlockZ() - pos2.getBlockZ()) + 1;
     }
 
     /**

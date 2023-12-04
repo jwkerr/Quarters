@@ -137,11 +137,24 @@ class CuboidTest {
     void getVolumeReturnsCorrectValue() {
         World world = new WorldMock(Material.DIRT, 3);
 
-        Location pos1 = new Location(world, 2423, 74, -9734);
-        Location pos2 = new Location(world, 2413, 82, -9722);
+        Location pos1 = new Location(world, 1909, 63, -8487);
+        Location pos2 = new Location(world, 1912, 68, -8482);
         Cuboid cuboid = new Cuboid(pos1, pos2);
 
-        int expectedVolume = 960;
+        int expectedVolume = 144;
+
+        assertEquals(expectedVolume, cuboid.getVolume());
+    }
+
+    @Test
+    void getVolumeReturnsCorrectValueWithOneEqualCoordinate() {
+        World world = new WorldMock(Material.DIRT, 3);
+
+        Location pos1 = new Location(world, 1961, 63, -8486);
+        Location pos2 = new Location(world, 1958, 64, -8486);
+        Cuboid cuboid = new Cuboid(pos1, pos2);
+
+        int expectedVolume = 8;
 
         assertEquals(expectedVolume, cuboid.getVolume());
     }

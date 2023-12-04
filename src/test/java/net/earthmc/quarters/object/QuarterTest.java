@@ -44,7 +44,7 @@ class QuarterTest {
 
         quarter.setCuboids(cuboids);
 
-        int expectedVolume = 1120;
+        int expectedVolume = 1562;
 
         assertEquals(expectedVolume, quarter.getVolume());
     }
