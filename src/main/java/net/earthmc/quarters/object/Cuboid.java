@@ -10,17 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cuboid {
-    private final Location pos1;
-    private final Location pos2;
-    private final int minX;
-    private final int minY;
-    private final int minZ;
-    private final int maxX;
-    private final int maxY;
-    private final int maxZ;
-    private final int length;
-    private final int height;
-    private final int width;
+    private final Location pos1, pos2;
+    private final int minX, minY, minZ, maxX, maxY, maxZ;
+    private final int length, height, width;
 
     public Cuboid(Location pos1, Location pos2) {
         this.pos1 = pos1;
