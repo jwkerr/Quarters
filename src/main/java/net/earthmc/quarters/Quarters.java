@@ -2,6 +2,7 @@ package net.earthmc.quarters;
 
 import co.aikar.commands.PaperCommandManager;
 import com.palmergames.bukkit.towny.object.metadata.MetadataLoader;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.earthmc.quarters.command.*;
 import net.earthmc.quarters.command.admin.*;
 import net.earthmc.quarters.config.Config;
@@ -10,9 +11,12 @@ import net.earthmc.quarters.manager.SponsorCosmeticsManager;
 import net.earthmc.quarters.object.QuarterListDFDeserializer;
 import net.earthmc.quarters.object.QuarterListDataField;
 import net.earthmc.quarters.task.OutlineParticleTask;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.function.Consumer;
 
 public final class Quarters extends JavaPlugin {
     public static Quarters INSTANCE;
@@ -99,8 +103,12 @@ public final class Quarters extends JavaPlugin {
     private void initTasks() {
         if (getConfig().getBoolean("particles.enabled")) {
             int ticksBetweenParticles = getConfig().getInt("particles.ticks_between_outline");
-            OutlineParticleTask outlineTask = new OutlineParticleTask();
-            outlineTask.runTaskTimer(this, 0, ticksBetweenParticles);
+            /*
+             *  to support folia,change the scheduler
+             */
+            Consumer<ScheduledTask> outlineParticleTask = new OutlineParticleTask();
+            Bukkit.getGlobalRegionScheduler().runAtFixedRate(this,outlineParticleTask
+                    ,1, ticksBetweenParticles);
         }
     }
 }

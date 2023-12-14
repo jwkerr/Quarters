@@ -2,6 +2,7 @@ package net.earthmc.quarters.task;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.object.*;
 import net.earthmc.quarters.manager.SelectionManager;
@@ -15,10 +16,23 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class OutlineParticleTask extends BukkitRunnable {
+public class OutlineParticleTask extends BukkitRunnable implements Consumer<ScheduledTask> {
     @Override
     public void run() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            QuartersPlayer quartersPlayer = new QuartersPlayer(player);
+            if (!QuarterUtil.shouldRenderOutlines(quartersPlayer, player.getInventory().getItemInMainHand().getType()))
+                continue;
+
+            createParticlesIfSelectionExists(player);
+
+            createParticlesIfQuartersExist(player);
+        }
+    }
+    @Override
+    public void accept(ScheduledTask scheduledTask) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             QuartersPlayer quartersPlayer = new QuartersPlayer(player);
             if (!QuarterUtil.shouldRenderOutlines(quartersPlayer, player.getInventory().getItemInMainHand().getType()))
@@ -113,4 +127,6 @@ public class OutlineParticleTask extends BukkitRunnable {
             }
         }
     }
+
+
 }
