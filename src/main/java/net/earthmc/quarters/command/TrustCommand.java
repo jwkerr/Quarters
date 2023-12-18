@@ -56,18 +56,18 @@ public class TrustCommand extends BaseCommand {
                 if (!trustedList.contains(targetResident.getUUID())) {
                     trustedList.add(targetResident.getUUID());
 
-                    QuartersMessaging.sendSuccessMessage(player, "Specified player has been added to this quarter's trusted list");
+                    QuartersMessaging.sendSuccessMessage(player, "该玩家已被添加到公寓的信任列表中");
                 } else {
-                    QuartersMessaging.sendErrorMessage(player, "Specified player is already trusted in this quarter");
+                    QuartersMessaging.sendErrorMessage(player, "该玩家已经被信任过了");
                 }
                 break;
             case "remove":
                 if (trustedList.contains(targetResident.getUUID())) {
                     trustedList.remove(targetResident.getUUID());
 
-                    QuartersMessaging.sendSuccessMessage(player, "Specified player has been removed from this quarter's trusted list");
+                    QuartersMessaging.sendSuccessMessage(player, "该玩家已从信任列表移除");
                 } else {
-                    QuartersMessaging.sendErrorMessage(player, "Specified player is not trusted in this quarter");
+                    QuartersMessaging.sendErrorMessage(player, "该玩家不在信任列表中");
                 }
                 break;
             case "clear":

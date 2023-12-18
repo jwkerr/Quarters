@@ -37,7 +37,7 @@ public class CreateCommand extends BaseCommand {
 
         List<Cuboid> cuboids = SelectionManager.cuboidsMap.computeIfAbsent(player, k -> new ArrayList<>());
         if (cuboids.isEmpty()) {
-            QuartersMessaging.sendErrorMessage(player, "You have not selected any areas, add your current selection with /quarters selection add");
+            QuartersMessaging.sendErrorMessage(player, "您没有圈选任何区域，通过 /quarters selection add 来将全选的区域加入区域列表");
             return;
         }
 
@@ -75,6 +75,7 @@ public class CreateCommand extends BaseCommand {
         quarter.setClaimedAt(null);
         quarter.setRGB(getRGBValue());
 
+
         int maxVolume = Quarters.INSTANCE.getConfig().getInt("quarters.max_quarter_volume");
         if (maxVolume > 0) {
             if (quarter.getVolume() > maxVolume) {
@@ -93,9 +94,10 @@ public class CreateCommand extends BaseCommand {
 
         Location location = cuboids.get(0).getPos1();
         cuboids.clear();
+        SellCommand.setQuarterForSale(player,quarter,Quarters.DEFAULT_PRICE);
 
-        QuartersMessaging.sendSuccessMessage(player, "Selected quarter has been successfully created");
-        QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " has created a quarter " + QuartersMessaging.getLocationString(location));
+        QuartersMessaging.sendSuccessMessage(player, "公寓区已成功创建");
+        QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " 创建了一个公寓 " + QuartersMessaging.getLocationString(location));
     }
 
     private boolean isCuboidListInValidLocation(List<Cuboid> cuboids) {

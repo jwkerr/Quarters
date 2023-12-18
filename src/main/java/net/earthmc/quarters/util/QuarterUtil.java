@@ -8,6 +8,7 @@ import net.earthmc.quarters.object.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,5 +186,24 @@ public class QuarterUtil {
         }
 
         return quarterList;
+    }
+    public static List<Quarter> getAllClaimableQuartersInPlayerTown(Player player) {
+        List<Quarter> quarterList = new ArrayList<>();
+
+            List<Quarter> currentTownQuarterList = new QuartersTown(TownyAPI.getInstance().getTown(player)).getQuarters();
+            if (currentTownQuarterList != null) {
+                quarterList.addAll(currentTownQuarterList);
+            }
+
+        return quarterList;
+    }
+    public static Quarter playerHasQuarters(Player player) {
+        for (Town town : TownyAPI.getInstance().getTowns()) {
+            List<Quarter> currentTownQuarterList = new QuartersTown(town).getQuarters();
+            for (Quarter quarter : currentTownQuarterList) {
+                if(quarter.getOwner().equals(player.getUniqueId())) return quarter;
+            }
+        }
+        return null;
     }
 }

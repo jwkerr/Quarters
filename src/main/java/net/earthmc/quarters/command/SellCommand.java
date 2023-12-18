@@ -34,7 +34,7 @@ public class SellCommand extends BaseCommand {
         if (arg != null && arg.equals("cancel")) {
             cancelQuarterSale(player, quarter);
 
-            QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " has set a quarter not for sale " + QuartersMessaging.getLocationString(player.getLocation()));
+            QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " 已经变更一个公寓的状态为取消出售 " + QuartersMessaging.getLocationString(player.getLocation()));
             return;
         }
 
@@ -43,23 +43,23 @@ public class SellCommand extends BaseCommand {
             return;
 
         if (price < 0) {
-            QuartersMessaging.sendErrorMessage(player, "Price must be greater than or equal to 0");
+            QuartersMessaging.sendErrorMessage(player, "价格必须大于等于 0");
             return;
         }
 
         setQuarterForSale(player, quarter, price);
 
         if (TownyEconomyHandler.isActive()) {
-            QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " has set a quarter for sale for " + TownyEconomyHandler.getFormattedBalance(price) + " " + QuartersMessaging.getLocationString(player.getLocation()));
+            QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " 已经变更一个公寓的状态为正在出售 " + TownyEconomyHandler.getFormattedBalance(price) + " " + QuartersMessaging.getLocationString(player.getLocation()));
         } else if (!TownyEconomyHandler.isActive()) {
-            QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " has set a quarter for sale " + QuartersMessaging.getLocationString(player.getLocation()));
+            QuartersMessaging.sendInfoMessageToTown(town, player, player.getName() + " 已经变更一个公寓的状态为正在出售 " + QuartersMessaging.getLocationString(player.getLocation()));
         }
     }
 
     public static void cancelQuarterSale(Player player, Quarter quarter) {
         quarter.setPrice(null);
         quarter.save();
-        QuartersMessaging.sendSuccessMessage(player, "This quarter is no longer for sale");
+        QuartersMessaging.sendSuccessMessage(player, "这个公寓不再出售了");
     }
 
     public static Double getSellPrice(Player player, String arg) {
@@ -89,12 +89,13 @@ public class SellCommand extends BaseCommand {
             price = 0.0;
 
         quarter.setPrice(price);
+        quarter.setLastPrice(price);
         quarter.save();
 
         if (TownyEconomyHandler.isActive()) {
-            QuartersMessaging.sendSuccessMessage(player, "This quarter has been set for sale for " + TownyEconomyHandler.getFormattedBalance(price));
+            QuartersMessaging.sendSuccessMessage(player, "这个公寓租价为 " + TownyEconomyHandler.getFormattedBalance(price) + "您可以通过/q sell 价格 来调整售价");
         } else if (!TownyEconomyHandler.isActive()) {
-            QuartersMessaging.sendSuccessMessage(player, "This quarter is now claimable using /q claim, it will be free to claim as Towny is not currently using an economy plugin");
+            QuartersMessaging.sendSuccessMessage(player, "这个公寓现在是可租用的，使用 /q claim 来租用");
         }
     }
 }

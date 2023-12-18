@@ -16,6 +16,7 @@ permissions:
     description: "Grants permission to use the Quarters selection wand"
     default: true
 
+
   quarters.action.*:
     description: "Grants permission to all the permission checks called by standard commands, should only be given to powerful ranks in a town"
     default: false
@@ -93,6 +94,13 @@ permissions:
 
   quarters.command.quarters.claim:
     description: "Grants permissions to claim quarters"
+    default: true
+
+  quarters.command.quarters.auto:
+    description: "Grants permissions to Auto claim quarters"
+    default: true
+  quarters.command.quarters.home:
+    description: "go home"
     default: true
 
   quarters.command.quarters.colour:

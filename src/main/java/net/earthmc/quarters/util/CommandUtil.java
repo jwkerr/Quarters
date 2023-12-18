@@ -15,7 +15,7 @@ public class CommandUtil {
         QuartersPlayer quartersPlayer = new QuartersPlayer(player);
 
         if (!quartersPlayer.isInQuarter()) {
-            QuartersMessaging.sendErrorMessage(player, "You are not standing within a quarter");
+            QuartersMessaging.sendErrorMessage(player, "您没有站在任何一个公寓内");
             return false;
         }
 
@@ -33,7 +33,7 @@ public class CommandUtil {
 
     public static boolean isQuarterInPlayerTown(Player player, Quarter quarter) {
         if (quarter.getTown() != TownyAPI.getInstance().getTown(player)) {
-            QuartersMessaging.sendErrorMessage(player, "This quarter is not part of your town");
+            QuartersMessaging.sendErrorMessage(player, "这个公寓不是您城镇的一部分");
             return false;
         }
 

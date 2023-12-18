@@ -13,6 +13,11 @@ public class Cuboid {
     private final Location pos1, pos2;
     private final int minX, minY, minZ, maxX, maxY, maxZ;
     private final int length, height, width;
+    private final Location centorLocation;
+
+    public Location getCentorLocation() {
+        return centorLocation;
+    }
 
     public Cuboid(Location pos1, Location pos2) {
         this.pos1 = pos1;
@@ -26,6 +31,7 @@ public class Cuboid {
         this.length = Math.abs(pos1.getBlockX() - pos2.getBlockX()) + 1;
         this.height = Math.abs(pos1.getBlockY() - pos2.getBlockY()) + 1;
         this.width = Math.abs(pos1.getBlockZ() - pos2.getBlockZ()) + 1;
+        this.centorLocation = new Location(pos1.getWorld(),(minX+maxX)/2,(minY+maxY)/2,(minZ+maxZ)/2);
     }
 
     /**

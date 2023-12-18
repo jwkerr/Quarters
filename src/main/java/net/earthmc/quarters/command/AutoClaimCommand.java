@@ -17,70 +17,67 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 
 @CommandAlias("quarters|q")
-public class ClaimCommand extends BaseCommand {
-    @Subcommand("claim")
-    @Description("Claim a quarter")
-    @CommandPermission("quarters.command.quarters.claim")
-    public void onClaim(Player player) {
-        if (!CommandUtil.isPlayerInQuarter(player))
-            return;
-
-        Quarter quarter = QuarterUtil.getQuarter(player.getLocation());
-        assert quarter != null;
+public class AutoClaimCommand extends BaseCommand {
+    @Subcommand("auto")
+    @Description("Auto Claim a quarter")
+    @CommandPermission("quarters.command.quarters.auto")
+    public void onAutoClaim(Player player) {
 
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null)
             return;
         if(QuarterUtil.playerHasQuarters(player)!=null){
-            QuartersMessaging.sendErrorMessage(player, "您已经拥有一个公寓了，您已经拥有一个公寓了，输入/q home 回到公寓，输入/q unclaim退租之前的公寓，退租记得搬走个人物品噢");
+            QuartersMessaging.sendErrorMessage(player, "您已经拥有一个公寓了，输入/q home 回到公寓，输入/q unclaim退租之前的公寓，退租记得搬走个人物品噢");
             return;
         }
-        if (Objects.equals(quarter.getOwnerResident(), resident)) {
-            QuartersMessaging.sendErrorMessage(player, "您已经拥有这个公寓了");
-            return;
-        }
-
-        if (quarter.getPrice() == null) {
-            QuartersMessaging.sendErrorMessage(player, "这个公寓被设置为不出租");
+        if (resident.getTownOrNull()!=null) {
+            QuartersMessaging.sendErrorMessage(player, "你不能租用公寓，因为你不属于任何一个城镇");
             return;
         }
 
-        if (!quarter.isEmbassy() && quarter.getTown() != resident.getTownOrNull()) {
-            QuartersMessaging.sendErrorMessage(player, "你不能租用这个公寓，因为它不是大使馆，也不是你所在城镇的一部分");
-            return;
-        }
 
-        if (TownyEconomyHandler.isActive() && resident.getAccount().getHoldingBalance() < quarter.getPrice()) {
-            QuartersMessaging.sendErrorMessage(player, "你没有足够的资金来租用这个公寓");
-            return;
-        }
 
-        sendClaimConfirmation(quarter, resident);
+        sendRandomClaimConfirmation(resident);
     }
 
-    private void sendClaimConfirmation(Quarter quarter, Resident resident) {
+    private void sendRandomClaimConfirmation(Resident resident) {
+        List<Quarter> allClaimableQuartersInPlayerTown = QuarterUtil.getAllClaimableQuartersInPlayerTown(resident.getPlayer());
+        Quarter quarter = null;
+        for (Quarter q : allClaimableQuartersInPlayerTown) {
+            if(q.getOwner()==null) quarter = q;
+        }
+        if(quarter == null){
+            QuartersMessaging.sendErrorMessage(resident.getPlayer(), "你不能租用公寓，因为当前城镇公寓已住满，或没有公寓区，您可以前往其他城镇或自建城镇");
+            return;
+        }
         double currentPrice = quarter.getPrice();
         Player player = resident.getPlayer();
-
+        player.teleportAsync(quarter.getCuboids().get(0).getCentorLocation());
+        if (TownyEconomyHandler.isActive() && resident.getAccount().getHoldingBalance() < quarter.getPrice()) {
+            QuartersMessaging.sendErrorMessage(player, "你没有足够的资金来租用这个公寓，该公寓租金为：" + quarter.getPrice());
+            return;
+        }
         if (currentPrice > 0) {
+            Quarter finalQuarter = quarter;
             Confirmation.runOnAccept(() -> {
-                if (quarter.getPrice() != currentPrice) {
+                if (finalQuarter.getPrice() != currentPrice) {
                     QuartersMessaging.sendErrorMessage(player, "Quarter purchase cancelled as the quarter's price has changed");
                     return;
                 }
 
-                resident.getAccount().withdraw(quarter.getPrice(), "为公寓支付 " + quarter.getUUID());
-                quarter.getTown().getAccount().deposit(quarter.getPrice(), "为公寓支付 " + quarter.getUUID());
+                resident.getAccount().withdraw(finalQuarter.getPrice(), "为公寓支付 " + finalQuarter.getUUID());
+                finalQuarter.getTown().getAccount().deposit(finalQuarter.getPrice(), "为公寓支付 " + finalQuarter.getUUID());
 
-                setAndSaveQuarter(quarter, resident);
+                setAndSaveQuarter(finalQuarter, resident);
 
                 QuartersMessaging.sendSuccessMessage(player, "您现在租用这个公寓了");
 
                 Location location = player.getLocation();
-                QuartersMessaging.sendInfoMessageToTown(quarter.getTown(), player, player.getName() + " 租用了一个公寓 " + QuartersMessaging.getLocationString(location));
+                QuartersMessaging.sendInfoMessageToTown(finalQuarter.getTown(), player, player.getName() + " 租用了一个公寓 " + QuartersMessaging.getLocationString(location));
             })
             .setTitle("租用这个公寓要花" + quarter.getPrice() + ", 您确定吗？如果确定请输入/confirm")
             .sendTo(resident.getPlayer());

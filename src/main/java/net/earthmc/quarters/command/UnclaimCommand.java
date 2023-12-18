@@ -15,6 +15,8 @@ import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
+import static net.earthmc.quarters.command.SellCommand.setQuarterForSale;
+
 @CommandAlias("quarters|q")
 public class UnclaimCommand extends BaseCommand {
     @Subcommand("unclaim")
@@ -29,14 +31,18 @@ public class UnclaimCommand extends BaseCommand {
 
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (!Objects.equals(quarter.getOwnerResident(), resident)) {
-            QuartersMessaging.sendErrorMessage(player, "You do not own this quarter");
+            QuartersMessaging.sendErrorMessage(player, "您没有租用这个公寓");
             return;
         }
 
         quarter.setOwner(null);
         quarter.setClaimedAt(null);
+        quarter.setOverdueday(0);
+        quarter.setOverdueTax((double) 0);
+
+        quarter.setPrice(quarter.getLastPrice());
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, "You have successfully unclaimed this quarter");
+        QuartersMessaging.sendSuccessMessage(player, "您已经成功退租");
     }
 }

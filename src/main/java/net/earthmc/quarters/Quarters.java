@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 public final class Quarters extends JavaPlugin {
     public static Quarters INSTANCE;
     public static Material WAND;
+    public static double DEFAULT_PRICE;
 
     @Override
     public void onEnable() {
@@ -30,6 +31,7 @@ public final class Quarters extends JavaPlugin {
         saveConfig();
 
         WAND = Material.valueOf(getConfig().getString("wand_material"));
+        DEFAULT_PRICE = getConfig().getDouble("quarters.default_sell_price",100.0);
 
         MetadataLoader.getInstance().registerDeserializer(QuarterListDataField.typeID(), new QuarterListDFDeserializer());
 
@@ -66,6 +68,8 @@ public final class Quarters extends JavaPlugin {
         manager.registerCommand(new TrustCommand());
         manager.registerCommand(new TypeCommand());
         manager.registerCommand(new UnclaimCommand());
+        manager.registerCommand(new AutoClaimCommand());
+        manager.registerCommand(new HomeCommand());
 
         // Admin commands
         manager.registerCommand(new AdminColourCommand());
@@ -98,6 +102,7 @@ public final class Quarters extends JavaPlugin {
         pm.registerEvents(new TownStatusScreenListener(), this);
         pm.registerEvents(new TownUnclaimListener(), this);
         pm.registerEvents(new TownyActionListener(), this);
+        pm.registerEvents(new TownNewDayTaxListener(), this);
     }
 
     private void initTasks() {

@@ -17,11 +17,39 @@ public class Quarter {
     private UUID owner;
     private List<UUID> trusted;
     private Double price;
+    private Double lastPrice;
+    private Double nextTax;
+    private Double overdueTax;
+    private int overdueday;
     private QuarterType type;
     private boolean isEmbassy;
     private Long registered;
     private Long claimedAt;
     private int[] rgb;
+
+    public Double getNextTax() {
+        return nextTax;
+    }
+
+    public void setNextTax(Double nextTax) {
+        this.nextTax = nextTax;
+    }
+
+    public Double getOverdueTax() {
+        return overdueTax;
+    }
+
+    public void setOverdueTax(Double overdueTax) {
+        this.overdueTax = overdueTax;
+    }
+
+    public int getOverdueday() {
+        return overdueday;
+    }
+
+    public void setOverdueday(int overdueday) {
+        this.overdueday = overdueday;
+    }
 
     /**
      * This method must be called to save the quarter's instance to metadata after any change
@@ -140,6 +168,18 @@ public class Quarter {
         return trustedResidents;
     }
 
+    public void setLastPrice(Double price) {
+        this.lastPrice = price;
+    }
+
+    /**
+     *
+     * @return The current sale price or null if it is not for sale
+     */
+    @Nullable
+    public Double getLastPrice() {
+        return lastPrice;
+    }
     public void setPrice(Double price) {
         this.price = price;
     }

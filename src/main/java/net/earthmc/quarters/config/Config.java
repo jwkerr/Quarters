@@ -18,6 +18,7 @@ public class Config {
         config.addDefault("quarters.default_colour.red", 63);
         config.addDefault("quarters.default_colour.green", 180);
         config.addDefault("quarters.default_colour.blue", 255);
+        config.addDefault("quarters.default_sell_price", 100);
 
         config.addDefault("particles.enabled", true); config.setInlineComments("particles.enabled", Collections.singletonList("Set to false to completely disable particle outlines around cuboids"));
         config.addDefault("particles.current_selection_particle", "SCRAPE"); config.setInlineComments("particles.current_selection_particle", Collections.singletonList("Particle outline of the currently selected area"));
