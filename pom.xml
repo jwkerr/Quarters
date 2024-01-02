@@ -13,7 +13,7 @@
 
     <description>The modern "apartment" plugin for Towny</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <url>https://earthmc.net</url>
@@ -23,7 +23,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.12.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
