@@ -31,6 +31,4 @@ public enum QuarterType {
 
         return null;
     }
-
-
 }
