@@ -69,7 +69,11 @@ public class ClaimCommand extends BaseCommand {
                     return;
                 }
 
-                resident.getAccount().withdraw(quarter.getPrice(), "Payment for quarter " + quarter.getUUID());
+                if (!resident.getAccount().withdraw(quarter.getPrice(), "Payment for quarter " + quarter.getUUID())) {
+                    QuartersMessaging.sendErrorMessage(player, "Quarter purchase cancelled as you do not have sufficient funds");
+                    return;
+                }
+
                 quarter.getTown().getAccount().deposit(quarter.getPrice(), "Payment for quarter " + quarter.getUUID());
 
                 setAndSaveQuarter(quarter, resident);
