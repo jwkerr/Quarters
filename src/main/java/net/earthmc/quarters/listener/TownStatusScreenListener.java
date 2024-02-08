@@ -15,21 +15,21 @@ import org.bukkit.event.Listener;
 public class TownStatusScreenListener implements Listener {
     @EventHandler
     public void onTownStatusScreen(TownStatusScreenEvent event) {
+        QuartersTown quartersTown = new QuartersTown(event.getTown());
+        if (!quartersTown.hasQuarter()) return;
+
         Component hoverComponent = Component.empty();
 
         int iteration = 0;
         for (QuarterType quarterType : QuarterType.values()) {
             if (iteration != 0)
-                hoverComponent = hoverComponent.append(Component.text("\n"));
+                hoverComponent = hoverComponent.append(Component.newline());
 
             int numOfQuarterType = 0;
 
-            QuartersTown quartersTown = new QuartersTown(event.getTown());
-            if (quartersTown.hasQuarter()) {
-                for (Quarter quarter : quartersTown.getQuarters()) {
-                    if (quarter.getType().equals(quarterType))
-                        numOfQuarterType++;
-                }
+            for (Quarter quarter : quartersTown.getQuarters()) {
+                if (quarter.getType().equals(quarterType))
+                    numOfQuarterType++;
             }
 
             hoverComponent = hoverComponent.append(Component.text(quarterType.getFormattedName() + ": ", NamedTextColor.DARK_GREEN));
