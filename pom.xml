@@ -6,7 +6,7 @@
 
     <groupId>net.earthmc</groupId>
     <artifactId>Quarters</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <packaging>jar</packaging>
 
     <name>Quarters</name>
