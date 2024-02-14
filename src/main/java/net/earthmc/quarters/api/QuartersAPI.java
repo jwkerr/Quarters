@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.UUID;
 
 public class QuartersAPI {
     private static QuartersAPI instance;
@@ -40,6 +41,21 @@ public class QuartersAPI {
     @Nullable
     public Quarter getQuarter(Location location) {
         return QuarterUtil.getQuarter(location);
+    }
+
+    /**
+     * Gets a quarter by its UUID
+     *
+     * @param uuid UUID to resolve a quarter from
+     * @return The quarter with the specified UUID or null if it does not exist
+     */
+    @Nullable
+    public Quarter getQuarter(UUID uuid) {
+        for (Quarter quarter : getAllQuarters()) {
+            if (quarter.getUUID().equals(uuid)) return quarter;
+        }
+
+        return null;
     }
 
     /**
