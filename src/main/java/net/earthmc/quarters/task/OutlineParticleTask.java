@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -71,8 +72,13 @@ public class OutlineParticleTask extends BukkitRunnable {
 
     private static void createParticlesAtCuboidEdges(Player player, Location pos1, Location pos2, Particle particle, Particle.DustOptions dustOptions) {
         int maxDistance = Quarters.INSTANCE.getConfig().getInt("particles.max_distance_from_cuboid"); // Skip sending particles if the cuboid is too far to save performance
+        final World playerWorld = player.getWorld();
+        if (!playerWorld.equals(pos1.getWorld()) || !playerWorld.equals(pos2.getWorld()))
+            return;
+
         Location playerLocation = player.getLocation();
-        if (playerLocation.distance(pos1) > maxDistance && playerLocation.distance(pos2) > maxDistance)
+        final int maxDistanceSquared = maxDistance * maxDistance;
+        if (playerLocation.distanceSquared(pos1) > maxDistanceSquared && playerLocation.distanceSquared(pos2) > maxDistanceSquared)
             return;
 
         int x1 = pos1.getBlockX();
