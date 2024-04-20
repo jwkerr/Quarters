@@ -33,7 +33,6 @@ public final class Quarters extends JavaPlugin {
 
         initCommands();
         initListeners();
-        initTasks();
 
         getLogger().info("Quarters enabled :3");
     }
@@ -94,13 +93,6 @@ public final class Quarters extends JavaPlugin {
         pm.registerEvents(new TownStatusScreenListener(), this);
         pm.registerEvents(new TownUnclaimListener(), this);
         pm.registerEvents(new TownyActionListener(), this);
-    }
-
-    private void initTasks() {
-        if (getConfig().getBoolean("particles.enabled")) {
-            int ticksBetweenParticles = getConfig().getInt("particles.ticks_between_outline");
-            OutlineParticleTask outlineTask = new OutlineParticleTask();
-            outlineTask.runTaskTimer(this, 0, ticksBetweenParticles);
-        }
+        pm.registerEvents(new PlayerJoinListener(this), this);
     }
 }
