@@ -6,29 +6,26 @@ import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.object.*;
 import net.earthmc.quarters.manager.SelectionManager;
 import net.earthmc.quarters.util.QuarterUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OutlineParticleTask extends BukkitRunnable {
-    @Override
-    public void run() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
+public class OutlineParticleTask {
+    public static void startTask(final Player player, final Quarters plugin) {
+        player.getScheduler().runAtFixedRate(plugin, task -> {
             QuartersPlayer quartersPlayer = new QuartersPlayer(player);
             if (!QuarterUtil.shouldRenderOutlines(quartersPlayer, player.getInventory().getItemInMainHand().getType()))
-                continue;
+                return;
 
             createParticlesIfSelectionExists(player);
 
             createParticlesIfQuartersExist(player);
-        }
+        }, () -> {}, 1L, plugin.getConfig().getInt("particles.ticks_between_outline"));
     }
 
     public static void createParticlesIfSelectionExists(Player player) {
@@ -60,10 +57,10 @@ public class OutlineParticleTask extends BukkitRunnable {
         List<Quarter> quarterList = quartersTown.getQuarters();
         if (quarterList != null) {
             for (Quarter quarter : quarterList) {
-                for (Cuboid cuboid : quarter.getCuboids()) {
-                    int[] rgb = quarter.getRGB();
-                    Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(rgb[0], rgb[1], rgb[2]), 1f);
+                int[] rgb = quarter.getRGB();
+                Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(rgb[0], rgb[1], rgb[2]), 1f);
 
+                for (Cuboid cuboid : quarter.getCuboids()) {
                     createParticlesAtCuboidEdges(player, cuboid.getPos1(), cuboid.getPos2(), Particle.REDSTONE, dustOptions);
                 }
             }

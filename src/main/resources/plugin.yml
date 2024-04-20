@@ -6,6 +6,7 @@ prefix: Quarters
 authors: [Fruitloopins]
 description: The modern "apartment" plugin for Towny
 website: https://earthmc.net
+folia-supported: true
 
 depend: [Towny]
 softdepend: [QuickShop, QuickShop-Hikari]

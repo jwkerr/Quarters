@@ -12,12 +12,13 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SelectionManager {
-    public static HashMap<Player, Selection> selectionMap = new HashMap<>();
-    public static HashMap<Player, List<Cuboid>> cuboidsMap = new HashMap<>();
+    public static Map<Player, Selection> selectionMap = new ConcurrentHashMap<>();
+    public static Map<Player, List<Cuboid>> cuboidsMap = new ConcurrentHashMap<>();
 
     public static void selectPosition(Player player, Location location, boolean isPos1) {
         Selection selection = selectionMap.computeIfAbsent(player, k -> new Selection());
