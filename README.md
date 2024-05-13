@@ -27,7 +27,7 @@
 
 ...and 4 other private sponsors
 
-⭐ If you would like to support my development efforts, you can sponsor me on [GitHub](https://github.com/sponsors/Fruitloopins) or [Patreon](https://patreon.com/Fruitloopins).
+⭐ If you would like to support my development efforts, you can sponsor me on [GitHub](https://github.com/sponsors/jwkerr) or [Patreon](https://patreon.com/Fruitloopins).
 </details>
 
 ---
