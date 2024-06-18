@@ -31,17 +31,15 @@ public class TownMetadataManager {
     }
 
     public static void setQuarterListOfTown(Town town, List<Quarter> value) {
-        if (!town.hasMeta(QLDF))
-            town.addMetaData(new QuarterListDataField("quarters_qldf", null));
+        if (!town.hasMeta(QLDF)) {
+            town.addMetaData(new QuarterListDataField("quarters_qldf", value));
+            return;
+        }
 
-        if (town.hasMeta(QLDF)) {
-            CustomDataField<?> cdf = town.getMetadata(QLDF);
-            if (cdf instanceof QuarterListDataField) {
-                QuarterListDataField qldf = (QuarterListDataField) cdf;
-
-                qldf.setValue(value);
-                town.addMetaData(qldf);
-            }
+        QuarterListDataField qldf = town.getMetadata(QLDF, QuarterListDataField.class);
+        if (qldf != null) {
+            qldf.setValue(value);
+            town.addMetaData(qldf);
         }
     }
 
