@@ -27,8 +27,6 @@ public final class Quarters extends JavaPlugin {
 
         WAND = Material.valueOf(getConfig().getString("wand_material"));
 
-        MetadataLoader.getInstance().registerDeserializer(QuarterListDataField.typeID(), new QuarterListDFDeserializer());
-
         SponsorCosmeticsManager.init();
 
         initCommands();
@@ -40,6 +38,11 @@ public final class Quarters extends JavaPlugin {
     @Override
     public void onDisable() {
         getLogger().info("Quarters disabled :v");
+    }
+
+    @Override
+    public void onLoad() {
+        MetadataLoader.getInstance().registerDeserializer(QuarterListDataField.typeID(), new QuarterListDFDeserializer());
     }
 
     private void initCommands() {
