@@ -36,10 +36,9 @@ public class TownMetadataManager {
             return;
         }
 
-        QuarterListDataField qldf = town.getMetadata(QLDF, QuarterListDataField.class);
+        final QuarterListDataField qldf = town.getMetadata(QLDF, QuarterListDataField.class);
         if (qldf != null) {
             qldf.setValue(value);
-            town.addMetaData(qldf);
         }
     }
 
