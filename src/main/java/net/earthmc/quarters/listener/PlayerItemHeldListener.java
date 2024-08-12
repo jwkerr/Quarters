@@ -1,29 +1,22 @@
 package net.earthmc.quarters.listener;
 
-import net.earthmc.quarters.object.QuartersPlayer;
-import net.earthmc.quarters.task.OutlineParticleTask;
-import net.earthmc.quarters.util.QuarterUtil;
+import net.earthmc.quarters.api.manager.QuarterManager;
+import net.earthmc.quarters.object.task.OutlineParticleTask;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * Class to render particles when item is switched before waiting for next OutlineParticleTask tick
  */
 public class PlayerItemHeldListener implements Listener {
+
     @EventHandler
-    public void onItemHeld(PlayerItemHeldEvent event) {
+    public void onItemHeld(PlayerItemHeldEvent event) { // TODO: move particles enabled config check to here
         Player player = event.getPlayer();
 
-        ItemStack item = player.getInventory().getItem(event.getNewSlot());
-        if (item == null)
-            return;
-
-        QuartersPlayer quartersPlayer = new QuartersPlayer(player);
-        if (!QuarterUtil.shouldRenderOutlines(quartersPlayer, item.getType()))
-            return;
+        if (!QuarterManager.getInstance().shouldRenderOutlines(player)) return;
 
         OutlineParticleTask.createParticlesIfSelectionExists(player);
         OutlineParticleTask.createParticlesIfQuartersExist(player);

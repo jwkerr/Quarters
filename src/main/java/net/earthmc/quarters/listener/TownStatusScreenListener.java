@@ -3,9 +3,10 @@ package net.earthmc.quarters.listener;
 import com.palmergames.adventure.text.Component;
 import com.palmergames.adventure.text.format.NamedTextColor;
 import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
-import net.earthmc.quarters.object.Quarter;
-import net.earthmc.quarters.object.QuarterType;
-import net.earthmc.quarters.object.QuartersTown;
+import com.palmergames.bukkit.towny.object.Town;
+import net.earthmc.quarters.api.manager.QuarterManager;
+import net.earthmc.quarters.object.entity.Quarter;
+import net.earthmc.quarters.object.state.QuarterType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -13,10 +14,13 @@ import org.bukkit.event.Listener;
  * Adds a [Quarters] component to town status screens
  */
 public class TownStatusScreenListener implements Listener {
+
     @EventHandler
     public void onTownStatusScreen(TownStatusScreenEvent event) {
-        QuartersTown quartersTown = new QuartersTown(event.getTown());
-        if (!quartersTown.hasQuarter()) return;
+        Town town = event.getTown();
+
+        QuarterManager qm = QuarterManager.getInstance();
+        if (!qm.hasQuarter(town)) return;
 
         Component hoverComponent = Component.empty();
 
@@ -27,12 +31,12 @@ public class TownStatusScreenListener implements Listener {
 
             int numOfQuarterType = 0;
 
-            for (Quarter quarter : quartersTown.getQuarters()) {
+            for (Quarter quarter : qm.getQuarters(town)) {
                 if (quarter.getType().equals(quarterType))
                     numOfQuarterType++;
             }
 
-            hoverComponent = hoverComponent.append(Component.text(quarterType.getFormattedName() + ": ", NamedTextColor.DARK_GREEN));
+            hoverComponent = hoverComponent.append(Component.text(quarterType.getCommonName() + ": ", NamedTextColor.DARK_GREEN));
             hoverComponent = hoverComponent.append(Component.text(numOfQuarterType, NamedTextColor.GREEN));
 
             iteration++;

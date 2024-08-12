@@ -4,8 +4,8 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.actions.*;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import net.earthmc.quarters.object.Quarter;
-import net.earthmc.quarters.util.QuarterUtil;
+import net.earthmc.quarters.api.manager.QuarterManager;
+import net.earthmc.quarters.object.entity.Quarter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -17,6 +17,7 @@ import java.util.Objects;
  * Class to override Towny's cancellation of certain tasks when the player has permission in a quarter
  */
 public class TownyActionListener implements Listener {
+
     @EventHandler
     public void onBuild(TownyBuildEvent event) {
         parseEvent(event);
@@ -46,7 +47,7 @@ public class TownyActionListener implements Listener {
         if (town == null)
             return;
 
-        Quarter quarter = QuarterUtil.getQuarter(location);
+        Quarter quarter = QuarterManager.getInstance().getQuarter(location);
         if (quarter == null)
             return;
 
@@ -74,7 +75,7 @@ public class TownyActionListener implements Listener {
                     return;
 
                 // Extra tolerance on Y coordinate to check for boats placed in the lowest quadrant of a quarter
-                handleStation(event, QuarterUtil.getQuarter(location.add(0, 0.25, 0)), resident);
+                handleStation(event, QuarterManager.getInstance().getQuarter(location.add(0, 0.25, 0)), resident);
                 break;
             case WORKSITE:
                 if (!(event instanceof TownyBuildEvent || event instanceof TownyDestroyEvent))

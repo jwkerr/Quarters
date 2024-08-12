@@ -3,9 +3,9 @@ package net.earthmc.quarters.listener;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.object.Town;
-import net.earthmc.quarters.manager.TownMetadataManager;
-import net.earthmc.quarters.object.Cuboid;
-import net.earthmc.quarters.object.Quarter;
+import net.earthmc.quarters.api.manager.QuarterManager;
+import net.earthmc.quarters.object.entity.Cuboid;
+import net.earthmc.quarters.object.entity.Quarter;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,18 +17,15 @@ import java.util.List;
  * Class to clean-up quarters when a townblock is unclaimed
  */
 public class TownUnclaimListener implements Listener {
+
     @EventHandler
     public void onTownUnclaim(TownUnclaimEvent event) {
         Town town = event.getTown();
-        if (town == null)
-            return;
+        if (town == null) return;
 
-        List<Quarter> quarterList = TownMetadataManager.getQuarterListOfTown(town);
-        if (quarterList == null)
-            return;
-
+        List<Quarter> quarters = QuarterManager.getInstance().getQuarters(town);
         List<Quarter> quartersToDelete = new ArrayList<>();
-        for (Quarter quarter : quarterList) {
+        for (Quarter quarter : quarters) {
             if (quartersToDelete.contains(quarter))
                 continue;
 

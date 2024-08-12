@@ -6,7 +6,7 @@
 
     <groupId>net.earthmc</groupId>
     <artifactId>Quarters</artifactId>
-    <version>0.3.5</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>Quarters</name>
@@ -63,14 +63,6 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
-        <repository>
-            <id>aikar</id>
-            <url>https://repo.aikar.co/content/groups/aikar/</url>
-        </repository>
-        <repository>
-            <id>codemc</id>
-            <url>https://repo.codemc.io/repository/maven-public/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -85,36 +77,6 @@
             <artifactId>towny</artifactId>
             <version>0.99.5.19</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>co.aikar</groupId>
-            <artifactId>acf-paper</artifactId>
-            <version>0.5.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ghostchu</groupId>
-            <artifactId>quickshop-bukkit</artifactId>
-            <version>5.2.0.4</version>
-            <scope>provided</scope>
-            <classifier>shaded</classifier>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.seeseemelk</groupId>
-            <artifactId>MockBukkit-v1.20</artifactId>
-            <version>3.9.0</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

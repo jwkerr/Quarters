@@ -1,101 +1,100 @@
 package net.earthmc.quarters;
 
-import co.aikar.commands.PaperCommandManager;
 import com.palmergames.bukkit.towny.object.metadata.MetadataLoader;
-import net.earthmc.quarters.command.*;
-import net.earthmc.quarters.command.admin.*;
-import net.earthmc.quarters.config.Config;
+import net.earthmc.quarters.command.quarters.QuartersCommand;
+import net.earthmc.quarters.api.manager.ConfigManager;
 import net.earthmc.quarters.listener.*;
-import net.earthmc.quarters.manager.SponsorCosmeticsManager;
-import net.earthmc.quarters.object.QuarterListDFDeserializer;
-import net.earthmc.quarters.object.QuarterListDataField;
-import net.earthmc.quarters.task.OutlineParticleTask;
-import org.bukkit.Material;
+import net.earthmc.quarters.object.wrapper.Pair;
+import net.earthmc.quarters.object.metadata.QuarterListDataField;
+import net.earthmc.quarters.object.metadata.QuarterListDataFieldDeserialiser;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.logging.Logger;
+
 public final class Quarters extends JavaPlugin {
-    public static Quarters INSTANCE;
-    public static Material WAND;
+
+    private static Quarters instance;
+
+    private static Logger logger;
 
     @Override
     public void onEnable() {
-        INSTANCE = this;
+        instance = this;
+        logger = getLogger();
 
-        Config.init(getConfig());
-        saveConfig();
+        ConfigManager.getInstance().setup();
 
-        WAND = Material.valueOf(getConfig().getString("wand_material"));
+        registerCommands(
+                Pair.of("quarters", new QuartersCommand())
+        );
 
-        SponsorCosmeticsManager.init();
+        registerListeners(
+            new DeletePlayerListener(),
+            new PlayerDeniedBedUseListener(),
+            new PlayerInteractListener(),
+            new PlayerItemHeldListener(),
+            new PlotPreClaimListener(),
+            new ResidentStatusScreenListener(),
+            new TownRemoveResidentListener(),
+            new TownStatusScreenListener(),
+            new TownUnclaimListener(),
+            new TownyActionListener(),
+            new PlayerJoinListener()
+        );
 
-        initCommands();
-        initListeners();
-
-        getLogger().info("Quarters enabled :3");
+        logInfo("Quarters enabled :3");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("Quarters disabled :v");
+        logInfo("Quarters disabled :v");
     }
 
     @Override
     public void onLoad() {
-        MetadataLoader.getInstance().registerDeserializer(QuarterListDataField.typeID(), new QuarterListDFDeserializer());
+        MetadataLoader.getInstance().registerDeserializer(QuarterListDataField.typeID(), new QuarterListDataFieldDeserialiser());
     }
 
-    private void initCommands() {
-        PaperCommandManager manager = new PaperCommandManager(this);
+    @SafeVarargs
+    private void registerCommands(Pair<String, CommandExecutor>... commandPair) {
+        for (Pair<String, CommandExecutor> pair : commandPair) {
+            String name = pair.getFirst();
 
-        // Standard commands
-        manager.registerCommand(new ClaimCommand());
-        manager.registerCommand(new ColourCommand());
-        manager.registerCommand(new CreateCommand());
-        manager.registerCommand(new DefaultSellPriceCommand());
-        manager.registerCommand(new DeleteCommand());
-        manager.registerCommand(new EvictCommand());
-        manager.registerCommand(new HereCommand());
-        manager.registerCommand(new InfoCommand());
-        manager.registerCommand(new PosCommand());
-        manager.registerCommand(new SelectionCommand());
-        manager.registerCommand(new SellCommand());
-        manager.registerCommand(new ToggleCommand());
-        manager.registerCommand(new TrustCommand());
-        manager.registerCommand(new TypeCommand());
-        manager.registerCommand(new UnclaimCommand());
+            PluginCommand command = getCommand(name);
+            if (command == null) {
+                logSevere("Command " + name + " was null, failed to set a command executor");
+                continue;
+            }
 
-        // Admin commands
-        manager.registerCommand(new AdminColourCommand());
-        manager.registerCommand(new AdminDeleteCommand());
-        manager.registerCommand(new AdminEvictCommand());
-        manager.registerCommand(new AdminSellCommand());
-        manager.registerCommand(new AdminSetOwnerCommand());
-        manager.registerCommand(new AdminToggleCommand());
-        manager.registerCommand(new AdminTrustCommand());
-        manager.registerCommand(new AdminTypeCommand());
+            command.setExecutor(pair.getSecond());
+        }
     }
 
-    private void initListeners() {
+    private void registerListeners(Listener... listeners) {
         PluginManager pm = getServer().getPluginManager();
 
-        pm.registerEvents(new DeletePlayerListener(), this);
-        pm.registerEvents(new PlayerDeniedBedUseListener(), this);
-        pm.registerEvents(new PlayerInteractListener(), this);
+        for (Listener listener : listeners) {
+            pm.registerEvents(listener, this);
+        }
+    }
 
-        if (getConfig().getBoolean("particles.enabled"))
-            pm.registerEvents(new PlayerItemHeldListener(), this);
+    public static Quarters getInstance() {
+        return instance;
+    }
 
-        pm.registerEvents(new PlotPreClaimListener(), this);
-        pm.registerEvents(new ResidentStatusScreenListener(), this);
+    public static void logInfo(String msg) {
+        logger.info(msg);
+    }
 
-        if (pm.isPluginEnabled("QuickShop") || pm.isPluginEnabled("QuickShop-Hikari"))
-            pm.registerEvents(new ShopCreateListener(), this);
+    public static void logWarning(String msg) {
+        logger.warning(msg);
+    }
 
-        pm.registerEvents(new TownRemoveResidentListener(), this);
-        pm.registerEvents(new TownStatusScreenListener(), this);
-        pm.registerEvents(new TownUnclaimListener(), this);
-        pm.registerEvents(new TownyActionListener(), this);
-        pm.registerEvents(new PlayerJoinListener(this), this);
+    public static void logSevere(String msg) {
+        logger.severe(msg);
     }
 }
