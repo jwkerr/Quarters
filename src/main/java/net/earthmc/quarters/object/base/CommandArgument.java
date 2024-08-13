@@ -1,6 +1,7 @@
 package net.earthmc.quarters.object.base;
 
 import net.earthmc.quarters.object.exception.CommandMethodException;
+import net.earthmc.quarters.object.wrapper.StringConstants;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -14,7 +15,7 @@ public abstract class CommandArgument extends CommandMethod {
 
     @Override
     public void execute() {
-        if (args.length == 0) throw new CommandMethodException("Missing argument"); // TODO: improve this error
+        if (args.length == 0) throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
         parseMethod(sender, args[0].toLowerCase(), CommandMethod.removeFirstArgument(args));
     }
 

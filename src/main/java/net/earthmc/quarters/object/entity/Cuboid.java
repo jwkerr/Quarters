@@ -58,7 +58,7 @@ public class Cuboid {
      * @return True if the specified cuboid has any intersection with this cuboid instance
      */
     public boolean intersectsWith(Cuboid cuboid) {
-        if (!world.equals(cuboid.getBounding())) return false;
+        if (!world.equals(cuboid.getWorld())) return false;
 
         return bounding.overlaps(cuboid.getBounding());
     }

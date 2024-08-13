@@ -1,5 +1,6 @@
 package net.earthmc.quarters.listener;
 
+import net.earthmc.quarters.api.manager.ConfigManager;
 import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.object.task.OutlineParticleTask;
 import org.bukkit.entity.Player;
@@ -13,7 +14,9 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 public class PlayerItemHeldListener implements Listener {
 
     @EventHandler
-    public void onItemHeld(PlayerItemHeldEvent event) { // TODO: move particles enabled config check to here
+    public void onItemHeld(PlayerItemHeldEvent event) {
+        if (!ConfigManager.areParticlesEnabled()) return;
+
         Player player = event.getPlayer();
 
         if (!QuarterManager.getInstance().shouldRenderOutlines(player)) return;

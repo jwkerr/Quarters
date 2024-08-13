@@ -1,19 +1,18 @@
 package net.earthmc.quarters.command.quarters.method.set;
 
 import net.earthmc.quarters.api.QuartersMessaging;
-import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.base.CommandMethod;
+import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.exception.CommandMethodException;
 import net.earthmc.quarters.object.wrapper.StringConstants;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.awt.*;
+public class SetAnchorMethod extends CommandMethod {
 
-public class SetColourMethod extends CommandMethod {
-
-    public SetColourMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.set.colour");
+    public SetAnchorMethod(CommandSender sender, String[] args) {
+        super(sender, args, "quarters.command.quarters.set.anchor");
     }
 
     @Override
@@ -23,15 +22,11 @@ public class SetColourMethod extends CommandMethod {
 
         if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_EDIT_THIS_QUARTER);
 
-        int r = Integer.parseInt(getArgOrThrow(0, "No argument provided for red"));
-        int g = Integer.parseInt(getArgOrThrow(1, "No argument provided for green"));
-        int b = Integer.parseInt(getArgOrThrow(2, "No argument provided for blue"));
-
-        Color colour = new Color(r, g, b);
-
-        quarter.setColour(colour);
+        Location location = player.getLocation();
+        quarter.setAnchor(location);
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully changed this quarter's colour");
+        QuartersMessaging.sendSuccessMessage(player, "Successfully set this quarter's anchor point to your location");
+        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, player.getName() + " has changed a quarter's anchor point", location);
     }
 }

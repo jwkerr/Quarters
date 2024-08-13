@@ -4,18 +4,16 @@ import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.api.manager.ConfigManager;
-import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.entity.Quarter;
-import net.earthmc.quarters.object.exception.CommandMethodException;
 import net.earthmc.quarters.object.wrapper.Pair;
-import net.earthmc.quarters.object.wrapper.StringConstants;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -34,15 +32,11 @@ public class HereMethod extends CommandMethod {
     @Override
     public void execute() {
         Player player = getSenderAsPlayerOrThrow();
-        QuarterManager qm = QuarterManager.getInstance();
-        if (!qm.isPlayerInQuarter(player)) throw new CommandMethodException(StringConstants.YOU_ARE_NOT_STANDING_WITHIN_A_QUARTER);
-
-        Quarter quarter = qm.getQuarter(player.getLocation());
-        if (quarter == null) return;
+        Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
         Color colour = quarter.getColour();
-        Component header = Component.text(quarter.getName(), TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())).appendSpace()
-                .append(Component.text("\uD83C\uDFA8", TextColor.color(colour.getRGB()))
+        Component header = Component.text(quarter.getName(), TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB()), TextDecoration.UNDERLINED).appendSpace()
+                .append(Component.text("\uD83C\uDFA8", TextColor.color(colour.getRGB())) // TODO: change/remove this symbol
                         .hoverEvent(getColourHoverComponent(colour))
                         .clickEvent(ClickEvent.copyToClipboard("/q set colour " + colour.getRed() + " " + colour.getGreen() + " " + colour.getBlue()))
                 );

@@ -1,8 +1,12 @@
 package net.earthmc.quarters.object.base;
 
+import net.earthmc.quarters.api.manager.QuarterManager;
+import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.exception.CommandMethodException;
+import net.earthmc.quarters.object.wrapper.StringConstants;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class CommandMethod {
 
@@ -60,5 +64,14 @@ public abstract class CommandMethod {
         } catch (IndexOutOfBoundsException e) {
             return def;
         }
+    }
+
+    public @NotNull Quarter getQuarterAtPlayerOrThrow(Player player) {
+        QuarterManager qm = QuarterManager.getInstance();
+
+        Quarter quarter = qm.getQuarter(player.getLocation());
+        if (quarter == null) throw new CommandMethodException(StringConstants.YOU_ARE_NOT_STANDING_WITHIN_A_QUARTER);
+
+        return quarter;
     }
 }

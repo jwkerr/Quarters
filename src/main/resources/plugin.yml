@@ -104,12 +104,16 @@ permissions:
     children:
       quarters.command.quarters.set.colour: true
       quarters.command.quarters.set.defaultsellprice: true
+      quarters.command.quarters.set.name: true
       quarters.command.quarters.set.type: true
 
   quarters.command.quarters.set.colour:
     default: true
 
   quarters.command.quarters.set.defaultsellprice:
+    default: true
+
+  quarters.command.quarters.set.name:
     default: true
 
   quarters.command.quarters.set.type:

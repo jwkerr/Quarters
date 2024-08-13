@@ -1,12 +1,9 @@
 package net.earthmc.quarters.object.state;
 
 public enum QuarterType {
-    APARTMENT("Apartment"),
-    COMMONS("Commons"),
-    PUBLIC("Public"),
-    SHOP("Shop"),
-    STATION("Station"),
-    WORKSITE("Worksite"); // TODO: reconsider which of these are necessary after perm rewrite
+    APARTMENT("Apartment"), // Default type
+    INN("Inn"), // Allows bed usage
+    STATION("Station"); // Allows vehicle placing and usage
 
     private final String commonName;
 
@@ -16,5 +13,9 @@ public enum QuarterType {
 
     public String getCommonName() {
         return commonName;
+    }
+
+    public String getLowerCase() {
+        return commonName.toLowerCase();
     }
 }

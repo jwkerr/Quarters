@@ -45,18 +45,13 @@ public class DeleteMethod extends CommandMethod {
             return;
         }
 
-        QuarterManager qm = QuarterManager.getInstance();
-        if (!qm.isPlayerInQuarter(player)) throw new CommandMethodException(StringConstants.YOU_ARE_NOT_STANDING_WITHIN_A_QUARTER);
-
-        Location location = player.getLocation();
-        Quarter quarter = qm.getQuarter(location);
-        if (quarter == null) return;
+        Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
         if (!quarter.isPlayerInTown(player)) throw new CommandMethodException(StringConstants.THIS_QUARTER_IS_NOT_PART_OF_YOUR_TOWN);
 
         quarter.delete();
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully deleted this quarter");
-        QuartersMessaging.sendCommandFeedbackToTown(town, player, player.getName() + " has deleted a quarter", location);
+        QuartersMessaging.sendCommandFeedbackToTown(town, player, player.getName() + " has deleted a quarter", player.getLocation());
     }
 }

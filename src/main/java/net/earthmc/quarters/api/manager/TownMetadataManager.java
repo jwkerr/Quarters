@@ -28,7 +28,7 @@ public final class TownMetadataManager extends MetadataManager<Town> {
     }
 
     public List<Quarter> getQuarterList(@NotNull Town town) {
-        return getMetadataAsQuarterList(town, QUARTER_LIST_KEY); // TODO: switch usages of this to QuarterDataManager#getQuarters(Town)
+        return getMetadataAsQuarterList(town, QUARTER_LIST_KEY);
     }
 
     public void setDefaultSellPrice(@NotNull Town town, Double value) {

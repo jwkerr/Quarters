@@ -1,5 +1,6 @@
 package net.earthmc.quarters.listener;
 
+import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.api.manager.ConfigManager;
 import net.earthmc.quarters.api.manager.SelectionManager;
 import net.earthmc.quarters.object.state.SelectionType;
@@ -30,8 +31,10 @@ public class PlayerInteractListener implements Listener {
         event.setCancelled(true);
 
         SelectionType type = event.getAction().isLeftClick() ? SelectionType.LEFT : SelectionType.RIGHT;
-        SelectionManager.getInstance().selectPosition(player, location, type);
 
-        // TODO: reimplement chat message
+        SelectionManager sm = SelectionManager.getInstance();
+        sm.selectPosition(player, location, type);
+
+        QuartersMessaging.sendMessage(player, sm.getSelectedPositionComponent(type, location));
     }
 }

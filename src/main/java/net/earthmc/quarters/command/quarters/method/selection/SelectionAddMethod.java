@@ -22,12 +22,13 @@ public class SelectionAddMethod extends CommandMethod {
     @Override
     public void execute() {
         Player player = getSenderAsPlayerOrThrow();
+        SelectionManager sm = SelectionManager.getInstance();
 
-        CuboidSelection selection = SelectionManager.getInstance().getSelection(player);
+        CuboidSelection selection = sm.getSelection(player);
         Cuboid newCuboid = selection.getCuboid();
         if (newCuboid == null) throw new CommandMethodException("You must select two valid positions using the Quarters wand, or by using /quarters pos");
 
-        List<Cuboid> cuboids = SelectionManager.getInstance().getCuboids(player);
+        List<Cuboid> cuboids = sm.getCuboids(player);
         int maxCuboids = ConfigManager.getMaxCuboidsPerQuarter();
         if (maxCuboids > -1 && cuboids.size() == maxCuboids) throw new CommandMethodException("Selection could not be added as it will exceed the configured cuboid limit of " + maxCuboids);
 
@@ -44,10 +45,10 @@ public class SelectionAddMethod extends CommandMethod {
             if (newCuboid.intersectsWith(addedCuboid)) throw new CommandMethodException("Could not add the current selection as it intersects with a cuboid that has already been added");
         }
 
-        SelectionManager.getInstance().clearSelection(player);
+        sm.clearSelection(player);
 
         cuboids.add(newCuboid);
-        SelectionManager.getInstance().setCuboids(player, cuboids);
+        sm.setCuboids(player, cuboids);
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully added cuboid to selection");
     }

@@ -63,7 +63,7 @@ public class CreateMethod extends CommandMethod {
 
         QuartersMessaging.sendSuccessMessage(player, "Selected quarter has been successfully created");
 
-        Location location = cuboids.get(0).getCornerOne();
+        Location location = quarter.getFirstCornerOfFirstCuboid();
 
         sm.clearSelection(player);
         sm.clearCuboids(player);

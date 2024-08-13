@@ -4,6 +4,7 @@ import net.earthmc.quarters.object.entity.Cuboid;
 import net.earthmc.quarters.object.wrapper.CuboidSelection;
 import net.earthmc.quarters.object.state.SelectionType;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
@@ -65,18 +66,18 @@ public final class SelectionManager {
         return y < world.getMaxHeight() && y > world.getMinHeight();
     }
 
-    private Component getSelectedPositionComponent(boolean pos1, Location location) { // TODO: move/delete this
-        int pos = pos1 ? 1 : 2;
-
-        int x = location.getBlockX();
-        int y = location.getBlockY();
-        int z = location.getBlockZ();
-
+    public Component getSelectedPositionComponent(SelectionType type, Location location) {
+        int pos = type.equals(SelectionType.LEFT) ? 1 : 2;
         Component slash = Component.text("/", NamedTextColor.GRAY);
 
-        return Component.text("Position " + pos + ": ", NamedTextColor.GRAY,TextDecoration.ITALIC)
-                .append(Component.text("X=" + x, NamedTextColor.RED)).append(slash)
-                .append(Component.text("Y=" + y, NamedTextColor.GREEN)).append(slash)
-                .append(Component.text("Z=" + z, NamedTextColor.BLUE));
+        TextComponent.Builder builder = Component.text();
+        builder.append(Component.text("Position " + pos + ": ", NamedTextColor.GRAY, TextDecoration.ITALIC));
+        builder.append(Component.text("X=" + location.getBlockX(), NamedTextColor.RED));
+        builder.append(slash);
+        builder.append(Component.text("Y=" + location.getBlockY(), NamedTextColor.GREEN));
+        builder.append(slash);
+        builder.append(Component.text("Z=" + location.getBlockZ(), NamedTextColor.BLUE));
+
+        return builder.build();
     }
 }

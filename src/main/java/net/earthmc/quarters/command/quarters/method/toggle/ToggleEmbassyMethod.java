@@ -1,7 +1,6 @@
 package net.earthmc.quarters.command.quarters.method.toggle;
 
 import net.earthmc.quarters.api.QuartersMessaging;
-import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.exception.CommandMethodException;
@@ -17,12 +16,7 @@ public class ToggleEmbassyMethod extends CommandMethod {
     @Override
     public void execute() {
         Player player = getSenderAsPlayerOrThrow();
-        QuarterManager qm = QuarterManager.getInstance();
-
-        if (!qm.isPlayerInQuarter(player)) throw new CommandMethodException("You are not standing within a quarter");
-
-        Quarter quarter = qm.getQuarter(player.getLocation());
-        if (quarter == null) return;
+        Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
         if (!quarter.isPlayerInTown(player)) throw new CommandMethodException("This quarter is not in your town");
 

@@ -1,11 +1,13 @@
 package net.earthmc.quarters.object.entity;
 
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.manager.ConfigManager;
 import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.api.manager.TownMetadataManager;
+import net.earthmc.quarters.object.wrapper.QuarterPermissions;
 import net.earthmc.quarters.object.state.QuarterType;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -32,6 +34,8 @@ public class Quarter {
     private Long claimedAt;
     private Color colour = ConfigManager.hasDefaultQuarterColour() ? ConfigManager.getDefaultQuarterColour() : getRandomColour();
     private String name = "Quarter";
+    private final QuarterPermissions permissions = new QuarterPermissions(this);
+    private Location anchor = null;
 
     public Quarter(Town town, List<Cuboid> cuboids) {
         this.town = town;
@@ -77,10 +81,16 @@ public class Quarter {
         return volume;
     }
 
+    /**
+     * @return True if the specified player is in this quarter's town
+     */
     public boolean isPlayerInTown(@NotNull Player player) {
         return town.hasResident(player);
     }
 
+    /**
+     * @return True if the specified location is within this quarter's {@link org.bukkit.util.BoundingBox}
+     */
     public boolean isLocationInsideBounds(@NotNull Location location) {
         for (Cuboid cuboid : cuboids) {
             if (cuboid.isLocationInsideBounds(location)) return true;
@@ -89,8 +99,29 @@ public class Quarter {
         return false;
     }
 
-    public boolean hasPermission(Player player) {
-        return true; // TODO: write replacement for "hasPermissionOrMayorOrQuarterOwner"/rewrite plugin.yml
+    /**
+     * @return True if the specified player owns this quarter or has {@link #hasLandlordPermissions(Player) landlord} permissions
+     */
+    public boolean hasBasicCommandPermissions(@NotNull Player player) { // TODO: consider if this will just be used for commands, change name if not
+        UUID uuid = player.getUniqueId();
+
+        if (owner != null && owner.equals(uuid)) return true;
+
+        return hasLandlordPermissions(player);
+    }
+
+    /**
+     * @return True if the specified player is in this quarter's town and is a mayor or has the landlord permission node
+     */
+    public boolean hasLandlordPermissions(@NotNull Player player) {
+        UUID uuid = player.getUniqueId();
+
+        if (town.getMayor().getUUID().equals(uuid)) return true;
+
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (!town.hasResident(resident)) return false;
+
+        return player.hasPermission("quarters.landlord");
     }
 
     private Color getRandomColour() {
@@ -100,6 +131,14 @@ public class Quarter {
 
     public boolean isForSale() {
         return price != null;
+    }
+
+    public @NotNull Location getFirstCornerOfFirstCuboid() {
+        return cuboids.get(0).getCornerOne();
+    }
+
+    public @Nullable Nation getNation() {
+        return town.getNationOrNull();
     }
 
     /**
@@ -249,5 +288,17 @@ public class Quarter {
 
     public @NotNull String getName() {
         return name;
+    }
+
+    public @NotNull QuarterPermissions getPermissions() {
+        return permissions;
+    }
+
+    public void setAnchor(Location anchor) {
+        this.anchor = anchor;
+    }
+
+    public @Nullable Location getAnchor() {
+        return anchor;
     }
 }

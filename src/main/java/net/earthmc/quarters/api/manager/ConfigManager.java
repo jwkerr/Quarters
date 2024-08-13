@@ -161,7 +161,7 @@ public final class ConfigManager {
 
         config.addDefault("wand_material", "FLINT"); config.setInlineComments("wand_material", List.of("Material of the wand item"));
 
-        config.addDefault("quarters.max_quarter_volume", -1); config.setInlineComments("quarters.max_quarter_volume", List.of("Maximum block volume of all cuboids in a quarter combined, set to -1 for no limit")); // TODO: make sure to change all these checks from 0 to -1
+        config.addDefault("quarters.max_quarter_volume", -1); config.setInlineComments("quarters.max_quarter_volume", List.of("Maximum block volume of all cuboids in a quarter combined, set to -1 for no limit"));
         config.addDefault("quarters.max_quarters_per_town", -1); config.setInlineComments("quarters.max_quarters_per_town", List.of("Maximum amount of quarters that can be in a single town, set to -1 for no limit"));
         config.addDefault("quarters.max_cuboid_volume", -1); config.setInlineComments("quarters.max_cuboid_volume", List.of("Maximum block volume of individual cuboids, set to -1 for no limit"));
         config.addDefault("quarters.max_cuboids_per_quarter", -1); config.setInlineComments("quarters.max_cuboids_per_quarter", List.of("Maximum amount of cuboids that can be in each quarter, set to -1 for no limit"));

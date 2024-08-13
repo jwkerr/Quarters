@@ -1,8 +1,6 @@
 package net.earthmc.quarters.command.quarters.method;
 
-import net.earthmc.quarters.command.quarters.method.set.SetColourMethod;
-import net.earthmc.quarters.command.quarters.method.set.SetDefaultSellPriceMethod;
-import net.earthmc.quarters.command.quarters.method.set.SetTypeMethod;
+import net.earthmc.quarters.command.quarters.method.set.*;
 import net.earthmc.quarters.object.base.CommandArgument;
 import org.bukkit.command.CommandSender;
 
@@ -14,8 +12,10 @@ public class SetArgument extends CommandArgument {
 
     protected void parseMethod(CommandSender sender, String method, String[] args) {
         switch (method) {
+            case "anchor" -> new SetAnchorMethod(sender, args).execute();
             case "colour" -> new SetColourMethod(sender, args).execute();
             case "defaultsellprice" -> new SetDefaultSellPriceMethod(sender, args).execute();
+            case "name" -> new SetNameMethod(sender, args).execute();
             case "type" -> new SetTypeMethod(sender, args).execute();
         }
     }

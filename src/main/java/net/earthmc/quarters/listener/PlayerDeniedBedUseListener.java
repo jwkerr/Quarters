@@ -23,7 +23,7 @@ public class PlayerDeniedBedUseListener implements Listener {
         Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
         if (resident == null) return;
 
-        if (quarter.getType() == QuarterType.COMMONS) {
+        if (quarter.getType() == QuarterType.INN) { // TODO: fix this, changed type
             if (quarter.isEmbassy()) {
                 event.setCancelled(true);
                 return;

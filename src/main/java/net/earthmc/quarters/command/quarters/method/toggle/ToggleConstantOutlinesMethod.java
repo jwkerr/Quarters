@@ -21,9 +21,10 @@ public class ToggleConstantOutlinesMethod extends CommandMethod {
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return;
 
-        boolean hasConstantOutlines = ResidentMetadataManager.getInstance().hasConstantOutlines(resident);
+        ResidentMetadataManager rmm = ResidentMetadataManager.getInstance();
+        boolean hasConstantOutlines = rmm.hasConstantOutlines(resident);
 
-        ResidentMetadataManager.getInstance().setHasConstantOutlines(resident, !hasConstantOutlines);
+        rmm.setHasConstantOutlines(resident, !hasConstantOutlines);
 
         if (hasConstantOutlines) {
             QuartersMessaging.sendSuccessMessage(player, "Successfully disabled constant particle outlines");

@@ -36,13 +36,13 @@ public class InfoMethod extends CommandMethod {
         }
 
         List<Pair<String, Component>> labelledEntries = List.of(
-                Pair.of("Author", ConfigManager.getFormattedName(UUID.fromString("fed0ec4a-f1ad-4b97-9443-876391668b34"), Component.text("Fruitloopins"))),
+                Pair.of("Author", ConfigManager.getFormattedName(UUID.fromString("fed0ec4a-f1ad-4b97-9443-876391668b34"), Component.text("Fruitloopins", NamedTextColor.GRAY))),
                 Pair.of("Version", Component.text(meta.getVersion(), NamedTextColor.GRAY)),
                 Pair.of("Quarters", Component.text(numQuarters, NamedTextColor.GRAY)),
                 Pair.of("Cuboids", Component.text(numCuboids, NamedTextColor.GRAY))
         );
 
-        Component info = QuartersMessaging.getListComponent(QuartersMessaging.PLUGIN_WORDMARK_COMPONENT, labelledEntries, null).appendNewline()
+        Component info = QuartersMessaging.getListComponent(QuartersMessaging.PLUGIN_WORDMARK_COMPONENT.decorate(TextDecoration.UNDERLINED), labelledEntries, null).appendNewline()
                 .append(Component.text("Wiki", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://github.com/jwkerr/Quarters/wiki"))).appendSpace()
                 .append(Component.text("Discord", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://discord.gg/ey6ZvnwAJp")));
 

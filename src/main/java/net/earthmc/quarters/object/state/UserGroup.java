@@ -1,6 +1,7 @@
 package net.earthmc.quarters.object.state;
 
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -20,7 +21,7 @@ public enum UserGroup {
         this.description = description;
     }
 
-    public Color getColour() {
+    public @NotNull Color getColour() {
         return colour;
     }
 
