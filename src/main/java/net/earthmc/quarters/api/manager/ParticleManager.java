@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParticleManager {
+public final class ParticleManager {
 
     private static ParticleManager instance;
 
