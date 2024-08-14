@@ -2,8 +2,8 @@ package net.earthmc.quarters.command.quarters.method.selection;
 
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.api.manager.SelectionManager;
-import net.earthmc.quarters.object.entity.Cuboid;
 import net.earthmc.quarters.object.base.CommandMethod;
+import net.earthmc.quarters.object.entity.Cuboid;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

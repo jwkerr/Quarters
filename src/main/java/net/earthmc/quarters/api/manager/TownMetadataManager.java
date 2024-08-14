@@ -1,8 +1,8 @@
 package net.earthmc.quarters.api.manager;
 
 import com.palmergames.bukkit.towny.object.Town;
-import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.base.MetadataManager;
+import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.metadata.QuarterListDataField;
 import org.jetbrains.annotations.NotNull;
 

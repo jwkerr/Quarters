@@ -3,11 +3,11 @@ package net.earthmc.quarters.command.quarters.method.selection;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.api.manager.ConfigManager;
 import net.earthmc.quarters.api.manager.SelectionManager;
-import net.earthmc.quarters.object.entity.Cuboid;
-import net.earthmc.quarters.object.wrapper.CuboidSelection;
 import net.earthmc.quarters.object.base.CommandMethod;
+import net.earthmc.quarters.object.entity.Cuboid;
 import net.earthmc.quarters.object.exception.CommandMethodException;
 import net.earthmc.quarters.object.state.CuboidValidity;
+import net.earthmc.quarters.object.wrapper.CuboidSelection;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

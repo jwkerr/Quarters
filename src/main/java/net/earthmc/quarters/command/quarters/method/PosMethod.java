@@ -1,10 +1,10 @@
 package net.earthmc.quarters.command.quarters.method;
 
 import net.earthmc.quarters.api.manager.SelectionManager;
-import net.earthmc.quarters.object.wrapper.StringConstants;
 import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.exception.CommandMethodException;
 import net.earthmc.quarters.object.state.SelectionType;
+import net.earthmc.quarters.object.wrapper.StringConstants;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

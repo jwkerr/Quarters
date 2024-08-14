@@ -4,10 +4,10 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.api.manager.TownMetadataManager;
-import net.earthmc.quarters.object.entity.Quarter;
-import net.earthmc.quarters.object.wrapper.StringConstants;
 import net.earthmc.quarters.object.base.CommandMethod;
+import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.exception.CommandMethodException;
+import net.earthmc.quarters.object.wrapper.StringConstants;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

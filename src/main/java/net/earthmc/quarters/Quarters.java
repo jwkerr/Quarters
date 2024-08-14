@@ -1,13 +1,13 @@
 package net.earthmc.quarters;
 
 import com.palmergames.bukkit.towny.object.metadata.MetadataLoader;
-import net.earthmc.quarters.command.quarters.QuartersCommand;
 import net.earthmc.quarters.api.manager.ConfigManager;
+import net.earthmc.quarters.command.quarters.QuartersCommand;
 import net.earthmc.quarters.command.quartersadmin.QuartersAdminCommand;
 import net.earthmc.quarters.listener.*;
-import net.earthmc.quarters.object.wrapper.Pair;
 import net.earthmc.quarters.object.metadata.QuarterListDataField;
 import net.earthmc.quarters.object.metadata.QuarterListDataFieldDeserialiser;
+import net.earthmc.quarters.object.wrapper.Pair;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.Listener;

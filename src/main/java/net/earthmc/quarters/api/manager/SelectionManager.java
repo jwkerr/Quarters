@@ -1,8 +1,8 @@
 package net.earthmc.quarters.api.manager;
 
 import net.earthmc.quarters.object.entity.Cuboid;
-import net.earthmc.quarters.object.wrapper.CuboidSelection;
 import net.earthmc.quarters.object.state.SelectionType;
+import net.earthmc.quarters.object.wrapper.CuboidSelection;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
