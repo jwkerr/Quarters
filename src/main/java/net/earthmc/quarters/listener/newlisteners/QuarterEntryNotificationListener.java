@@ -23,6 +23,8 @@ public class QuarterEntryNotificationListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+        if (!ConfigManager.areEntryNotificationsAllowed()) return;
+
         Player player = event.getPlayer();
         Location to = event.getTo();
 
@@ -36,6 +38,8 @@ public class QuarterEntryNotificationListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) { // This listener is to prevent an alert when connecting inside a quarter
+        if (!ConfigManager.areEntryNotificationsAllowed()) return;
+        
         Player player = event.getPlayer();
         Quarter quarter = QuarterManager.getInstance().getQuarter(player.getLocation());
 

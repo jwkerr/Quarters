@@ -140,6 +140,10 @@ public final class ConfigManager {
         return new Color(r, g, b);
     }
 
+    public static boolean areEntryNotificationsAllowed() {
+        return config.getBoolean("quarters.allow_entry_notifications", true);
+    }
+
     public static boolean areParticlesEnabled() {
         return config.getBoolean("particles.enabled", true);
     }
@@ -177,6 +181,7 @@ public final class ConfigManager {
         config.addDefault("quarters.default_quarter_colour.red", 63);
         config.addDefault("quarters.default_quarter_colour.green", 180);
         config.addDefault("quarters.default_quarter_colour.blue", 255);
+        config.addDefault("quarters.allow_entry_notifications", true);
 
         config.addDefault("particles.enabled", true); config.setInlineComments("particles.enabled", List.of("Set to false to completely disable particle outlines around cuboids"));
         config.addDefault("particles.current_selection_particle", "SCRAPE"); config.setInlineComments("particles.current_selection_particle", List.of("Particle outline of the currently selected area"));

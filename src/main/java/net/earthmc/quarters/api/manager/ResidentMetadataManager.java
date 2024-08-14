@@ -8,6 +8,7 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
 
     private static ResidentMetadataManager instance;
 
+    public static final String HAS_ENTRY_NOTIFICATIONS_KEY = METADATA_PREFIX + "has_entry_notifications";
     public static final String HAS_CONSTANT_OUTLINES_KEY = METADATA_PREFIX + "has_constant_outlines";
 
     private ResidentMetadataManager() {}
@@ -15,6 +16,14 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
     public static ResidentMetadataManager getInstance() {
         if (instance == null) instance = new ResidentMetadataManager();
         return instance;
+    }
+
+    public void setHasEntryNotifications(@NotNull Resident resident, boolean value) {
+        setMetadataAsBoolean(resident, HAS_ENTRY_NOTIFICATIONS_KEY, value);
+    }
+
+    public boolean hasEntryNotifications(@NotNull Resident resident) {
+        return getMetadataAsBoolean(resident, HAS_ENTRY_NOTIFICATIONS_KEY);
     }
 
     public void setHasConstantOutlines(@NotNull Resident resident, boolean value) {

@@ -28,10 +28,10 @@ permissions:
     default: true
 
   quarters.landlord:
-    description: "Grants mayor-like permission to use certain commands in their town"
+    description: "Grants mayor-like permission to edit things that a quarter owner can edit"
     default: false
 
-  quarters.receive_command_feedback_from_town_members:
+  quarters.landlord.receive_command_feedback_from_town_members:
     description: "Grants permission to see command feedback from other members in a town"
     default: false
 
@@ -137,12 +137,16 @@ permissions:
     children:
       quarters.command.quarters.toggle.constantoutlines: true
       quarters.command.quarters.toggle.embassy: true
+      quarters.command.quarters.toggle.entrynotifications: true
 
   quarters.command.quarters.toggle.constantoutlines:
     default: true
 
   quarters.command.quarters.toggle.embassy:
     default: false
+
+  quarters.command.quarters.toggle.entrynotifications:
+    default: true
 
   quarters.command.quarters.trust:
     default: true
