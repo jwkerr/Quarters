@@ -19,7 +19,7 @@ public class SetNameMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow();
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_EDIT_THIS_QUARTER);
+        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_PERFORM_THIS_ACTION);
 
         if (args.length == 0) throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
         String name = String.join(" ", args);
@@ -31,6 +31,6 @@ public class SetNameMethod extends CommandMethod {
         quarter.save();
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully changed this quarter's name to " + name);
-        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, player.getName() + " has changed a quarter's name to " + name, quarter.getFirstCornerOfFirstCuboid());
+        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has changed a quarter's name to " + name, quarter.getFirstCornerOfFirstCuboid());
     }
 }

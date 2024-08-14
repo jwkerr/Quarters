@@ -54,22 +54,20 @@ public class Cuboid {
     }
 
     /**
-     * @param cuboid Cuboid to check this cuboid instance against
-     * @return True if the specified cuboid has any intersection with this cuboid instance
+     * Runs a few checks to ensure the cuboid isn't in a "wrong" location such as wilderness or spanning across multiple towns
+     *
+     * @return True if the cuboid instance is in a valid location to be part of a quarter
      */
-    public boolean intersectsWith(Cuboid cuboid) {
-        if (!world.equals(cuboid.getWorld())) return false;
+    public CuboidValidity checkValidity() {
+        boolean doesIntersect = doesCuboidIntersectWithPreExistingQuarters();
+        if (doesIntersect) return CuboidValidity.INTERSECTS;
 
-        return bounding.overlaps(cuboid.getBounding());
-    }
+        boolean doesntContainWilderness = doesCuboidContainWilderness();
+        if (!doesntContainWilderness) return CuboidValidity.CONTAINS_WILDERNESS;
 
-    /**
-     * @param location Location to check
-     * @return True if the specified location is within this cuboid
-     */
-    public boolean isLocationInsideBounds(Location location) {
-        if (!cornerOne.getWorld().equals(location.getWorld())) return false;
-        return bounding.contains(location.toVector());
+        if (!isCuboidEntirelyWithinSingularTown()) return CuboidValidity.SPANS_MULTIPLE_TOWNS;
+
+        return CuboidValidity.VALID;
     }
 
     private boolean doesCuboidIntersectWithPreExistingQuarters() {
@@ -85,6 +83,13 @@ public class Cuboid {
         }
 
         return false;
+    }
+
+    public boolean doesCuboidContainWilderness() {
+        return iterateXZ(location -> {
+            Town town = TownyAPI.getInstance().getTown(location);
+            return town != null;
+        });
     }
 
     public boolean isCuboidEntirelyWithinSingularTown() {
@@ -128,17 +133,22 @@ public class Cuboid {
     }
 
     /**
-     * Runs a few checks to ensure the cuboid isn't in a "wrong" location such as wilderness or spanning across multiple towns
-     *
-     * @return True if the cuboid instance is in a valid location to be part of a quarter
+     * @param cuboid Cuboid to check this cuboid instance against
+     * @return True if the specified cuboid has any intersection with this cuboid instance
      */
-    public CuboidValidity checkValidity() {
-        boolean doesIntersect = doesCuboidIntersectWithPreExistingQuarters();
-        if (doesIntersect) return CuboidValidity.INTERSECTS;
+    public boolean intersectsWith(Cuboid cuboid) {
+        if (!world.equals(cuboid.getWorld())) return false;
 
-        if (!isCuboidEntirelyWithinSingularTown()) return CuboidValidity.SPANS_MULTIPLE_TOWNS;
+        return bounding.overlaps(cuboid.getBounding());
+    }
 
-        return CuboidValidity.VALID;
+    /**
+     * @param location Location to check
+     * @return True if the specified location is within this cuboid
+     */
+    public boolean isLocationInsideBounds(Location location) {
+        if (!cornerOne.getWorld().equals(location.getWorld())) return false;
+        return bounding.contains(location.toVector());
     }
 
     /**

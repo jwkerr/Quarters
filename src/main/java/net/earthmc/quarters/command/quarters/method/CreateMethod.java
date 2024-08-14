@@ -12,6 +12,7 @@ import net.earthmc.quarters.api.manager.SelectionManager;
 import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.exception.CommandMethodException;
 import net.earthmc.quarters.object.state.CuboidValidity;
+import net.earthmc.quarters.object.wrapper.StringConstants;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -42,9 +43,12 @@ public class CreateMethod extends CommandMethod {
         Town town = TownyAPI.getInstance().getTown(cuboids.get(0).getCornerOne());
         if (town == null) throw new CommandMethodException("Could not resolve a town from the first selected position");
 
+        if (!town.hasResident(player)) throw new CommandMethodException("You are not part of this town, you can only make quarters in your own town");
+
         for (Cuboid cuboid : cuboids) {
             CuboidValidity validity = cuboid.checkValidity();
             switch (validity) {
+                case CONTAINS_WILDERNESS -> throw new CommandMethodException("Failed to create quarter as it contains wilderness");
                 case INTERSECTS -> throw new CommandMethodException("Failed to create quarter as it intersects with a pre-existing quarter");
                 case SPANS_MULTIPLE_TOWNS -> throw new CommandMethodException("Failed to create quarter as it spans multiple towns");
             }
@@ -68,6 +72,6 @@ public class CreateMethod extends CommandMethod {
         sm.clearSelection(player);
         sm.clearCuboids(player);
 
-        QuartersMessaging.sendCommandFeedbackToTown(town, player, player.getName() + " has created a quarter", location);
+        QuartersMessaging.sendCommandFeedbackToTown(town, player, "has created a quarter", location);
     }
 }

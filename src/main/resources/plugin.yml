@@ -27,6 +27,10 @@ permissions:
     description: "Grants permission to use the Quarters selection wand"
     default: true
 
+  quarters.landlord:
+    description: "Grants mayor-like permission to use certain commands in their town"
+    default: false
+
   quarters.receive_command_feedback_from_town_members:
     description: "Grants permission to see command feedback from other members in a town"
     default: false
@@ -38,9 +42,7 @@ permissions:
     default: false
     children:
       quarters.command.quarters.claim: true
-      quarters.command.quarters.colour: true
       quarters.command.quarters.create: true
-      quarters.command.quarters.defaultsellprice: true
       quarters.command.quarters.delete: true
       quarters.command.quarters.evict: true
       quarters.command.quarters.here: true
@@ -48,22 +50,22 @@ permissions:
       quarters.command.quarters.pos: true
       quarters.command.quarters.selection: true
       quarters.command.quarters.sell: true
+      quarters.command.quarters.set: true
       quarters.command.quarters.toggle: true
       quarters.command.quarters.trust: true
-      quarters.command.quarters.type: true
       quarters.command.quarters.unclaim: true
 
   quarters.command.quarters.claim:
     default: true
 
   quarters.command.quarters.create:
-    default: true
+    default: false
 
   quarters.command.quarters.delete:
-    default: true
+    default: false
 
   quarters.command.quarters.evict:
-    default: true
+    default: false
 
   quarters.command.quarters.here:
     default: true
@@ -94,7 +96,7 @@ permissions:
     default: true
 
   quarters.command.quarters.sell:
-    default: true
+    default: false
 
   quarters.command.quarters.set:
     default: true
@@ -102,22 +104,30 @@ permissions:
   quarters.command.quarters.set.*:
     default: false
     children:
+      quarters.command.quarters.set.anchor: true
       quarters.command.quarters.set.colour: true
       quarters.command.quarters.set.defaultsellprice: true
       quarters.command.quarters.set.name: true
+      quarters.command.quarters.set.perm: true
       quarters.command.quarters.set.type: true
+
+  quarters.command.quarters.set.anchor:
+    default: true
 
   quarters.command.quarters.set.colour:
     default: true
 
   quarters.command.quarters.set.defaultsellprice:
-    default: true
+    default: false
 
   quarters.command.quarters.set.name:
     default: true
 
-  quarters.command.quarters.set.type:
+  quarters.command.quarters.set.perm:
     default: true
+
+  quarters.command.quarters.set.type:
+    default: false
 
   quarters.command.quarters.toggle:
     default: true
@@ -132,7 +142,7 @@ permissions:
     default: true
 
   quarters.command.quarters.toggle.embassy:
-    default: true
+    default: false
 
   quarters.command.quarters.trust:
     default: true

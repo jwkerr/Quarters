@@ -37,6 +37,7 @@ public class SelectionAddMethod extends CommandMethod {
 
         CuboidValidity validity = newCuboid.checkValidity();
         switch (validity) {
+            case CONTAINS_WILDERNESS -> throw new CommandMethodException("Failed to add cuboid as it contains wilderness");
             case INTERSECTS -> throw new CommandMethodException("Failed to add cuboid as it intersects with a pre-existing quarter");
             case SPANS_MULTIPLE_TOWNS -> throw new CommandMethodException("Failed to add cuboid as it spans multiple towns");
         }

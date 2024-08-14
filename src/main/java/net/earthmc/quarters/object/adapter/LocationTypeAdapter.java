@@ -1,7 +1,7 @@
 package net.earthmc.quarters.object.adapter;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 import org.bukkit.Location;
 
 import java.lang.reflect.Type;
@@ -11,11 +11,14 @@ public class LocationTypeAdapter implements JsonSerializer<Location>, JsonDeseri
 
     @Override
     public JsonElement serialize(Location src, Type typeOfSrc, JsonSerializationContext context) {
+        if (src == null) return JsonNull.INSTANCE;
         return context.serialize(src.serialize());
     }
 
     @Override
     public Location deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (json.isJsonNull()) return null;
+
         Type serialisedType = new TypeToken<Map<String, Object>>(){}.getType();
         Map<String, Object> map = context.deserialize(json, serialisedType);
 

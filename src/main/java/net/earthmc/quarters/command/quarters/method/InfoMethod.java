@@ -42,7 +42,7 @@ public class InfoMethod extends CommandMethod {
                 Pair.of("Cuboids", Component.text(numCuboids, NamedTextColor.GRAY))
         );
 
-        Component info = QuartersMessaging.getListComponent(QuartersMessaging.PLUGIN_WORDMARK_COMPONENT.decorate(TextDecoration.UNDERLINED), labelledEntries, null).appendNewline()
+        Component info = QuartersMessaging.getListComponent(QuartersMessaging.PLUGIN_WORDMARK_COMPONENT, labelledEntries, null).appendNewline()
                 .append(Component.text("Wiki", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://github.com/jwkerr/Quarters/wiki"))).appendSpace()
                 .append(Component.text("Discord", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://discord.gg/ey6ZvnwAJp")));
 

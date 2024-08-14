@@ -2,6 +2,7 @@ package net.earthmc.quarters.api;
 
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import net.earthmc.quarters.api.manager.ConfigManager;
 import net.earthmc.quarters.object.wrapper.Pair;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -44,10 +45,6 @@ public class QuartersMessaging {
         sendMessage(audience, Component.text(message, NamedTextColor.RED, TextDecoration.ITALIC));
     }
 
-    public static void sendInfoMessage(@NotNull Audience audience, @NotNull String message) {
-        sendMessage(audience, Component.text(message, NamedTextColor.GRAY, TextDecoration.ITALIC));
-    }
-
     public static Component getListComponent(@NotNull Component header, @NotNull List<Pair<String, Component>> labelledEntries, @Nullable List<Pair<String, Component>> bracketEntries) {
         TextComponent.Builder builder = Component.text();
         builder.append(header);
@@ -84,8 +81,14 @@ public class QuartersMessaging {
         return builder.build();
     }
 
-    public static void sendCommandFeedbackToTown(@NotNull Town town, @Nullable Player excludedPlayer, @NotNull String message, @Nullable Location location) {
+    public static void sendCommandFeedbackToTown(@NotNull Town town, @NotNull Player executingPlayer, @NotNull String message, @Nullable Location location) {
+        TextComponent.Builder builder = Component.text();
+        builder.append(ConfigManager.getFormattedName(executingPlayer.getUniqueId(), null));
+
         if (location != null) message += getLocationString(location);
+
+        builder.appendSpace();
+        builder.append(Component.text(message, NamedTextColor.GRAY));
 
         for (Resident resident : town.getResidents()) {
             if (!resident.isOnline()) continue;
@@ -95,7 +98,7 @@ public class QuartersMessaging {
 
             if (!player.hasPermission("quarters.receive_command_feedback_from_town_members")) continue;
 
-            if (!player.equals(excludedPlayer)) sendInfoMessage(player, message);
+            if (!player.equals(executingPlayer)) sendComponent(player, builder.build());
         }
     }
 

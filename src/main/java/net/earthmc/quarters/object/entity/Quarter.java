@@ -7,6 +7,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.manager.ConfigManager;
 import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.api.manager.TownMetadataManager;
+import net.earthmc.quarters.object.state.ActionType;
 import net.earthmc.quarters.object.wrapper.QuarterPermissions;
 import net.earthmc.quarters.object.state.QuarterType;
 import org.bukkit.Location;
@@ -34,7 +35,7 @@ public class Quarter {
     private Long claimedAt;
     private Color colour = ConfigManager.hasDefaultQuarterColour() ? ConfigManager.getDefaultQuarterColour() : getRandomColour();
     private String name = "Quarter";
-    private final QuarterPermissions permissions = new QuarterPermissions(this);
+    private final QuarterPermissions permissions = new QuarterPermissions();
     private Location anchor = null;
 
     public Quarter(Town town, List<Cuboid> cuboids) {
@@ -100,20 +101,18 @@ public class Quarter {
     }
 
     /**
-     * @return True if the specified player owns this quarter or has {@link #hasLandlordPermissions(Player) landlord} permissions
+     * @return True if the specified player owns this quarter or has {@link #isLandlord(Player) landlord} permissions
      */
-    public boolean hasBasicCommandPermissions(@NotNull Player player) { // TODO: consider if this will just be used for commands, change name if not
-        UUID uuid = player.getUniqueId();
+    public boolean hasBasicCommandPermissions(@NotNull Player player) {
+        if (isPlayerOwner(player)) return true;
 
-        if (owner != null && owner.equals(uuid)) return true;
-
-        return hasLandlordPermissions(player);
+        return isLandlord(player);
     }
 
     /**
      * @return True if the specified player is in this quarter's town and is a mayor or has the landlord permission node
      */
-    public boolean hasLandlordPermissions(@NotNull Player player) {
+    public boolean isLandlord(@NotNull Player player) {
         UUID uuid = player.getUniqueId();
 
         if (town.getMayor().getUUID().equals(uuid)) return true;
@@ -139,6 +138,35 @@ public class Quarter {
 
     public @Nullable Nation getNation() {
         return town.getNationOrNull();
+    }
+
+    public boolean hasOwner() {
+        return owner != null;
+    }
+
+    /**
+     * Convenience method as resident equality check has quirks
+     * @return True if the specified resident owns this quarter
+     */
+    public boolean isResidentOwner(@NotNull Resident resident) {
+        if (owner == null) return false;
+
+        return owner.equals(resident.getUUID());
+    }
+
+    public boolean isPlayerOwner(@NotNull Player player) {
+        if (owner == null) return false;
+
+        return owner.equals(player.getUniqueId());
+    }
+
+    /**
+     * @param type The Towny action type to check
+     * @param resident The resident you would like to test permissions of
+     * @return True if the resident can perform the specified action
+     */
+    public boolean testPermission(@NotNull ActionType type, @NotNull Resident resident) {
+        return getPermissions().testPermission(this, type, resident);
     }
 
     /**
@@ -167,7 +195,7 @@ public class Quarter {
     }
 
     /**
-     * @return A Long representing when the quarter was created
+     * @return A long representing when the quarter was created
      */
     public long getRegistered() {
         return registered;
@@ -175,7 +203,12 @@ public class Quarter {
 
     public void setOwner(UUID uuid) {
         this.owner = uuid;
-        if (owner == null) this.claimedAt = null;
+
+        if (owner == null) {
+            this.claimedAt = null;
+        } else {
+            this.claimedAt = System.currentTimeMillis();
+        }
     }
 
     /**
@@ -186,7 +219,7 @@ public class Quarter {
     }
 
     /**
-     * @return Gets the quarter owner as a {@link Resident}, if you want to change the owner use the setOwner() method that takes in a UUID
+     * @return Gets the quarter owner as a {@link Resident}, if you want to change the owner use the {@link #setOwner(UUID)} method
      */
     public @Nullable Resident getOwnerResident() {
         if (owner == null) return null;

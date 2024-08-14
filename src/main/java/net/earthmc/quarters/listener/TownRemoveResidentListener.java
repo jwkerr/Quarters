@@ -22,7 +22,7 @@ public class TownRemoveResidentListener implements Listener {
 
         Resident resident = event.getResident();
         for (Quarter quarter : qm.getQuarters(town)) {
-            if (resident.equals(quarter.getOwnerResident()) && !quarter.isEmbassy()) {
+            if (quarter.isResidentOwner(resident) && !quarter.isEmbassy()) {
                 quarter.setOwner(null);
                 quarter.save();
             }

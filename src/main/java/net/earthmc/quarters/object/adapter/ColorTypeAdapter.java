@@ -10,6 +10,8 @@ public class ColorTypeAdapter implements JsonSerializer<Color>, JsonDeserializer
 
     @Override
     public JsonElement serialize(Color src, Type typeOfSrc, JsonSerializationContext context) {
+        if (src == null) return JsonNull.INSTANCE;
+
         JsonObject jsonObject = new JsonObject();
 
         jsonObject.addProperty("red", src.getRed());
@@ -22,6 +24,8 @@ public class ColorTypeAdapter implements JsonSerializer<Color>, JsonDeserializer
 
     @Override
     public Color deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (json.isJsonNull()) return null;
+
         JsonObject jsonObject = json.getAsJsonObject();
 
         try {

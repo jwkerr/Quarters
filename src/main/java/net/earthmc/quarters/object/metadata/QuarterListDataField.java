@@ -42,7 +42,7 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
         try {
             this.setValue(JSONManager.getInstance().getGson().fromJson(string, quarterListType));
         } catch (JsonSyntaxException e) {
-            Quarters.logSevere("Failed to set value of quarter list from string");
+            Quarters.logSevere("Failed to set value of quarter list from string" + string);
             this.setValue(null);
         }
     }

@@ -4,6 +4,8 @@ import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.command.quarters.method.*;
 import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.exception.CommandMethodException;
+import net.earthmc.quarters.object.state.ActionType;
+import net.earthmc.quarters.object.state.PermLevel;
 import net.earthmc.quarters.object.state.QuarterType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -60,7 +62,7 @@ public class QuartersCommand implements TabExecutor {
                 case "pos" -> Stream.of("one", "two");
                 case "selection" -> Stream.of("add", "clear", "remove");
                 case "sell" -> Stream.of("{price}");
-                case "set" -> Stream.of("anchor", "colour", "defaultsellprice", "name", "type");
+                case "set" -> Stream.of("anchor", "colour", "defaultsellprice", "name", "perm", "type");
                 case "toggle" -> Stream.of("constantoutlines", "embassy");
                 case "trust" -> Stream.of("add", "clear", "remove");
                 default -> null;
@@ -71,6 +73,7 @@ public class QuartersCommand implements TabExecutor {
                     case "colour" -> Stream.of("{r}");
                     case "defaultsellprice" -> Stream.of("{price}");
                     case "name" -> Stream.of("{name}");
+                    case "perm" -> Arrays.stream(ActionType.values()).map(ActionType::getLowerCase);
                     case "type" -> Arrays.stream(QuarterType.values()).map(QuarterType::getLowerCase);
                     default -> null;
                 };
@@ -80,6 +83,7 @@ public class QuartersCommand implements TabExecutor {
                 case "pos" -> Stream.of("{y}");
                 case "set" -> switch (args[1]) {
                     case "colour" -> Stream.of("{g}");
+                    case "perm" -> Arrays.stream(PermLevel.values()).map(PermLevel::getLowerCase);
                     default -> null;
                 };
                 default -> null;
@@ -88,6 +92,7 @@ public class QuartersCommand implements TabExecutor {
                 case "pos" -> Stream.of("{z}");
                 case "set" -> switch (args[1]) {
                     case "colour" -> Stream.of("{b}");
+                    case "perm" -> Stream.of("true", "false");
                     default -> null;
                 };
                 default -> null;

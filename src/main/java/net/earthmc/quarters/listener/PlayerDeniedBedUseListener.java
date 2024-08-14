@@ -35,7 +35,7 @@ public class PlayerDeniedBedUseListener implements Listener {
             }
         }
 
-        if (resident.equals(quarter.getOwnerResident()) || quarter.getTrustedResidents().contains(resident))
+        if (quarter.isResidentOwner(resident) || quarter.getTrustedResidents().contains(resident))
             event.setCancelled(true);
     }
 }

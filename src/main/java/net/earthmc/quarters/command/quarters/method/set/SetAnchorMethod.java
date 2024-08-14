@@ -20,13 +20,13 @@ public class SetAnchorMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow();
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_EDIT_THIS_QUARTER);
+        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_PERFORM_THIS_ACTION);
 
         Location location = player.getLocation();
         quarter.setAnchor(location);
         quarter.save();
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully set this quarter's anchor point to your location");
-        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, player.getName() + " has changed a quarter's anchor point", location);
+        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has changed a quarter's anchor point", location);
     }
 }

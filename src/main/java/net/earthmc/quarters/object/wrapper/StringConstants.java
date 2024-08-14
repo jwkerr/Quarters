@@ -12,5 +12,4 @@ public class StringConstants {
     public static final String YOU_DO_NOT_OWN_THIS_QUARTER = "You do not own this quarter";
     public static final String SPECIFIED_PLAYER_DOES_NOT_EXIST = "Specified player does not exist";
     public static final String YOU_DO_NOT_HAVE_PERMISSION_TO_PERFORM_THIS_ACTION = "You do not have permission to perform this action";
-    public static final String YOU_DO_NOT_HAVE_PERMISSION_TO_EDIT_THIS_QUARTER = "You do not have permission to edit this quarter";
 }

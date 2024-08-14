@@ -25,7 +25,7 @@ public class UnclaimMethod extends CommandMethod {
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return;
 
-        if (!resident.equals(quarter.getOwnerResident())) throw new CommandMethodException(StringConstants.YOU_DO_NOT_OWN_THIS_QUARTER);
+        if (!quarter.isResidentOwner(resident)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_OWN_THIS_QUARTER);
 
         quarter.setOwner(null);
         quarter.save();

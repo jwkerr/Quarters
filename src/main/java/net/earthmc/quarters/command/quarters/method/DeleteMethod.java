@@ -3,13 +3,11 @@ package net.earthmc.quarters.command.quarters.method;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.QuartersMessaging;
-import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.api.manager.TownMetadataManager;
 import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.wrapper.StringConstants;
 import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.exception.CommandMethodException;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -52,6 +50,6 @@ public class DeleteMethod extends CommandMethod {
         quarter.delete();
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully deleted this quarter");
-        QuartersMessaging.sendCommandFeedbackToTown(town, player, player.getName() + " has deleted a quarter", player.getLocation());
+        QuartersMessaging.sendCommandFeedbackToTown(town, player, "has deleted a quarter", player.getLocation());
     }
 }

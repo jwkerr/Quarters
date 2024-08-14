@@ -10,23 +10,24 @@ public class CuboidTypeAdapter implements JsonSerializer<Cuboid>, JsonDeserializ
 
     @Override
     public JsonElement serialize(Cuboid src, Type typeOfSrc, JsonSerializationContext context) {
+        if (src == null) return JsonNull.INSTANCE;
+
         JsonObject jsonObject = new JsonObject();
 
-        LocationTypeAdapter adapter = new LocationTypeAdapter();
-        jsonObject.add("cornerOne", adapter.serialize(src.getCornerOne(), Location.class, context));
-        jsonObject.add("cornerTwo", adapter.serialize(src.getCornerTwo(), Location.class, context));
+        jsonObject.add("cornerOne", context.serialize(src.getCornerOne()));
+        jsonObject.add("cornerTwo", context.serialize(src.getCornerTwo()));
 
         return jsonObject;
     }
 
     @Override
     public Cuboid deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (json.isJsonNull()) return null;
+
         JsonObject jsonObject = json.getAsJsonObject();
 
-        LocationTypeAdapter adapter = new LocationTypeAdapter();
-
-        Location cornerOne = adapter.deserialize(jsonObject.get("cornerOne").getAsJsonObject(), Location.class, context);
-        Location cornerTwo = adapter.deserialize(jsonObject.get("cornerTwo").getAsJsonObject(), Location.class, context);
+        Location cornerOne = context.deserialize(jsonObject.get("cornerOne").getAsJsonObject(), Location.class);
+        Location cornerTwo = context.deserialize(jsonObject.get("cornerTwo").getAsJsonObject(), Location.class);
 
         return new Cuboid(cornerOne, cornerTwo);
     }

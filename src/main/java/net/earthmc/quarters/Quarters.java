@@ -4,6 +4,8 @@ import com.palmergames.bukkit.towny.object.metadata.MetadataLoader;
 import net.earthmc.quarters.command.quarters.QuartersCommand;
 import net.earthmc.quarters.api.manager.ConfigManager;
 import net.earthmc.quarters.listener.*;
+import net.earthmc.quarters.listener.newlisteners.QuarterEntryNotificationListener;
+import net.earthmc.quarters.listener.newlisteners.TownyActionListener;
 import net.earthmc.quarters.object.wrapper.Pair;
 import net.earthmc.quarters.object.metadata.QuarterListDataField;
 import net.earthmc.quarters.object.metadata.QuarterListDataFieldDeserialiser;
@@ -24,7 +26,6 @@ public final class Quarters extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        logger = getLogger();
 
         ConfigManager.getInstance().setup();
 
@@ -33,17 +34,19 @@ public final class Quarters extends JavaPlugin {
         );
 
         registerListeners(
-            new DeletePlayerListener(),
-            new PlayerDeniedBedUseListener(),
-            new PlayerInteractListener(),
-            new PlayerItemHeldListener(),
-            new PlotPreClaimListener(),
-            new ResidentStatusScreenListener(),
-            new TownRemoveResidentListener(),
-            new TownStatusScreenListener(),
-            new TownUnclaimListener(),
-            new TownyActionListener(),
-            new PlayerJoinListener()
+                new QuarterEntryNotificationListener(),
+
+                new DeletePlayerListener(),
+                new PlayerDeniedBedUseListener(),
+                new PlayerInteractListener(),
+                new PlayerItemHeldListener(),
+                new PlotPreClaimListener(),
+                new ResidentStatusScreenListener(),
+                new TownRemoveResidentListener(),
+                new TownStatusScreenListener(),
+                new TownUnclaimListener(),
+                new TownyActionListener(),
+                new PlayerJoinListener()
         );
 
         logInfo("Quarters enabled :3");
@@ -56,6 +59,8 @@ public final class Quarters extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        logger = getLogger();
+
         MetadataLoader.getInstance().registerDeserializer(QuarterListDataField.typeID(), new QuarterListDataFieldDeserialiser());
     }
 

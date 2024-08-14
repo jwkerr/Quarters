@@ -21,12 +21,7 @@ public class SellMethod extends CommandMethod {
     @Override
     public void execute() {
         Player player = getSenderAsPlayerOrThrow();
-        QuarterManager qm = QuarterManager.getInstance();
-
-        if (!qm.isPlayerInQuarter(player)) throw new CommandMethodException(StringConstants.YOU_ARE_NOT_STANDING_WITHIN_A_QUARTER);
-
-        Quarter quarter = qm.getQuarter(player.getLocation());
-        if (quarter == null) return;
+        Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
         if (!quarter.isPlayerInTown(player)) throw new CommandMethodException(StringConstants.THIS_QUARTER_IS_NOT_PART_OF_YOUR_TOWN);
         Town town = quarter.getTown();
@@ -40,7 +35,7 @@ public class SellMethod extends CommandMethod {
             quarter.save();
 
             QuartersMessaging.sendSuccessMessage(player, "This quarter is now for sale for " + formatted);
-            QuartersMessaging.sendCommandFeedbackToTown(town, player, player.getName() + " has set a quarter for sale for " + formatted, player.getLocation());
+            QuartersMessaging.sendCommandFeedbackToTown(town, player, "has set a quarter for sale for " + formatted, player.getLocation());
             return;
         }
 
@@ -51,7 +46,7 @@ public class SellMethod extends CommandMethod {
             quarter.save();
 
             QuartersMessaging.sendSuccessMessage(player, "This quarter is no longer for sale");
-            QuartersMessaging.sendCommandFeedbackToTown(town, player, player.getName() + " has set a quarter not for sale", player.getLocation());
+            QuartersMessaging.sendCommandFeedbackToTown(town, player, "has set a quarter not for sale", player.getLocation());
             return;
         }
 
@@ -70,6 +65,6 @@ public class SellMethod extends CommandMethod {
         quarter.save();
 
         QuartersMessaging.sendSuccessMessage(player, "This quarter is now for sale for " + formatted);
-        QuartersMessaging.sendCommandFeedbackToTown(town, player, player.getName() + " has set a quarter for sale for " + formatted, player.getLocation());
+        QuartersMessaging.sendCommandFeedbackToTown(town, player, "has set a quarter for sale for " + formatted, player.getLocation());
     }
 }

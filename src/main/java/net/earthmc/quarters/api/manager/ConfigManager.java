@@ -7,6 +7,7 @@ import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.object.state.UserGroup;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -81,7 +82,12 @@ public final class ConfigManager {
         return userGroup != null ? userGroup : UserGroup.DEFAULT;
     }
 
-    public static Component getFormattedName(@Nullable UUID uuid, @NotNull Component def) {
+    /**
+     * @param uuid UUID of the player you would like to get a formatted name of
+     * @param def A default if the UUID doesn't resolve to a player, can be null if you know for a fact the player exists
+     * @return A formatted name that can be clicked for /res and has a colour and hover if applicable
+     */
+    public static Component getFormattedName(@Nullable UUID uuid, @Nullable Component def) {
         if (uuid == null) return def;
 
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
@@ -96,6 +102,8 @@ public final class ConfigManager {
 
         String description = userGroup.getDescription();
         if (description != null) builder.hoverEvent(Component.text(description, NamedTextColor.GRAY));
+
+        builder.clickEvent(ClickEvent.runCommand("/towny:resident " + name));
 
         return builder.build();
     }

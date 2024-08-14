@@ -5,11 +5,14 @@ import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.quarters.api.QuartersMessaging;
+import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.exception.CommandMethodException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class ClaimMethod extends CommandMethod {
 
@@ -20,7 +23,22 @@ public class ClaimMethod extends CommandMethod {
     @Override
     public void execute() {
         Player player = getSenderAsPlayerOrThrow();
-        Quarter quarter = getQuarterAtPlayerOrThrow(player);
+
+        Quarter quarter;
+        String arg = getArgOrNull(0);
+        if (arg == null) {
+            quarter = getQuarterAtPlayerOrThrow(player);
+        } else {
+            UUID uuid;
+            try {
+                uuid = UUID.fromString(arg);
+            } catch (IllegalArgumentException e) {
+                throw new CommandMethodException("Invalid quarter UUID provided");
+            }
+
+            quarter = QuarterManager.getInstance().getQuarter(uuid);
+            if (quarter == null) throw new CommandMethodException("This quarter no longer exists");
+        }
 
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return;
@@ -34,7 +52,7 @@ public class ClaimMethod extends CommandMethod {
         Double price = quarter.getPrice();
         if (price == null) throw new CommandMethodException("This quarter is not for sale");
 
-        if (resident.equals(quarter.getOwnerResident())) throw new CommandMethodException("You already own this quarter");
+        if (quarter.isResidentOwner(resident)) throw new CommandMethodException("You already own this quarter");
 
         if (!quarter.isEmbassy() && !quarter.getTown().equals(resident.getTownOrNull())) throw new CommandMethodException("You cannot buy this quarter as it is not an embassy and it is not part of your town");
 
@@ -52,25 +70,30 @@ public class ClaimMethod extends CommandMethod {
 
         if (currentPrice > 0) {
             Confirmation.runOnAccept(() -> {
-                        canResidentClaimQuarter(resident, quarter);
-                        if (!currentPrice.equals(quarter.getPrice())) throw new CommandMethodException("Failed to buy this quarter as its price has changed");
+                try {
+                    canResidentClaimQuarter(resident, quarter);
+                    if (!currentPrice.equals(quarter.getPrice())) throw new CommandMethodException("Failed to buy this quarter as its price has changed");
+                } catch (CommandMethodException e) {
+                    QuartersMessaging.sendErrorMessage(player, e.getMessage());
+                    return;
+                }
 
-                        String reason = "Quarter " + quarter.getUUID() + " sale";
-                        resident.getAccount().withdraw(currentPrice, reason);
-                        quarter.getTown().getAccount().deposit(currentPrice, reason);
+                String reason = "Quarter " + quarter.getUUID() + " sale";
+                resident.getAccount().withdraw(currentPrice, reason);
+                quarter.getTown().getAccount().deposit(currentPrice, reason);
 
-                        changeOwnerAndSave(quarter, resident);
+                changeOwnerAndSave(quarter, resident);
 
-                        QuartersMessaging.sendSuccessMessage(player, "You are now the owner of this quarter");
-                        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, player.getName() + " has claimed a quarter for " + formattedPrice, player.getLocation());
-                    })
+                QuartersMessaging.sendSuccessMessage(player, "You are now the owner of this quarter");
+                QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has claimed a quarter for " + formattedPrice, player.getLocation());
+            })
                     .setTitle("Purchasing this quarter will cost " + formattedPrice + ", are you sure you want to purchase it?")
                     .sendTo(player);
         } else {
             changeOwnerAndSave(quarter, resident);
 
             QuartersMessaging.sendSuccessMessage(player, "You are now the owner of this quarter");
-            QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, player.getName() + " has claimed a quarter", player.getLocation());
+            QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has claimed a quarter", player.getLocation());
         }
     }
 

@@ -4,6 +4,7 @@ import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.exception.CommandMethodException;
+import net.earthmc.quarters.object.wrapper.StringConstants;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,7 +19,7 @@ public class ToggleEmbassyMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow();
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        if (!quarter.isPlayerInTown(player)) throw new CommandMethodException("This quarter is not in your town");
+        if (!quarter.isPlayerInTown(player)) throw new CommandMethodException(StringConstants.THIS_QUARTER_IS_NOT_PART_OF_YOUR_TOWN);
 
         quarter.setEmbassy(!quarter.isEmbassy());
         quarter.save();

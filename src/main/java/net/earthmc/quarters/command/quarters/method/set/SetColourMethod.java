@@ -21,7 +21,7 @@ public class SetColourMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow();
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_EDIT_THIS_QUARTER);
+        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_PERFORM_THIS_ACTION);
 
         int r = Integer.parseInt(getArgOrThrow(0, "No argument provided for red"));
         int g = Integer.parseInt(getArgOrThrow(1, "No argument provided for green"));

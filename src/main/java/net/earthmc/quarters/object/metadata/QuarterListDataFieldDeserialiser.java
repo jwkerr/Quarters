@@ -27,7 +27,7 @@ public class QuarterListDataFieldDeserialiser implements DataFieldDeserializer<Q
         Gson gson = JSONManager.getInstance().getGson();
         JsonArray jsonArray = gson.fromJson(decoded, JsonArray.class);
         for (JsonElement element : jsonArray) {
-            Quarter quarter = gson.fromJson(element.toString(), Quarter.class);
+            Quarter quarter = gson.fromJson(element, Quarter.class);
             quarters.add(quarter);
         }
 

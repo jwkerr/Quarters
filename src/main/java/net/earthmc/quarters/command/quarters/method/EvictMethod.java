@@ -20,10 +20,10 @@ public class EvictMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow();
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
+        if (!quarter.isPlayerInTown(player)) throw new CommandMethodException(StringConstants.THIS_QUARTER_IS_NOT_PART_OF_YOUR_TOWN);
+
         Resident owner = quarter.getOwnerResident();
         if (owner == null) throw new CommandMethodException("This quarter has no owner");
-
-        if (!quarter.isPlayerInTown(player)) throw new CommandMethodException(StringConstants.THIS_QUARTER_IS_NOT_PART_OF_YOUR_TOWN);
 
         String ownerName = owner.getName();
 
@@ -32,6 +32,6 @@ public class EvictMethod extends CommandMethod {
         quarter.save();
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully evicted " + owner.getName());
-        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, player.getName() + " has evicted " + ownerName + " from a quarter", player.getLocation());
+        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has evicted " + ownerName + " from a quarter", player.getLocation());
     }
 }

@@ -1,61 +1,56 @@
-package net.earthmc.quarters.listener;
+package net.earthmc.quarters.listener.newlisteners;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.actions.*;
 import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.object.entity.Quarter;
+import net.earthmc.quarters.object.state.ActionType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
-/**
- * Class to override Towny's cancellation of certain tasks when the player has permission in a quarter
- */
 public class TownyActionListener implements Listener {
 
     @EventHandler
     public void onBuild(TownyBuildEvent event) {
-        parseEvent(event);
+        parseEvent(event, ActionType.BUILD);
     }
 
     @EventHandler
     public void onDestroy(TownyDestroyEvent event) {
-        parseEvent(event);
+        parseEvent(event, ActionType.DESTROY);
     }
 
     @EventHandler
     public void onSwitch(TownySwitchEvent event) {
-        parseEvent(event);
+        parseEvent(event, ActionType.SWITCH);
     }
 
     @EventHandler
     public void onItemUse(TownyItemuseEvent event) {
-        parseEvent(event);
+        parseEvent(event, ActionType.ITEM_USE);
     }
 
-    public void parseEvent(TownyActionEvent event) {
-        if (event.isInWilderness())
-            return;
+    public void parseEvent(@NotNull TownyActionEvent event, @NotNull ActionType type) {
+        if (event.isInWilderness()) return;
 
         Location location = event.getLocation();
-        Town town = TownyAPI.getInstance().getTown(location);
-        if (town == null)
-            return;
 
         Quarter quarter = QuarterManager.getInstance().getQuarter(location);
-        if (quarter == null)
-            return;
+        if (quarter == null) return;
 
         Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
-        if (resident == null)
-            return;
+        if (resident == null) return;
 
-        if (Objects.equals(quarter.getOwnerResident(), resident) || quarter.getTrustedResidents().contains(resident)) {
+        if (quarter.isResidentOwner(resident) || quarter.getTrustedResidents().contains(resident)) { // TODO: add isLandlord check?
+            event.setCancelled(false);
+            return;
+        }
+
+        if (quarter.testPermission(type, resident)) {
             event.setCancelled(false);
             return;
         }
