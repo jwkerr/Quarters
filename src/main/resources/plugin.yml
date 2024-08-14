@@ -108,6 +108,7 @@ permissions:
       quarters.command.quarters.set.colour: true
       quarters.command.quarters.set.defaultsellprice: true
       quarters.command.quarters.set.name: true
+      quarters.command.quarters.set.particlesize: true
       quarters.command.quarters.set.perm: true
       quarters.command.quarters.set.type: true
 
@@ -121,6 +122,9 @@ permissions:
     default: false
 
   quarters.command.quarters.set.name:
+    default: true
+
+  quarters.command.quarters.set.particlesize:
     default: true
 
   quarters.command.quarters.set.perm:

@@ -142,6 +142,10 @@ public class Cuboid {
         return bounding.overlaps(cuboid.getBounding());
     }
 
+    public boolean intersectsWith(BoundingBox bounding) {
+        return this.bounding.overlaps(bounding);
+    }
+
     /**
      * @param location Location to check
      * @return True if the specified location is within this cuboid

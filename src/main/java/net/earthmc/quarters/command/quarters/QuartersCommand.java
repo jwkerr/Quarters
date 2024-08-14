@@ -62,7 +62,7 @@ public class QuartersCommand implements TabExecutor {
                 case "pos" -> Stream.of("one", "two");
                 case "selection" -> Stream.of("add", "clear", "remove");
                 case "sell" -> Stream.of("{price}");
-                case "set" -> Stream.of("anchor", "colour", "defaultsellprice", "name", "perm", "type");
+                case "set" -> Stream.of("anchor", "colour", "defaultsellprice", "name", "particlesize", "perm", "type");
                 case "toggle" -> Stream.of("constantoutlines", "embassy", "entrynotifications");
                 case "trust" -> Stream.of("add", "clear", "remove");
                 default -> null;
@@ -73,6 +73,7 @@ public class QuartersCommand implements TabExecutor {
                     case "colour" -> Stream.of("{r}");
                     case "defaultsellprice" -> Stream.of("{price}");
                     case "name" -> Stream.of("{name}");
+                    case "particlesize" -> Stream.of("{float}");
                     case "perm" -> Arrays.stream(ActionType.values()).map(ActionType::getLowerCase);
                     case "type" -> Arrays.stream(QuarterType.values()).map(QuarterType::getLowerCase);
                     default -> null;

@@ -12,6 +12,7 @@ import net.earthmc.quarters.object.wrapper.QuarterPermissions;
 import net.earthmc.quarters.object.state.QuarterType;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -149,15 +150,16 @@ public class Quarter {
      * @return True if the specified resident owns this quarter
      */
     public boolean isResidentOwner(@NotNull Resident resident) {
-        if (owner == null) return false;
-
-        return owner.equals(resident.getUUID());
+        return isOwner(resident.getUUID());
     }
 
     public boolean isPlayerOwner(@NotNull Player player) {
-        if (owner == null) return false;
+        return isOwner(player.getUniqueId());
+    }
 
-        return owner.equals(player.getUniqueId());
+    public boolean isOwner(@NotNull UUID uuid) {
+        if (owner == null) return false;
+        return owner.equals(uuid);
     }
 
     /**
@@ -166,7 +168,15 @@ public class Quarter {
      * @return True if the resident can perform the specified action
      */
     public boolean testPermission(@NotNull ActionType type, @NotNull Resident resident) {
-        return getPermissions().testPermission(this, type, resident);
+        return getPermissions().testPermission(type, resident,this);
+    }
+
+    public boolean intersectsWith(BoundingBox bounding) {
+        for (Cuboid cuboid : cuboids) {
+            if (cuboid.intersectsWith(bounding)) return true;
+        }
+
+        return false;
     }
 
     /**

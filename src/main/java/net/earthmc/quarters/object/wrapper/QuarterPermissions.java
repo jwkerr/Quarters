@@ -6,6 +6,7 @@ import com.palmergames.bukkit.towny.object.TownyPermission;
 import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.state.ActionType;
 import net.earthmc.quarters.object.state.PermLevel;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -36,28 +37,27 @@ public class QuarterPermissions {
     /**
      * @return True if the resident can perform the specified action under these permissions
      */
-    public boolean testPermission(@NotNull Quarter quarter, @NotNull ActionType type, @NotNull Resident resident) {
+    public boolean testPermission(@NotNull ActionType type, @NotNull Resident resident, @NotNull Quarter quarter) {
         Map<PermLevel, Boolean> perms = getPermissions(type);
+        return perms.get(getPermLevel(resident, quarter));
+    }
 
-        boolean isResidentAllowed = perms.get(PermLevel.RESIDENT);
-        boolean isNationAllowed = perms.get(PermLevel.NATION);
-        boolean isAllyAllowed = perms.get(PermLevel.ALLY);
-        boolean isOutsiderAllowed = perms.get(PermLevel.OUTSIDER);
+    public static PermLevel getPermLevel(@NotNull Resident resident, @NotNull Quarter quarter) {
+        Player player = resident.getPlayer();
+        if (player == null) return PermLevel.OUTSIDER;
 
-        if (isOutsiderAllowed) return true; // Outsider extends to every other user
-
-        if (isResidentAllowed && quarter.getTown().hasResident(resident)) return true;
+        if (quarter.isPlayerInTown(player)) return PermLevel.RESIDENT;
 
         Nation nation = quarter.getNation();
         if (nation != null) {
             Nation residentNation = resident.getNationOrNull();
 
-            if (isNationAllowed && nation.equals(residentNation)) return true;
+            if (nation.equals(residentNation)) return PermLevel.NATION;
 
-            return isAllyAllowed && nation.hasAlly(residentNation);
+            if (nation.hasAlly(residentNation)) return PermLevel.ALLY;
         }
 
-        return false;
+        return PermLevel.OUTSIDER;
     }
 
     public void setPermission(@NotNull ActionType type, @NotNull PermLevel level, boolean allowed) {

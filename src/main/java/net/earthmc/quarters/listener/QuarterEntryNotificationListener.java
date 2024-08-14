@@ -1,4 +1,4 @@
-package net.earthmc.quarters.listener.newlisteners;
+package net.earthmc.quarters.listener;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -20,6 +20,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class handles the notifications that may appear when entering a quarter
+ */
 public class QuarterEntryNotificationListener implements Listener {
 
     private static final Map<Player, Quarter> QUARTER_PLAYER_IS_IN = new HashMap<>();

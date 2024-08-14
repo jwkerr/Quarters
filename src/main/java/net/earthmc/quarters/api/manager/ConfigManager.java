@@ -167,6 +167,10 @@ public final class ConfigManager {
         return config.getBoolean("particles.allow_constant_particle_outlines", true);
     }
 
+    public static float getDefaultParticleSize() {
+        return (float) config.getDouble("particles.default_particle_size", 1F);
+    }
+
     private void addValues() {
         config.options().setHeader(List.of("Quarters"));
 
@@ -180,7 +184,7 @@ public final class ConfigManager {
         config.addDefault("quarters.default_quarter_colour.red", 63);
         config.addDefault("quarters.default_quarter_colour.green", 180);
         config.addDefault("quarters.default_quarter_colour.blue", 255);
-        config.addDefault("quarters.allow_entry_notifications", true);
+        config.addDefault("quarters.allow_entry_notifications", true); config.setInlineComments("quarters.allow_entry_notifications", List.of("If set to true, players will be allowed to toggle notifications of when they have entered a quarter"));
 
         config.addDefault("particles.enabled", true); config.setInlineComments("particles.enabled", List.of("Set to false to completely disable particle outlines around cuboids"));
         config.addDefault("particles.current_selection_particle", "SCRAPE"); config.setInlineComments("particles.current_selection_particle", List.of("Particle outline of the currently selected area"));
@@ -188,6 +192,7 @@ public final class ConfigManager {
         config.addDefault("particles.ticks_between_particle_outlines", 5); config.setInlineComments("particles.ticks_between_particle_outlines", List.of("The number of ticks between when the particle outlines of quarters will appear"));
         config.addDefault("particles.max_distance_for_cuboid_particles", 48); config.setInlineComments("particles.max_distance_for_cuboid_particles", List.of("The maximum distance a player can be from a cuboid before the outline particles stop being sent to their client"));
         config.addDefault("particles.allow_constant_particle_outlines", true); config.setInlineComments("particles.allow_constant_particle_outlines", List.of("If set to true, players will be able to toggle quarter outlines to display constantly"));
+        config.addDefault("particles.default_particle_size", 1F); config.setInlineComments("particles.default_particle_size", List.of("Sets the default size for particles of quarters that have been made"));
 
         config.options().copyDefaults(true);
     }

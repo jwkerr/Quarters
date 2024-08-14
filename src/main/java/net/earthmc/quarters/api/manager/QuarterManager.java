@@ -3,10 +3,13 @@ package net.earthmc.quarters.api.manager;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownBlock;
+import com.palmergames.bukkit.towny.object.WorldCoord;
 import net.earthmc.quarters.object.entity.Cuboid;
 import net.earthmc.quarters.object.entity.Quarter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,14 +54,14 @@ public final class QuarterManager {
     }
 
     public List<Quarter> getAllQuarters() {
-        List<Quarter> quarterList = new ArrayList<>();
+        List<Quarter> quarters = new ArrayList<>();
 
         for (Town town : TownyAPI.getInstance().getTowns()) {
             List<Quarter> currentTownQuarterList = getQuarters(town);
-            quarterList.addAll(currentTownQuarterList);
+            quarters.addAll(currentTownQuarterList);
         }
 
-        return quarterList;
+        return quarters;
     }
 
     /**
@@ -93,13 +96,39 @@ public final class QuarterManager {
      * @return A list of all quarters owned by the specified player
      */
     public List<Quarter> getQuarters(@NotNull Player player) {
-        List<Quarter> quarterList = new ArrayList<>();
+        List<Quarter> quarters = new ArrayList<>();
 
         for (Quarter quarter : getAllQuarters()) {
-            if (player.getUniqueId().equals(quarter.getOwner())) quarterList.add(quarter);
+            if (player.getUniqueId().equals(quarter.getOwner())) quarters.add(quarter);
         }
 
-        return quarterList;
+        return quarters;
+    }
+
+    public boolean hasQuarter(@NotNull TownBlock townBlock) {
+        return !getQuarters(townBlock).isEmpty();
+    }
+
+    public List<Quarter> getQuarters(@NotNull TownBlock townBlock) {
+        return getQuarters(townBlock.getWorldCoord());
+    }
+
+    public boolean hasQuarter(@NotNull WorldCoord worldCoord) {
+        return !getQuarters(worldCoord).isEmpty();
+    }
+
+    public List<Quarter> getQuarters(@NotNull WorldCoord worldCoord) {
+        List<Quarter> quarters = new ArrayList<>();
+
+        Town town = worldCoord.getTownOrNull();
+        if (town == null) return quarters;
+
+        BoundingBox wcBounding = worldCoord.getBoundingBox();
+        for (Quarter quarter : getQuarters(town)) {
+            if (quarter.intersectsWith(wcBounding)) quarters.add(quarter);
+        }
+
+        return quarters;
     }
 
     /**
@@ -110,10 +139,10 @@ public final class QuarterManager {
         Town town = TownyAPI.getInstance().getTown(location);
         if (town == null) return false;
 
-        List<Quarter> quarterList = getQuarters(town);
-        if (quarterList.isEmpty()) return false;
+        List<Quarter> quarters = getQuarters(town);
+        if (quarters.isEmpty()) return false;
 
-        for (Quarter quarter : quarterList) {
+        for (Quarter quarter : quarters) {
             for (Cuboid cuboid : quarter.getCuboids()) {
                 if (cuboid.isLocationInsideBounds(location)) return true;
             }
