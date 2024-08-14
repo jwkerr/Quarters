@@ -8,6 +8,7 @@ import java.awt.*;
 
 public enum UserGroup {
     AUTHOR(new Color(0xF6003C), "This player is a developer of Quarters"),
+    CORRUPTEDGREED(new Color(0x8A50C4), null),
     DEFAULT(new Color(NamedTextColor.GRAY.value()), null),
     EARLY_SUPPORTER(new Color(NamedTextColor.GOLD.value()), "This player helped fund the early days of Quarters, thanks!"),
     OXBIT(new Color(0x003CF6), null),

@@ -4,8 +4,10 @@ import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.api.manager.ConfigManager;
+import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.entity.Quarter;
+import net.earthmc.quarters.object.exception.CommandMethodException;
 import net.earthmc.quarters.object.state.ActionType;
 import net.earthmc.quarters.object.wrapper.Pair;
 import net.earthmc.quarters.object.wrapper.QuarterPermissions;
@@ -26,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class HereMethod extends CommandMethod {
 
@@ -36,7 +39,22 @@ public class HereMethod extends CommandMethod {
     @Override
     public void execute() {
         Player player = getSenderAsPlayerOrThrow();
-        Quarter quarter = getQuarterAtPlayerOrThrow(player);
+
+        Quarter quarter;
+        String arg = getArgOrNull(0);
+        if (arg == null) {
+            quarter = getQuarterAtPlayerOrThrow(player);
+        } else {
+            UUID uuid;
+            try {
+                uuid = UUID.fromString(arg);
+            } catch (IllegalArgumentException e) {
+                throw new CommandMethodException("Invalid quarter UUID provided");
+            }
+
+            quarter = QuarterManager.getInstance().getQuarter(uuid);
+            if (quarter == null) throw new CommandMethodException("This quarter no longer exists");
+        }
 
         TextComponent.Builder headerBuilder = Component.text();
         headerBuilder.append(Component.text(quarter.getName(), TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));

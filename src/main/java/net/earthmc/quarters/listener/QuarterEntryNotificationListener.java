@@ -9,7 +9,9 @@ import net.earthmc.quarters.api.manager.ResidentMetadataManager;
 import net.earthmc.quarters.object.entity.Quarter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -64,7 +66,8 @@ public class QuarterEntryNotificationListener implements Listener {
 
     private void sendQuarterEntryAlert(Quarter quarter, Player player) {
         TextComponent.Builder builder = Component.text();
-        builder.append(Component.text("You have entered a quarter named " + quarter.getName(), NamedTextColor.GRAY));
+        builder.append(Component.text("You have entered a quarter named ", NamedTextColor.GRAY));
+        builder.append(Component.text(quarter.getName(), NamedTextColor.GRAY, TextDecoration.ITALIC).clickEvent(ClickEvent.runCommand("/quarters:q here " + quarter.getUUID())));
         if (quarter.hasOwner()) builder.append(Component.text(" owned by ", NamedTextColor.GRAY).append(
                 ConfigManager.getFormattedName(quarter.getOwner(), Component.text(quarter.getTown().getName()))) // Town name is better than some error if it doesn't work
         );
