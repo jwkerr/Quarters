@@ -36,7 +36,11 @@ public class ParticleManager {
         if (cuboid.distanceTo(player.getLocation()) > Math.pow(ConfigManager.getMaxDistanceForCuboidParticles(), 2)) return;
 
         for (Location location : computeCuboidEdges(cuboid)) {
-            player.spawnParticle(particle, location, 1, dustOptions);
+            if (dustOptions != null) {
+                player.spawnParticle(particle, location, 1, dustOptions);
+            } else {
+                player.spawnParticle(particle, location, 1, 0, 0, 0, 0);
+            }
         }
     }
 
