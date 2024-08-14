@@ -3,7 +3,6 @@ package net.earthmc.quarters.command.quarters.method;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.QuartersMessaging;
-import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.api.manager.TownMetadataManager;
 import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.entity.Quarter;

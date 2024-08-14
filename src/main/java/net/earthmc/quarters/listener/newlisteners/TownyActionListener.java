@@ -45,7 +45,7 @@ public class TownyActionListener implements Listener {
         Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
         if (resident == null) return;
 
-        if (quarter.isResidentOwner(resident) || quarter.getTrustedResidents().contains(resident)) { // TODO: add isLandlord check?
+        if (quarter.isResidentOwner(resident) || quarter.getTrustedResidents().contains(resident)) {
             event.setCancelled(false);
             return;
         }

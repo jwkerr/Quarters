@@ -2,7 +2,6 @@ package net.earthmc.quarters.object.adapter;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
-import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.object.state.ActionType;
 import net.earthmc.quarters.object.state.PermLevel;
 import net.earthmc.quarters.object.wrapper.QuarterPermissions;

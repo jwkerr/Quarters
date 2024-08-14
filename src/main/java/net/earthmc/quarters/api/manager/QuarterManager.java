@@ -6,7 +6,6 @@ import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.object.entity.Cuboid;
 import net.earthmc.quarters.object.entity.Quarter;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

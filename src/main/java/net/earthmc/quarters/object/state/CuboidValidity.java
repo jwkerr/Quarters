@@ -1,7 +1,7 @@
 package net.earthmc.quarters.object.state;
 
 public enum CuboidValidity {
-    CONTAINS_WILDERNESS, // TODO: add this check, splitting to make checks more robust
+    CONTAINS_WILDERNESS,
     SPANS_MULTIPLE_TOWNS,
     INTERSECTS,
     VALID

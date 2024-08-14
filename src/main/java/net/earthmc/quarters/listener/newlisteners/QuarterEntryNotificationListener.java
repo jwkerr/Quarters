@@ -1,8 +1,11 @@
 package net.earthmc.quarters.listener.newlisteners;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.api.manager.ConfigManager;
 import net.earthmc.quarters.api.manager.QuarterManager;
+import net.earthmc.quarters.api.manager.ResidentMetadataManager;
 import net.earthmc.quarters.object.entity.Quarter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -26,6 +29,11 @@ public class QuarterEntryNotificationListener implements Listener {
         if (!ConfigManager.areEntryNotificationsAllowed()) return;
 
         Player player = event.getPlayer();
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null) return;
+
+        if (!ResidentMetadataManager.getInstance().hasEntryNotifications(resident)) return;
+
         Location to = event.getTo();
 
         Quarter quarter = QuarterManager.getInstance().getQuarter(to);
@@ -39,8 +47,13 @@ public class QuarterEntryNotificationListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) { // This listener is to prevent an alert when connecting inside a quarter
         if (!ConfigManager.areEntryNotificationsAllowed()) return;
-        
+
         Player player = event.getPlayer();
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null) return;
+
+        if (!ResidentMetadataManager.getInstance().hasEntryNotifications(resident)) return;
+
         Quarter quarter = QuarterManager.getInstance().getQuarter(player.getLocation());
 
         QUARTER_PLAYER_IS_IN.put(player, quarter);
