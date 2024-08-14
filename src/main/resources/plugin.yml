@@ -1,7 +1,7 @@
 name: Quarters
 version: "${project.version}"
 main: net.earthmc.quarters.Quarters
-api-version: "1.19"
+api-version: "1.20"
 prefix: Quarters
 authors: [Fruitloopins]
 description: The modern "apartment" plugin for Towny
