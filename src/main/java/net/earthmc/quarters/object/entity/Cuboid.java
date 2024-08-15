@@ -2,6 +2,7 @@ package net.earthmc.quarters.object.entity;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
+import net.earthmc.quarters.api.manager.ConfigManager;
 import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.object.state.CuboidValidity;
 import org.bukkit.Bukkit;
@@ -64,6 +65,9 @@ public class Cuboid {
 
         boolean doesntContainWilderness = doesCuboidContainWilderness();
         if (!doesntContainWilderness) return CuboidValidity.CONTAINS_WILDERNESS;
+
+        int maxCuboidVolume = ConfigManager.getMaxCuboidVolume();
+        if (maxCuboidVolume > -1 && this.getVolume() > maxCuboidVolume) return CuboidValidity.TOO_LARGE;
 
         if (!isCuboidEntirelyWithinSingularTown()) return CuboidValidity.SPANS_MULTIPLE_TOWNS;
 

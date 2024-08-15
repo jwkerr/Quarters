@@ -32,9 +32,6 @@ public class SelectionAddMethod extends CommandMethod {
         int maxCuboids = ConfigManager.getMaxCuboidsPerQuarter();
         if (maxCuboids > -1 && cuboids.size() == maxCuboids) throw new CommandMethodException("Selection could not be added as it will exceed the configured cuboid limit of " + maxCuboids);
 
-        int maxCuboidVolume = ConfigManager.getMaxCuboidVolume();
-        if (maxCuboidVolume > -1 && newCuboid.getVolume() > maxCuboidVolume) throw new CommandMethodException("Selection could not be added as it exceeds the configured cuboid volume limit of " + maxCuboidVolume + " blocks");
-
         CuboidValidity validity = newCuboid.checkValidity();
         switch (validity) {
             case CONTAINS_WILDERNESS -> throw new CommandMethodException("Failed to add cuboid as it contains wilderness");

@@ -47,6 +47,7 @@ public class EditAddSelectionMethod extends CommandMethod {
                 case CONTAINS_WILDERNESS -> throw new CommandMethodException("Failed to add cuboids as it contains wilderness");
                 case INTERSECTS -> throw new CommandMethodException("Failed to add cuboids as it intersects with a pre-existing quarter");
                 case SPANS_MULTIPLE_TOWNS -> throw new CommandMethodException("Failed to add cuboids as it spans multiple towns");
+                case TOO_LARGE -> throw new CommandMethodException("Failed to add cuboids as at least one is too large");
             }
         }
 
