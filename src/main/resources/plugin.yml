@@ -215,8 +215,11 @@ permissions:
       quarters.command.quartersadmin.evict: true
       quarters.command.quartersadmin.sell: true
       quarters.command.quartersadmin.set: true
+      quarters.command.quartersadmin.set.*: true
       quarters.command.quartersadmin.toggle: true
+      quarters.command.quartersadmin.toggle.*: true
       quarters.command.quartersadmin.trust: true
+      quarters.command.quartersadmin.trust.*: true
 
   quarters.command.quartersadmin.delete:
     default: op
