@@ -40,19 +40,25 @@ public final class ConfigManager {
     }
 
     public void setup() {
-        reload();
+        load();
 
         loadUserGroups();
     }
 
-    public void reload() {
+    public void load() {
         Quarters plugin = Quarters.getInstance();
         config = plugin.getConfig();
 
         addValues();
 
         plugin.saveConfig();
+    }
+
+    public void reload() {
+        Quarters plugin = Quarters.getInstance();
         plugin.reloadConfig();
+
+        config = plugin.getConfig();
     }
 
     private void loadUserGroups() {
@@ -184,7 +190,7 @@ public final class ConfigManager {
     }
 
     private void addValues() {
-        config.options().setHeader(List.of("Quarters"));
+        config.options().setHeader(List.of("If comments are not present, please restart your server"));
 
         config.addDefault("wand_material", "FLINT"); config.setInlineComments("wand_material", List.of("Material of the wand item"));
 
