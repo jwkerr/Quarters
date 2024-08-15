@@ -9,6 +9,8 @@ import net.earthmc.quarters.object.wrapper.StringConstants;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class AdminEvictMethod extends CommandMethod {
 
     public AdminEvictMethod(CommandSender sender, String[] args) {
@@ -20,11 +22,14 @@ public class AdminEvictMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow();
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        Resident owner = quarter.getOwnerResident();
+        UUID owner = quarter.getOwner();
         if (owner == null) throw new CommandMethodException(StringConstants.THIS_QUARTER_HAS_NO_OWNER);
+
+        Resident resident = quarter.getOwnerResident();
+        if (resident == null) return;
 
         quarter.setOwner(null);
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully evicted " + owner.getName());
+        QuartersMessaging.sendSuccessMessage(player, "Successfully evicted " + resident.getName());
     }
 }

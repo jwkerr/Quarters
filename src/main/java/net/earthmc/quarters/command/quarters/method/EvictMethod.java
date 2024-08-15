@@ -9,6 +9,8 @@ import net.earthmc.quarters.object.wrapper.StringConstants;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class EvictMethod extends CommandMethod {
 
     public EvictMethod(CommandSender sender, String[] args) {
@@ -22,16 +24,19 @@ public class EvictMethod extends CommandMethod {
 
         if (!quarter.isPlayerInTown(player)) throw new CommandMethodException(StringConstants.THIS_QUARTER_IS_NOT_PART_OF_YOUR_TOWN);
 
-        Resident owner = quarter.getOwnerResident();
+        UUID owner = quarter.getOwner();
         if (owner == null) throw new CommandMethodException(StringConstants.THIS_QUARTER_HAS_NO_OWNER);
 
-        String ownerName = owner.getName();
+        Resident resident = quarter.getOwnerResident();
+        if (resident == null) return;
+
+        String ownerName = resident.getName();
 
         quarter.setOwner(null);
         quarter.setClaimedAt(null);
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully evicted " + owner.getName());
+        QuartersMessaging.sendSuccessMessage(player, "Successfully evicted " + ownerName);
         QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has evicted " + ownerName + " from a quarter", player.getLocation());
     }
 }
