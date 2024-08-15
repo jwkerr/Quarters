@@ -1,4 +1,4 @@
-package net.earthmc.quarters.command.quarters.method.trust;
+package net.earthmc.quarters.command.quartersadmin.method.trust;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -13,18 +13,16 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.UUID;
 
-public class TrustAddMethod extends CommandMethod {
+public class AdminTrustAddMethod extends CommandMethod {
 
-    public TrustAddMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.trust.add");
+    public AdminTrustAddMethod(CommandSender sender, String[] args) {
+        super(sender, args, "quarters.command.quartersadmin.trust.add");
     }
 
     @Override
     public void execute() {
         Player player = getSenderAsPlayerOrThrow();
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
-
-        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_PERFORM_THIS_ACTION);
 
         String targetResidentName = getArgOrThrow(0, "No player name provided");
         Resident resident = TownyAPI.getInstance().getResident(targetResidentName);

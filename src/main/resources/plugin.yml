@@ -108,6 +108,7 @@ permissions:
       quarters.command.quarters.set.colour: true
       quarters.command.quarters.set.defaultsellprice: true
       quarters.command.quarters.set.name: true
+      quarters.command.quarters.set.owner: true
       quarters.command.quarters.set.particlesize: true
       quarters.command.quarters.set.perm: true
       quarters.command.quarters.set.type: true
@@ -123,6 +124,9 @@ permissions:
 
   quarters.command.quarters.set.name:
     default: true
+
+  quarters.command.quarters.set.owner:
+    default: false
 
   quarters.command.quarters.set.particlesize:
     default: true
@@ -174,4 +178,87 @@ permissions:
   quarters.command.quarters.unclaim:
     default: true
 
-# TODO: reimplement admin commands
+  ### ADMIN COMMANDS ###
+
+  quarters.command.quartersadmin:
+    default: op
+
+  quarters.command.quartersadmin.*:
+    default: false
+    children:
+      quarters.command.quartersadmin.delete: true
+      quarters.command.quartersadmin.evict: true
+      quarters.command.quartersadmin.sell: true
+      quarters.command.quartersadmin.set: true
+      quarters.command.quartersadmin.toggle: true
+      quarters.command.quartersadmin.trust: true
+
+  quarters.command.quartersadmin.delete:
+    default: op
+
+  quarters.command.quartersadmin.evict:
+    default: op
+
+  quarters.command.quartersadmin.sell:
+    default: op
+
+  quarters.command.quartersadmin.set:
+    default: op
+
+  quarters.command.quartersadmin.set.*:
+    default: false
+    children:
+      quarters.command.quartersadmin.set.anchor: true
+      quarters.command.quartersadmin.set.colour: true
+      quarters.command.quartersadmin.set.name: true
+      quarters.command.quartersadmin.set.owner: true
+      quarters.command.quartersadmin.set.perm: true
+      quarters.command.quartersadmin.set.type: true
+
+  quarters.command.quartersadmin.set.anchor:
+    default: op
+
+  quarters.command.quartersadmin.set.colour:
+    default: op
+
+  quarters.command.quartersadmin.set.name:
+    default: op
+
+  quarters.command.quartersadmin.set.owner:
+    default: op
+
+  quarters.command.quartersadmin.set.perm:
+    default: op
+
+  quarters.command.quartersadmin.set.type:
+    default: op
+
+  quarters.command.quartersadmin.toggle:
+    default: op
+
+  quarters.command.quartersadmin.toggle.*:
+    default: false
+    children:
+      quarters.command.quartersadmin.toggle.embassy: true
+
+  quarters.command.quartersadmin.toggle.embassy:
+    default: op
+
+  quarters.command.quartersadmin.trust:
+    default: op
+
+  quarters.command.quartersadmin.trust.*:
+    default: false
+    children:
+      quarters.command.quartersadmin.trust.add: true
+      quarters.command.quartersadmin.trust.clear: true
+      quarters.command.quartersadmin.trust.remove: true
+
+  quarters.command.quartersadmin.trust.add:
+    default: op
+
+  quarters.command.quartersadmin.trust.clear:
+    default: op
+
+  quarters.command.quartersadmin.trust.remove:
+    default: op

@@ -40,6 +40,7 @@ public class DeleteMethod extends CommandMethod {
         if (deleteAll) {
             TownMetadataManager.getInstance().setQuarterList(town, new ArrayList<>());
             QuartersMessaging.sendSuccessMessage(player, "Successfully deleted all quarters in " + town.getName());
+            QuartersMessaging.sendCommandFeedbackToTown(town, player, "has deleted all quarters in " + town.getName(), null);
             return;
         }
 
@@ -49,7 +50,7 @@ public class DeleteMethod extends CommandMethod {
 
         quarter.delete();
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully deleted this quarter");
+        QuartersMessaging.sendSuccessMessage(player, StringConstants.SUCCESSFULLY_DELETED_THIS_QUARTER);
         QuartersMessaging.sendCommandFeedbackToTown(town, player, "has deleted a quarter", player.getLocation());
     }
 }

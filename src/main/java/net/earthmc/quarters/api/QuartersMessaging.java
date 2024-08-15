@@ -54,7 +54,7 @@ public class QuartersMessaging {
             builder.appendNewline();
 
             if (i != labelledLength - 1) {
-                builder.append(MID_PIPE); // TODO: change pipe colours
+                builder.append(MID_PIPE);
             } else {
                 builder.append(BOTTOM_PIPE);
             }

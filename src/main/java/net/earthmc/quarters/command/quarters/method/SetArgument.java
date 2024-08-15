@@ -16,6 +16,7 @@ public class SetArgument extends CommandArgument {
             case "colour" -> new SetColourMethod(sender, args).execute();
             case "defaultsellprice" -> new SetDefaultSellPriceMethod(sender, args).execute();
             case "name" -> new SetNameMethod(sender, args).execute();
+            case "owner" -> new SetOwnerMethod(sender, args).execute();
             case "particlesize" -> new SetParticleSizeMethod(sender, args).execute();
             case "perm" -> new SetPermMethod(sender, args).execute();
             case "type" -> new SetTypeMethod(sender, args).execute();
