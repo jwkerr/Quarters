@@ -81,6 +81,10 @@ public final class ConfigManager {
         return userGroup != null ? userGroup : UserGroup.DEFAULT;
     }
 
+    public static Map<UUID, UserGroup> getUserGroups() {
+        return USER_GROUPS;
+    }
+
     /**
      * @param uuid UUID of the player you would like to get a formatted name of
      * @param def A default if the UUID doesn't resolve to a player, can be null if you know for a fact the player exists
@@ -92,7 +96,7 @@ public final class ConfigManager {
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 
         String name = player.getName();
-        if (name == null) return def; // UUID didn't resolve to an actual player
+        if (name == null) return def; // UUID didn't resolve to a player that has joined
 
         UserGroup userGroup = getUserGroup(uuid);
 

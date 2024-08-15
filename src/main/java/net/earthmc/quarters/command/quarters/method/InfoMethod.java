@@ -9,6 +9,7 @@ import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.wrapper.Pair;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -42,7 +43,16 @@ public class InfoMethod extends CommandMethod {
                 Pair.of("Cuboids", Component.text(numCuboids, NamedTextColor.GRAY))
         );
 
+        TextComponent.Builder bracketBuilder = Component.text();
+
+        bracketBuilder.append(QuartersMessaging.OPEN_SQUARE_BRACKET);
+        bracketBuilder.append(Component.text("Fame", TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
+        bracketBuilder.append(QuartersMessaging.CLOSED_SQUARE_BRACKET);
+        bracketBuilder.hoverEvent(Component.text("Click to view Quarters' most famous players", NamedTextColor.GRAY));
+        bracketBuilder.clickEvent(ClickEvent.runCommand("/quarters:q fame"));
+
         Component info = QuartersMessaging.getListComponent(QuartersMessaging.PLUGIN_WORDMARK_COMPONENT, labelledEntries, null).appendNewline()
+                .append(bracketBuilder.build()).appendNewline()
                 .append(Component.text("Wiki", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://github.com/jwkerr/Quarters/wiki"))).appendSpace()
                 .append(Component.text("Discord", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://discord.gg/ey6ZvnwAJp")));
 

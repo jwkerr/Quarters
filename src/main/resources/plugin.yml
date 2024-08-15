@@ -45,6 +45,7 @@ permissions:
       quarters.command.quarters.create: true
       quarters.command.quarters.delete: true
       quarters.command.quarters.evict: true
+      quarters.command.quarters.fame: true
       quarters.command.quarters.here: true
       quarters.command.quarters.info: true
       quarters.command.quarters.pos: true
@@ -66,6 +67,9 @@ permissions:
 
   quarters.command.quarters.evict:
     default: false
+
+  quarters.command.quarters.fame:
+    default: true
 
   quarters.command.quarters.here:
     default: true

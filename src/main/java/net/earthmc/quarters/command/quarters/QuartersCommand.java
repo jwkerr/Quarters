@@ -41,6 +41,7 @@ public class QuartersCommand implements TabExecutor {
             case "create" -> new CreateMethod(sender, args).execute();
             case "delete" -> new DeleteMethod(sender, args).execute();
             case "evict" -> new EvictMethod(sender, args).execute();
+            case "fame" -> new FameMethod(sender, args).execute();
             case "here" -> new HereMethod(sender, args).execute();
             case "info" -> new InfoMethod(sender, args).execute();
             case "pos" -> new PosMethod(sender, args).execute();
@@ -56,7 +57,7 @@ public class QuartersCommand implements TabExecutor {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Stream<String> stream = switch (args.length) {
-            case 1 -> Stream.of("claim", "create", "delete", "evict", "here", "info", "pos", "selection", "sell", "set", "toggle", "trust", "unclaim");
+            case 1 -> Stream.of("claim", "create", "delete", "evict", "fame", "here", "info", "pos", "selection", "sell", "set", "toggle", "trust", "unclaim");
             case 2 -> switch (args[0]) {
                 case "delete" -> Stream.of("all");
                 case "pos" -> Stream.of("one", "two");
