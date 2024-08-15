@@ -66,10 +66,10 @@ public class Cuboid {
         boolean doesntContainWilderness = doesCuboidContainWilderness();
         if (!doesntContainWilderness) return CuboidValidity.CONTAINS_WILDERNESS;
 
+        if (!isCuboidEntirelyWithinSingularTown()) return CuboidValidity.SPANS_MULTIPLE_TOWNS;
+
         int maxCuboidVolume = ConfigManager.getMaxCuboidVolume();
         if (maxCuboidVolume > -1 && this.getVolume() > maxCuboidVolume) return CuboidValidity.TOO_LARGE;
-
-        if (!isCuboidEntirelyWithinSingularTown()) return CuboidValidity.SPANS_MULTIPLE_TOWNS;
 
         return CuboidValidity.VALID;
     }
