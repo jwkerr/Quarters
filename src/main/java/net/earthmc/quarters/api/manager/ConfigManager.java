@@ -147,6 +147,10 @@ public final class ConfigManager {
         return config.getBoolean("quarters.allow_entry_notifications", true);
     }
 
+    public static boolean getQuarterEntryNotificationsOnByDefault() {
+        return config.getBoolean("quarters.quarter_entry_notifications_on_by_default", true);
+    }
+
     public static boolean areParticlesEnabled() {
         return config.getBoolean("particles.enabled", true);
     }
@@ -175,6 +179,10 @@ public final class ConfigManager {
         return (float) config.getDouble("particles.default_particle_size", 1F);
     }
 
+    public static boolean getConstantParticleOutlinesOnByDefault() {
+        return config.getBoolean("particles.constant_particle_outlines_on_by_default", true);
+    }
+
     private void addValues() {
         config.options().setHeader(List.of("Quarters"));
 
@@ -188,7 +196,8 @@ public final class ConfigManager {
         config.addDefault("quarters.default_quarter_colour.red", 63);
         config.addDefault("quarters.default_quarter_colour.green", 180);
         config.addDefault("quarters.default_quarter_colour.blue", 255);
-        config.addDefault("quarters.allow_entry_notifications", true); config.setInlineComments("quarters.allow_entry_notifications", List.of("If set to true, players will be allowed to toggle notifications of when they have entered a quarter"));
+        config.addDefault("quarters.allow_quarter_entry_notifications", true); config.setInlineComments("quarters.allow_entry_notifications", List.of("If set to true, players will be allowed to toggle notifications of when they have entered a quarter"));
+        config.addDefault("quarters.quarter_entry_notifications_on_by_default", true); config.setInlineComments("quarters.entry_notifications_on_by_default", List.of("If set to false players will have to opt in to entry notifications"));
 
         config.addDefault("particles.enabled", true); config.setInlineComments("particles.enabled", List.of("Set to false to completely disable particle outlines around cuboids"));
         config.addDefault("particles.current_selection_particle", "SCRAPE"); config.setInlineComments("particles.current_selection_particle", List.of("Particle outline of the currently selected area"));
@@ -197,6 +206,7 @@ public final class ConfigManager {
         config.addDefault("particles.max_distance_for_cuboid_particles", 48); config.setInlineComments("particles.max_distance_for_cuboid_particles", List.of("The maximum distance a player can be from a cuboid before the outline particles stop being sent to their client"));
         config.addDefault("particles.allow_constant_particle_outlines", true); config.setInlineComments("particles.allow_constant_particle_outlines", List.of("If set to true, players will be able to toggle quarter outlines to display constantly"));
         config.addDefault("particles.default_particle_size", 1F); config.setInlineComments("particles.default_particle_size", List.of("Sets the default size for particles of quarters that have been made"));
+        config.addDefault("particles.constant_particle_outlines_on_by_default", true); config.setInlineComments("particles.constant_particle_outlines_on_by_default", List.of("If set to false players will have to opt in to constant particle outlines"));
 
         config.options().copyDefaults(true);
     }

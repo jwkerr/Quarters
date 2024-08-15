@@ -22,6 +22,13 @@ public abstract class MetadataManager<T extends TownyObject> {
         return bdf.getValue();
     }
 
+    public boolean getMetadataAsBoolean(@NotNull T townyObject, @NotNull String key, boolean def) {
+        BooleanDataField bdf = (BooleanDataField) townyObject.getMetadata(key);
+        if (bdf == null) return def;
+
+        return bdf.getValue();
+    }
+
     public void setMetadataAsDecimal(@NotNull T townyObject, @NotNull String key, Double value) {
         DecimalDataField ddf = new DecimalDataField(key, value);
         townyObject.addMetaData(ddf);

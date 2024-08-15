@@ -44,18 +44,20 @@ public class QuartersAdminCommand implements TabExecutor {
             case "set" -> new AdminSetArgument(sender, args).execute();
             case "toggle" -> new AdminToggleArgument(sender, args).execute();
             case "trust" -> new AdminTrustArgument(sender, args).execute();
+            case "reload" -> new ReloadArgument(sender, args).execute();
         }
     }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Stream<String> stream = switch (args.length) {
-            case 1 -> Stream.of("delete", "evict", "sell", "set", "toggle", "trust");
+            case 1 -> Stream.of("delete", "evict", "sell", "set", "toggle", "trust", "reload");
             case 2 -> switch (args[0]) {
                 case "sell" -> Stream.of("{price}");
                 case "set" -> Stream.of("anchor", "colour", "name", "owner", "perm", "type");
                 case "toggle" -> Stream.of("embassy");
                 case "trust" -> Stream.of("add", "clear", "remove");
+                case "reload" -> Stream.of("config");
                 default -> null;
             };
             case 3 -> switch (args[0]) {

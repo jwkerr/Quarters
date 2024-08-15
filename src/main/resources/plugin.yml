@@ -1,5 +1,5 @@
 name: Quarters
-version: "${project.version}"
+version: "${version}"
 main: net.earthmc.quarters.Quarters
 api-version: "1.20"
 prefix: Quarters

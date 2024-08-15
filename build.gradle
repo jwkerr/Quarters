@@ -1,0 +1,68 @@
+plugins {
+    id "java"
+}
+
+def gitBranch() {
+    "git rev-parse --abbrev-ref HEAD".execute().text.trim()
+}
+
+def gitVersion() {
+    "git rev-parse --short HEAD".execute(null, project.rootDir).text.trim()
+}
+
+group = "net.earthmc"
+version = "1.0.0"
+
+repositories {
+    mavenCentral()
+
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+
+    maven {
+        url = "https://jitpack.io"
+    }
+}
+
+dependencies {
+    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly("com.github.TownyAdvanced:Towny:0.100.3.0")
+}
+
+def targetJavaVersion = 17
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release.set(targetJavaVersion)
+    }
+}
+
+tasks.named("jar") {
+    archiveFileName = project.name + "-" + version + "+" + gitBranch() + "+" + gitVersion() + ".jar"
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset "UTF-8"
+    filesMatching("plugin.yml") {
+        expand props
+    }
+
+    from("$projectDir") {
+        include("LICENSE")
+        into("")
+    }
+}

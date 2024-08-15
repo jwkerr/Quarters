@@ -24,7 +24,7 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
     }
 
     public boolean hasEntryNotifications(@NotNull Resident resident) {
-        return getMetadataAsBoolean(resident, HAS_ENTRY_NOTIFICATIONS_KEY);
+        return getMetadataAsBoolean(resident, HAS_ENTRY_NOTIFICATIONS_KEY, ConfigManager.getQuarterEntryNotificationsOnByDefault());
     }
 
     public void setHasConstantOutlines(@NotNull Resident resident, boolean value) {
@@ -32,7 +32,7 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
     }
 
     public boolean hasConstantOutlines(@NotNull Resident resident) {
-        return getMetadataAsBoolean(resident, HAS_CONSTANT_OUTLINES_KEY);
+        return getMetadataAsBoolean(resident, HAS_CONSTANT_OUTLINES_KEY, ConfigManager.getConstantParticleOutlinesOnByDefault());
     }
 
     public void setParticleSize(@NotNull Resident resident, float value) {
