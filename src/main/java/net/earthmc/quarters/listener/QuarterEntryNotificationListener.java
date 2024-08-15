@@ -19,15 +19,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class handles the notifications that may appear when entering a quarter
  */
 public class QuarterEntryNotificationListener implements Listener {
 
-    private static final Map<Player, Quarter> QUARTER_PLAYER_IS_IN = new HashMap<>();
+    private static final Map<Player, Quarter> QUARTER_PLAYER_IS_IN = new ConcurrentHashMap<>();
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {

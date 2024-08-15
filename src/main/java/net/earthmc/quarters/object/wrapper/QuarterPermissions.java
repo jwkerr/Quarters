@@ -9,8 +9,8 @@ import net.earthmc.quarters.object.state.PermLevel;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Towny's internal permission are intentionally not used to avoid risk of data corruption from internal Towny changes
@@ -114,7 +114,7 @@ public class QuarterPermissions {
     }
 
     private static Map<PermLevel, Boolean> makeDefaultPerms() {
-        Map<PermLevel, Boolean> perms = new HashMap<>();
+        Map<PermLevel, Boolean> perms = new ConcurrentHashMap<>();
 
         perms.put(PermLevel.RESIDENT, false);
         perms.put(PermLevel.NATION, false);
