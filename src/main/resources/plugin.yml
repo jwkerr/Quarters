@@ -44,16 +44,22 @@ permissions:
       quarters.command.quarters.claim: true
       quarters.command.quarters.create: true
       quarters.command.quarters.delete: true
+      quarters.command.quarters.edit: true
+      quarters.command.quarters.edit.*: true
       quarters.command.quarters.evict: true
       quarters.command.quarters.fame: true
       quarters.command.quarters.here: true
       quarters.command.quarters.info: true
       quarters.command.quarters.pos: true
       quarters.command.quarters.selection: true
+      quarters.command.quarters.selection.*: true
       quarters.command.quarters.sell: true
       quarters.command.quarters.set: true
+      quarters.command.quarters.set.*: true
       quarters.command.quarters.toggle: true
+      quarters.command.quarters.toggle.*: true
       quarters.command.quarters.trust: true
+      quarters.command.quarters.trust.*: true
       quarters.command.quarters.unclaim: true
 
   quarters.command.quarters.claim:
@@ -63,6 +69,21 @@ permissions:
     default: false
 
   quarters.command.quarters.delete:
+    default: false
+
+  quarters.command.quarters.edit:
+    default: true
+
+  quarters.command.quarters.edit.*:
+    default: false
+    children:
+      quarters.command.quarters.edit.addselection: true
+      quarters.command.quarteres.edit.remove: true
+
+  quarters.command.quarters.edit.addselection:
+    default: false
+
+  quarters.command.quarteres.edit.remove:
     default: false
 
   quarters.command.quarters.evict:

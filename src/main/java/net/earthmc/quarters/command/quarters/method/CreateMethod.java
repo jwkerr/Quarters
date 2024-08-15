@@ -12,6 +12,7 @@ import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.exception.CommandMethodException;
 import net.earthmc.quarters.object.state.CuboidValidity;
 import net.earthmc.quarters.object.wrapper.CuboidSelection;
+import net.earthmc.quarters.object.wrapper.StringConstants;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ public class CreateMethod extends CommandMethod {
             if (selection.getCuboid() != null) {
                 cuboids = List.of(selection.getCuboid());
             } else {
-                throw new CommandMethodException("You have not selected any areas, add your current selection with /quarters selection add");
+                throw new CommandMethodException(StringConstants.YOU_HAVE_NOT_SELECTED_ANY_AREAS);
             }
         }
 

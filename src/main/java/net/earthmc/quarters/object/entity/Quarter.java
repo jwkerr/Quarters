@@ -179,6 +179,14 @@ public class Quarter {
         return false;
     }
 
+    public @Nullable Cuboid getCuboidAtPlayer(@NotNull Player player) {
+        for (Cuboid cuboid : cuboids) {
+            if (cuboid.getPlayersInBounds().contains(player)) return cuboid;
+        }
+
+        return null;
+    }
+
     /**
      * @return The town that this quarter is located in
      */
