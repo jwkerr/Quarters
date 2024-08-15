@@ -8,6 +8,7 @@ import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.manager.QuarterManager;
+import net.earthmc.quarters.api.manager.TownMetadataManager;
 import net.earthmc.quarters.object.entity.Quarter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -49,7 +50,13 @@ public class QuarterIntegrityListener implements Listener {
 
         // Delete from owner and trusted so that quarters don't break from having non-existent residents
         for (Quarter quarter : QuarterManager.getInstance().getAllQuarters()) {
-            if (quarter.isOwner(uuid)) quarter.setOwner(null);
+            if (quarter.isOwner(uuid)) {
+                quarter.setOwner(null);
+
+                Town town = quarter.getTown();
+                TownMetadataManager tmm = TownMetadataManager.getInstance();
+                if (tmm.getSellOnDelete(town)) quarter.setPrice(tmm.getDefaultSellPrice(town));
+            }
 
             List<UUID> trustedList = quarter.getTrusted();
             trustedList.remove(uuid);

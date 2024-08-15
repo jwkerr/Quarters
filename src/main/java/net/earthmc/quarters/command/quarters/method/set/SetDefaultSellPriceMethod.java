@@ -29,10 +29,6 @@ public class SetDefaultSellPriceMethod extends CommandMethod {
         TownMetadataManager.getInstance().setDefaultSellPrice(town, price);
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully changed the default quarter sale price of " + town.getName() + " to " + price);
-        QuartersMessaging.sendCommandFeedbackToTown(
-                town, player,
-                "has changed the default quarter sale price of " + town.getName() + " to " + price,
-                null
-        );
+        QuartersMessaging.sendCommandFeedbackToTown(town, player, "has changed the default quarter sale price of " + town.getName() + " to " + price, null);
     }
 }

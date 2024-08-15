@@ -15,6 +15,7 @@ public final class TownMetadataManager extends MetadataManager<Town> {
 
     public static final String QUARTER_LIST_KEY = METADATA_PREFIX + "quarter_list";
     public static final String DEFAULT_SELL_PRICE_KEY = METADATA_PREFIX + "default_sell_price";
+    public static final String SELL_ON_DELETE_KEY = METADATA_PREFIX + "sell_on_delete";
 
     private TownMetadataManager() {}
 
@@ -38,6 +39,14 @@ public final class TownMetadataManager extends MetadataManager<Town> {
     public Double getDefaultSellPrice(@NotNull Town town) {
         Double value = getMetadataAsDecimal(town, DEFAULT_SELL_PRICE_KEY);
         return value == null ? 0 : value;
+    }
+
+    public void setSellOnDelete(@NotNull Town town, boolean value) {
+        setMetadataAsBoolean(town, SELL_ON_DELETE_KEY, value);
+    }
+
+    public Boolean getSellOnDelete(@NotNull Town town) {
+        return getMetadataAsBoolean(town, SELL_ON_DELETE_KEY);
     }
 
     private void setMetadataAsQuarterList(@NotNull Town town, @NotNull String key, List<Quarter> value) {

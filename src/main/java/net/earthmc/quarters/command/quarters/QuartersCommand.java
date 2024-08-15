@@ -66,7 +66,7 @@ public class QuartersCommand implements TabExecutor {
                 case "selection" -> Stream.of("add", "clear", "remove");
                 case "sell" -> Stream.of("{price}");
                 case "set" -> Stream.of("anchor", "colour", "defaultsellprice", "name", "owner", "particlesize", "perm", "type");
-                case "toggle" -> Stream.of("constantoutlines", "embassy", "entrynotifications");
+                case "toggle" -> Stream.of("constantoutlines", "embassy", "entrynotifications", "sellondelete");
                 case "trust" -> Stream.of("add", "clear", "remove");
                 default -> null;
             };

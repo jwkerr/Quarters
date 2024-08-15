@@ -171,6 +171,7 @@ permissions:
       quarters.command.quarters.toggle.constantoutlines: true
       quarters.command.quarters.toggle.embassy: true
       quarters.command.quarters.toggle.entrynotifications: true
+      quarters.command.quarters.toggle.sellondelete: true
 
   quarters.command.quarters.toggle.constantoutlines:
     default: true
@@ -180,6 +181,9 @@ permissions:
 
   quarters.command.quarters.toggle.entrynotifications:
     default: true
+
+  quarters.command.quarters.toggle.sellondelete:
+    default: false
 
   quarters.command.quarters.trust:
     default: true
