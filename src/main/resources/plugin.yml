@@ -294,3 +294,14 @@ permissions:
 
   quarters.command.quartersadmin.trust.remove:
     default: op
+
+  quarters.command.quartersadmin.reload:
+    default: op
+
+  quarters.command.quartersadmin.reload.*:
+    default: false
+    children:
+      quarters.command.quartersadmin.reload.config: true
+
+  quarters.command.quartersadmin.reload.config:
+    default: op
