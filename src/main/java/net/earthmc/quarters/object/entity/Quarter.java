@@ -29,14 +29,14 @@ public class Quarter {
     private final Long registered = System.currentTimeMillis();
     private UUID owner;
     private List<UUID> trusted = new ArrayList<>();
-    private Double price = null;
+    private Double price;
     private QuarterType type = QuarterType.APARTMENT;
     private boolean isEmbassy = false;
     private Long claimedAt;
     private Color colour = ConfigManager.hasDefaultQuarterColour() ? ConfigManager.getDefaultQuarterColour() : getRandomColour();
     private String name = "Quarter";
     private final QuarterPermissions permissions = new QuarterPermissions();
-    private Location anchor = null;
+    private Location anchor;
 
     public Quarter(Town town, List<Cuboid> cuboids) {
         this.town = town;
@@ -123,11 +123,14 @@ public class Quarter {
         return player.hasPermission("quarters.landlord");
     }
 
-    private Color getRandomColour() {
+    public Color getRandomColour() {
         Random random = new Random();
         return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
     }
 
+    /**
+     * @return True if the quarter's price is not null
+     */
     public boolean isForSale() {
         return price != null;
     }
@@ -140,6 +143,9 @@ public class Quarter {
         return town.getNationOrNull();
     }
 
+    /**
+     * @return True if the quarter's owner is not null
+     */
     public boolean hasOwner() {
         return owner != null;
     }

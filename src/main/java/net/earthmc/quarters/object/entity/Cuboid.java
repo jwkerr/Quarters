@@ -124,7 +124,7 @@ public class Cuboid {
     }
 
     /**
-     * Iterates over every x and z coordinate within the cuboid but not y, useful for things that don't have verticality such as townblocks
+     * Iterates over every x and z coordinate within the cuboid but not y and tests the provided predicate, useful for things that don't have verticality such as townblocks
      */
     public boolean iterateXZ(Predicate<Location> predicate) {
         for (int x = minX; x <= maxX; x++) {
@@ -143,7 +143,7 @@ public class Cuboid {
     public boolean intersectsWith(Cuboid cuboid) {
         if (!world.equals(cuboid.getWorld())) return false;
 
-        return bounding.overlaps(cuboid.getBounding());
+        return intersectsWith(cuboid.getBounding());
     }
 
     public boolean intersectsWith(BoundingBox bounding) {
@@ -171,6 +171,9 @@ public class Cuboid {
         return playersInCuboid;
     }
 
+    /**
+     * @return The exact centre between both corners
+     */
     public @NotNull Location getMidPoint() {
         double x = (cornerOne.getX() + cornerTwo.getX()) / 2;
         double y = (cornerOne.getY() + cornerTwo.getY()) / 2;
@@ -179,12 +182,15 @@ public class Cuboid {
         return new Location(world, x, y, z);
     }
 
+    /**
+     * @return The distance from the midpoint of this cuboid to the specified location
+     */
     public double distanceTo(@NotNull Location location) {
         return getMidPoint().distance(location);
     }
 
     /**
-     * @return A new cuboid with the specified location subtracted from its corner's
+     * @return A new cuboid with the specified location subtracted from its corners
      */
     public Cuboid subtract(@NotNull Location location) {
         Location subOne = cornerOne.clone().subtract(location);
@@ -193,6 +199,9 @@ public class Cuboid {
         return new Cuboid(subOne, subTwo);
     }
 
+    /**
+     * @return A new cuboid with the specified location added to its corners
+     */
     public Cuboid add(@NotNull Location location) {
         Location addOne = cornerOne.clone().add(location);
         Location addTwo = cornerTwo.clone().add(location);
