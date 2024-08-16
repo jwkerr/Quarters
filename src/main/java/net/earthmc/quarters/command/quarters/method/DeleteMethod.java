@@ -3,7 +3,7 @@ package net.earthmc.quarters.command.quarters.method;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.QuartersMessaging;
-import net.earthmc.quarters.api.manager.TownMetadataManager;
+import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.exception.CommandMethodException;
@@ -38,7 +38,7 @@ public class DeleteMethod extends CommandMethod {
         if (town == null) throw new CommandMethodException(StringConstants.YOU_ARE_NOT_PART_OF_A_TOWN);
 
         if (deleteAll) {
-            TownMetadataManager.getInstance().setQuarterList(town, new ArrayList<>());
+            QuarterManager.getInstance().setQuarters(town, new ArrayList<>());
             QuartersMessaging.sendSuccessMessage(player, "Successfully deleted all quarters in " + town.getName());
             QuartersMessaging.sendCommandFeedbackToTown(town, player, "has deleted all quarters in " + town.getName(), null);
             return;

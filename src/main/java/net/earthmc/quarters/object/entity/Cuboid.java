@@ -29,7 +29,7 @@ public class Cuboid {
     private final int minX, minY, minZ, maxX, maxY, maxZ, length, height, width, volume;
 
     /**
-     * This constructor can take arbitrary positions within a block but bounding checks will be measured including the entirety of the corners
+     * This constructor can take arbitrary positions within a block but bounding checks will be measured including the entirety of the corner's block
      * @param cornerOne Cuboid corner one
      * @param cornerTwo Cuboid corner two
      */

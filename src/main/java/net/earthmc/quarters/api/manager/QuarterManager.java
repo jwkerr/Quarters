@@ -157,8 +157,7 @@ public final class QuarterManager {
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return false;
 
-        if (ResidentMetadataManager.getInstance().hasConstantOutlines(resident) && ConfigManager.areConstantParticleOutlinesAllowed())
-            return true;
+        if (ResidentMetadataManager.getInstance().hasConstantOutlines(resident) && ConfigManager.areConstantParticleOutlinesAllowed()) return true;
 
         return player.getInventory().getItemInMainHand().getType().equals(ConfigManager.getWandMaterial());
     }

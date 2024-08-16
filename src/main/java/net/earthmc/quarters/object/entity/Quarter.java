@@ -6,7 +6,6 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.manager.ConfigManager;
 import net.earthmc.quarters.api.manager.QuarterManager;
-import net.earthmc.quarters.api.manager.TownMetadataManager;
 import net.earthmc.quarters.object.state.ActionType;
 import net.earthmc.quarters.object.state.QuarterType;
 import net.earthmc.quarters.object.wrapper.QuarterPermissions;
@@ -49,25 +48,25 @@ public class Quarter {
      * The only exception is when using the {@link #delete()} method, that will save itself
      */
     public void save() {
-        TownMetadataManager tmm = TownMetadataManager.getInstance();
+        QuarterManager qm = QuarterManager.getInstance();
 
-        List<Quarter> quarters = QuarterManager.getInstance().getQuarters(town);
+        List<Quarter> quarters = qm.getQuarters(town);
         quarters.remove(this);
         quarters.add(this);
 
-        tmm.setQuarterList(town, quarters);
+        qm.setQuarters(town, quarters);
     }
 
     /**
      * Permanently delete this quarter from the town's metadata
      */
     public void delete() {
-        TownMetadataManager tmm = TownMetadataManager.getInstance();
+        QuarterManager qm = QuarterManager.getInstance();
 
-        List<Quarter> quarters = tmm.getQuarterList(town);
+        List<Quarter> quarters = qm.getQuarters(town);
         quarters.remove(this);
 
-        tmm.setQuarterList(town, quarters);
+        qm.setQuarters(town, quarters);
     }
 
     /**
