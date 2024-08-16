@@ -26,6 +26,7 @@ public class Quarter {
     private final Town town;
     private List<Cuboid> cuboids;
     private final UUID uuid = UUID.randomUUID();
+    private final UUID creator;
     private final Long registered = System.currentTimeMillis();
     private UUID owner;
     private List<UUID> trusted = new ArrayList<>();
@@ -38,9 +39,10 @@ public class Quarter {
     private final QuarterPermissions permissions = new QuarterPermissions();
     private Location anchor;
 
-    public Quarter(Town town, List<Cuboid> cuboids) {
+    public Quarter(Town town, List<Cuboid> cuboids, @Nullable UUID creator) {
         this.town = town;
         this.cuboids = cuboids;
+        this.creator = creator;
     }
 
     /**
@@ -215,6 +217,15 @@ public class Quarter {
      */
     public @NotNull UUID getUUID() {
         return uuid;
+    }
+
+    public UUID getCreator() {
+        return creator;
+    }
+
+    public @Nullable Resident getCreatorResident() {
+        if (creator == null) return null;
+        return TownyAPI.getInstance().getResident(uuid);
     }
 
     /**

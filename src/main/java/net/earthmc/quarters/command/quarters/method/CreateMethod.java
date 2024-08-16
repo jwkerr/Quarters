@@ -58,7 +58,7 @@ public class CreateMethod extends CommandMethod {
         int maxQuarters = ConfigManager.getMaxQuartersPerTown();
         if (maxQuarters > -1 && quarterList.size() == maxQuarters) throw new CommandMethodException("Selected quarter could not be created as " + town.getName() + " will exceed the configured quarter limit of " + maxQuarters);
 
-        Quarter quarter = new Quarter(town, cuboids);
+        Quarter quarter = new Quarter(town, cuboids, player.getUniqueId());
 
         int maxVolume = ConfigManager.getMaxQuarterVolume();
         if (maxVolume > -1 && quarter.getVolume() > maxVolume) throw new CommandMethodException("This quarter is too large, the max configured volume is " + maxVolume + " blocks");
