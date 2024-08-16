@@ -109,12 +109,20 @@ permissions:
     children:
       quarters.command.quarters.selection.add: true
       quarters.command.quarters.selection.clear: true
+      quarters.command.quarters.selection.copy: true
+      quarters.command.quarters.selection.paste: true
       quarters.command.quarters.selection.remove: true
 
   quarters.command.quarters.selection.add:
     default: true
 
   quarters.command.quarters.selection.clear:
+    default: true
+
+  quarters.command.quarters.selection.copy:
+    default: true
+
+  quarters.command.quarters.selection.paste:
     default: true
 
   quarters.command.quarters.selection.remove:

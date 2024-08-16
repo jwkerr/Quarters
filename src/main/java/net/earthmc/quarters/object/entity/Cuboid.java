@@ -60,11 +60,11 @@ public class Cuboid {
      * @return True if the cuboid instance is in a valid location to be part of a quarter
      */
     public CuboidValidity checkValidity() {
+        boolean doesNotContainWilderness = doesCuboidNotContainWilderness();
+        if (!doesNotContainWilderness) return CuboidValidity.CONTAINS_WILDERNESS;
+
         boolean doesIntersect = doesCuboidIntersectWithPreExistingQuarters();
         if (doesIntersect) return CuboidValidity.INTERSECTS;
-
-        boolean doesntContainWilderness = doesCuboidContainWilderness();
-        if (!doesntContainWilderness) return CuboidValidity.CONTAINS_WILDERNESS;
 
         if (!isCuboidEntirelyWithinSingularTown()) return CuboidValidity.SPANS_MULTIPLE_TOWNS;
 
@@ -89,7 +89,7 @@ public class Cuboid {
         return false;
     }
 
-    public boolean doesCuboidContainWilderness() {
+    public boolean doesCuboidNotContainWilderness() {
         return iterateXZ(location -> {
             Town town = TownyAPI.getInstance().getTown(location);
             return town != null;
@@ -183,6 +183,23 @@ public class Cuboid {
         return getMidPoint().distance(location);
     }
 
+    /**
+     * @return A new cuboid with the specified location subtracted from its corner's
+     */
+    public Cuboid subtract(@NotNull Location location) {
+        Location subOne = cornerOne.clone().subtract(location);
+        Location subTwo = cornerTwo.clone().subtract(location);
+
+        return new Cuboid(subOne, subTwo);
+    }
+
+    public Cuboid add(@NotNull Location location) {
+        Location addOne = cornerOne.clone().add(location);
+        Location addTwo = cornerTwo.clone().add(location);
+
+        return new Cuboid(addOne, addTwo);
+    }
+
     public Location getCornerOne() {
         return cornerOne;
     }
@@ -245,5 +262,11 @@ public class Cuboid {
 
     public int getVolume() {
         return volume;
+    }
+
+    @Override
+    public String toString() {
+        return "cornerone=" + cornerOne.toString().replace("Location", "") +
+                ",cornertwo=" + cornerTwo.toString().replace("Location", "");
     }
 }
