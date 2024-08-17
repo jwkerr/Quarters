@@ -8,7 +8,6 @@ import net.earthmc.quarters.object.entity.Cuboid;
 import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.exception.CommandMethodException;
 import net.earthmc.quarters.object.state.CuboidValidity;
-import net.earthmc.quarters.object.wrapper.CuboidSelection;
 import net.earthmc.quarters.object.wrapper.StringConstants;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -30,16 +29,8 @@ public class EditAddSelectionMethod extends CommandMethod {
 
         SelectionManager sm = SelectionManager.getInstance();
 
-        List<Cuboid> cuboids = sm.getCuboids(player);
-        if (cuboids.isEmpty()) {
-            CuboidSelection selection = sm.getSelection(player);
-            Cuboid selectionCuboid = selection.getCuboid();
-            if (selectionCuboid != null) {
-                cuboids.add(selectionCuboid);
-            } else {
-                throw new CommandMethodException(StringConstants.YOU_HAVE_NOT_SELECTED_ANY_AREAS);
-            }
-        }
+        List<Cuboid> cuboids = sm.getCuboidsOrSelectionAsCuboid(player);
+        if (cuboids.isEmpty()) throw new CommandMethodException(StringConstants.YOU_HAVE_NOT_SELECTED_ANY_AREAS);
 
         for (Cuboid cuboid : cuboids) {
             CuboidValidity validity = cuboid.checkValidity();

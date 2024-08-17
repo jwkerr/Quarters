@@ -1,8 +1,10 @@
 package net.earthmc.quarters.api.manager;
 
 import net.earthmc.quarters.object.entity.Cuboid;
+import net.earthmc.quarters.object.exception.CommandMethodException;
 import net.earthmc.quarters.object.state.SelectionType;
 import net.earthmc.quarters.object.wrapper.CuboidSelection;
+import net.earthmc.quarters.object.wrapper.StringConstants;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -53,6 +55,18 @@ public final class SelectionManager {
 
     public List<Cuboid> getCuboids(Player player) {
         return CUBOIDS_MAP.getOrDefault(player, new ArrayList<>());
+    }
+
+    public List<Cuboid> getCuboidsOrSelectionAsCuboid(Player player) {
+        List<Cuboid> cuboids = getCuboids(player);
+
+        if (cuboids.isEmpty()) {
+            CuboidSelection selection = getSelection(player);
+            Cuboid cuboid = selection.getCuboid();
+            if (cuboid != null) return List.of(cuboid);
+        }
+
+        return cuboids;
     }
 
     public void clearCuboids(Player player) {

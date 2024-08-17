@@ -11,7 +11,6 @@ import net.earthmc.quarters.object.entity.Cuboid;
 import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.exception.CommandMethodException;
 import net.earthmc.quarters.object.state.CuboidValidity;
-import net.earthmc.quarters.object.wrapper.CuboidSelection;
 import net.earthmc.quarters.object.wrapper.StringConstants;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -30,15 +29,9 @@ public class CreateMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow();
 
         SelectionManager sm = SelectionManager.getInstance();
-        List<Cuboid> cuboids = sm.getCuboids(player);
-        if (cuboids.isEmpty()) {
-            CuboidSelection selection = sm.getSelection(player);
-            if (selection.getCuboid() != null) {
-                cuboids = List.of(selection.getCuboid());
-            } else {
-                throw new CommandMethodException(StringConstants.YOU_HAVE_NOT_SELECTED_ANY_AREAS);
-            }
-        }
+
+        List<Cuboid> cuboids = sm.getCuboidsOrSelectionAsCuboid(player);
+        if (cuboids.isEmpty()) throw new CommandMethodException(StringConstants.YOU_HAVE_NOT_SELECTED_ANY_AREAS);
 
         Town town = TownyAPI.getInstance().getTown(cuboids.get(0).getCornerOne());
         if (town == null) throw new CommandMethodException("Could not resolve a town from the first selected position");
