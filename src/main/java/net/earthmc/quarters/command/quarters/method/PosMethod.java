@@ -34,6 +34,6 @@ public class PosMethod extends CommandMethod {
         Location location = player.getLocation();
         location.add(adjustX, adjustY, adjustZ);
 
-        SelectionManager.getInstance().selectPosition(player, player.getLocation(), type);
+        SelectionManager.getInstance().selectPosition(player, location, type);
     }
 }
