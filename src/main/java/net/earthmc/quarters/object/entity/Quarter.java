@@ -12,6 +12,7 @@ import net.earthmc.quarters.object.wrapper.QuarterPermissions;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,8 +27,8 @@ public class Quarter {
     private final Town town;
     private List<Cuboid> cuboids;
     private final UUID creator;
-    private final UUID uuid = UUID.randomUUID();
-    private final Long registered = System.currentTimeMillis();
+    private UUID uuid = UUID.randomUUID();
+    private long registered = System.currentTimeMillis();
     private UUID owner;
     private List<UUID> trusted = new ArrayList<>();
     private Double price;
@@ -43,6 +44,25 @@ public class Quarter {
         this.town = town;
         this.cuboids = cuboids;
         this.creator = creator;
+    }
+
+    /**
+     * This constructor is EXCLUSIVELY for internal use when porting legacy quarters
+     */
+    @ApiStatus.Internal
+    public Quarter(Town town, List<Cuboid> cuboids, UUID uuid, long registered, UUID owner, List<UUID> trusted, Double price, QuarterType type, boolean isEmbassy, Long claimedAt, Color colour) {
+        this.town = town;
+        this.cuboids = cuboids;
+        this.creator = null;
+        this.uuid = uuid;
+        this.registered = registered;
+        this.owner = owner;
+        this.trusted = trusted;
+        this.price = price;
+        this.type = type;
+        this.isEmbassy = isEmbassy;
+        this.claimedAt = claimedAt;
+        this.colour = colour;
     }
 
     /**

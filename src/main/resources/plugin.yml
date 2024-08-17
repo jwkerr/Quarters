@@ -233,6 +233,7 @@ permissions:
     children:
       quarters.command.quartersadmin.delete: true
       quarters.command.quartersadmin.evict: true
+      quarters.command.quartersadmin.port: true
       quarters.command.quartersadmin.sell: true
       quarters.command.quartersadmin.set: true
       quarters.command.quartersadmin.set.*: true
@@ -245,6 +246,9 @@ permissions:
     default: op
 
   quarters.command.quartersadmin.evict:
+    default: op
+
+  quarters.command.quartersadmin.port:
     default: op
 
   quarters.command.quartersadmin.sell:
