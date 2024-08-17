@@ -51,6 +51,8 @@ public class CreateMethod extends CommandMethod {
                 case CONTAINS_WILDERNESS -> throw new CommandMethodException("Failed to create quarter as it contains wilderness");
                 case INTERSECTS -> throw new CommandMethodException("Failed to create quarter as it intersects with a pre-existing quarter");
                 case SPANS_MULTIPLE_TOWNS -> throw new CommandMethodException("Failed to create quarter as it spans multiple towns");
+                case OUTSIDE_WORLD_BOUNDS -> throw new CommandMethodException("Failed to create quarter as it outside of this world's maximum or minimum height");
+                case TOO_LARGE -> throw new CommandMethodException("Failed to create quarter as at least one of its cuboids is too large");
             }
         }
 

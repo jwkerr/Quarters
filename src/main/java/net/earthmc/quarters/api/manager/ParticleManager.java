@@ -33,7 +33,7 @@ public final class ParticleManager {
 
         if (!player.getWorld().equals(cuboid.getWorld())) return;
 
-        if (cuboid.distanceTo(player.getLocation()) > Math.pow(ConfigManager.getMaxDistanceForCuboidParticles(), 2)) return;
+        if (cuboid.distanceTo(player.getLocation()) > ConfigManager.getMaxDistanceForCuboidParticles()) return;
 
         for (Location location : computeCuboidEdges(cuboid)) {
             if (dustOptions != null) {
