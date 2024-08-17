@@ -151,7 +151,7 @@ public final class QuarterManager {
         return false;
     }
 
-    public boolean shouldRenderOutlines(Player player) {
+    public boolean shouldRenderOutlinesForPlayer(Player player) {
         if (!ConfigManager.areParticlesEnabled()) return false;
 
         Resident resident = TownyAPI.getInstance().getResident(player);

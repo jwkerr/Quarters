@@ -202,8 +202,8 @@ public final class ConfigManager {
         config.addDefault("quarters.default_quarter_colour.red", 63);
         config.addDefault("quarters.default_quarter_colour.green", 180);
         config.addDefault("quarters.default_quarter_colour.blue", 255);
-        config.addDefault("quarters.allow_quarter_entry_notifications", true); config.setInlineComments("quarters.allow_entry_notifications", List.of("If set to true, players will be allowed to toggle notifications of when they have entered a quarter"));
-        config.addDefault("quarters.quarter_entry_notifications_on_by_default", true); config.setInlineComments("quarters.entry_notifications_on_by_default", List.of("If set to false players will have to opt in to entry notifications"));
+        config.addDefault("quarters.allow_quarter_entry_notifications", true); config.setInlineComments("quarters.allow_quarter_entry_notifications", List.of("If set to true, players will be allowed to toggle notifications of when they have entered a quarter"));
+        config.addDefault("quarters.quarter_entry_notifications_on_by_default", true); config.setInlineComments("quarters.quarter_entry_notifications_on_by_default", List.of("If set to false players will have to opt in to entry notifications"));
 
         config.addDefault("particles.enabled", true); config.setInlineComments("particles.enabled", List.of("Set to false to completely disable particle outlines around cuboids"));
         config.addDefault("particles.current_selection_particle", "SCRAPE"); config.setInlineComments("particles.current_selection_particle", List.of("Particle outline of the currently selected area"));

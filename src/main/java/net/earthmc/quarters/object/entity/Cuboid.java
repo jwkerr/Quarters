@@ -4,6 +4,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.quarters.api.manager.ConfigManager;
 import net.earthmc.quarters.api.manager.QuarterManager;
+import net.earthmc.quarters.api.manager.SelectionManager;
 import net.earthmc.quarters.object.state.CuboidValidity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -60,6 +61,9 @@ public class Cuboid {
      * @return True if the cuboid instance is in a valid location to be part of a quarter
      */
     public CuboidValidity checkValidity() {
+        boolean isInsideWorldBounds = isCuboidInWorldBounds();
+        if (!isInsideWorldBounds) return CuboidValidity.OUTSIDE_WORLD_BOUNDS;
+
         boolean doesNotContainWilderness = doesCuboidNotContainWilderness();
         if (!doesNotContainWilderness) return CuboidValidity.CONTAINS_WILDERNESS;
 
@@ -72,6 +76,11 @@ public class Cuboid {
         if (maxCuboidVolume > -1 && this.getVolume() > maxCuboidVolume) return CuboidValidity.TOO_LARGE;
 
         return CuboidValidity.VALID;
+    }
+
+    public boolean isCuboidInWorldBounds() {
+        SelectionManager sm = SelectionManager.getInstance();
+        return sm.isLocationInWorldBounds(cornerOne) && sm.isLocationInWorldBounds(cornerTwo);
     }
 
     private boolean doesCuboidIntersectWithPreExistingQuarters() {

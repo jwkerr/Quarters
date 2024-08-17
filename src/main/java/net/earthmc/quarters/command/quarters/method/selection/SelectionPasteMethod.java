@@ -43,6 +43,7 @@ public class SelectionPasteMethod extends CommandMethod {
                 case CONTAINS_WILDERNESS -> throw new CommandMethodException("Failed to paste clipboard as it will contain wilderness");
                 case INTERSECTS -> throw new CommandMethodException("Failed to paste clipboard as it will intersect with pre-existing quarters");
                 case SPANS_MULTIPLE_TOWNS -> throw new CommandMethodException("Failed to paste clipboard as it will span multiple towns");
+                case OUTSIDE_WORLD_BOUNDS -> throw new CommandMethodException("Failed to paste clipboard as it is outside of this world's maximum or minimum height");
             }
 
             for (Cuboid currentCuboid : currentCuboids) {
