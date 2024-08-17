@@ -25,8 +25,8 @@ public class Quarter {
 
     private final Town town;
     private List<Cuboid> cuboids;
-    private final UUID uuid = UUID.randomUUID();
     private final UUID creator;
+    private final UUID uuid = UUID.randomUUID();
     private final Long registered = System.currentTimeMillis();
     private UUID owner;
     private List<UUID> trusted = new ArrayList<>();
@@ -212,13 +212,6 @@ public class Quarter {
         return this.cuboids;
     }
 
-    /**
-     * @return A unique ID for this quarter, this will not change across restarts
-     */
-    public @NotNull UUID getUUID() {
-        return uuid;
-    }
-
     public UUID getCreator() {
         return creator;
     }
@@ -226,6 +219,13 @@ public class Quarter {
     public @Nullable Resident getCreatorResident() {
         if (creator == null) return null;
         return TownyAPI.getInstance().getResident(uuid);
+    }
+
+    /**
+     * @return A unique ID for this quarter, this will not change across restarts
+     */
+    public @NotNull UUID getUUID() {
+        return uuid;
     }
 
     /**
