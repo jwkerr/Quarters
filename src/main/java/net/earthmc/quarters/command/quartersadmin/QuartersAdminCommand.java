@@ -40,7 +40,7 @@ public class QuartersAdminCommand implements TabExecutor {
         switch (method) {
             case "delete" -> new AdminDeleteMethod(sender, args).execute();
             case "evict" -> new AdminEvictMethod(sender, args).execute();
-            case "port" -> new AdminPortCommand(sender, args).execute();
+            case "port" -> new AdminPortMethod(sender, args).execute();
             case "sell" -> new AdminSellMethod(sender, args).execute();
             case "set" -> new AdminSetArgument(sender, args).execute();
             case "toggle" -> new AdminToggleArgument(sender, args).execute();

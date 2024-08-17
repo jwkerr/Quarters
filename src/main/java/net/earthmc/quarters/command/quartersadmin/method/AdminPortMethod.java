@@ -18,13 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class AdminPortCommand extends CommandMethod {
+public class AdminPortMethod extends CommandMethod {
 
     private boolean consoleOutput = false;
     int numFailures = 0;
     int successfulPorts = 0;
 
-    public AdminPortCommand(CommandSender sender, String[] args) {
+    public AdminPortMethod(CommandSender sender, String[] args) {
         super(sender, args, "quarters.command.quartersadmin.port");
     }
 
