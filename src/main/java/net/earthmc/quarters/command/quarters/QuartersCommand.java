@@ -53,13 +53,14 @@ public class QuartersCommand implements TabExecutor {
             case "toggle" -> new ToggleArgument(sender, args).execute();
             case "trust" -> new TrustArgument(sender, args).execute();
             case "unclaim" -> new UnclaimMethod(sender, args).execute();
+            case "wand" -> new WandMethod(sender, args).execute();
         }
     }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Stream<String> stream = switch (args.length) {
-            case 1 -> Stream.of("claim", "create", "delete", "edit", "evict", "fame", "here", "info", "pos", "selection", "sell", "set", "toggle", "trust", "unclaim");
+            case 1 -> Stream.of("claim", "create", "delete", "edit", "evict", "fame", "here", "info", "pos", "selection", "sell", "set", "toggle", "trust", "unclaim", "wand");
             case 2 -> switch (args[0]) {
                 case "delete" -> Stream.of("all");
                 case "edit" -> Stream.of("addselection", "remove");

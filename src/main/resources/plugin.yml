@@ -62,6 +62,7 @@ permissions:
       quarters.command.quarters.trust: true
       quarters.command.quarters.trust.*: true
       quarters.command.quarters.unclaim: true
+      quarters.command.quarters.wand: true
 
   quarters.command.quarters.claim:
     default: true
@@ -217,6 +218,9 @@ permissions:
     default: true
 
   quarters.command.quarters.unclaim:
+    default: true
+
+  quarters.command.quarters.wand:
     default: true
 
   ### ADMIN COMMANDS ###
