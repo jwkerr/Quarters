@@ -42,7 +42,7 @@ public class QuarterPermissions {
         return perms.get(getPermLevel(resident, quarter));
     }
 
-    public static PermLevel getPermLevel(@NotNull Resident resident, @NotNull Quarter quarter) {
+    public PermLevel getPermLevel(@NotNull Resident resident, @NotNull Quarter quarter) {
         Player player = resident.getPlayer();
         if (player == null) return PermLevel.OUTSIDER;
 

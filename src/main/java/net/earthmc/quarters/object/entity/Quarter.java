@@ -175,7 +175,7 @@ public class Quarter {
      * @return True if the resident can perform the specified action
      */
     public boolean testPermission(@NotNull ActionType type, @NotNull Resident resident) {
-        return getPermissions().testPermission(type, resident,this);
+        return getPermissions().testPermission(type, resident, this);
     }
 
     public boolean intersectsWith(BoundingBox bounding) {
