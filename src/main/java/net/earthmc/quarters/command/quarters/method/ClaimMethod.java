@@ -5,14 +5,11 @@ import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.quarters.api.QuartersMessaging;
-import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.exception.CommandMethodException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.UUID;
 
 public class ClaimMethod extends CommandMethod {
 
@@ -24,21 +21,7 @@ public class ClaimMethod extends CommandMethod {
     public void execute() {
         Player player = getSenderAsPlayerOrThrow();
 
-        Quarter quarter;
-        String arg = getArgOrNull(0);
-        if (arg == null) {
-            quarter = getQuarterAtPlayerOrThrow(player);
-        } else {
-            UUID uuid;
-            try {
-                uuid = UUID.fromString(arg);
-            } catch (IllegalArgumentException e) {
-                throw new CommandMethodException("Invalid quarter UUID provided");
-            }
-
-            quarter = QuarterManager.getInstance().getQuarter(uuid);
-            if (quarter == null) throw new CommandMethodException("This quarter no longer exists");
-        }
+        Quarter quarter = getQuarterAtPlayerOrByUUIDOrThrow(player, getArgOrNull(0));
 
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return;

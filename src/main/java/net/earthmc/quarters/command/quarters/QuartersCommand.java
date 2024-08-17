@@ -45,6 +45,7 @@ public class QuartersCommand implements TabExecutor {
             case "fame" -> new FameMethod(sender, args).execute();
             case "here" -> new HereMethod(sender, args).execute();
             case "info" -> new InfoMethod(sender, args).execute();
+            case "meow" -> new MeowMethod(sender, args).execute();
             case "pos" -> new PosMethod(sender, args).execute();
             case "selection" -> new SelectionArgument(sender, args).execute();
             case "sell" -> new SellMethod(sender, args).execute();

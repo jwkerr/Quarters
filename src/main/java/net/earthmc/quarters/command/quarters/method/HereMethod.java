@@ -4,10 +4,8 @@ import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.api.manager.ConfigManager;
-import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.entity.Quarter;
-import net.earthmc.quarters.object.exception.CommandMethodException;
 import net.earthmc.quarters.object.state.ActionType;
 import net.earthmc.quarters.object.wrapper.Pair;
 import net.earthmc.quarters.object.wrapper.QuarterPermissions;
@@ -25,12 +23,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.UUID;
 
 public class HereMethod extends CommandMethod {
+
+    private boolean catMode = false;
 
     public HereMethod(CommandSender sender, String[] args) {
         super(sender, args, "quarters.command.quarters.here");
@@ -40,21 +38,10 @@ public class HereMethod extends CommandMethod {
     public void execute() {
         Player player = getSenderAsPlayerOrThrow();
 
-        Quarter quarter;
-        String arg = getArgOrNull(0);
-        if (arg == null) {
-            quarter = getQuarterAtPlayerOrThrow(player);
-        } else {
-            UUID uuid;
-            try {
-                uuid = UUID.fromString(arg);
-            } catch (IllegalArgumentException e) {
-                throw new CommandMethodException("Invalid quarter UUID provided");
-            }
+        Quarter quarter = getQuarterAtPlayerOrByUUIDOrThrow(player, getArgOrNull(0));
 
-            quarter = QuarterManager.getInstance().getQuarter(uuid);
-            if (quarter == null) throw new CommandMethodException("This quarter no longer exists");
-        }
+        UUID owner = quarter.getOwner();
+        if (owner != null && ConfigManager.getUserGroup(owner).hasCatMode()) catMode = true;
 
         TextComponent.Builder headerBuilder = Component.text();
         headerBuilder.append(Component.text(quarter.getName(), TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
@@ -63,20 +50,25 @@ public class HereMethod extends CommandMethod {
         headerBuilder.appendSpace();
         headerBuilder.append(getAnchorBadgeComponent(quarter.getAnchor()));
 
+        if (catMode) {
+            headerBuilder.appendSpace();
+            headerBuilder.append(getCatBadgeComponent(quarter));
+        }
+
         Component header = headerBuilder.build();
 
         List<Pair<String, Component>> labelled = List.of(
-                Pair.of("Owner", ConfigManager.getFormattedName(quarter.getOwner(), Component.text("None", NamedTextColor.GRAY))),
-                Pair.of("Type", Component.text(quarter.getType().getCommonName(), NamedTextColor.GRAY)),
-                Pair.of("Town", Component.text(quarter.getTown().getName(), NamedTextColor.GRAY).clickEvent(ClickEvent.runCommand("/towny:town " + quarter.getTown().getName()))),
-                Pair.of("Price", getPriceComponent(quarter)),
-                Pair.of("Embassy", Component.text(quarter.isEmbassy() ? "True" : "False", NamedTextColor.GRAY))
+                Pair.of(catMode ? "Purrprietor" : "Owner", ConfigManager.getFormattedName(quarter.getOwner(), Component.text("None", NamedTextColor.GRAY))),
+                Pair.of(catMode ? "Breed" : "Type", Component.text(quarter.getType().getCommonName(), NamedTextColor.GRAY)),
+                Pair.of(catMode ? "Where is this thing" : "Town", Component.text(quarter.getTown().getName(), NamedTextColor.GRAY).clickEvent(ClickEvent.runCommand("/towny:town " + quarter.getTown().getName()))),
+                Pair.of(catMode ? "How much 2 live here" : "Price", getPriceComponent(quarter)),
+                Pair.of(catMode ? "Can randoz live here" : "Embassy", Component.text(quarter.isEmbassy() ? "True" : "False", NamedTextColor.GRAY))
         );
 
         List<Pair<String, Component>> brackets = List.of(
-                Pair.of("Stats", getStatsHoverComponent(quarter)),
-                Pair.of("Trusted", getTrustedComponent(quarter)),
-                Pair.of("Perms", getPermsComponent(quarter))
+                Pair.of(catMode ? "Thingz" : "Stats", getStatsHoverComponent(quarter)),
+                Pair.of(catMode ? "Purr-worthy" : "Trusted", getTrustedComponent(quarter)),
+                Pair.of(catMode ? "Who haz permz" : "Perms", getPermsComponent(quarter))
         );
 
         Component here = QuartersMessaging.getListComponent(header, labelled, brackets);
@@ -94,7 +86,7 @@ public class HereMethod extends CommandMethod {
 
         builder.hoverEvent(Component.text(r + ", " + g + ", " + b, TextColor.color(colour.getRGB()))
                 .appendNewline()
-                .append(Component.text("Click to copy command", NamedTextColor.GRAY))
+                .append(Component.text(catMode ? "Click 2 copy commandz" : "Click to copy command", NamedTextColor.GRAY))
         );
 
         builder.clickEvent(ClickEvent.copyToClipboard("/q set colour " + colour.getRed() + " " + colour.getGreen() + " " + colour.getBlue()));
@@ -117,10 +109,20 @@ public class HereMethod extends CommandMethod {
 
         builder.hoverEvent(Component.text("X=" + x + "/Y=" + y + "/Z=" + z, NamedTextColor.GRAY)
                 .appendNewline()
-                .append(Component.text("Click to copy coordinates", NamedTextColor.GRAY))
+                .append(Component.text(catMode ? "Click 2 copy coordinatez" : "Click to copy coordinates", NamedTextColor.GRAY))
         );
 
         builder.clickEvent(ClickEvent.copyToClipboard(x + " " + y + " " + z));
+
+        return builder.build();
+    }
+
+    private Component getCatBadgeComponent(@NotNull Quarter quarter) {
+        TextComponent.Builder builder = Component.text();
+        builder.append(Component.text("\uD83D\uDE39", NamedTextColor.YELLOW));
+
+        builder.hoverEvent(Component.text("This user is a certified kitteh cat", NamedTextColor.GRAY));
+        builder.clickEvent(ClickEvent.runCommand("/quarters:q meow " + quarter.getUUID()));
 
         return builder.build();
     }
@@ -150,11 +152,11 @@ public class HereMethod extends CommandMethod {
 
     private Component getStatsHoverComponent(Quarter quarter) {
         TextComponent.Builder builder = Component.text();
-        builder.append(Component.text("Cuboids: ", NamedTextColor.DARK_GRAY)).append(Component.text(quarter.getCuboids().size(), NamedTextColor.GRAY));
+        builder.append(Component.text(catMode ? "Catboxes: " : "Cuboids: ", NamedTextColor.DARK_GRAY)).append(Component.text(quarter.getCuboids().size(), NamedTextColor.GRAY));
         builder.appendNewline();
-        builder.append(Component.text("Volume: ", NamedTextColor.DARK_GRAY)).append(Component.text(quarter.getVolume() + " blocks", NamedTextColor.GRAY));
+        builder.append(Component.text(catMode ? "Pawprint: " : "Volume: ", NamedTextColor.DARK_GRAY)).append(Component.text(quarter.getVolume() + " blocks", NamedTextColor.GRAY));
         builder.appendNewline();
-        builder.append(Component.text("Creator: ", NamedTextColor.DARK_GRAY)).append(ConfigManager.getFormattedName(quarter.getCreator(), Component.text("None", NamedTextColor.GRAY)));
+        builder.append(Component.text(catMode ? "Purrveyor: " : "Creator: ", NamedTextColor.DARK_GRAY)).append(ConfigManager.getFormattedName(quarter.getCreator(), Component.text("None", NamedTextColor.GRAY)));
         builder.appendNewline();
         builder.append(Component.text("Registered: ", NamedTextColor.DARK_GRAY)).append(Component.text(getFormattedDate(quarter.getRegistered()), NamedTextColor.GRAY));
         builder.appendNewline();

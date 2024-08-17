@@ -7,6 +7,9 @@ import net.earthmc.quarters.object.wrapper.StringConstants;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 public abstract class CommandMethod {
 
@@ -71,6 +74,22 @@ public abstract class CommandMethod {
 
         Quarter quarter = qm.getQuarter(player.getLocation());
         if (quarter == null) throw new CommandMethodException(StringConstants.YOU_ARE_NOT_STANDING_WITHIN_A_QUARTER);
+
+        return quarter;
+    }
+
+    public @NotNull Quarter getQuarterAtPlayerOrByUUIDOrThrow(Player player, String arg) {
+        if (arg == null) return getQuarterAtPlayerOrThrow(player);
+
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(arg);
+        } catch (IllegalArgumentException e) {
+            throw new CommandMethodException("Invalid quarter UUID provided");
+        }
+
+        Quarter quarter = QuarterManager.getInstance().getQuarter(uuid);
+        if (quarter == null) throw new CommandMethodException("This quarter no longer exists");
 
         return quarter;
     }
