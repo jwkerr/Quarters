@@ -23,4 +23,5 @@ public class StringConstants {
     public static final String SPECIFIED_PLAYER_HAS_BEEN_REMOVED_FROM_THIS_QUARTERS_TRUSTED_LIST = "Specified player has been removed from this quarter's trusted list";
     public static final String SPECIFIED_PLAYER_IS_NOT_TRUSTED_IN_THIS_QUARTER = "Specified player is not trusted in this quarter";
     public static final String YOU_HAVE_NOT_SELECTED_ANY_AREAS = "You have not selected any areas, add your current selection with /quarters selection add";
+    public static final String YOU_HAVE_SUCCESSFULLY_EVICTED_THIS_QUARTERS_OWNER = "You have successfully evicted this quarter's owner";
 }

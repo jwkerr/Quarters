@@ -1,6 +1,5 @@
 package net.earthmc.quarters.command.quarters.method;
 
-import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.base.CommandMethod;
 import net.earthmc.quarters.object.entity.Quarter;
@@ -27,15 +26,10 @@ public class EvictMethod extends CommandMethod {
         UUID owner = quarter.getOwner();
         if (owner == null) throw new CommandMethodException(StringConstants.THIS_QUARTER_HAS_NO_OWNER);
 
-        Resident resident = quarter.getOwnerResident();
-        if (resident == null) return;
-
-        String ownerName = resident.getName();
-
         quarter.setOwner(null);
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully evicted " + ownerName);
-        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has evicted " + ownerName + " from a quarter", player.getLocation());
+        QuartersMessaging.sendSuccessMessage(player, StringConstants.YOU_HAVE_SUCCESSFULLY_EVICTED_THIS_QUARTERS_OWNER);
+        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has evicted the owner of a quarter", player.getLocation());
     }
 }
