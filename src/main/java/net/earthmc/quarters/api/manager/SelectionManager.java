@@ -63,7 +63,8 @@ public final class SelectionManager {
         if (cuboids.isEmpty()) {
             CuboidSelection selection = getSelection(player);
             Cuboid cuboid = selection.getCuboid();
-            if (cuboid != null) return List.of(cuboid);
+
+            if (cuboid != null) cuboids.add(cuboid);
         }
 
         return cuboids;
