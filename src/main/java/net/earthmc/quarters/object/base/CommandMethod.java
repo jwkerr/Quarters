@@ -14,6 +14,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
+/**
+ * All command methods and arguments extend this class.
+ * <p>
+ * This is a good place to put anything that will be repeated commonly in command methods. When writing a new command method make sure to:
+ * <li>Put your new permission node in the correct alphabetical position in the plugin.yml as well as in any wildcard permissions it may be part of
+ * <li>Register your method to the command and/or argument it is part of
+ * <li>Add your method name/arguments to the tab completer in its parent command class such as {@link net.earthmc.quarters.command.quarters.QuartersCommand QuartersCommand}, this should also be done in an alphabetical manner
+ */
 public abstract class CommandMethod {
 
     public final CommandSender sender;
@@ -34,6 +42,9 @@ public abstract class CommandMethod {
         checkPermOrThrow();
     }
 
+    /**
+     * @param hasMayorPermBypass See {@link ConfigManager#doMayorsBypassCertainElevatedPerms()}
+     */
     public CommandMethod(CommandSender sender, String[] args, String permission, boolean hasMayorPermBypass) {
         this.sender = sender;
         this.args = args;
