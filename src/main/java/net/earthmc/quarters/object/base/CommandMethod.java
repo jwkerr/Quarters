@@ -1,5 +1,9 @@
 package net.earthmc.quarters.object.base;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Resident;
+import net.earthmc.quarters.Quarters;
+import net.earthmc.quarters.api.manager.ConfigManager;
 import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.object.entity.Quarter;
 import net.earthmc.quarters.object.exception.CommandMethodException;
@@ -7,6 +11,7 @@ import net.earthmc.quarters.object.wrapper.StringConstants;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -16,10 +21,25 @@ public abstract class CommandMethod {
     public final String[] args;
     public final String permission;
 
+    /**
+     * If this is true and the player is a mayor, they do not need to have the method permission (assuming this is enabled in config)
+     */
+    public final boolean hasMayorPermBypass;
+
     public CommandMethod(CommandSender sender, String[] args, String permission) {
         this.sender = sender;
         this.args = args;
         this.permission = permission;
+        this.hasMayorPermBypass = false;
+
+        checkPermOrThrow();
+    }
+
+    public CommandMethod(CommandSender sender, String[] args, String permission, boolean hasMayorPermBypass) {
+        this.sender = sender;
+        this.args = args;
+        this.permission = permission;
+        this.hasMayorPermBypass = hasMayorPermBypass;
 
         checkPermOrThrow();
     }
@@ -36,11 +56,29 @@ public abstract class CommandMethod {
 
     private void checkPermOrThrow() {
         if (permission == null) return;
+
+        Player player = getSenderAsPlayerOrNull();
+        if (player != null && hasMayorPermBypass && ConfigManager.doMayorsBypassCertainElevatedPerms()) {
+            Resident resident = TownyAPI.getInstance().getResident(player);
+            Quarters.logInfo("yippee");
+            if (resident == null) return;
+            Quarters.logInfo("yippee 2");
+            if (resident.isMayor()) {
+                Quarters.logInfo("yippee 3");
+                return;
+            }
+        }
+
         if (!sender.hasPermission(permission)) throw new CommandMethodException("You do not have permission to perform this method");
     }
 
     public Player getSenderAsPlayerOrThrow() {
         if (!(sender instanceof Player player)) throw new CommandMethodException("Only players can use this command");
+        return player;
+    }
+
+    public @Nullable Player getSenderAsPlayerOrNull() {
+        if (!(sender instanceof Player player)) return null;
         return player;
     }
 

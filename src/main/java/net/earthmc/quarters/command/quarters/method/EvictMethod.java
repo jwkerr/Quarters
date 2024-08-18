@@ -13,7 +13,7 @@ import java.util.UUID;
 public class EvictMethod extends CommandMethod {
 
     public EvictMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.evict");
+        super(sender, args, "quarters.command.quarters.evict", true);
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.List;
 public class EditRemoveMethod extends CommandMethod {
 
     public EditRemoveMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.edit.remove");
+        super(sender, args, "quarters.command.quarters.edit.remove", true);
     }
 
     @Override

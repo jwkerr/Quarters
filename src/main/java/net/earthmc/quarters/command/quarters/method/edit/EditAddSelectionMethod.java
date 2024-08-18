@@ -17,7 +17,7 @@ import java.util.List;
 public class EditAddSelectionMethod extends CommandMethod {
 
     public EditAddSelectionMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.edit.addselection");
+        super(sender, args, "quarters.command.quarters.edit.addselection", true);
     }
 
     @Override

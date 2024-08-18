@@ -21,7 +21,7 @@ import java.util.List;
 public class CreateMethod extends CommandMethod {
 
     public CreateMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.create");
+        super(sender, args, "quarters.command.quarters.create", true);
     }
 
     @Override

@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 public class SetDefaultSellPriceMethod extends CommandMethod {
 
     public SetDefaultSellPriceMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.set.defaultsellprice");
+        super(sender, args, "quarters.command.quarters.set.defaultsellprice", true);
     }
 
     @Override

@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 public class ToggleEmbassyMethod extends CommandMethod {
 
     public ToggleEmbassyMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.toggle.embassy");
+        super(sender, args, "quarters.command.quarters.toggle.embassy", true);
     }
 
     @Override

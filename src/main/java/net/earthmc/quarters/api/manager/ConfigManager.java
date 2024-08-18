@@ -121,6 +121,10 @@ public final class ConfigManager {
         return Material.valueOf(config.getString("wand_material", "FLINT"));
     }
 
+    public static boolean doMayorsBypassCertainElevatedPerms() {
+        return config.getBoolean("mayor_bypasses_certain_elevated_perms", true);
+    }
+
     public static int getMaxQuarterVolume() {
         return config.getInt("quarters.max_quarter_volume", -1);
     }
@@ -193,6 +197,7 @@ public final class ConfigManager {
         config.options().setHeader(List.of("If comments are not present, please restart your server"));
 
         config.addDefault("wand_material", "FLINT"); config.setInlineComments("wand_material", List.of("Material of the wand item"));
+        config.addDefault("mayor_bypasses_certain_elevated_perms", true); config.setInlineComments("mayor_bypasses_certain_elevated_perms", List.of("If this is set to true, mayors will bypass perms for certain command such as /q create, /q evict etc. This is intended to make configuration easier as most servers will want this behaviour"));
 
         config.addDefault("quarters.max_quarter_volume", -1); config.setInlineComments("quarters.max_quarter_volume", List.of("Maximum block volume of all cuboids in a quarter combined, set to -1 for no limit"));
         config.addDefault("quarters.max_quarters_per_town", -1); config.setInlineComments("quarters.max_quarters_per_town", List.of("Maximum amount of quarters that can be in a single town, set to -1 for no limit"));

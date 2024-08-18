@@ -11,7 +11,7 @@ def gitVersion() {
 }
 
 group = "net.earthmc"
-version = "1.0.0"
+version = "1.0.0+${gitBranch()}+${gitVersion()}"
 
 repositories {
     mavenCentral()
@@ -50,7 +50,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 tasks.named("jar") {
-    archiveFileName = project.name + "-" + version + "+" + gitBranch() + "+" + gitVersion() + ".jar"
+    archiveFileName = "${project.name}-${version}.jar"
 }
 
 processResources {

@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 public class SetOwnerMethod extends CommandMethod {
 
     public SetOwnerMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.set.owner");
+        super(sender, args, "quarters.command.quarters.set.owner", true);
     }
 
     @Override

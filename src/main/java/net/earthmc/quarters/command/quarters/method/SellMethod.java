@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 public class SellMethod extends CommandMethod {
 
     public SellMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.sell");
+        super(sender, args, "quarters.command.quarters.sell", true);
     }
 
     @Override

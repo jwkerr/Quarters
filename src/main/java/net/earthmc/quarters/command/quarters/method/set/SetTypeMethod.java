@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 public class SetTypeMethod extends CommandMethod {
 
     public SetTypeMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.set.type");
+        super(sender, args, "quarters.command.quarters.set.type", true);
     }
 
     @Override

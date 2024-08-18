@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 public class ToggleSellOnDeleteMethod extends CommandMethod {
 
     public ToggleSellOnDeleteMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.toggle.sellondelete");
+        super(sender, args, "quarters.command.quarters.toggle.sellondelete", true);
     }
 
     @Override
