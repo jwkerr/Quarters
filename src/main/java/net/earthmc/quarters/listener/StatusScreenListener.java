@@ -42,8 +42,11 @@ public class StatusScreenListener implements Listener {
     public void onTownStatusScreen(TownStatusScreenEvent event) {
         Town town = event.getTown();
 
+        List<Quarter> quarters = QuarterManager.getInstance().getQuarters(town);
+        if (quarters.isEmpty()) return;
+
         Map<QuarterType, Integer> numOfTypes = new HashMap<>();
-        for (Quarter quarter : QuarterManager.getInstance().getQuarters(town)) {
+        for (Quarter quarter : quarters) {
             QuarterType type = quarter.getType();
             int num = numOfTypes.getOrDefault(type, 0);
 
