@@ -2,116 +2,116 @@ package net.earthmc.quarters.listener;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.actions.*;
+import com.palmergames.bukkit.towny.event.player.PlayerDeniedBedUseEvent;
 import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.Town;
-import net.earthmc.quarters.object.Quarter;
-import net.earthmc.quarters.util.QuarterUtil;
+import net.earthmc.quarters.api.manager.QuarterManager;
+import net.earthmc.quarters.object.entity.Quarter;
+import net.earthmc.quarters.object.state.ActionType;
+import net.earthmc.quarters.object.state.QuarterType;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+import java.util.Set;
 
 /**
- * Class to override Towny's cancellation of certain tasks when the player has permission in a quarter
+ * This listener is to override and allow actions in quarters when the user has the necessary permissions
  */
 public class TownyActionListener implements Listener {
+
+    public static final Set<Material> VEHICLE_MATERIALS = Set.of(
+            Material.ACACIA_BOAT, Material.BAMBOO_RAFT, Material.BIRCH_BOAT, Material.CHERRY_BOAT,
+            Material.DARK_OAK_BOAT, Material.JUNGLE_BOAT, Material.MANGROVE_BOAT, Material.OAK_BOAT,
+            Material.SPRUCE_BOAT, Material.ACACIA_CHEST_BOAT, Material.BAMBOO_CHEST_RAFT, Material.BIRCH_CHEST_BOAT,
+            Material.CHERRY_CHEST_BOAT, Material.DARK_OAK_CHEST_BOAT, Material.JUNGLE_CHEST_BOAT,Material.MANGROVE_CHEST_BOAT,
+            Material.OAK_CHEST_BOAT, Material.SPRUCE_CHEST_BOAT, Material.MINECART
+    );
+
     @EventHandler
     public void onBuild(TownyBuildEvent event) {
-        parseEvent(event);
+        parseEvent(event, ActionType.BUILD);
     }
 
     @EventHandler
     public void onDestroy(TownyDestroyEvent event) {
-        parseEvent(event);
+        parseEvent(event, ActionType.DESTROY);
     }
 
     @EventHandler
     public void onSwitch(TownySwitchEvent event) {
-        parseEvent(event);
+        parseEvent(event, ActionType.SWITCH);
     }
 
     @EventHandler
     public void onItemUse(TownyItemuseEvent event) {
-        parseEvent(event);
+        parseEvent(event, ActionType.ITEM_USE);
     }
 
-    public void parseEvent(TownyActionEvent event) {
-        if (event.isInWilderness())
-            return;
+    public void parseEvent(@NotNull TownyActionEvent event, @NotNull ActionType type) {
+        if (event.isInWilderness()) return;
 
         Location location = event.getLocation();
-        Town town = TownyAPI.getInstance().getTown(location);
-        if (town == null)
-            return;
 
-        Quarter quarter = QuarterUtil.getQuarter(location);
-        if (quarter == null)
-            return;
+        Quarter quarter = QuarterManager.getInstance().getQuarter(location);
+        if (quarter == null) return;
 
         Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
-        if (resident == null)
-            return;
+        if (resident == null) return;
 
-        if (Objects.equals(quarter.getOwnerResident(), resident) || quarter.getTrustedResidents().contains(resident)) {
+        if (quarter.isResidentOwner(resident) || quarter.getTrustedResidents().contains(resident)) {
             event.setCancelled(false);
             return;
         }
 
-        switch (quarter.getType()) {
-            case COMMONS:
-                if (!(event instanceof TownySwitchEvent || event instanceof TownyItemuseEvent))
-                    return;
-
-                handleEvent(event, quarter, resident);
-                break;
-            case PUBLIC:
-                handleEvent(event, quarter, resident);
-                break;
-            case STATION:
-                if (!(event instanceof TownyItemuseEvent || event instanceof TownyDestroyEvent || event instanceof TownySwitchEvent))
-                    return;
-
-                // Extra tolerance on Y coordinate to check for boats placed in the lowest quadrant of a quarter
-                handleStation(event, QuarterUtil.getQuarter(location.add(0, 0.25, 0)), resident);
-                break;
-            case WORKSITE:
-                if (!(event instanceof TownyBuildEvent || event instanceof TownyDestroyEvent))
-                    return;
-
-                handleEvent(event, quarter, resident);
-                break;
+        if (quarter.testPermission(type, resident)) {
+            event.setCancelled(false);
+            return;
         }
+
+        if (quarter.getType().equals(QuarterType.STATION)) handleStation(event, quarter);
     }
 
-    private void handleStation(TownyActionEvent event, Quarter quarter, Resident resident) {
-        if (!isVehicle(event.getMaterial()))
-            return;
+    private void handleStation(TownyActionEvent event, Quarter quarter) {
+        if (!isVehicle(event.getMaterial())) return;
 
-        handleEvent(event, quarter, resident);
-    }
-    
-    private void handleEvent(TownyActionEvent event, Quarter quarter, Resident resident) {
-        if (quarter.isEmbassy()) { // We use embassy status to represent that certain quarter types are for anyone's use
+        if (quarter.isEmbassy()) {
             event.setCancelled(false);
             return;
         }
 
-        if (quarter.getTown() == resident.getTownOrNull())
-            event.setCancelled(false);
+        if (quarter.isPlayerInTown(event.getPlayer())) event.setCancelled(false);
     }
 
     private boolean isVehicle(Material material) {
-        return material == Material.ACACIA_BOAT || material == Material.BAMBOO_RAFT ||
-                material == Material.BIRCH_BOAT || material == Material.CHERRY_BOAT ||
-                material == Material.DARK_OAK_BOAT || material == Material.JUNGLE_BOAT ||
-                material == Material.MANGROVE_BOAT || material == Material.OAK_BOAT ||
-                material == Material.SPRUCE_BOAT || material == Material.ACACIA_CHEST_BOAT ||
-                material == Material.BAMBOO_CHEST_RAFT || material == Material.BIRCH_CHEST_BOAT ||
-                material == Material.CHERRY_CHEST_BOAT || material == Material.DARK_OAK_CHEST_BOAT ||
-                material == Material.JUNGLE_CHEST_BOAT || material == Material.MANGROVE_CHEST_BOAT ||
-                material == Material.OAK_CHEST_BOAT || material == Material.SPRUCE_CHEST_BOAT ||
-                material == Material.MINECART;
+        return VEHICLE_MATERIALS.contains(material);
+    }
+
+    @EventHandler
+    public void onPlayerDeniedBedUse(PlayerDeniedBedUseEvent event) {
+        Quarter quarter = QuarterManager.getInstance().getQuarter(event.getLocation());
+        if (quarter == null) return;
+
+        Player player = event.getPlayer();
+        if (player == null) return;
+
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null) return;
+
+        if (quarter.isResidentOwner(resident) || quarter.getTrustedResidents().contains(resident)) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (!quarter.getType().equals(QuarterType.INN)) return;
+
+        if (quarter.isEmbassy()) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (quarter.isPlayerInTown(player)) event.setCancelled(true);
     }
 }

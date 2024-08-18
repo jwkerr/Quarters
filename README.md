@@ -1,37 +1,3 @@
-<details>
-<summary>❤️ A special thank you to my sponsors who are helping to make development possible.</summary>
-
-- CorruptedGreed
-- Lumpooni (Lumpeeh)
-- sab2003
-- OISARJR (YOUHAVENORIGHTS3)
-- Colt_44_magnum
-- ccryptae (Cryptae)
-- SeexyyRed
-- dres2 (Dres2)
-- Aylywyn
-- Maxxiimus
-- pymsrps3213
-- exploding_turtle
-- Proser
-- TiowoiT
-- Lgos
-- PoppyK (PoppyKai)
-- Ghostyuuu (Ghostyuu)
-- NixWolvercraft
-- nidomas
-- 9DF
-- w1shful (wishful_)
-- Veyronity
-- Joixe776 (Joigrama)
-
-...and 4 other private sponsors
-
-⭐ If you would like to support my development efforts, you can sponsor me on [GitHub](https://github.com/sponsors/jwkerr) or [Patreon](https://patreon.com/Fruitloopins).
-</details>
-
----
-
 [Download Quarters on Modrinth](https://modrinth.com/plugin/quarters)
 
 # Quarters

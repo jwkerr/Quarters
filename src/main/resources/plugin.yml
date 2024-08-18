@@ -1,207 +1,327 @@
 name: Quarters
-version: "${project.version}"
+version: "${version}"
 main: net.earthmc.quarters.Quarters
-api-version: "1.19"
+api-version: "1.20"
 prefix: Quarters
 authors: [Fruitloopins]
 description: The modern "apartment" plugin for Towny
 website: https://earthmc.net
 folia-supported: true
-
 depend: [Towny]
-softdepend: [QuickShop, QuickShop-Hikari]
+
+commands:
+  quarters:
+    description: Primary Quarters command
+    permission: quarters.command.quarters
+    aliases:
+      - q
+
+  quartersadmin:
+    description: Admin Quarters command
+    permission: quarters.command.quartersadmin
+    aliases:
+      - qa
 
 permissions:
   quarters.wand:
     description: "Grants permission to use the Quarters selection wand"
     default: true
 
-  quarters.action.*:
-    description: "Grants permission to all the permission checks called by standard commands, should only be given to powerful ranks in a town"
+  quarters.landlord:
+    description: "Grants mayor-like permission to edit things that a quarter owner can edit"
     default: false
-    children:
-      quarters.action.constantoutlines: true
-      quarters.action.colour: true
-      quarters.action.create: true
-      quarters.action.defaultsellprice: true
-      quarters.action.delete: true
-      quarters.action.embassy: true
-      quarters.action.evict: true
-      quarters.action.sell: true
-      quarters.action.trust: true
-      quarters.action.type: true
 
-  quarters.action.constantoutlines:
-    description: "Grants permission to toggle constant quarter outlines"
+  quarters.landlord.receive_command_feedback_from_town_members:
+    description: "Grants permission to see command feedback from other members in a town"
+    default: false
+
+  quarters.command.quarters:
     default: true
 
-  quarters.action.colour:
-    description: "Grants permission to change a quarter's outline colour"
-    default: false
-
-  quarters.action.create:
-    description: "Grants permission to create a quarter"
-    default: false
-
-  quarters.action.defaultsellprice:
-    description: "Grants permission to change the default quarter sell price in a town"
-    default: false
-
-  quarters.action.delete:
-    description: "Grants permission to delete a quarter"
-    default: false
-
-  quarters.action.embassy:
-    description: "Grants permission to toggle a quarter's embassy status"
-    default: false
-
-  quarters.action.evict:
-    description: "Grants permission to evict the owner of a quarter"
-    default: false
-
-  quarters.action.sell:
-    description: "Grants permission to sell quarters"
-    default: false
-
-  quarters.action.trust:
-    description: "Grants permission to managed trusted players in quarters"
-    default: false
-
-  quarters.action.type:
-    description: "Grants permission to change a quarter's type"
-    default: false
-
   quarters.command.quarters.*:
-    description: "Grants permission to all standard commands"
     default: false
     children:
       quarters.command.quarters.claim: true
-      quarters.command.quarters.colour: true
-      quarters.command.quarters.selection: true
       quarters.command.quarters.create: true
-      quarters.command.quarters.defaultsellprice: true
       quarters.command.quarters.delete: true
+      quarters.command.quarters.edit: true
+      quarters.command.quarters.edit.*: true
       quarters.command.quarters.evict: true
+      quarters.command.quarters.fame: true
       quarters.command.quarters.here: true
       quarters.command.quarters.info: true
+      quaters.command.quarters.meow: true
       quarters.command.quarters.pos: true
+      quarters.command.quarters.selection: true
+      quarters.command.quarters.selection.*: true
       quarters.command.quarters.sell: true
+      quarters.command.quarters.set: true
+      quarters.command.quarters.set.*: true
       quarters.command.quarters.toggle: true
+      quarters.command.quarters.toggle.*: true
       quarters.command.quarters.trust: true
-      quarters.command.quarters.type: true
+      quarters.command.quarters.trust.*: true
       quarters.command.quarters.unclaim: true
+      quarters.command.quarters.wand: true
 
   quarters.command.quarters.claim:
-    description: "Grants permissions to claim quarters"
-    default: true
-
-  quarters.command.quarters.colour:
-    description: "Grants permission to use the colour command"
-    default: true
-
-  quarters.command.quarters.selection:
-    description: "Grants permission to manage selection"
     default: true
 
   quarters.command.quarters.create:
-    description: "Grants permission to use the create command"
-    default: true
-
-  quarters.command.quarters.defaultsellprice:
-    description: "Grants permission to use the defaultsellprice command"
-    default: true
+    default: false
 
   quarters.command.quarters.delete:
-    description: "Grants permission to use the delete command"
+    default: false
+
+  quarters.command.quarters.edit:
     default: true
 
+  quarters.command.quarters.edit.*:
+    default: false
+    children:
+      quarters.command.quarters.edit.addselection: true
+      quarters.command.quarteres.edit.remove: true
+
+  quarters.command.quarters.edit.addselection:
+    default: false
+
+  quarters.command.quarteres.edit.remove:
+    default: false
+
   quarters.command.quarters.evict:
-    description: "Grants permission to use the evict command"
+    default: false
+
+  quarters.command.quarters.fame:
     default: true
 
   quarters.command.quarters.here:
-    description: "Grants permission to view info about the quarter you are standing in"
     default: true
 
   quarters.command.quarters.info:
-    description: "Grants permission to show basic info about the Quarters installation"
+    default: true
+
+  quarters.command.quarters.meow:
     default: true
 
   quarters.command.quarters.pos:
-    description: "Grants permission to select areas with commands"
+    default: true
+
+  quarters.command.quarters.selection:
+    default: true
+
+  quarters.command.quarters.selection.*:
+    default: false
+    children:
+      quarters.command.quarters.selection.add: true
+      quarters.command.quarters.selection.clear: true
+      quarters.command.quarters.selection.copy: true
+      quarters.command.quarters.selection.paste: true
+      quarters.command.quarters.selection.remove: true
+
+  quarters.command.quarters.selection.add:
+    default: true
+
+  quarters.command.quarters.selection.clear:
+    default: true
+
+  quarters.command.quarters.selection.copy:
+    default: true
+
+  quarters.command.quarters.selection.paste:
+    default: true
+
+  quarters.command.quarters.selection.remove:
     default: true
 
   quarters.command.quarters.sell:
-    description: "Grants permission to use the sell command"
+    default: false
+
+  quarters.command.quarters.set:
     default: true
+
+  quarters.command.quarters.set.*:
+    default: false
+    children:
+      quarters.command.quarters.set.anchor: true
+      quarters.command.quarters.set.colour: true
+      quarters.command.quarters.set.defaultsellprice: true
+      quarters.command.quarters.set.name: true
+      quarters.command.quarters.set.owner: true
+      quarters.command.quarters.set.particlesize: true
+      quarters.command.quarters.set.perm: true
+      quarters.command.quarters.set.type: true
+
+  quarters.command.quarters.set.anchor:
+    default: true
+
+  quarters.command.quarters.set.colour:
+    default: true
+
+  quarters.command.quarters.set.defaultsellprice:
+    default: false
+
+  quarters.command.quarters.set.name:
+    default: true
+
+  quarters.command.quarters.set.owner:
+    default: false
+
+  quarters.command.quarters.set.particlesize:
+    default: true
+
+  quarters.command.quarters.set.perm:
+    default: true
+
+  quarters.command.quarters.set.type:
+    default: false
 
   quarters.command.quarters.toggle:
-    description: "Grants permission to use the toggle command"
     default: true
+
+  quarters.command.quarters.toggle.*:
+    default: false
+    children:
+      quarters.command.quarters.toggle.constantoutlines: true
+      quarters.command.quarters.toggle.embassy: true
+      quarters.command.quarters.toggle.entrynotifications: true
+      quarters.command.quarters.toggle.sellondelete: true
+
+  quarters.command.quarters.toggle.constantoutlines:
+    default: true
+
+  quarters.command.quarters.toggle.embassy:
+    default: false
+
+  quarters.command.quarters.toggle.entrynotifications:
+    default: true
+
+  quarters.command.quarters.toggle.sellondelete:
+    default: false
 
   quarters.command.quarters.trust:
-    description: "Grants permission to use the trust command"
     default: true
 
-  quarters.command.quarters.type:
-    description: "Grants permission to use the type command"
+  quarters.command.quarters.trust.*:
+    default: false
+    children:
+      quarters.command.quarters.trust.add: true
+      quarters.command.quarters.trust.clear: true
+      quarters.command.quarters.trust.remove: true
+
+  quarters.command.quarters.trust.add:
+    default: true
+
+  quarters.command.quarters.trust.clear:
+    default: true
+
+  quarters.command.quarters.trust.remove:
     default: true
 
   quarters.command.quarters.unclaim:
-    description: "Grants permission to unclaim owned quarters"
     default: true
 
-  quarters.command.quartersadmin.*:
-    description: "Grants permission to all admin commands"
+  quarters.command.quarters.wand:
+    default: true
+
+  ### ADMIN COMMANDS ###
+
+  quarters.command.quartersadmin:
     default: op
+
+  quarters.command.quartersadmin.*:
+    default: false
     children:
-      quarters.command.quartersadmin.colour: true
       quarters.command.quartersadmin.delete: true
       quarters.command.quartersadmin.evict: true
+      quarters.command.quartersadmin.port: true
       quarters.command.quartersadmin.sell: true
-      quarters.command.quartersadmin.setowner: true
+      quarters.command.quartersadmin.set: true
+      quarters.command.quartersadmin.set.*: true
       quarters.command.quartersadmin.toggle: true
+      quarters.command.quartersadmin.toggle.*: true
       quarters.command.quartersadmin.trust: true
-      quarters.command.quartersadmin.type: true
-
-  quarters.command.quartersadmin.colour:
-    description: "Grants permission to forcefully change a quarter's outline colour"
-    default: op
+      quarters.command.quartersadmin.trust.*: true
 
   quarters.command.quartersadmin.delete:
-    description: "Grants permission to forcefully delete quarters"
     default: op
 
   quarters.command.quartersadmin.evict:
-    description: "Grants permission to forcefully evict the owner of a quarter"
+    default: op
+
+  quarters.command.quartersadmin.port:
     default: op
 
   quarters.command.quartersadmin.sell:
-    description: "Grants permission to forcefully set a quarter for sale"
     default: op
 
-  quarters.command.quartersadmin.setowner:
-    description: "Grants permission to forcefully change a quarter's owner"
+  quarters.command.quartersadmin.set:
+    default: op
+
+  quarters.command.quartersadmin.set.*:
+    default: false
+    children:
+      quarters.command.quartersadmin.set.anchor: true
+      quarters.command.quartersadmin.set.colour: true
+      quarters.command.quartersadmin.set.name: true
+      quarters.command.quartersadmin.set.owner: true
+      quarters.command.quartersadmin.set.perm: true
+      quarters.command.quartersadmin.set.type: true
+
+  quarters.command.quartersadmin.set.anchor:
+    default: op
+
+  quarters.command.quartersadmin.set.colour:
+    default: op
+
+  quarters.command.quartersadmin.set.name:
+    default: op
+
+  quarters.command.quartersadmin.set.owner:
+    default: op
+
+  quarters.command.quartersadmin.set.perm:
+    default: op
+
+  quarters.command.quartersadmin.set.type:
     default: op
 
   quarters.command.quartersadmin.toggle:
-    description: "Grants permission to use the admin toggle command"
+    default: op
+
+  quarters.command.quartersadmin.toggle.*:
+    default: false
+    children:
+      quarters.command.quartersadmin.toggle.embassy: true
+
+  quarters.command.quartersadmin.toggle.embassy:
     default: op
 
   quarters.command.quartersadmin.trust:
-    description: "Grants permission to forcefully manage trusted players in a quarter"
     default: op
 
-  quarters.command.quartersadmin.type:
-    description: "Grants permission to forcefully change a quarter's type"
-    default: op
-
-  quarters.action.quartersadmin.*:
-    description: "Grants permission to all admin actions, this does not give access to the command that checks for these permissions"
-    default: op
+  quarters.command.quartersadmin.trust.*:
+    default: false
     children:
-      quarters.action.quartersadmin.embassy: true
+      quarters.command.quartersadmin.trust.add: true
+      quarters.command.quartersadmin.trust.clear: true
+      quarters.command.quartersadmin.trust.remove: true
 
-  quarters.action.quartersadmin.embassy:
-    description: "Grants permission to forcefully toggle a quarter's embassy status"
+  quarters.command.quartersadmin.trust.add:
+    default: op
+
+  quarters.command.quartersadmin.trust.clear:
+    default: op
+
+  quarters.command.quartersadmin.trust.remove:
+    default: op
+
+  quarters.command.quartersadmin.reload:
+    default: op
+
+  quarters.command.quartersadmin.reload.*:
+    default: false
+    children:
+      quarters.command.quartersadmin.reload.config: true
+
+  quarters.command.quartersadmin.reload.config:
     default: op
