@@ -54,6 +54,11 @@ public class AdminPortMethod extends CommandMethod {
         }
 
         String value = (String) cdf.getValue();
+        if (value == null) {
+            if (consoleOutput) Quarters.logWarning("Value of " + townName + "'s legacy quarters was null, continuing to the next town");
+            return;
+        }
+
         String[] split = value.split("\\|");
 
         List<Quarter> quarters = new ArrayList<>();
