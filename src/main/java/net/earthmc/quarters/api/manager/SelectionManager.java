@@ -1,10 +1,9 @@
 package net.earthmc.quarters.api.manager;
 
+import net.earthmc.quarters.api.QuartersMessaging;
 import net.earthmc.quarters.object.entity.Cuboid;
-import net.earthmc.quarters.object.exception.CommandMethodException;
 import net.earthmc.quarters.object.state.SelectionType;
 import net.earthmc.quarters.object.wrapper.CuboidSelection;
-import net.earthmc.quarters.object.wrapper.StringConstants;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -83,15 +82,10 @@ public final class SelectionManager {
 
     public Component getSelectedPositionComponent(SelectionType type, Location location) {
         int pos = type.equals(SelectionType.LEFT) ? 1 : 2;
-        Component slash = Component.text("/", NamedTextColor.GRAY);
 
         TextComponent.Builder builder = Component.text();
         builder.append(Component.text("Position " + pos + ": ", NamedTextColor.GRAY, TextDecoration.ITALIC));
-        builder.append(Component.text("X=" + location.getBlockX(), NamedTextColor.RED));
-        builder.append(slash);
-        builder.append(Component.text("Y=" + location.getBlockY(), NamedTextColor.GREEN));
-        builder.append(slash);
-        builder.append(Component.text("Z=" + location.getBlockZ(), NamedTextColor.BLUE));
+        builder.append(QuartersMessaging.getLocationComponent(location));
 
         return builder.build();
     }

@@ -84,11 +84,17 @@ public class QuartersMessaging {
     public static void sendCommandFeedbackToTown(@NotNull Town town, @NotNull Player executingPlayer, @NotNull String message, @Nullable Location location) {
         TextComponent.Builder builder = Component.text();
         builder.append(ConfigManager.getFormattedName(executingPlayer.getUniqueId(), null));
-
-        if (location != null) message += getLocationString(location);
-
         builder.appendSpace();
         builder.append(Component.text(message, NamedTextColor.GRAY));
+
+        if (location != null) {
+            builder.appendSpace();
+            builder.append(Component.text("(", NamedTextColor.GRAY));
+            builder.append(getLocationComponent(location));
+            builder.append(Component.text(")", NamedTextColor.GRAY));
+        }
+
+        Component component = builder.build();
 
         for (Resident resident : town.getResidents()) {
             if (!resident.isOnline()) continue;
@@ -98,11 +104,20 @@ public class QuartersMessaging {
 
             if (!player.hasPermission("quarters.landlord.receive_command_feedback_from_town_members")) continue;
 
-            if (!player.equals(executingPlayer)) sendComponent(player, builder.build());
+            if (!player.equals(executingPlayer)) sendComponent(player, component);
         }
     }
 
-    private static String getLocationString(@NotNull Location location) {
-        return " (X=" + location.getBlockX() + "/Y=" + location.getBlockY() + "/Z=" + location.getBlockZ() + ")";
+    public static Component getLocationComponent(@NotNull Location location) {
+        Component slash = Component.text("/", NamedTextColor.GRAY);
+
+        TextComponent.Builder builder = Component.text();
+        builder.append(Component.text("X=" + location.getBlockX(), NamedTextColor.RED));
+        builder.append(slash);
+        builder.append(Component.text("Y=" + location.getBlockY(), NamedTextColor.GREEN));
+        builder.append(slash);
+        builder.append(Component.text("Z=" + location.getBlockZ(), NamedTextColor.BLUE));
+
+        return builder.build();
     }
 }

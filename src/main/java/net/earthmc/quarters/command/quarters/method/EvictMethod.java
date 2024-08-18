@@ -33,7 +33,6 @@ public class EvictMethod extends CommandMethod {
         String ownerName = resident.getName();
 
         quarter.setOwner(null);
-        quarter.setClaimedAt(null);
         quarter.save();
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully evicted " + ownerName);

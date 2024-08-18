@@ -23,8 +23,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class HereMethod extends CommandMethod {
 
@@ -103,14 +105,14 @@ public class HereMethod extends CommandMethod {
             return builder.build();
         }
 
+        builder.hoverEvent(QuartersMessaging.getLocationComponent(location)
+                        .appendNewline()
+                        .append(Component.text(catMode ? "Click 2 copy coordinatez" : "Click to copy coordinates", NamedTextColor.GRAY))
+        );
+
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
-
-        builder.hoverEvent(Component.text("X=" + x + "/Y=" + y + "/Z=" + z, NamedTextColor.GRAY)
-                .appendNewline()
-                .append(Component.text(catMode ? "Click 2 copy coordinatez" : "Click to copy coordinates", NamedTextColor.GRAY))
-        );
 
         builder.clickEvent(ClickEvent.copyToClipboard(x + " " + y + " " + z));
 
