@@ -10,7 +10,7 @@ def gitVersion() {
     "git rev-parse --short HEAD".execute(null, project.rootDir).text.trim()
 }
 
-group = "net.earthmc"
+group = "au.lupine"
 version = "1.0.0+${gitBranch()}+${gitVersion()}"
 
 repositories {

@@ -1,6 +1,6 @@
 name: Quarters
 version: "${version}"
-main: net.earthmc.quarters.Quarters
+main: au.lupine.quarters.Quarters
 api-version: "1.20"
 prefix: Quarters
 authors: [Fruitloopins]
