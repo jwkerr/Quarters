@@ -32,5 +32,6 @@ public class SetOwnerMethod extends CommandMethod {
         quarter.save();
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully set this quarter's owner to " + resident.getName());
+        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has set a quarter's owner to " + resident.getName(), player.getLocation());
     }
 }

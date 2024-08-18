@@ -2,7 +2,6 @@ package net.earthmc.quarters.object.base;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
-import net.earthmc.quarters.Quarters;
 import net.earthmc.quarters.api.manager.ConfigManager;
 import net.earthmc.quarters.api.manager.QuarterManager;
 import net.earthmc.quarters.object.entity.Quarter;
@@ -60,13 +59,8 @@ public abstract class CommandMethod {
         Player player = getSenderAsPlayerOrNull();
         if (player != null && hasMayorPermBypass && ConfigManager.doMayorsBypassCertainElevatedPerms()) {
             Resident resident = TownyAPI.getInstance().getResident(player);
-            Quarters.logInfo("yippee");
             if (resident == null) return;
-            Quarters.logInfo("yippee 2");
-            if (resident.isMayor()) {
-                Quarters.logInfo("yippee 3");
-                return;
-            }
+            if (resident.isMayor()) return;
         }
 
         if (!sender.hasPermission(permission)) throw new CommandMethodException("You do not have permission to perform this method");

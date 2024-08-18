@@ -102,9 +102,10 @@ public class QuartersMessaging {
             Player player = resident.getPlayer();
             if (player == null) continue;
 
-            if (!player.hasPermission("quarters.landlord.receive_command_feedback_from_town_members") &&
-                    !(ConfigManager.doMayorsBypassCertainElevatedPerms() && resident.isMayor())
-            ) continue;
+            boolean hasCommandFeedbackPerm = player.hasPermission("quarters.landlord.receive_command_feedback_from_town_members");
+            boolean hasMayorPerm = resident.isMayor() && ConfigManager.doMayorsBypassCertainElevatedPerms();
+
+            if (!hasCommandFeedbackPerm && !hasMayorPerm) continue;
 
             if (!player.equals(executingPlayer)) sendComponent(player, component);
         }
