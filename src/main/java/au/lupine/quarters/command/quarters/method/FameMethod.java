@@ -41,18 +41,7 @@ public class FameMethod extends CommandMethod {
             for (UUID uuid : userGroup.getMembers()) {
                 CompletableFuture<Component> future = getUsernameByUUIDAsync(uuid).thenApply(name -> {
                     if (name == null) return null;
-
-                    TextComponent.Builder nameBuilder = Component.text();
-                    nameBuilder.append(Component.text(name, TextColor.color(userGroup.getColour().getRGB())));
-
-                    String description = userGroup.getDescription();
-                    if (description != null) nameBuilder.hoverEvent(Component.text(description, NamedTextColor.GRAY));
-
-                    for (TextDecoration decoration : userGroup.getDecorations()) {
-                        nameBuilder.decoration(decoration, true);
-                    }
-
-                    return nameBuilder.build();
+                    return userGroup.formatString(name);
                 });
 
                 futureNames.add(future);

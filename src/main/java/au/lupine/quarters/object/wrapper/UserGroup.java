@@ -2,8 +2,12 @@ package au.lupine.quarters.object.wrapper;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -67,6 +71,22 @@ public class UserGroup {
      */
     public UserGroup() {
         this.shouldDisplayInFame = false;
+    }
+
+    public Component formatString(String string) {
+        TextComponent.Builder nameBuilder = Component.text();
+        nameBuilder.append(Component.text(string, TextColor.color(colour.getRGB())));
+
+        if (description != null) {
+            Component component = MiniMessage.miniMessage().deserialize(description);
+            nameBuilder.hoverEvent(component.hasStyling() ? component : component.color(NamedTextColor.GRAY));
+        }
+
+        for (TextDecoration decoration : decorations) {
+            nameBuilder.decoration(decoration, true);
+        }
+
+        return nameBuilder.build();
     }
 
     public boolean isMember(UUID uuid) {
