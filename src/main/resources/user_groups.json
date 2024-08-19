@@ -1,46 +1,121 @@
-{
-    "AUTHOR": [
-        "fed0ec4a-f1ad-4b97-9443-876391668b34"
-    ],
-    "CDEREK": [
-        "a571e67f-cd68-4590-8f30-7002de1c952d"
-    ],
-    "CORRUPTEDGREED": [
-        "f17d77ab-aed4-44e7-96ef-ec9cd473eda3"
-    ],
-    "EARLY_SUPPORTER": [
-        "a03f71f9-625e-419f-9d16-0e5ab50414e4",
-        "b724c3ef-3479-4a8f-a475-786e0e75e8d0",
-        "24031f50-d4de-4af2-9959-322e40346af6",
-        "e378b23d-6a5e-4cf3-8dc6-64ed8761df36",
-        "bb5cfe53-4773-47d4-94b3-79bb6253885f",
-        "b7b9edba-e602-45b1-8607-16919ff867c7",
-        "da756925-413f-4954-9063-9e19d1be9017",
-        "1fd78f5a-1eff-416f-afab-7598f14526ca",
-        "8c832ef9-a787-497d-9cdf-c7316ca6861c",
-        "b790362b-e018-466e-a3f4-716794d2a78c",
-        "0780f0c4-e4c2-4621-84b5-95cccc7e265f",
-        "8f90a970-90de-407d-b4e7-0d9fde10f51a",
-        "1619c62c-0198-4139-a204-cd767d4b95c5",
-        "460685f8-42b6-4189-8c21-de8970bbc692",
-        "7d70099d-4b3e-417d-b339-3549f010e97e",
-        "4cbf893c-9c21-4d6c-b835-6cea8f59185e",
-        "a98152ba-4362-458e-b397-6e1c79a93fc0",
-        "65b1f884-3fc7-4fbb-8edb-9ce016a1ec3b",
-        "554f4bb7-d663-4c1b-a5b3-c70758e63792",
-        "16639f04-3558-4705-8c27-2aa80e5ba741",
-        "0c16f3f8-59c2-413e-9327-8f4b1f7f44cf",
-        "5b8274bf-b162-4336-85a0-48f9d5380a78",
-        "3555abbe-ce54-4925-9ce7-cfa718c53dab"
-    ],
-    "OXBIT": [
-        "d550441b-5fcf-448c-a756-5fa391b89a46",
-        "a0bcd96f-2124-4dfb-bd08-9ebef15a3e70"
-    ],
-    "TUZZZIE": [
-        "8391474f-4b57-412a-a835-96bd2c253219"
-    ],
-    "ZACH": [
-        "42e685b4-fcda-449a-a1c2-7c64bac1e182"
-    ]
-}
+[
+    {
+        "name": "author",
+        "colour": "F6003C",
+        "description": "This player is a developer of Quarters",
+        "cat_mode": true,
+        "decorations": [
+
+        ],
+        "members": [
+            "fed0ec4a-f1ad-4b97-9443-876391668b34"
+        ]
+    },
+    {
+        "name": "cderek",
+        "colour": "00AA00",
+        "description": "i love quarters",
+        "cat_mode": true,
+        "decorations": [
+
+        ],
+        "members": [
+            "a571e67f-cd68-4590-8f30-7002de1c952d"
+        ]
+    },
+    {
+        "name": "corruptedgreed",
+        "colour": "8A50C4",
+        "description": null,
+        "cat_mode": true,
+        "decorations": [
+
+        ],
+        "members": [
+            "f17d77ab-aed4-44e7-96ef-ec9cd473eda3"
+        ]
+    },
+    {
+        "name": "early_supporter",
+        "colour": "FFAA00",
+        "description": null,
+        "cat_mode": false,
+        "decorations": [
+            "ITALIC"
+        ],
+        "members": [
+            "a03f71f9-625e-419f-9d16-0e5ab50414e4",
+            "b724c3ef-3479-4a8f-a475-786e0e75e8d0",
+            "24031f50-d4de-4af2-9959-322e40346af6",
+            "e378b23d-6a5e-4cf3-8dc6-64ed8761df36",
+            "bb5cfe53-4773-47d4-94b3-79bb6253885f",
+            "b7b9edba-e602-45b1-8607-16919ff867c7",
+            "da756925-413f-4954-9063-9e19d1be9017",
+            "1fd78f5a-1eff-416f-afab-7598f14526ca",
+            "8c832ef9-a787-497d-9cdf-c7316ca6861c",
+            "b790362b-e018-466e-a3f4-716794d2a78c",
+            "0780f0c4-e4c2-4621-84b5-95cccc7e265f",
+            "8f90a970-90de-407d-b4e7-0d9fde10f51a",
+            "1619c62c-0198-4139-a204-cd767d4b95c5",
+            "460685f8-42b6-4189-8c21-de8970bbc692",
+            "7d70099d-4b3e-417d-b339-3549f010e97e",
+            "4cbf893c-9c21-4d6c-b835-6cea8f59185e",
+            "a98152ba-4362-458e-b397-6e1c79a93fc0",
+            "65b1f884-3fc7-4fbb-8edb-9ce016a1ec3b",
+            "554f4bb7-d663-4c1b-a5b3-c70758e63792",
+            "16639f04-3558-4705-8c27-2aa80e5ba741",
+            "0c16f3f8-59c2-413e-9327-8f4b1f7f44cf",
+            "5b8274bf-b162-4336-85a0-48f9d5380a78",
+            "3555abbe-ce54-4925-9ce7-cfa718c53dab"
+        ]
+    },
+    {
+        "name": "0xbit",
+        "colour": "003CF6",
+        "description": "\"Mentally Sane\"",
+        "cat_mode": true,
+        "decorations": [
+
+        ],
+        "members": [
+            "d550441b-5fcf-448c-a756-5fa391b89a46",
+            "a0bcd96f-2124-4dfb-bd08-9ebef15a3e70"
+        ]
+    },
+    {
+        "name": "sabi250",
+        "colour": "64E68F",
+        "description": "awa",
+        "cat_mode": true,
+        "decorations": [
+
+        ],
+        "members": [
+            "67f557b3-c57d-4c51-903c-9193480a1247"
+        ]
+    },
+    {
+        "name": "tuzzzie",
+        "colour": "FF69B4",
+        "description": "This player offered great emotional support during Quarters' development",
+        "cat_mode": true,
+        "decorations": [
+
+        ],
+        "members": [
+            "8391474f-4b57-412a-a835-96bd2c253219"
+        ]
+    },
+    {
+        "name": "zach",
+        "colour": "5865F2",
+        "description": "Gary my beloved",
+        "cat_mode": true,
+        "decorations": [
+
+        ],
+        "members": [
+            "42e685b4-fcda-449a-a1c2-7c64bac1e182"
+        ]
+    }
+]

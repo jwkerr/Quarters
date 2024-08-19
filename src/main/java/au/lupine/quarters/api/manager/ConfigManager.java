@@ -1,15 +1,16 @@
 package au.lupine.quarters.api.manager;
 
 import au.lupine.quarters.Quarters;
-import au.lupine.quarters.object.state.UserGroup;
+import au.lupine.quarters.object.wrapper.UserGroup;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -20,17 +21,19 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class ConfigManager {
 
     private static ConfigManager instance;
 
+    private static final String USER_GROUPS_URL = "https://raw.githubusercontent.com/jwkerr/Quarters/master/src/main/resources/user_groups.json";
+
     private static FileConfiguration config;
-    private static final Map<UUID, UserGroup> USER_GROUPS = new ConcurrentHashMap<>();
+    public static final UserGroup DEFAULT_USER_GROUP = new UserGroup();
+    private static final List<UserGroup> USER_GROUPS = new ArrayList<>();
 
     private ConfigManager() {}
 
@@ -62,32 +65,50 @@ public final class ConfigManager {
     }
 
     private void loadUserGroups() {
+        JsonArray jsonArray;
+
+        if (ConfigManager.canPluginRequestUserGroups()) {
+            Quarters.logInfo("Requesting user_groups.json from " + USER_GROUPS_URL + " thank you for keeping this setting enabled!");
+            jsonArray = JSONManager.getInstance().getUrlAsJsonElement(USER_GROUPS_URL, JsonArray.class);
+
+            if (jsonArray == null) {
+                Quarters.logWarning("An error occurred while requesting user_groups.json, defaulting to jar resources");
+                jsonArray = loadUserGroupsAsJsonArrayFromResources();
+            }
+        } else {
+            jsonArray = loadUserGroupsAsJsonArrayFromResources();
+        }
+
+        if (jsonArray == null) return;
+
+        for (JsonElement element : jsonArray) {
+            USER_GROUPS.add(new UserGroup(element.getAsJsonObject()));
+        }
+    }
+
+    private @Nullable JsonArray loadUserGroupsAsJsonArrayFromResources() {
         InputStream inputStream = Quarters.getInstance().getResource("user_groups.json");
-        if (inputStream == null) return;
+        if (inputStream == null) return null; // This shouldn't happen
 
         InputStreamReader reader = new InputStreamReader(inputStream);
 
         Gson gson = new Gson();
-        JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
-
-        for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-            UserGroup userGroup = UserGroup.valueOf(entry.getKey());
-            for (JsonElement element : entry.getValue().getAsJsonArray()) {
-                USER_GROUPS.put(UUID.fromString(element.getAsString()), userGroup);
-            }
-        }
+        return gson.fromJson(reader, JsonArray.class);
     }
 
     public static FileConfiguration getConfig() {
         return config;
     }
 
-    public static UserGroup getUserGroup(UUID uuid) {
-        UserGroup userGroup = USER_GROUPS.get(uuid);
-        return userGroup != null ? userGroup : UserGroup.DEFAULT;
+    public static UserGroup getUserGroupOrDefault(UUID uuid, UserGroup def) {
+        for (UserGroup userGroup : USER_GROUPS) {
+            if (userGroup.getMembers().contains(uuid)) return userGroup;
+        }
+
+        return def;
     }
 
-    public static Map<UUID, UserGroup> getUserGroups() {
+    public static List<UserGroup> getUserGroups() {
         return USER_GROUPS;
     }
 
@@ -104,7 +125,7 @@ public final class ConfigManager {
         String name = player.getName();
         if (name == null) return def; // UUID didn't resolve to a player that has joined
 
-        UserGroup userGroup = getUserGroup(uuid);
+        UserGroup userGroup = getUserGroupOrDefault(uuid, DEFAULT_USER_GROUP);
 
         TextComponent.Builder builder = Component.text();
         builder.append(Component.text(name, TextColor.color(userGroup.getColour().getRGB())));
@@ -112,9 +133,17 @@ public final class ConfigManager {
         String description = userGroup.getDescription();
         if (description != null) builder.hoverEvent(Component.text(description, NamedTextColor.GRAY));
 
+        for (TextDecoration decoration : userGroup.getDecorations()) {
+            builder.decoration(decoration, true);
+        }
+
         builder.clickEvent(ClickEvent.runCommand("/towny:resident " + name));
 
         return builder.build();
+    }
+
+    public static boolean canPluginRequestUserGroups() {
+        return config.getBoolean("technical.can_plugin_request_user_groups", true);
     }
 
     public static Material getWandMaterial() {
@@ -195,6 +224,8 @@ public final class ConfigManager {
 
     private void addValues() {
         config.options().setHeader(List.of("If comments are not present, please restart your server"));
+
+        config.addDefault("technical.can_plugin_request_user_groups", true); config.setInlineComments("technical.can_plugin_request_user_groups", List.of("If set to true, the plugin will be allowed to query GitHub for the latest sponsor data to correctly format names (please keep this enabled as sponsors are what keep development coming!)"));
 
         config.addDefault("wand_material", "FLINT"); config.setInlineComments("wand_material", List.of("Material of the wand item"));
         config.addDefault("mayor_bypasses_certain_elevated_perms", true); config.setInlineComments("mayor_bypasses_certain_elevated_perms", List.of("If this is set to true, mayors will bypass perms for certain command such as /q create, /q evict etc. This is intended to make configuration easier as most servers will want this behaviour"));

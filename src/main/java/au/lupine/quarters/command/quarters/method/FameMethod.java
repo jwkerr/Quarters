@@ -2,9 +2,9 @@ package au.lupine.quarters.command.quarters.method;
 
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.ConfigManager;
+import au.lupine.quarters.api.manager.JSONManager;
 import au.lupine.quarters.object.base.CommandMethod;
-import au.lupine.quarters.object.state.UserGroup;
-import au.lupine.quarters.util.RequestUtil;
+import au.lupine.quarters.object.wrapper.UserGroup;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.kyori.adventure.text.Component;
@@ -18,9 +18,6 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,26 +32,31 @@ public class FameMethod extends CommandMethod {
 
     @Override
     public void execute() {
-        Map<UUID, UserGroup> userGroups = ConfigManager.getUserGroups();
+        List<UserGroup> userGroups = ConfigManager.getUserGroups();
 
         List<CompletableFuture<Component>> futureNames = new ArrayList<>();
-        for (Map.Entry<UUID, UserGroup> entry : userGroups.entrySet()) {
-            UUID uuid = entry.getKey();
-            UserGroup userGroup = entry.getValue();
+        for (UserGroup userGroup : userGroups) {
+            if (!userGroup.shouldDisplayInFame()) continue;
 
-            CompletableFuture<Component> future = getUsernameByUUIDAsync(uuid).thenApply(name -> {
-                if (name == null) return null;
+            for (UUID uuid : userGroup.getMembers()) {
+                CompletableFuture<Component> future = getUsernameByUUIDAsync(uuid).thenApply(name -> {
+                    if (name == null) return null;
 
-                TextComponent.Builder nameBuilder = Component.text();
-                nameBuilder.append(Component.text(name, TextColor.color(userGroup.getColour().getRGB())));
+                    TextComponent.Builder nameBuilder = Component.text();
+                    nameBuilder.append(Component.text(name, TextColor.color(userGroup.getColour().getRGB())));
 
-                String description = userGroup.getDescription();
-                if (description != null) nameBuilder.hoverEvent(Component.text(description, NamedTextColor.GRAY));
+                    String description = userGroup.getDescription();
+                    if (description != null) nameBuilder.hoverEvent(Component.text(description, NamedTextColor.GRAY));
 
-                return nameBuilder.build();
-            });
+                    for (TextDecoration decoration : userGroup.getDecorations()) {
+                        nameBuilder.decoration(decoration, true);
+                    }
 
-            futureNames.add(future);
+                    return nameBuilder.build();
+                });
+
+                futureNames.add(future);
+            }
         }
 
         CompletableFuture.allOf(futureNames.toArray(new CompletableFuture[0])).thenRun(() -> {
@@ -82,20 +84,7 @@ public class FameMethod extends CommandMethod {
             String cachedName = CACHED_NAMES.get(uuid);
             if (cachedName != null) return cachedName;
 
-            URL url;
-            try {
-                url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
-            } catch (MalformedURLException e) {
-                return null;
-            }
-
-            JsonObject jsonObject;
-            try {
-                jsonObject = RequestUtil.getUrlAsJsonObject(url);
-            } catch (IOException e) {
-                return null;
-            }
-
+            JsonObject jsonObject = JSONManager.getInstance().getUrlAsJsonElement("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid, JsonObject.class);
             if (jsonObject == null) return null;
 
             JsonElement nameElement = jsonObject.get("name");

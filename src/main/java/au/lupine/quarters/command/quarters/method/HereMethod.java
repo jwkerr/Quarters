@@ -43,7 +43,7 @@ public class HereMethod extends CommandMethod {
         Quarter quarter = getQuarterAtPlayerOrByUUIDOrThrow(player, getArgOrNull(0));
 
         UUID owner = quarter.getOwner();
-        if (owner != null && ConfigManager.getUserGroup(owner).hasCatMode()) catMode = true;
+        if (owner != null && ConfigManager.getUserGroupOrDefault(owner, ConfigManager.DEFAULT_USER_GROUP).hasCatMode()) catMode = true;
 
         TextComponent.Builder headerBuilder = Component.text();
         headerBuilder.append(Component.text(quarter.getName(), TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));

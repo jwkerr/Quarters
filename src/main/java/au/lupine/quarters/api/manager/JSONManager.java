@@ -1,15 +1,21 @@
 package au.lupine.quarters.api.manager;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.object.adapter.*;
 import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
 
 public final class JSONManager {
 
@@ -47,5 +53,32 @@ public final class JSONManager {
         }
 
         return gson;
+    }
+
+    public <T extends JsonElement> @Nullable T getUrlAsJsonElement(String urlString, Class<T> type) {
+        try {
+            URL url = new URL(urlString);
+
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+
+            int code = connection.getResponseCode();
+            if (code != 200) return null;
+
+            StringBuilder text = new StringBuilder();
+            Scanner scanner = new Scanner(url.openStream());
+
+            while (scanner.hasNext()) {
+                text.append(scanner.nextLine());
+            }
+
+            scanner.close();
+
+            return JSONManager.getInstance().getGson().fromJson(text.toString(), type);
+        } catch (Exception e) {
+            Quarters.logWarning(String.valueOf(e));
+            return null;
+        }
     }
 }

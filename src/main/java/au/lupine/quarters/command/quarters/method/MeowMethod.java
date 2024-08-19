@@ -3,6 +3,7 @@ package au.lupine.quarters.command.quarters.method;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
+import au.lupine.quarters.object.wrapper.UserGroup;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -30,7 +31,10 @@ public class MeowMethod extends CommandMethod {
         Quarter quarter = getQuarterAtPlayerOrByUUIDOrThrow(player, getArgOrNull(0));
 
         UUID owner = quarter.getOwner();
-        if (owner == null || !ConfigManager.getUserGroup(owner).hasCatMode()) return;
+        if (owner == null) return;
+
+        UserGroup userGroup = ConfigManager.getUserGroupOrDefault(owner, ConfigManager.DEFAULT_USER_GROUP);
+        if (!userGroup.hasCatMode()) return;
 
         Random random = new Random();
 
