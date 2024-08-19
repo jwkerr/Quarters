@@ -2,7 +2,7 @@ plugins {
     id "java"
 }
 
-def semVersion = "1.0.1"
+def semVersion = "1.0.2"
 
 def static gitBranch() {
     "git rev-parse --abbrev-ref HEAD".execute().text.trim()
