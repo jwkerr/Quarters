@@ -212,6 +212,7 @@ public class Quarter {
      * @return True if the resident can perform the specified action
      */
     public boolean testPermission(@NotNull ActionType type, @NotNull Resident resident) {
+        if (isResidentOwner(resident) || getTrustedResidents().contains(resident)) return true;
         return getPermissions().testPermission(type, resident, this);
     }
 

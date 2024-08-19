@@ -26,7 +26,7 @@ public class TownyActionListener implements Listener {
             Material.ACACIA_BOAT, Material.BAMBOO_RAFT, Material.BIRCH_BOAT, Material.CHERRY_BOAT,
             Material.DARK_OAK_BOAT, Material.JUNGLE_BOAT, Material.MANGROVE_BOAT, Material.OAK_BOAT,
             Material.SPRUCE_BOAT, Material.ACACIA_CHEST_BOAT, Material.BAMBOO_CHEST_RAFT, Material.BIRCH_CHEST_BOAT,
-            Material.CHERRY_CHEST_BOAT, Material.DARK_OAK_CHEST_BOAT, Material.JUNGLE_CHEST_BOAT,Material.MANGROVE_CHEST_BOAT,
+            Material.CHERRY_CHEST_BOAT, Material.DARK_OAK_CHEST_BOAT, Material.JUNGLE_CHEST_BOAT, Material.MANGROVE_CHEST_BOAT,
             Material.OAK_CHEST_BOAT, Material.SPRUCE_CHEST_BOAT, Material.MINECART
     );
 
@@ -60,11 +60,6 @@ public class TownyActionListener implements Listener {
 
         Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
         if (resident == null) return;
-
-        if (quarter.isResidentOwner(resident) || quarter.getTrustedResidents().contains(resident)) {
-            event.setCancelled(false);
-            return;
-        }
 
         if (quarter.testPermission(type, resident)) {
             event.setCancelled(false);
