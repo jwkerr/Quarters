@@ -142,7 +142,7 @@ public final class ConfigManager {
     }
 
     public static boolean hasDefaultQuarterColour() {
-        return config.getBoolean("quarters.default_colour.enabled", false);
+        return config.getBoolean("quarters.default_quarter_colour.enabled", false);
     }
 
     public static Color getDefaultQuarterColour() {
