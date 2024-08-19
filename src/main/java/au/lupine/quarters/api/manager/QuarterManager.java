@@ -5,6 +5,7 @@ import au.lupine.quarters.object.entity.Quarter;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.*;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +30,7 @@ public final class QuarterManager {
     /**
      * @return The quarter at the specified location or null if there is none
      */
-    public @Nullable Quarter getQuarter(Location location) {
+    public @Nullable Quarter getQuarter(@NotNull Location location) {
         Town town = TownyAPI.getInstance().getTown(location);
         if (town == null) return null;
 
@@ -41,6 +42,13 @@ public final class QuarterManager {
         }
 
         return null;
+    }
+
+    /**
+     * @return The quarter at the specified block or null if there is none
+     */
+    public @Nullable Quarter getQuarter(@NotNull Block block) {
+        return getQuarter(block.getLocation());
     }
 
     /**
