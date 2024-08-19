@@ -18,7 +18,7 @@ public class DeleteMethod extends CommandMethod {
     private boolean deleteAll = false;
 
     public DeleteMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.delete");
+        super(sender, args, "quarters.command.quarters.delete", true);
     }
 
     @Override
