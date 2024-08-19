@@ -11,7 +11,7 @@ public enum UserGroup {
     CORRUPTEDGREED(new Color(0x8A50C4), null, true),
     DEFAULT(new Color(NamedTextColor.GRAY.value()), null, false),
     EARLY_SUPPORTER(new Color(NamedTextColor.GOLD.value()), "This player helped fund the early days of Quarters, thanks!", false),
-    OXBIT(new Color(0x003CF6), null, true),
+    OXBIT(new Color(0x003CF6), "\"Mentally Sane\"", true),
     TUZZZIE(new Color(0xFF69B4), "This player offered great emotional support during Quarters' development", true);
 
     private final Color colour;
