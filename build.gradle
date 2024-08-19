@@ -1,5 +1,6 @@
 plugins {
     id "java"
+    id 'maven-publish'
 }
 
 def semVersion = "1.0.2"
@@ -71,5 +72,13 @@ processResources {
     from("$projectDir") {
         include("LICENSE")
         into("")
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
     }
 }
