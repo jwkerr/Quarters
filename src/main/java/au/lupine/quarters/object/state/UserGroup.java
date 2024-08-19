@@ -13,7 +13,8 @@ public enum UserGroup {
     DEFAULT(new Color(NamedTextColor.GRAY.value()), null, false),
     EARLY_SUPPORTER(new Color(NamedTextColor.GOLD.value()), "This player helped fund the early days of Quarters, thanks!", false),
     OXBIT(new Color(0x003CF6), "\"Mentally Sane\"", true),
-    TUZZZIE(new Color(0xFF69B4), "This player offered great emotional support during Quarters' development", true);
+    TUZZZIE(new Color(0xFF69B4), "This player offered great emotional support during Quarters' development", true),
+    ZACH(new Color(0x5865F2), "Gary my beloved", true);
 
     private final Color colour;
     private final String description;
