@@ -14,7 +14,7 @@
     {
         "name": "cderek",
         "colour": "00AA00",
-        "description": "i love quarters",
+        "description": "quarters is love, quarters is life",
         "cat_mode": true,
         "decorations": [
 
@@ -38,10 +38,10 @@
     {
         "name": "early_supporter",
         "colour": "FFAA00",
-        "description": "This player helped fund the early days of Quarters, thanks!",
+        "description": "<gray>This player helped fund the early days of Quarters, thanks!</gray>\n<gold>This is a special Quarters rank, you can no longer attain it</gold>",
         "cat_mode": false,
         "decorations": [
-            "ITALIC"
+            "BOLD"
         ],
         "members": [
             "a03f71f9-625e-419f-9d16-0e5ab50414e4",

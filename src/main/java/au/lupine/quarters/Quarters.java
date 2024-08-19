@@ -3,6 +3,7 @@ package au.lupine.quarters;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.command.quarters.QuartersCommand;
 import au.lupine.quarters.command.quartersadmin.QuartersAdminCommand;
+import au.lupine.quarters.hook.QuartersPlaceholderExpansion;
 import au.lupine.quarters.listener.*;
 import au.lupine.quarters.object.metadata.QuarterListDataField;
 import au.lupine.quarters.object.metadata.QuarterListDataFieldDeserialiser;
@@ -28,6 +29,8 @@ public final class Quarters extends JavaPlugin {
                 Pair.of("quarters", new QuartersCommand()),
                 Pair.of("quartersadmin", new QuartersAdminCommand())
         );
+
+        registerHooks();
 
         registerListeners(
                 new QuarterEntryNotificationListener(),
@@ -69,6 +72,12 @@ public final class Quarters extends JavaPlugin {
 
             command.setExecutor(pair.getSecond());
         }
+    }
+
+    private void registerHooks() {
+        PluginManager pm = getServer().getPluginManager();
+
+        if (pm.getPlugin("PlaceholderAPI") != null) new QuartersPlaceholderExpansion().register();
     }
 
     private void registerListeners(Listener... listeners) {

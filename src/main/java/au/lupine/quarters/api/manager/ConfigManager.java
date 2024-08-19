@@ -6,11 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -127,19 +123,8 @@ public final class ConfigManager {
 
         UserGroup userGroup = getUserGroupOrDefault(uuid, DEFAULT_USER_GROUP);
 
-        TextComponent.Builder builder = Component.text();
-        builder.append(Component.text(name, TextColor.color(userGroup.getColour().getRGB())));
-
-        String description = userGroup.getDescription();
-        if (description != null) builder.hoverEvent(Component.text(description, NamedTextColor.GRAY));
-
-        for (TextDecoration decoration : userGroup.getDecorations()) {
-            builder.decoration(decoration, true);
-        }
-
-        builder.clickEvent(ClickEvent.runCommand("/towny:resident " + name));
-
-        return builder.build();
+        return userGroup.formatString(name)
+                .clickEvent(ClickEvent.runCommand("/towny:resident " + name));
     }
 
     public static boolean canPluginRequestUserGroups() {
