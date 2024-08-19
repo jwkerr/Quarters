@@ -26,7 +26,7 @@
     {
         "name": "corruptedgreed",
         "colour": "8A50C4",
-        "description": null,
+        "description": "This player comes from afar",
         "cat_mode": true,
         "decorations": [
 
@@ -38,7 +38,7 @@
     {
         "name": "early_supporter",
         "colour": "FFAA00",
-        "description": null,
+        "description": "This player helped fund the early days of Quarters, thanks!",
         "cat_mode": false,
         "decorations": [
             "ITALIC"
