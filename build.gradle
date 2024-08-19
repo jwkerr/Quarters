@@ -11,7 +11,7 @@ def gitVersion() {
 }
 
 group = "au.lupine"
-version = "1.0.0+${gitBranch()}+${gitVersion()}"
+version = "1.0.1+${gitBranch()}+${gitVersion()}"
 
 repositories {
     mavenCentral()
