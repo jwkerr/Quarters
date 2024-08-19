@@ -32,7 +32,12 @@ public final class SelectionManager {
         return instance;
     }
 
-    public void selectPosition(Player player, Location location, SelectionType type) {
+    /**
+     * @param player Player to select a position for
+     * @param location Location to select
+     * @param type {@link SelectionType} to use, left for pos one, right for pos two
+     */
+    public void selectPosition(@NotNull Player player, @NotNull Location location, @NotNull SelectionType type) {
         CuboidSelection selection = CUBOID_SELECTION_MAP.computeIfAbsent(player, s -> new CuboidSelection());
         switch (type) {
             case LEFT -> selection.setCornerOne(location);
@@ -40,6 +45,9 @@ public final class SelectionManager {
         }
     }
 
+    /**
+     * @return The player's current selection, will return an empty selection if they have not selected anything
+     */
     public CuboidSelection getSelection(Player player) {
         return CUBOID_SELECTION_MAP.computeIfAbsent(player, s -> new CuboidSelection());
     }
@@ -52,10 +60,16 @@ public final class SelectionManager {
         CUBOIDS_MAP.put(player, cuboids);
     }
 
+    /**
+     * @return The player's currently added cuboids using /q selection add
+     */
     public List<Cuboid> getCuboids(Player player) {
         return CUBOIDS_MAP.getOrDefault(player, new ArrayList<>());
     }
 
+    /**
+     * @return The player's currently added cuboids, if they have none it will try to add the result of their {@link CuboidSelection#getCuboid()} if it is not null
+     */
     public List<Cuboid> getCuboidsOrSelectionAsCuboid(Player player) {
         List<Cuboid> cuboids = getCuboids(player);
 
@@ -73,7 +87,10 @@ public final class SelectionManager {
         CUBOIDS_MAP.remove(player);
     }
 
-    public boolean isLocationInWorldBounds(@NotNull Location location) {
+    /**
+     * @return True if the specified location is not lower than bedrock or higher than the world's height limit
+     */
+    public boolean isLocationInsideWorldBounds(@NotNull Location location) {
         World world = location.getWorld();
         double y = location.getY();
 

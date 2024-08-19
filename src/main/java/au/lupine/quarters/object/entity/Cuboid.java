@@ -61,7 +61,7 @@ public class Cuboid {
      * @return True if the cuboid instance is in a valid location to be part of a quarter
      */
     public CuboidValidity checkValidity() {
-        boolean isInsideWorldBounds = isCuboidInWorldBounds();
+        boolean isInsideWorldBounds = isCuboidInsideWorldBounds();
         if (!isInsideWorldBounds) return CuboidValidity.OUTSIDE_WORLD_BOUNDS;
 
         boolean doesNotContainWilderness = doesCuboidNotContainWilderness();
@@ -78,9 +78,9 @@ public class Cuboid {
         return CuboidValidity.VALID;
     }
 
-    public boolean isCuboidInWorldBounds() {
+    public boolean isCuboidInsideWorldBounds() {
         SelectionManager sm = SelectionManager.getInstance();
-        return sm.isLocationInWorldBounds(cornerOne) && sm.isLocationInWorldBounds(cornerTwo);
+        return sm.isLocationInsideWorldBounds(cornerOne) && sm.isLocationInsideWorldBounds(cornerTwo);
     }
 
     private boolean doesCuboidIntersectWithPreExistingQuarters() {
@@ -171,7 +171,7 @@ public class Cuboid {
     /**
      * @return A list of all players currently in this cuboid
      */
-    public List<Player> getPlayersInBounds() {
+    public List<Player> getPlayersInsideBounds() {
         List<Player> playersInCuboid = new ArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (isLocationInsideBounds(player.getLocation())) playersInCuboid.add(player);

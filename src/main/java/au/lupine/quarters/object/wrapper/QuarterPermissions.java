@@ -14,8 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Towny's internal permission are intentionally not used to avoid risk of data corruption from internal Towny changes
- * <br>
- * <br>
+ * <p>
  * Use {@link #fromTownyActionType(TownyPermission.ActionType) fromTownyActionType} and {@link #fromTownyPermissionLevel(TownyPermission.PermLevel) fromTownyPermissionLevel} to convert them
  */
 public class QuarterPermissions {
@@ -42,6 +41,10 @@ public class QuarterPermissions {
         return perms.get(getPermLevel(resident, quarter));
     }
 
+    /**
+     * Calculates the {@link PermLevel} the player is considered under these permissions
+     * @return The {@link PermLevel} of the player under these permissions in the specified quarter
+     */
     public PermLevel getPermLevel(@NotNull Resident resident, @NotNull Quarter quarter) {
         Player player = resident.getPlayer();
         if (player == null) return PermLevel.OUTSIDER;
@@ -98,12 +101,30 @@ public class QuarterPermissions {
         };
     }
 
+    public static @NotNull TownyPermission.ActionType toTownyActionType(@NotNull ActionType type) {
+        return switch (type) {
+            case BUILD -> TownyPermission.ActionType.BUILD;
+            case DESTROY -> TownyPermission.ActionType.DESTROY;
+            case SWITCH -> TownyPermission.ActionType.SWITCH;
+            case ITEM_USE -> TownyPermission.ActionType.ITEM_USE;
+        };
+    }
+
     public static @NotNull PermLevel fromTownyPermissionLevel(@NotNull TownyPermission.PermLevel level) {
         return switch (level) {
             case RESIDENT -> PermLevel.RESIDENT;
             case NATION -> PermLevel.NATION;
             case ALLY -> PermLevel.ALLY;
             case OUTSIDER -> PermLevel.OUTSIDER;
+        };
+    }
+
+    public static @NotNull TownyPermission.PermLevel toTownyPermissionLevel(@NotNull PermLevel level) {
+        return switch (level) {
+            case RESIDENT -> TownyPermission.PermLevel.RESIDENT;
+            case NATION -> TownyPermission.PermLevel.NATION;
+            case ALLY -> TownyPermission.PermLevel.ALLY;
+            case OUTSIDER -> TownyPermission.PermLevel.OUTSIDER;
         };
     }
 

@@ -21,7 +21,7 @@ public class SelectionRemoveMethod extends CommandMethod {
         List<Cuboid> cuboids = SelectionManager.getInstance().getCuboids(player);
 
         for (Cuboid cuboid : cuboids) {
-            if (cuboid.getPlayersInBounds().contains(player)) {
+            if (cuboid.getPlayersInsideBounds().contains(player)) {
                 cuboids.remove(cuboid);
                 QuartersMessaging.sendSuccessMessage(player, "Successfully removed the cuboid you are standing in from the selection");
                 return;

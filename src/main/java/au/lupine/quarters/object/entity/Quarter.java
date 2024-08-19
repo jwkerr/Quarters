@@ -122,6 +122,16 @@ public class Quarter {
         return false;
     }
 
+    public List<Player> getPlayersInsideBounds() {
+        List<Player> players = new ArrayList<>();
+
+        for (Cuboid cuboid : cuboids) {
+            players.addAll(cuboid.getPlayersInsideBounds());
+        }
+
+        return players;
+    }
+
     /**
      * @return True if the specified player owns this quarter or has {@link #isLandlord(Player) landlord} permissions
      */
@@ -159,6 +169,13 @@ public class Quarter {
 
     public @NotNull Location getFirstCornerOfFirstCuboid() {
         return cuboids.get(0).getCornerOne();
+    }
+
+    /**
+     * @return The distance from the specified location, first from the {@link #anchor} if it is available, or else {@link #getFirstCornerOfFirstCuboid()}
+     */
+    public double getDistanceFrom(@NotNull Location location) {
+        return anchor != null ? location.distance(anchor) : location.distance(getFirstCornerOfFirstCuboid());
     }
 
     public @Nullable Nation getNation() {
@@ -208,7 +225,7 @@ public class Quarter {
 
     public @Nullable Cuboid getCuboidAtPlayer(@NotNull Player player) {
         for (Cuboid cuboid : cuboids) {
-            if (cuboid.getPlayersInBounds().contains(player)) return cuboid;
+            if (cuboid.getPlayersInsideBounds().contains(player)) return cuboid;
         }
 
         return null;

@@ -57,6 +57,9 @@ public abstract class CommandMethod {
 
     public abstract void execute();
 
+    /**
+     * @return The same args but with index 0 removed to "readjust" to 0-indexing again
+     */
     public static String[] removeFirstArgument(String[] args) {
         final int length = args.length;
         String[] newArgs = new String[length - 1];
@@ -65,6 +68,9 @@ public abstract class CommandMethod {
         return newArgs;
     }
 
+    /**
+     * This will throw if the user does not have this command method's {@link #permission} or if they can't bypass it with {@link #hasMayorPermBypass} given their role and server config
+     */
     private void checkPermOrThrow() {
         if (permission == null) return;
 
@@ -88,7 +94,7 @@ public abstract class CommandMethod {
         return player;
     }
 
-    public String getArgOrNull(int index) {
+    public @Nullable String getArgOrNull(int index) {
         try {
             return args[index].toLowerCase();
         } catch (IndexOutOfBoundsException e) {

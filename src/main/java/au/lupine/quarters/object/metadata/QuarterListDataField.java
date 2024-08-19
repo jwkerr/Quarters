@@ -16,6 +16,16 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+/**
+ * Quarters uses Towny metadata to store all of its data, as it is only usable with Towny this significantly simplifies things in terms of development
+ * <p>
+ * To put it simply, this class is used by Towny to run the {@link #serializeValueToString()} method which encodes a town's quarters as a Base64 encoded JSON object to prevent formatting issues with Towny's own internal storage.
+ * Then the {@link QuarterListDataFieldDeserialiser} reverses this serialisation using {@link JSONManager#getGson()} and creates a list of quarters.
+ * If you add anything that cannot be trivially serialised by GSON to the {@link Quarter} class, you must write a custom type adapter for it.
+ * @see <a href="https://github.com/TownyAdvanced/Towny/wiki/Configuring-Metadata-in-Towny-objects.">Configuring Metadata in Towny objects</a>
+ * @see <a href="https://github.com/TownyAdvanced/Towny/wiki/Creating-Custom-Metadata-Types">Creating Custom Metadata Types</a>
+ * @see au.lupine.quarters.object.adapter
+ */
 public class QuarterListDataField extends CustomDataField<List<Quarter>> {
 
     public QuarterListDataField(String key, List<Quarter> value, String label) {
