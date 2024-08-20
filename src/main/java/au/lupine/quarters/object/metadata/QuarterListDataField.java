@@ -50,10 +50,10 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
         Type quarterListType = new TypeToken<List<Quarter>>(){}.getType();
 
         try {
-            this.setValue(JSONManager.getInstance().getGson().fromJson(string, quarterListType));
+            setValue(JSONManager.getInstance().getGson().fromJson(string, quarterListType));
         } catch (JsonSyntaxException e) {
             Quarters.logSevere("Failed to set value of quarter list from string" + string);
-            this.setValue(null);
+            setValue(new ArrayList<>());
         }
     }
 
