@@ -70,6 +70,16 @@
         ]
     },
     {
+        "name": "masterewild",
+        "colour": "00D9FA",
+        "description": "<gray>Just a Wild</gray> <#00D9FA>Wild</#00D9FA> <gray>doing Wild things in a Wild world wondering why I choose to enable <italic>cat mode</italic> on my quarters plugin</gray>",
+        "cat_mode": true,
+        "decorations": [],
+        "members": [
+            "afc38883-d149-41c2-aea6-0942a42e96f3"
+        ]
+    },
+    {
         "name": "0xbit",
         "colour": "003CF6",
         "description": "\"Mentally Sane\"",
