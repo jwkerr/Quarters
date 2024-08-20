@@ -54,10 +54,11 @@ public final class TownMetadataManager extends MetadataManager<Town> {
         town.addMetaData(qldf);
     }
 
-    private List<Quarter> getMetadataAsQuarterList(@NotNull Town town, @NotNull String key) {
+    private @NotNull List<Quarter> getMetadataAsQuarterList(@NotNull Town town, @NotNull String key) {
         QuarterListDataField qldf = (QuarterListDataField) town.getMetadata(key);
         if (qldf == null) return new ArrayList<>();
 
-        return qldf.getValue();
+        List<Quarter> quarters = qldf.getValue();
+        return quarters == null ? new ArrayList<>() : quarters;
     }
 }
