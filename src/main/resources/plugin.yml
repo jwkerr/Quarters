@@ -52,7 +52,7 @@ permissions:
       quarters.command.quarters.fame: true
       quarters.command.quarters.here: true
       quarters.command.quarters.info: true
-      quaters.command.quarters.meow: true
+      quarters.command.quarters.meow: true
       quarters.command.quarters.pos: true
       quarters.command.quarters.selection: true
       quarters.command.quarters.selection.*: true
