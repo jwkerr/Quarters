@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public final class ConfigManager {
 
@@ -37,6 +38,10 @@ public final class ConfigManager {
     public static ConfigManager getInstance() {
         if (instance == null) instance = new ConfigManager();
         return instance;
+    }
+
+    public static FileConfiguration getConfig() {
+        return config;
     }
 
     public void setup() {
@@ -64,21 +69,24 @@ public final class ConfigManager {
     }
 
     private void loadUserGroups() {
-        JsonArray jsonArray;
-
         if (ConfigManager.canPluginRequestUserGroups()) {
             Quarters.logInfo("Requesting user_groups.json from " + USER_GROUPS_URL + " thank you for keeping this setting enabled!");
-            jsonArray = JSONManager.getInstance().getUrlAsJsonElement(USER_GROUPS_URL, JsonArray.class);
 
-            if (jsonArray == null) {
-                Quarters.logWarning("An error occurred while requesting user_groups.json, defaulting to jar resources");
-                jsonArray = loadUserGroupsAsJsonArrayFromResources();
-            }
+            loadUserGroupsFromWeb().thenAccept(jsonArray -> {
+                if (jsonArray == null) {
+                    Quarters.logWarning("An error occurred while requesting user_groups.json, defaulting to jar resources");
+                    jsonArray = loadUserGroupsFromResources();
+                }
+
+                parseUserGroups(jsonArray);
+            });
         } else {
-            jsonArray = loadUserGroupsAsJsonArrayFromResources();
+            parseUserGroups(loadUserGroupsFromResources());
         }
+    }
 
-        if (jsonArray == null) return;
+    private void parseUserGroups(JsonArray jsonArray) {
+        if (jsonArray == null) return; // This is probably only possible if the end-user fucks with jar contents
 
         USER_GROUPS.clear();
 
@@ -89,7 +97,11 @@ public final class ConfigManager {
         Collections.shuffle(USER_GROUPS);
     }
 
-    private @Nullable JsonArray loadUserGroupsAsJsonArrayFromResources() {
+    private CompletableFuture<@Nullable JsonArray> loadUserGroupsFromWeb() {
+        return CompletableFuture.supplyAsync(() -> JSONManager.getInstance().getUrlAsJsonElement(USER_GROUPS_URL, JsonArray.class));
+    }
+
+    private @Nullable JsonArray loadUserGroupsFromResources() {
         InputStream inputStream = Quarters.getInstance().getResource("user_groups.json");
         if (inputStream == null) return null; // This shouldn't happen
 
@@ -97,10 +109,6 @@ public final class ConfigManager {
 
         Gson gson = new Gson();
         return gson.fromJson(reader, JsonArray.class);
-    }
-
-    public static FileConfiguration getConfig() {
-        return config;
     }
 
     public static UserGroup getUserGroupOrDefault(UUID uuid, UserGroup def) {
