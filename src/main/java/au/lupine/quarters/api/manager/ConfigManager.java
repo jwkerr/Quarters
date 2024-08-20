@@ -18,6 +18,7 @@ import java.awt.*;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,6 +59,8 @@ public final class ConfigManager {
         plugin.reloadConfig();
 
         config = plugin.getConfig();
+
+        loadUserGroups();
     }
 
     private void loadUserGroups() {
@@ -77,9 +80,13 @@ public final class ConfigManager {
 
         if (jsonArray == null) return;
 
+        USER_GROUPS.clear();
+
         for (JsonElement element : jsonArray) {
             USER_GROUPS.add(new UserGroup(element.getAsJsonObject()));
         }
+
+        Collections.shuffle(USER_GROUPS);
     }
 
     private @Nullable JsonArray loadUserGroupsAsJsonArrayFromResources() {
