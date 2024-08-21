@@ -10,6 +10,7 @@ import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.ApiStatus;
@@ -197,7 +198,7 @@ public class Quarter {
         return isOwner(resident.getUUID());
     }
 
-    public boolean isPlayerOwner(@NotNull Player player) {
+    public boolean isPlayerOwner(@NotNull OfflinePlayer player) {
         return isOwner(player.getUniqueId());
     }
 
