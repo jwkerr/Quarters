@@ -70,7 +70,7 @@ public class HereMethod extends CommandMethod {
         List<Pair<String, Component>> brackets = List.of(
                 Pair.of(catMode ? "Thingz" : "Stats", getStatsHoverComponent(quarter)),
                 Pair.of(catMode ? "Purr-worthy" : "Trusted", getTrustedComponent(quarter)),
-                Pair.of(catMode ? "Who haz permz" : "Perms", getPermsComponent(quarter))
+                Pair.of(catMode ? "Who haz purrmz" : "Perms", getPermsComponent(quarter))
         );
 
         Component here = QuartersMessaging.getListComponent(header, labelled, brackets);
@@ -101,7 +101,7 @@ public class HereMethod extends CommandMethod {
         builder.append(Component.text("⚓", NamedTextColor.GRAY));
 
         if (location == null) {
-            builder.hoverEvent(Component.text("No anchor set", NamedTextColor.GRAY));
+            builder.hoverEvent(Component.text(catMode ? "No anchowo set" : "No anchor set", NamedTextColor.GRAY));
             return builder.build();
         }
 
@@ -134,9 +134,9 @@ public class HereMethod extends CommandMethod {
         Double price = quarter.getPrice();
 
         if (price == null) {
-            string = "Not for sale";
+            string = catMode ? "Not 4 sale :v" : "Not for sale";
         } else if (price == 0) {
-            string = "Free";
+            string = catMode ? "Fwee :3" : "Free";
         } else {
             string = TownyEconomyHandler.getFormattedBalance(price);
         }
@@ -145,7 +145,7 @@ public class HereMethod extends CommandMethod {
         builder.append(Component.text(string, NamedTextColor.GRAY));
 
         if (price != null) {
-            builder.hoverEvent(Component.text("Click to claim!", NamedTextColor.GRAY));
+            builder.hoverEvent(Component.text(catMode ? "Clik 2 clame!" : "Click to claim!", NamedTextColor.GRAY));
             builder.clickEvent(ClickEvent.runCommand("/quarters:q claim " + quarter.getUUID()));
         }
 
@@ -160,16 +160,16 @@ public class HereMethod extends CommandMethod {
         builder.appendNewline();
         builder.append(Component.text(catMode ? "Purrveyor: " : "Creator: ", NamedTextColor.DARK_GRAY)).append(ConfigManager.getFormattedName(quarter.getCreator(), Component.text("None", NamedTextColor.GRAY)));
         builder.appendNewline();
-        builder.append(Component.text("Registered: ", NamedTextColor.DARK_GRAY)).append(Component.text(getFormattedDate(quarter.getRegistered()), NamedTextColor.GRAY));
+        builder.append(Component.text(catMode ? "Wegistered: " : "Registered: ", NamedTextColor.DARK_GRAY)).append(Component.text(getFormattedDate(quarter.getRegistered()), NamedTextColor.GRAY));
         builder.appendNewline();
-        builder.append(Component.text("Claimed at: ", NamedTextColor.DARK_GRAY)).append(Component.text(getFormattedDate(quarter.getClaimedAt()), NamedTextColor.GRAY));
+        builder.append(Component.text(catMode ? "Clamed at: " : "Claimed at: ", NamedTextColor.DARK_GRAY)).append(Component.text(getFormattedDate(quarter.getClaimedAt()), NamedTextColor.GRAY));
 
         return builder.build();
     }
 
     private Component getTrustedComponent(Quarter quarter) {
         List<Resident> trusted = quarter.getTrustedResidents();
-        if (trusted.isEmpty()) return Component.text("None", NamedTextColor.GRAY);
+        if (trusted.isEmpty()) return Component.text(catMode ? "No trust here,," : "None", NamedTextColor.GRAY);
 
         TextComponent.Builder builder = Component.text();
         List<Component> nameComponents = new ArrayList<>();
