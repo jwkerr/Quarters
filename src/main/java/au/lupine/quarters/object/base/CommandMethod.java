@@ -127,6 +127,12 @@ public abstract class CommandMethod {
         return quarter;
     }
 
+    public @Nullable Quarter getQuarterAtPlayerOrNull(Player player) {
+        QuarterManager qm = QuarterManager.getInstance();
+
+        return qm.getQuarter(player.getLocation());
+    }
+
     public @NotNull Quarter getQuarterAtPlayerOrByUUIDOrThrow(Player player, String arg) {
         if (arg == null) return getQuarterAtPlayerOrThrow(player);
 
