@@ -4,9 +4,7 @@
         "colour": "F6003C",
         "description": "This player is a developer of Quarters",
         "cat_mode": true,
-        "decorations": [
-
-        ],
+        "decorations": [],
         "members": [
             "fed0ec4a-f1ad-4b97-9443-876391668b34"
         ]
@@ -16,9 +14,7 @@
         "colour": "00AA00",
         "description": "quarters is love, quarters is life",
         "cat_mode": true,
-        "decorations": [
-
-        ],
+        "decorations": [],
         "members": [
             "a571e67f-cd68-4590-8f30-7002de1c952d"
         ]
@@ -28,9 +24,7 @@
         "colour": "8A50C4",
         "description": "This player comes from afar",
         "cat_mode": true,
-        "decorations": [
-
-        ],
+        "decorations": [],
         "members": [
             "f17d77ab-aed4-44e7-96ef-ec9cd473eda3"
         ]
@@ -70,13 +64,21 @@
         ]
     },
     {
+        "name": "masterewild",
+        "colour": "00D9FA",
+        "description": "<gray>Just a Wild</gray> <#00D9FA>Wild</#00D9FA> <gray>doing Wild things in a Wild world wondering why I choose to enable <italic>cat mode</italic> on my quarters plugin</gray>",
+        "cat_mode": true,
+        "decorations": [],
+        "members": [
+            "afc38883-d149-41c2-aea6-0942a42e96f3"
+        ]
+    },
+    {
         "name": "0xbit",
         "colour": "003CF6",
         "description": "\"Mentally Sane\"",
         "cat_mode": true,
-        "decorations": [
-
-        ],
+        "decorations": [],
         "members": [
             "d550441b-5fcf-448c-a756-5fa391b89a46",
             "a0bcd96f-2124-4dfb-bd08-9ebef15a3e70"
@@ -87,9 +89,7 @@
         "colour": "64E68F",
         "description": "awa",
         "cat_mode": true,
-        "decorations": [
-
-        ],
+        "decorations": [],
         "members": [
             "67f557b3-c57d-4c51-903c-9193480a1247"
         ]
@@ -99,9 +99,7 @@
         "colour": "FF69B4",
         "description": "This player offered great emotional support during Quarters' development",
         "cat_mode": true,
-        "decorations": [
-
-        ],
+        "decorations": [],
         "members": [
             "8391474f-4b57-412a-a835-96bd2c253219"
         ]
@@ -111,9 +109,7 @@
         "colour": "5865F2",
         "description": "Gary my beloved",
         "cat_mode": true,
-        "decorations": [
-
-        ],
+        "decorations": [],
         "members": [
             "42e685b4-fcda-449a-a1c2-7c64bac1e182"
         ]

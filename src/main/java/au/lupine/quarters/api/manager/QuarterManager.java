@@ -1,10 +1,12 @@
 package au.lupine.quarters.api.manager;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.entity.Quarter;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.*;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
@@ -69,8 +71,12 @@ public final class QuarterManager {
         List<Quarter> quarters = new ArrayList<>();
 
         for (Town town : TownyAPI.getInstance().getTowns()) {
-            List<Quarter> currentTownQuarterList = getQuarters(town);
-            quarters.addAll(currentTownQuarterList);
+            try {
+                List<Quarter> currentTownQuarterList = getQuarters(town);
+                quarters.addAll(currentTownQuarterList);
+            } catch (NegativeArraySizeException e) {
+                Quarters.logWarning(town.getName() + " threw a NegativeArraySizeException while getting all quarters\n" + e);
+            }
         }
 
         return quarters;
@@ -120,14 +126,14 @@ public final class QuarterManager {
     /**
      * @return True if the player owns at least one quarter
      */
-    public boolean hasQuarter(@NotNull Player player) {
+    public boolean hasQuarter(@NotNull OfflinePlayer player) {
         return !getQuarters(player).isEmpty();
     }
 
     /**
      * @return A list of all quarters owned by the specified player
      */
-    public List<Quarter> getQuarters(@NotNull Player player) {
+    public List<Quarter> getQuarters(@NotNull OfflinePlayer player) {
         List<Quarter> quarters = new ArrayList<>();
 
         for (Quarter quarter : getAllQuarters()) {

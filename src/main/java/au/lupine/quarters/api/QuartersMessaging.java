@@ -107,8 +107,22 @@ public class QuartersMessaging {
 
             if (!hasCommandFeedbackPerm && !hasMayorPerm) continue;
 
-            if (!player.equals(executingPlayer)) sendComponent(player, component);
+            if (!player.equals(executingPlayer)) sendMessage(player, component);
         }
+    }
+
+    public static void sendInfoMessage(Player player, String message, @Nullable Location location) {
+        TextComponent.Builder builder = Component.text();
+        builder.append(Component.text(message, NamedTextColor.GRAY));
+
+        if (location != null) {
+            builder.appendSpace();
+            builder.append(Component.text("(", NamedTextColor.GRAY));
+            builder.append(getLocationComponent(location));
+            builder.append(Component.text(")", NamedTextColor.GRAY));
+        }
+
+        sendMessage(player, builder.build());
     }
 
     public static Component getLocationComponent(@NotNull Location location) {

@@ -31,5 +31,6 @@ public class TrustClearMethod extends CommandMethod {
         quarter.save();
 
         QuartersMessaging.sendSuccessMessage(player, StringConstants.ALL_TRUSTED_PLAYERS_HAVE_BEEN_REMOVED_FROM_THIS_QUARTER);
+        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has removed all trusted players from a quarter", player.getLocation());
     }
 }

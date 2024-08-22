@@ -17,7 +17,7 @@ public class QuarterListDataFieldDeserialiser implements DataFieldDeserializer<Q
 
     @Override
     public @Nullable QuarterListDataField deserialize(@NotNull String key, @Nullable String value) {
-        if (value == null) return null;
+        if (value == null) return new QuarterListDataField(key, new ArrayList<>());
 
         List<Quarter> quarters = new ArrayList<>();
 
