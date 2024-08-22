@@ -39,6 +39,8 @@ public class TrustAddMethod extends CommandMethod {
             quarter.save();
 
             QuartersMessaging.sendSuccessMessage(player, StringConstants.SPECIFIED_PLAYER_HAS_BEEN_ADDED_TO_THIS_QUARTERS_TRUSTED_LIST);
+            QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has added " + resident.getName() + " to a quarter's trusted list", player.getLocation());
+            if (resident.getPlayer() != null) QuartersMessaging.sendInfoMessage(resident.getPlayer(), "You have been trusted in a quarter", player.getLocation());
         } else {
             QuartersMessaging.sendErrorMessage(player, StringConstants.SPECIFIED_PLAYER_IS_ALREADY_TRUSTED_IN_THIS_QUARTER);
         }
