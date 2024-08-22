@@ -210,12 +210,13 @@ public final class ConfigManager {
         return config.getInt("particles.max_distance_for_cuboid_particles", 48);
     }
 
-    public static boolean areConstantParticleOutlinesAllowed() {
-        return config.getBoolean("particles.allow_constant_particle_outlines", true);
-    }
-
     public static float getDefaultParticleSize() {
         return (float) config.getDouble("particles.default_particle_size", 1F);
+    }
+
+    public static boolean areConstantParticleOutlinesAllowed() {
+        if (!areParticlesEnabled()) return false;
+        return config.getBoolean("particles.allow_constant_particle_outlines", true);
     }
 
     public static boolean getConstantParticleOutlinesOnByDefault() {
@@ -223,6 +224,7 @@ public final class ConfigManager {
     }
 
     public static boolean isEntryParticleBlinkingAllowed() {
+        if (!areParticlesEnabled()) return false;
         return config.getBoolean("particles.allow_entry_particle_blinking", true);
     }
 
@@ -254,8 +256,8 @@ public final class ConfigManager {
         config.addDefault("particles.current_cuboids_particle", "WAX_OFF"); config.setInlineComments("particles.current_cuboids_particle", List.of("Particle outline of current cuboids added to selection"));
         config.addDefault("particles.ticks_between_particle_outlines", 5); config.setInlineComments("particles.ticks_between_particle_outlines", List.of("The number of ticks between when the particle outlines of quarters will appear"));
         config.addDefault("particles.max_distance_for_cuboid_particles", 48); config.setInlineComments("particles.max_distance_for_cuboid_particles", List.of("The maximum distance a player can be from a cuboid before the outline particles stop being sent to their client"));
-        config.addDefault("particles.allow_constant_particle_outlines", true); config.setInlineComments("particles.allow_constant_particle_outlines", List.of("If set to true, players will be able to toggle quarter outlines to display constantly"));
         config.addDefault("particles.default_particle_size", 1F); config.setInlineComments("particles.default_particle_size", List.of("Sets the default size for particles of quarters that have been made"));
+        config.addDefault("particles.allow_constant_particle_outlines", true); config.setInlineComments("particles.allow_constant_particle_outlines", List.of("If set to true, players will be able to toggle quarter outlines to display constantly"));
         config.addDefault("particles.constant_particle_outlines_on_by_default", true); config.setInlineComments("particles.constant_particle_outlines_on_by_default", List.of("If set to false players will have to opt in to constant particle outlines"));
         config.addDefault("particles.allow_entry_particle_blinking", true); config.setInlineComments("particles.allow_entry_particle_blinking", List.of("If set to true, players will be able to toggle quarter outlines to blink when entered"));
         config.addDefault("particles.entry_particle_blinking_on_by_default", false); config.setInlineComments("particles.entry_particle_blinking_on_by_default", List.of("If set to true, quarters will blink their particles for one tick upon entry by a player, this can be a good alternative to constant particle outlines if it is causing lag"));

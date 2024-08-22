@@ -73,7 +73,7 @@ public class QuarterEntryListener implements Listener {
             QuartersMessaging.sendMessage(resident.getPlayer(), builder.build());
         }
 
-        if (rmm.hasEntryBlinking(resident) && ConfigManager.isEntryParticleBlinkingAllowed() && ConfigManager.areParticlesEnabled())
+        if (rmm.hasEntryBlinking(resident) && ConfigManager.isEntryParticleBlinkingAllowed())
             ParticleManager.getInstance().drawParticlesAtQuarter(quarter, resident);
     }
 }
