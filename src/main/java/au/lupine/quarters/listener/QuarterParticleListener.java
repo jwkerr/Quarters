@@ -13,8 +13,6 @@ public class QuarterParticleListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
-        if (!ConfigManager.areParticlesEnabled()) return;
-
         Player player = event.getPlayer();
         Quarters instance = Quarters.getInstance();
 
@@ -23,7 +21,7 @@ public class QuarterParticleListener implements Listener {
 
             ParticleManager pm = ParticleManager.getInstance();
             pm.drawParticlesAtCurrentSelection(player);
-            pm.drawParticlesAtQuarters(player);
+            pm.drawParticlesAtAllQuarters(player);
             }, () -> {}, 1L, ConfigManager.getTicksBetweenParticleOutlines()
         );
     }

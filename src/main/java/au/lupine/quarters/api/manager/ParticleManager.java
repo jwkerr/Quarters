@@ -28,6 +28,40 @@ public final class ParticleManager {
         return instance;
     }
 
+    public void drawParticlesAtCurrentSelection(Player player) {
+        CuboidSelection selection = SelectionManager.getInstance().getSelection(player);
+        drawCuboidOutline(player, selection.getCuboid(), ConfigManager.getCurrentSelectionParticle(), null);
+
+        List<Cuboid> cuboids = SelectionManager.getInstance().getCuboids(player);
+        for (Cuboid cuboid : cuboids) {
+            drawCuboidOutline(player, cuboid, ConfigManager.getCurrentCuboidsParticle(), null);
+        }
+    }
+
+    public void drawParticlesAtAllQuarters(Player player) {
+        Town town = TownyAPI.getInstance().getTown(player.getLocation());
+        if (town == null) return;
+
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null) return;
+
+        List<Quarter> quarters = QuarterManager.getInstance().getQuarters(town);
+        for (Quarter quarter : quarters) {
+            drawParticlesAtQuarter(quarter, resident);
+        }
+    }
+
+    public void drawParticlesAtQuarter(@NotNull Quarter quarter, @NotNull Resident resident) {
+        Particle.DustOptions dustOptions = new Particle.DustOptions(
+                Color.fromARGB(quarter.getColour().getRGB()),
+                quarter.getParticleSizeOrResidentDefault(resident)
+        );
+
+        for (Cuboid cuboid : quarter.getCuboids()) {
+            drawCuboidOutline(resident.getPlayer(), cuboid, Particle.REDSTONE, dustOptions);
+        }
+    }
+
     public void drawCuboidOutline(@NotNull Player player, @Nullable Cuboid cuboid, @NotNull Particle particle, @Nullable Particle.DustOptions dustOptions) {
         if (cuboid == null) return;
 
@@ -40,36 +74,6 @@ public final class ParticleManager {
                 player.spawnParticle(particle, location, 1, dustOptions);
             } else {
                 player.spawnParticle(particle, location, 1, 0, 0, 0, 0);
-            }
-        }
-    }
-
-    public void drawParticlesAtCurrentSelection(Player player) {
-        CuboidSelection selection = SelectionManager.getInstance().getSelection(player);
-        drawCuboidOutline(player, selection.getCuboid(), ConfigManager.getCurrentSelectionParticle(), null);
-
-        List<Cuboid> cuboids = SelectionManager.getInstance().getCuboids(player);
-        for (Cuboid cuboid : cuboids) {
-            drawCuboidOutline(player, cuboid, ConfigManager.getCurrentCuboidsParticle(), null);
-        }
-    }
-
-    public void drawParticlesAtQuarters(Player player) {
-        Town town = TownyAPI.getInstance().getTown(player.getLocation());
-        if (town == null) return;
-
-        Resident resident = TownyAPI.getInstance().getResident(player);
-        if (resident == null) return;
-
-        List<Quarter> quarters = QuarterManager.getInstance().getQuarters(town);
-        for (Quarter quarter : quarters) {
-            Particle.DustOptions dustOptions = new Particle.DustOptions(
-                    Color.fromARGB(quarter.getColour().getRGB()),
-                    quarter.getParticleSizeOrResidentDefault(resident)
-            );
-
-            for (Cuboid cuboid : quarter.getCuboids()) {
-                drawCuboidOutline(player, cuboid, Particle.REDSTONE, dustOptions);
             }
         }
     }

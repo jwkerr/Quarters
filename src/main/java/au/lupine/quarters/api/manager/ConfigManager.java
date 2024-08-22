@@ -222,6 +222,14 @@ public final class ConfigManager {
         return config.getBoolean("particles.constant_particle_outlines_on_by_default", true);
     }
 
+    public static boolean isEntryParticleBlinkingAllowed() {
+        return config.getBoolean("particles.allow_entry_particle_blinking", true);
+    }
+
+    public static boolean getEntryParticleBlinkingOnByDefault() {
+        return config.getBoolean("particles.entry_particle_blinking_on_by_default", false);
+    }
+
     private void addValues() {
         config.options().setHeader(List.of("If comments are not present, please restart your server"));
 
@@ -249,6 +257,8 @@ public final class ConfigManager {
         config.addDefault("particles.allow_constant_particle_outlines", true); config.setInlineComments("particles.allow_constant_particle_outlines", List.of("If set to true, players will be able to toggle quarter outlines to display constantly"));
         config.addDefault("particles.default_particle_size", 1F); config.setInlineComments("particles.default_particle_size", List.of("Sets the default size for particles of quarters that have been made"));
         config.addDefault("particles.constant_particle_outlines_on_by_default", true); config.setInlineComments("particles.constant_particle_outlines_on_by_default", List.of("If set to false players will have to opt in to constant particle outlines"));
+        config.addDefault("particles.allow_entry_particle_blinking", true); config.setInlineComments("particles.allow_entry_particle_blinking", List.of("If set to true, players will be able to toggle quarter outlines to blink when entered"));
+        config.addDefault("particles.entry_particle_blinking_on_by_default", false); config.setInlineComments("particles.entry_particle_blinking_on_by_default", List.of("If set to true, quarters will blink their particles for one tick upon entry by a player, this can be a good alternative to constant particle outlines if it is causing lag"));
 
         config.options().copyDefaults(true);
     }
