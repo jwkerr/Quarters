@@ -6,6 +6,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
+// NOT READY FOR API USAGE
 public class QuartersPlaceholderExpansion extends PlaceholderExpansion {
 
     @Override
@@ -23,7 +24,6 @@ public class QuartersPlaceholderExpansion extends PlaceholderExpansion {
         return Quarters.getInstance().getPluginMeta().getVersion();
     }
 
-    // TODO: Implement placeholders
     @Override
     public String onRequest(OfflinePlayer player, @NotNull String string) {
         if (player != null) return handlePlaceholder(player, string);
