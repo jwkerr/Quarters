@@ -55,7 +55,7 @@ public class QuartersAdminCommand implements TabExecutor {
             case 1 -> Stream.of("delete", "evict", "port", "sell", "set", "toggle", "trust", "reload");
             case 2 -> switch (args[0]) {
                 case "port" -> Stream.of("true", "false");
-                case "sell" -> Stream.of("{price}");
+                case "sell" -> Stream.of("{price}", "cancel");
                 case "set" -> Stream.of("anchor", "colour", "name", "owner", "perm", "type");
                 case "toggle" -> Stream.of("embassy");
                 case "trust" -> Stream.of("add", "clear", "remove");
