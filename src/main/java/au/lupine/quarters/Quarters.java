@@ -33,7 +33,7 @@ public final class Quarters extends JavaPlugin {
         registerHooks();
 
         registerListeners(
-                new QuarterEntryNotificationListener(),
+                new QuarterEntryListener(),
                 new QuarterIntegrityListener(),
                 new QuarterParticleListener(),
                 new QuartersWandListener(),

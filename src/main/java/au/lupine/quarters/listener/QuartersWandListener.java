@@ -51,6 +51,6 @@ public class QuartersWandListener implements Listener {
 
         ParticleManager pm = ParticleManager.getInstance(); // Draw outlines on item hold to make them more snappy
         pm.drawParticlesAtCurrentSelection(player);
-        pm.drawParticlesAtQuarters(player);
+        pm.drawParticlesAtAllQuarters(player);
     }
 }

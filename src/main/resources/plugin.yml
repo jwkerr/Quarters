@@ -185,6 +185,7 @@ permissions:
     children:
       quarters.command.quarters.toggle.constantoutlines: true
       quarters.command.quarters.toggle.embassy: true
+      quarters.command.quarters.toggle.entryblinking: true
       quarters.command.quarters.toggle.entrynotifications: true
       quarters.command.quarters.toggle.sellondelete: true
 
@@ -193,6 +194,9 @@ permissions:
 
   quarters.command.quarters.toggle.embassy:
     default: false
+
+  quarters.command.quarters.toggle.entryblinking:
+    default: true
 
   quarters.command.quarters.toggle.entrynotifications:
     default: true

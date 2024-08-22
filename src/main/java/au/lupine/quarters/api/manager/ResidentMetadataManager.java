@@ -9,6 +9,7 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
     private static ResidentMetadataManager instance;
 
     public static final String HAS_ENTRY_NOTIFICATIONS_KEY = METADATA_PREFIX + "has_entry_notifications";
+    public static final String HAS_ENTRY_BLINKING_KEY = METADATA_PREFIX + "has_entry_blinking";
     public static final String HAS_CONSTANT_OUTLINES_KEY = METADATA_PREFIX + "has_constant_outlines";
     public static final String HAS_RECEIVED_FREE_WAND_KEY = METADATA_PREFIX + "has_received_free_wand";
     public static final String PARTICLE_SIZE_KEY = METADATA_PREFIX + "particle_size";
@@ -26,6 +27,14 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
 
     public boolean hasEntryNotifications(@NotNull Resident resident) {
         return getMetadataAsBoolean(resident, HAS_ENTRY_NOTIFICATIONS_KEY, ConfigManager.getQuarterEntryNotificationsOnByDefault());
+    }
+
+    public void setHasEntryBlinking(@NotNull Resident resident, boolean value) {
+        setMetadataAsBoolean(resident, HAS_ENTRY_BLINKING_KEY, value);
+    }
+
+    public boolean hasEntryBlinking(@NotNull Resident resident) {
+        return getMetadataAsBoolean(resident, HAS_ENTRY_BLINKING_KEY, ConfigManager.getEntryParticleBlinkingOnByDefault());
     }
 
     public void setHasConstantOutlines(@NotNull Resident resident, boolean value) {
