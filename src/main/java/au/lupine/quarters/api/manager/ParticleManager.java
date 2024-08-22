@@ -65,7 +65,7 @@ public final class ParticleManager {
         for (Quarter quarter : quarters) {
             Particle.DustOptions dustOptions = new Particle.DustOptions(
                     Color.fromARGB(quarter.getColour().getRGB()),
-                    ResidentMetadataManager.getInstance().getParticleSize(resident)
+                    quarter.getParticleSizeOrResidentDefault(resident)
             );
 
             for (Cuboid cuboid : quarter.getCuboids()) {

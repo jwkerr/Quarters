@@ -3,6 +3,7 @@ package au.lupine.quarters.command.quarters.method.set;
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.ResidentMetadataManager;
 import au.lupine.quarters.object.base.CommandMethod;
+import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.wrapper.StringConstants;
 import com.palmergames.bukkit.towny.TownyAPI;
@@ -32,8 +33,19 @@ public class SetParticleSizeMethod extends CommandMethod {
             throw new CommandMethodException(StringConstants.A_PROVIDED_ARGUMENT_WAS_INVALID + arg);
         }
 
-        ResidentMetadataManager.getInstance().setParticleSize(resident, value);
+        if (value < 0.0F || value > 4.0F) throw new CommandMethodException("Provided value is invalid, please provide a value between 0.0 and 4.0");
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully changed your quarter particle size to " + value);
+        Quarter quarter = getQuarterAtPlayerOrNull(player);
+
+        if (quarter != null && quarter.hasBasicCommandPermissions(player)) {
+            quarter.setParticleSize(value);
+
+            QuartersMessaging.sendSuccessMessage(player, "Successfully changed this quarter's particle size to " + value);
+            QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has changed a quarter's particle size to " + value, player.getLocation());
+            return;
+        }
+
+        ResidentMetadataManager.getInstance().setParticleSize(resident, value);
+        QuartersMessaging.sendSuccessMessage(player, "Successfully changed your default quarter particle size to " + value);
     }
 }

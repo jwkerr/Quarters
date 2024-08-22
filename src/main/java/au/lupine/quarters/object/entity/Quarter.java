@@ -2,6 +2,7 @@ package au.lupine.quarters.object.entity;
 
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
+import au.lupine.quarters.api.manager.ResidentMetadataManager;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.QuarterType;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;
@@ -40,6 +41,7 @@ public class Quarter {
     private String name = "Quarter";
     private final QuarterPermissions permissions = new QuarterPermissions();
     private Location anchor;
+    private Float particleSize;
 
     public Quarter(Town town, List<Cuboid> cuboids, @Nullable UUID creator) {
         this.town = town;
@@ -233,6 +235,10 @@ public class Quarter {
         return null;
     }
 
+    public float getParticleSizeOrResidentDefault(@NotNull Resident resident) {
+        return getParticleSize() == null ? ResidentMetadataManager.getInstance().getParticleSize(resident) : getParticleSize();
+    }
+
     /**
      * @return The town that this quarter is located in
      */
@@ -406,5 +412,13 @@ public class Quarter {
 
     public @Nullable Location getAnchor() {
         return anchor;
+    }
+
+    public void setParticleSize(Float particleSize) {
+        this.particleSize = particleSize;
+    }
+
+    public Float getParticleSize() {
+        return particleSize;
     }
 }

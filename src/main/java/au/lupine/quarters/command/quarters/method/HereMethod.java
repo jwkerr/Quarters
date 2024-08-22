@@ -158,6 +158,8 @@ public class HereMethod extends CommandMethod {
         builder.appendNewline();
         builder.append(Component.text(catMode ? "Pawprint: " : "Volume: ", NamedTextColor.DARK_GRAY)).append(Component.text(quarter.getVolume() + " blocks", NamedTextColor.GRAY));
         builder.appendNewline();
+        builder.append(Component.text(catMode ? "Pawticle size: " : "Particle size: ", NamedTextColor.DARK_GRAY)).append(Component.text(quarter.getParticleSize() != null ? quarter.getParticleSize() : ConfigManager.getDefaultParticleSize(), NamedTextColor.GRAY));
+        builder.appendNewline();
         builder.append(Component.text(catMode ? "Purrveyor: " : "Creator: ", NamedTextColor.DARK_GRAY)).append(ConfigManager.getFormattedName(quarter.getCreator(), Component.text("None", NamedTextColor.GRAY)));
         builder.appendNewline();
         builder.append(Component.text(catMode ? "Wegistered: " : "Registered: ", NamedTextColor.DARK_GRAY)).append(Component.text(getFormattedDate(quarter.getRegistered()), NamedTextColor.GRAY));
