@@ -7,6 +7,7 @@ import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.wrapper.StringConstants;
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -38,9 +39,14 @@ public class DeleteMethod extends CommandMethod {
         if (town == null) throw new CommandMethodException(StringConstants.YOU_ARE_NOT_PART_OF_A_TOWN);
 
         if (deleteAll) {
-            QuarterManager.getInstance().setQuarters(town, new ArrayList<>());
-            QuartersMessaging.sendSuccessMessage(player, "Successfully deleted all quarters in " + town.getName());
-            QuartersMessaging.sendCommandFeedbackToTown(town, player, "has deleted all quarters in " + town.getName(), null);
+            Confirmation.runOnAccept(() -> {
+                QuarterManager.getInstance().setQuarters(town, new ArrayList<>());
+                QuartersMessaging.sendSuccessMessage(player, "Successfully deleted all quarters in " + town.getName());
+                QuartersMessaging.sendCommandFeedbackToTown(town, player, "has deleted all quarters in " + town.getName(), null);
+            })
+                    .setTitle("Are you sure you want to delete all the quarters in " + town.getName() + "?")
+                    .sendTo(player);
+
             return;
         }
 
