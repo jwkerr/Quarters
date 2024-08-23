@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-def semVersion = "1.0.3"
+def semVersion = "1.0.4"
 
 def static gitBranch() {
     "git rev-parse --abbrev-ref HEAD".execute().text.trim()
