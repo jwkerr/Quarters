@@ -4,6 +4,7 @@ import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.state.QuarterType;
 import com.palmergames.adventure.text.Component;
+import com.palmergames.adventure.text.JoinConfiguration;
 import com.palmergames.adventure.text.TextComponent;
 import com.palmergames.adventure.text.format.NamedTextColor;
 import com.palmergames.bukkit.towny.event.statusscreen.ResidentStatusScreenEvent;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,14 +60,17 @@ public class StatusScreenListener implements Listener {
         builder.append(Component.text("Quarters", NamedTextColor.GREEN));
         builder.append(Component.text("]", NamedTextColor.GRAY));
 
-        TextComponent.Builder hoverBuilder = Component.text();
+        List<Component> hoverComponents = new ArrayList<>();
         for (Map.Entry<QuarterType, Integer> entry : numOfTypes.entrySet()) {
-            hoverBuilder.append(Component.text(entry.getKey().getCommonName() + ": ", NamedTextColor.DARK_GREEN));
-            hoverBuilder.append(Component.text(entry.getValue(), NamedTextColor.GREEN));
-            // TODO: append new line
+            hoverComponents.add(Component.text(
+                    entry.getKey().getCommonName() + ": ", NamedTextColor.DARK_GREEN)
+                    .append(Component.text(entry.getValue(), NamedTextColor.GREEN))
+            );
         }
 
-        builder.hoverEvent(hoverBuilder.build());
+        Component hover = Component.join(JoinConfiguration.newlines(), hoverComponents);
+
+        builder.hoverEvent(hover);
 
         event.getStatusScreen().addComponentOf("Quarters_town_quarter_counts", builder.build());
     }
