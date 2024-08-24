@@ -62,6 +62,7 @@ public class StatusScreenListener implements Listener {
         for (Map.Entry<QuarterType, Integer> entry : numOfTypes.entrySet()) {
             hoverBuilder.append(Component.text(entry.getKey().getCommonName() + ": ", NamedTextColor.DARK_GREEN));
             hoverBuilder.append(Component.text(entry.getValue(), NamedTextColor.GREEN));
+            // TODO: append new line
         }
 
         builder.hoverEvent(hoverBuilder.build());

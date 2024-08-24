@@ -22,23 +22,53 @@ public class SetColourMethod extends CommandMethod {
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
         if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_PERFORM_THIS_ACTION);
+        
+        if (args.length == 0) throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
 
-        int r;
-        int g;
-        int b;
-        try {
-            r = Integer.parseInt(getArgOrThrow(0, "No argument provided for red"));
-            g = Integer.parseInt(getArgOrThrow(1, "No argument provided for green"));
-            b = Integer.parseInt(getArgOrThrow(2, "No argument provided for blue"));
-        } catch (NumberFormatException e) {
-            throw new CommandMethodException("A number you provided was invalid");
-        }
-
-        Color colour = new Color(r, g, b);
+        Color colour = args[0].length() > 3 ? parseColourAsHex() : parseColourAsRGB();
 
         quarter.setColour(colour);
         quarter.save();
 
         QuartersMessaging.sendSuccessMessage(player, StringConstants.SUCCESSFULLY_CHANGED_THIS_QUARTERS_COLOUR);
+    }
+
+    private Color parseColourAsHex() {
+        String arg = args[0];
+
+        int hex;
+        int length = arg.length();
+
+        try {
+            if (length < 6 || length >= 8) {
+                throw new Exception();
+            } else if (length == 6) {
+                hex = Integer.parseInt(arg, 16);
+            } else {
+                if (arg.charAt(0) == '#') {
+                    arg = arg.substring(1, 7);
+                } else {
+                    throw new Exception();
+                }
+
+                hex = Integer.parseInt(arg, 16);
+            }
+        } catch (Exception e) {
+            throw new CommandMethodException(StringConstants.A_NUMBER_YOU_PROVIDED_WAS_INVALID);
+        }
+
+        return new Color(hex);
+    }
+
+    private Color parseColourAsRGB() {
+        try {
+            int r = Integer.parseInt(getArgOrThrow(0, "No argument provided for red"));
+            int g = Integer.parseInt(getArgOrThrow(1, "No argument provided for green"));
+            int b = Integer.parseInt(getArgOrThrow(2, "No argument provided for blue"));
+
+            return new Color(r, g, b);
+        } catch (IllegalArgumentException e) {
+            throw new CommandMethodException(StringConstants.A_NUMBER_YOU_PROVIDED_WAS_INVALID);
+        }
     }
 }

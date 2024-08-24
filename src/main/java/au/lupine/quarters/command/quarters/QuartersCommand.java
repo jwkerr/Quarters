@@ -75,7 +75,7 @@ public class QuartersCommand implements TabExecutor {
             case 3 -> switch (args[0]) {
                 case "pos" -> Stream.of("{x}");
                 case "set" -> switch (args[1]) {
-                    case "colour" -> Stream.of("{r}");
+                    case "colour" -> Stream.of("{hex}", "{r}");
                     case "defaultsellprice" -> Stream.of("{price}");
                     case "name" -> Stream.of("{name}");
                     case "particlesize" -> Stream.of("{float}");

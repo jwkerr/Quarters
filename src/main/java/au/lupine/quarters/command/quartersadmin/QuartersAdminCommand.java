@@ -64,7 +64,7 @@ public class QuartersAdminCommand implements TabExecutor {
             };
             case 3 -> switch (args[0]) {
                 case "set" -> switch (args[1]) {
-                    case "colour" -> Stream.of("{r}");
+                    case "colour" -> Stream.of("{hex}", "{r}");
                     case "name" -> Stream.of("{name}");
                     case "perm" -> Arrays.stream(ActionType.values()).map(ActionType::getLowerCase);
                     case "type" -> Arrays.stream(QuarterType.values()).map(QuarterType::getLowerCase);
