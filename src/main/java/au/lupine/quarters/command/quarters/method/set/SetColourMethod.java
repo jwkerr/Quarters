@@ -23,9 +23,16 @@ public class SetColourMethod extends CommandMethod {
 
         if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_PERFORM_THIS_ACTION);
 
-        int r = Integer.parseInt(getArgOrThrow(0, "No argument provided for red"));
-        int g = Integer.parseInt(getArgOrThrow(1, "No argument provided for green"));
-        int b = Integer.parseInt(getArgOrThrow(2, "No argument provided for blue"));
+        int r;
+        int g;
+        int b;
+        try {
+            r = Integer.parseInt(getArgOrThrow(0, "No argument provided for red"));
+            g = Integer.parseInt(getArgOrThrow(1, "No argument provided for green"));
+            b = Integer.parseInt(getArgOrThrow(2, "No argument provided for blue"));
+        } catch (NumberFormatException e) {
+            throw new CommandMethodException("A number you provided was invalid");
+        }
 
         Color colour = new Color(r, g, b);
 
