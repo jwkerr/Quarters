@@ -9,6 +9,8 @@ import au.lupine.quarters.object.wrapper.Pair;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
+import com.palmergames.bukkit.towny.object.metadata.IntegerDataField;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
@@ -41,6 +43,16 @@ public class HereMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow();
 
         Quarter quarter = getQuarterAtPlayerOrByUUIDOrThrow(player, getArgOrNull(0));
+
+        IntegerDataField idf = (IntegerDataField) quarter.getMetadata("Quarters_number_of_sex");
+        if (idf == null) {
+            quarter.addMetaData(new IntegerDataField("Quarters_number_of_sex", 1));
+        } else {
+            QuartersMessaging.sendSuccessMessage(player, "Number of sex = " + idf.getValue());
+            quarter.addMetaData(new IntegerDataField("Quarters_number_of_sex", idf.getValue() + 1));
+        }
+
+        quarter.save();
 
         UUID owner = quarter.getOwner();
         if (owner != null && ConfigManager.getUserGroupOrDefault(owner, ConfigManager.DEFAULT_USER_GROUP).hasCatMode()) catMode = true;

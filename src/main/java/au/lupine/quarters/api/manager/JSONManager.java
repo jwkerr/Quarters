@@ -1,6 +1,7 @@
 package au.lupine.quarters.api.manager;
 
 import au.lupine.quarters.Quarters;
+import au.lupine.quarters.api.event.PreBuildGsonEvent;
 import au.lupine.quarters.object.adapter.*;
 import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;
@@ -8,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.Nullable;
@@ -32,15 +34,20 @@ public final class JSONManager {
     }
 
     private void setup() {
-        gson = new GsonBuilder()
+        GsonBuilder builder = new GsonBuilder()
                 .enableComplexMapKeySerialization()
                 .registerTypeAdapter(Color.class, new ColorTypeAdapter())
                 .registerTypeAdapter(Cuboid.class, new CuboidTypeAdapter())
+                .registerTypeAdapter(CustomDataField.class, new CustomDataFieldAdapter())
                 .registerTypeAdapter(Location.class, new LocationTypeAdapter())
                 .registerTypeAdapter(QuarterPermissions.class, new QuarterPermissionsTypeAdapter())
                 .registerTypeAdapter(Town.class, new TownTypeAdapter())
-                .registerTypeAdapter(World.class, new WorldTypeAdapter())
-                .create();
+                .registerTypeAdapter(World.class, new WorldTypeAdapter());
+
+        PreBuildGsonEvent event = new PreBuildGsonEvent(builder);
+        event.callEvent();
+
+        gson = builder.create();
     }
 
     /**

@@ -19,10 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
 public class Quarter {
 
@@ -38,7 +36,6 @@ public class Quarter {
     private boolean isEmbassy = false;
     private Long claimedAt;
     private Color colour = ConfigManager.hasDefaultQuarterColour() ? ConfigManager.getDefaultQuarterColour() : getRandomColour();
-    private String name = "Quarter";
     private final QuarterPermissions permissions = new QuarterPermissions();
     private Location anchor;
     private Float particleSize;
@@ -72,6 +69,7 @@ public class Quarter {
      * This method must be called to save the quarter's instance to metadata after any change
      * The only exception is when using the {@link #delete()} method, that will save itself
      */
+    @Override
     public void save() {
         QuarterManager qm = QuarterManager.getInstance();
 
@@ -392,14 +390,6 @@ public class Quarter {
 
     public @NotNull Color getColour() {
         return colour;
-    }
-
-    public void setName(@NotNull String name) {
-        this.name = name;
-    }
-
-    public @NotNull String getName() {
-        return name;
     }
 
     public @NotNull QuarterPermissions getPermissions() {
