@@ -263,7 +263,7 @@ public class Quarter {
 
     public @Nullable Resident getCreatorResident() {
         if (creator == null) return null;
-        return TownyAPI.getInstance().getResident(uuid);
+        return TownyAPI.getInstance().getResident(creator);
     }
 
     /**
@@ -302,7 +302,7 @@ public class Quarter {
      */
     public @Nullable Resident getOwnerResident() {
         if (owner == null) return null;
-        return TownyAPI.getInstance().getResident(uuid);
+        return TownyAPI.getInstance().getResident(owner);
     }
 
     public void setTrusted(@NotNull List<UUID> trusted) {
