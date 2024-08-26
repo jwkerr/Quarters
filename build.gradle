@@ -1,9 +1,9 @@
 plugins {
     id "java"
-    id 'maven-publish'
+    id "maven-publish"
 }
 
-def semVersion = "1.0.3"
+def semVersion = "1.0.4"
 
 def static gitBranch() {
     "git rev-parse --abbrev-ref HEAD".execute().text.trim()
@@ -36,7 +36,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly("com.github.TownyAdvanced:Towny:0.100.3.0")
-    compileOnly('me.clip:placeholderapi:2.11.6')
+    compileOnly("me.clip:placeholderapi:2.11.6")
 }
 
 def targetJavaVersion = 17

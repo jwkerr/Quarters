@@ -1,5 +1,6 @@
 package au.lupine.quarters.command.quarters.method;
 
+import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.SelectionManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.exception.CommandMethodException;
@@ -34,6 +35,10 @@ public class PosMethod extends CommandMethod {
         Location location = player.getLocation();
         location.add(adjustX, adjustY, adjustZ);
 
-        SelectionManager.getInstance().selectPosition(player, location, type);
+        SelectionManager sm = SelectionManager.getInstance();
+
+        sm.selectPosition(player, location, type);
+
+        QuartersMessaging.sendMessage(player, sm.getSelectedPositionComponent(type, location));
     }
 }
