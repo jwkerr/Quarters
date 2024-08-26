@@ -40,6 +40,7 @@ public class QuartersAdminCommand implements TabExecutor {
         switch (method) {
             case "delete" -> new AdminDeleteMethod(sender, args).execute();
             case "evict" -> new AdminEvictMethod(sender, args).execute();
+            case "meta" -> new AdminMetaMethod(sender, args).execute();
             case "port" -> new AdminPortMethod(sender, args).execute();
             case "sell" -> new AdminSellMethod(sender, args).execute();
             case "set" -> new AdminSetArgument(sender, args).execute();
@@ -52,7 +53,7 @@ public class QuartersAdminCommand implements TabExecutor {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Stream<String> stream = switch (args.length) {
-            case 1 -> Stream.of("delete", "evict", "port", "sell", "set", "toggle", "trust", "reload");
+            case 1 -> Stream.of("delete", "evict", "meta", "port", "sell", "set", "toggle", "trust", "reload");
             case 2 -> switch (args[0]) {
                 case "port" -> Stream.of("true", "false");
                 case "sell" -> Stream.of("{price}", "cancel");
