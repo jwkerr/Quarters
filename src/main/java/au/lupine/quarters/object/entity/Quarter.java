@@ -10,6 +10,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownyObject;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -22,7 +23,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class Quarter {
+public class Quarter extends TownyObject {
 
     private final Town town;
     private List<Cuboid> cuboids;
@@ -41,6 +42,8 @@ public class Quarter {
     private Float particleSize;
 
     public Quarter(Town town, List<Cuboid> cuboids, @Nullable UUID creator) {
+        super("Quarter");
+
         this.town = town;
         this.cuboids = cuboids;
         this.creator = creator;
@@ -51,6 +54,8 @@ public class Quarter {
      */
     @ApiStatus.Internal
     public Quarter(Town town, List<Cuboid> cuboids, UUID uuid, long registered, UUID owner, List<UUID> trusted, Double price, QuarterType type, boolean isEmbassy, Long claimedAt, Color colour) {
+        super("Quarter");
+
         this.town = town;
         this.cuboids = cuboids;
         this.creator = null;
@@ -410,5 +415,12 @@ public class Quarter {
 
     public Float getParticleSize() {
         return particleSize;
+    }
+
+    // TownyObject implementation
+
+    @Override
+    public boolean exists() {
+        return false;
     }
 }
