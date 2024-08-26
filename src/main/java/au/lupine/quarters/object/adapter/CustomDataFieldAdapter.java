@@ -23,8 +23,6 @@ public class CustomDataFieldAdapter implements JsonSerializer<CustomDataField<?>
             return JsonNull.INSTANCE;
         }
 
-        System.out.println(serialised);
-
         JsonObject jsonObject = new JsonObject();
 
         jsonObject.addProperty("type_id", src.getTypeID());
@@ -33,8 +31,6 @@ public class CustomDataFieldAdapter implements JsonSerializer<CustomDataField<?>
 
         String label = src.getLabel();
         jsonObject.addProperty("label", label.equals("nil") ? null : label);
-
-        System.out.println(jsonObject);
 
         return jsonObject;
     }
