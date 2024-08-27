@@ -420,7 +420,7 @@ public class Quarter extends TownyObject {
     }
 
     private static String createRandomName() {
-        List<String> adverbs = List.of(
+        List<String> adjectives = List.of(
                 "Lovely", "Cheerful", "Upbeat", "Stylish", "Luxurious", "Elegant", "Inviting", "Welcoming",
                 "Annoying", "Perturbing", "Enraging", "Dingy", "Inconvenient", "Dull", "Bland", "Gloomy"
         );
@@ -428,10 +428,10 @@ public class Quarter extends TownyObject {
         List<String> nouns = List.of("Quarter", "Apartment", "Flat", "Dwelling", "Residence", "Suite", "Property", "Tenement");
 
         Random random = new Random();
-        String adverb = adverbs.get(random.nextInt(adverbs.size()));
+        String adjective = adjectives.get(random.nextInt(adjectives.size()));
         String noun = nouns.get(random.nextInt(nouns.size()));
 
-        return adverb + " " + noun;
+        return adjective + " " + noun;
     }
 
     // TownyObject implementation
