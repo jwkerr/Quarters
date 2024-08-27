@@ -436,10 +436,26 @@ public class Quarter extends TownyObject {
         return adjective + " " + noun;
     }
 
+    // Object implementation
+
+    /**
+     * @return True if the specified quarter's UUID is equal to this quarter's UUID
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Quarter quarter)) return false;
+        return uuid.equals(quarter.getUUID());
+    }
+
     // TownyObject implementation
 
     @Override
     public boolean exists() {
         return false;
+    }
+
+    @Override
+    public String getFormattedName() {
+        return getName();
     }
 }
