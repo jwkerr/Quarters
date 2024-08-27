@@ -2,7 +2,9 @@ package au.lupine.quarters.object.adapter;
 
 import au.lupine.quarters.Quarters;
 import com.google.gson.*;
-import com.palmergames.bukkit.towny.object.metadata.*;
+import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
+import com.palmergames.bukkit.towny.object.metadata.DataFieldDeserializer;
+import com.palmergames.bukkit.towny.object.metadata.MetadataLoader;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
