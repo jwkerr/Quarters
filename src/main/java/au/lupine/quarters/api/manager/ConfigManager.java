@@ -1,6 +1,7 @@
 package au.lupine.quarters.api.manager;
 
 import au.lupine.quarters.Quarters;
+import au.lupine.quarters.object.state.EntryNotificationType;
 import au.lupine.quarters.object.wrapper.UserGroup;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -190,6 +191,14 @@ public final class ConfigManager {
         return config.getBoolean("quarters.quarter_entry_notifications_on_by_default", true);
     }
 
+    public static EntryNotificationType getDefaultQuarterEntryNotificationType() {
+        try {
+            return EntryNotificationType.valueOf(config.getString("quarters.default_quarter_entry_notification_type"));
+        } catch (IllegalArgumentException e) {
+            return EntryNotificationType.ACTION_BAR;
+        }
+    }
+
     public static boolean areParticlesEnabled() {
         return config.getBoolean("particles.enabled", true);
     }
@@ -250,6 +259,7 @@ public final class ConfigManager {
         config.addDefault("quarters.default_quarter_colour.blue", 255);
         config.addDefault("quarters.allow_quarter_entry_notifications", true); config.setInlineComments("quarters.allow_quarter_entry_notifications", List.of("If set to true, players will be allowed to toggle notifications of when they have entered a quarter"));
         config.addDefault("quarters.quarter_entry_notifications_on_by_default", true); config.setInlineComments("quarters.quarter_entry_notifications_on_by_default", List.of("If set to false players will have to opt in to entry notifications"));
+        config.addDefault("quarters.default_quarter_entry_notification_type", "ACTION_BAR"); config.setInlineComments("quarters.default_quarter_entry_notification_type", List.of("Configure this to change the default quarter entry notification type"));
 
         config.addDefault("particles.enabled", true); config.setInlineComments("particles.enabled", List.of("Set to false to completely disable particle outlines around cuboids"));
         config.addDefault("particles.current_selection_particle", "SCRAPE"); config.setInlineComments("particles.current_selection_particle", List.of("Particle outline of the currently selected area"));

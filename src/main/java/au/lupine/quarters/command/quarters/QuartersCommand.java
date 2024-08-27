@@ -5,6 +5,7 @@ import au.lupine.quarters.command.quarters.method.*;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.ActionType;
+import au.lupine.quarters.object.state.EntryNotificationType;
 import au.lupine.quarters.object.state.PermLevel;
 import au.lupine.quarters.object.state.QuarterType;
 import org.bukkit.command.Command;
@@ -67,7 +68,7 @@ public class QuartersCommand implements TabExecutor {
                 case "pos" -> Stream.of("one", "two");
                 case "selection" -> Stream.of("add", "clear", "copy", "paste", "remove");
                 case "sell" -> Stream.of("{price}", "cancel");
-                case "set" -> Stream.of("anchor", "colour", "defaultsellprice", "name", "owner", "particlesize", "perm", "type");
+                case "set" -> Stream.of("anchor", "colour", "defaultsellprice", "entrynotifications", "name", "owner", "particlesize", "perm", "type");
                 case "toggle" -> Stream.of("constantoutlines", "embassy", "entryblinking", "entrynotifications", "sellondelete");
                 case "trust" -> Stream.of("add", "clear", "remove");
                 default -> null;
@@ -77,6 +78,7 @@ public class QuartersCommand implements TabExecutor {
                 case "set" -> switch (args[1]) {
                     case "colour" -> Stream.of("{hex}", "{r}");
                     case "defaultsellprice" -> Stream.of("{price}");
+                    case "entrynotifications" -> Arrays.stream(EntryNotificationType.values()).map(EntryNotificationType::getLowerCase);
                     case "name" -> Stream.of("{name}");
                     case "particlesize" -> Stream.of("{float}");
                     case "perm" -> Arrays.stream(ActionType.values()).map(ActionType::getLowerCase);

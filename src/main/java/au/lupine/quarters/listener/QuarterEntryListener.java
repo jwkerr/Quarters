@@ -2,17 +2,18 @@ package au.lupine.quarters.listener;
 
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.ConfigManager;
-import au.lupine.quarters.api.manager.ParticleManager;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.api.manager.ResidentMetadataManager;
 import au.lupine.quarters.object.entity.Quarter;
+import au.lupine.quarters.object.state.EntryNotificationType;
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Resident;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,6 +21,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,18 +65,45 @@ public class QuarterEntryListener implements Listener {
     private void onQuarterEntry(Quarter quarter, Resident resident) {
         ResidentMetadataManager rmm = ResidentMetadataManager.getInstance();
 
-        if (rmm.hasEntryNotifications(resident) && ConfigManager.areEntryNotificationsAllowed()) {
-            TextComponent.Builder builder = Component.text();
-            builder.append(Component.text("You have entered a quarter named ", NamedTextColor.GRAY));
-            builder.append(Component.text(quarter.getName(), NamedTextColor.GRAY, TextDecoration.ITALIC).clickEvent(ClickEvent.runCommand("/quarters:q here " + quarter.getUUID())));
-            if (quarter.hasOwner()) builder.append(Component.text(" owned by ", NamedTextColor.GRAY).append(
-                    ConfigManager.getFormattedName(quarter.getOwner(), Component.text(quarter.getTown().getName()))) // Town name is better than some error if it doesn't work
-            );
-
-            QuartersMessaging.sendMessage(resident.getPlayer(), builder.build());
-        }
+        if (rmm.hasEntryNotifications(resident) && ConfigManager.areEntryNotificationsAllowed())
+            sendEntryNotification(quarter, resident);
 
         if (rmm.hasEntryBlinking(resident) && ConfigManager.isEntryParticleBlinkingAllowed())
-            ParticleManager.getInstance().drawParticlesAtQuarter(quarter, resident);
+            quarter.blinkForResident(resident);
+    }
+
+    private void sendEntryNotification(Quarter quarter, Resident resident) {
+        List<Component> components = new ArrayList<>();
+
+        Component name = Component.text(quarter.getName(), TextColor.color(quarter.getColour().getRGB())).clickEvent(ClickEvent.runCommand("/quarters:q here " + quarter.getUUID()));
+        Component owner = quarter.hasOwner() ? ConfigManager.getFormattedName(quarter.getOwner(), null) : Component.text("Unowned", NamedTextColor.GRAY);
+        Component type = Component.text(quarter.getType().getCommonName(), NamedTextColor.GRAY);
+
+        components.add(name);
+        components.add(owner);
+        components.add(type);
+
+        if (quarter.isForSale()) {
+            Component price = QuartersMessaging.OPEN_SQUARE_BRACKET
+                    .append(Component.text(TownyEconomyHandler.getFormattedBalance(quarter.getPrice()), NamedTextColor.GRAY))
+                    .append(QuartersMessaging.CLOSED_SQUARE_BRACKET)
+                    .hoverEvent(Component.text("Click to claim!", NamedTextColor.GRAY))
+                    .clickEvent(ClickEvent.runCommand("/quarters:q claim " + quarter.getUUID()));
+
+            components.add(price);
+        }
+
+        JoinConfiguration jc = JoinConfiguration.separator(Component.text(" - ", TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
+        Component notification = Component.join(jc, components);
+
+        EntryNotificationType notificationType = ResidentMetadataManager.getInstance().getEntryNotificationType(resident);
+
+        Player player = resident.getPlayer();
+        if (player == null) return;
+
+        switch (notificationType) {
+            case ACTION_BAR -> player.sendActionBar(notification);
+            case CHAT -> QuartersMessaging.sendMessage(player, notification);
+        }
     }
 }
