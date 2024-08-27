@@ -37,8 +37,7 @@ public final class TownMetadataManager extends MetadataManager<Town> {
     }
 
     public Double getDefaultSellPrice(@NotNull Town town) {
-        Double value = getMetadataAsDecimal(town, DEFAULT_SELL_PRICE_KEY);
-        return value == null ? 0 : value;
+        return getMetadataAsDecimal(town, DEFAULT_SELL_PRICE_KEY, 0.0D);
     }
 
     public void setSellOnDelete(@NotNull Town town, boolean value) {

@@ -17,6 +17,6 @@ public enum PermLevel {
     }
 
     public String getLowerCase() {
-        return commonName.toLowerCase();
+        return name().toLowerCase();
     }
 }

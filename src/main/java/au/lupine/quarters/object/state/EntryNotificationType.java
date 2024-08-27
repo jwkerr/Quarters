@@ -1,13 +1,12 @@
 package au.lupine.quarters.object.state;
 
-public enum QuarterType {
-    APARTMENT("Apartment"), // Default type
-    INN("Inn"), // Allows bed usage
-    STATION("Station"); // Allows vehicle placing and usage
+public enum EntryNotificationType {
+    ACTION_BAR("Action Bar"),
+    CHAT("Chat");
 
     private final String commonName;
 
-    QuarterType(String commonName) {
+    EntryNotificationType(String commonName) {
         this.commonName = commonName;
     }
 

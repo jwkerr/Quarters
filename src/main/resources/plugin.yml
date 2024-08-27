@@ -147,6 +147,7 @@ permissions:
       quarters.command.quarters.set.anchor: true
       quarters.command.quarters.set.colour: true
       quarters.command.quarters.set.defaultsellprice: true
+      quarters.command.quarters.set.entrynotifications: true
       quarters.command.quarters.set.name: true
       quarters.command.quarters.set.owner: true
       quarters.command.quarters.set.particlesize: true
@@ -161,6 +162,9 @@ permissions:
 
   quarters.command.quarters.set.defaultsellprice:
     default: false
+
+  quarters.command.quarters.set.entrynotifications:
+    default: true
 
   quarters.command.quarters.set.name:
     default: true
@@ -240,6 +244,7 @@ permissions:
       quarters.command.quartersadmin.delete: true
       quarters.command.quartersadmin.evict: true
       quarters.command.quartersadmin.meta: true
+      quarters.command.quartersadmin.meta.*: true
       quarters.command.quartersadmin.port: true
       quarters.command.quartersadmin.sell: true
       quarters.command.quartersadmin.set: true

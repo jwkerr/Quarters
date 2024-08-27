@@ -1,6 +1,7 @@
 package au.lupine.quarters.object.entity;
 
 import au.lupine.quarters.api.manager.ConfigManager;
+import au.lupine.quarters.api.manager.ParticleManager;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.api.manager.ResidentMetadataManager;
 import au.lupine.quarters.object.state.ActionType;
@@ -237,6 +238,17 @@ public class Quarter extends TownyObject {
 
     public float getParticleSizeOrResidentDefault(@NotNull Resident resident) {
         return getParticleSize() == null ? ResidentMetadataManager.getInstance().getParticleSize(resident) : getParticleSize();
+    }
+
+    public void blinkForResident(@NotNull Resident resident) {
+        blinkForPlayer(resident.getPlayer());
+    }
+
+    public void blinkForPlayer(@NotNull Player player) {
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null) return;
+
+        ParticleManager.getInstance().drawParticlesAtQuarter(this, resident);
     }
 
     /**
