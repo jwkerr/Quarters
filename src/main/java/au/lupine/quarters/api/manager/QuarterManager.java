@@ -71,12 +71,8 @@ public final class QuarterManager {
         List<Quarter> quarters = new ArrayList<>();
 
         for (Town town : TownyAPI.getInstance().getTowns()) {
-            try {
-                List<Quarter> currentTownQuarterList = getQuarters(town);
-                quarters.addAll(currentTownQuarterList);
-            } catch (NegativeArraySizeException e) {
-                Quarters.logWarning(town.getName() + " threw a NegativeArraySizeException while getting all quarters\n" + e);
-            }
+            List<Quarter> currentTownQuarterList = getQuarters(town);
+            quarters.addAll(currentTownQuarterList);
         }
 
         return quarters;
