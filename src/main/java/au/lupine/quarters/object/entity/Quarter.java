@@ -10,6 +10,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownyObject;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -19,12 +20,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
-public class Quarter {
+public class Quarter extends TownyObject {
 
     private final Town town;
     private List<Cuboid> cuboids;
@@ -38,12 +37,13 @@ public class Quarter {
     private boolean isEmbassy = false;
     private Long claimedAt;
     private Color colour = ConfigManager.hasDefaultQuarterColour() ? ConfigManager.getDefaultQuarterColour() : getRandomColour();
-    private String name = "Quarter";
     private final QuarterPermissions permissions = new QuarterPermissions();
     private Location anchor;
     private Float particleSize;
 
     public Quarter(Town town, List<Cuboid> cuboids, @Nullable UUID creator) {
+        super("Quarter");
+
         this.town = town;
         this.cuboids = cuboids;
         this.creator = creator;
@@ -54,6 +54,8 @@ public class Quarter {
      */
     @ApiStatus.Internal
     public Quarter(Town town, List<Cuboid> cuboids, UUID uuid, long registered, UUID owner, List<UUID> trusted, Double price, QuarterType type, boolean isEmbassy, Long claimedAt, Color colour) {
+        super("Quarter");
+
         this.town = town;
         this.cuboids = cuboids;
         this.creator = null;
@@ -72,6 +74,7 @@ public class Quarter {
      * This method must be called to save the quarter's instance to metadata after any change
      * The only exception is when using the {@link #delete()} method, that will save itself
      */
+    @Override
     public void save() {
         QuarterManager qm = QuarterManager.getInstance();
 
@@ -394,14 +397,6 @@ public class Quarter {
         return colour;
     }
 
-    public void setName(@NotNull String name) {
-        this.name = name;
-    }
-
-    public @NotNull String getName() {
-        return name;
-    }
-
     public @NotNull QuarterPermissions getPermissions() {
         return permissions;
     }
@@ -420,5 +415,12 @@ public class Quarter {
 
     public Float getParticleSize() {
         return particleSize;
+    }
+
+    // TownyObject implementation
+
+    @Override
+    public boolean exists() {
+        return false;
     }
 }

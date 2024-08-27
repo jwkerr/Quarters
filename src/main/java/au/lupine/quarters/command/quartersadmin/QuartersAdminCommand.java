@@ -40,6 +40,7 @@ public class QuartersAdminCommand implements TabExecutor {
         switch (method) {
             case "delete" -> new AdminDeleteMethod(sender, args).execute();
             case "evict" -> new AdminEvictMethod(sender, args).execute();
+            case "meta" -> new AdminMetaArgument(sender, args).execute();
             case "port" -> new AdminPortMethod(sender, args).execute();
             case "sell" -> new AdminSellMethod(sender, args).execute();
             case "set" -> new AdminSetArgument(sender, args).execute();
@@ -52,8 +53,9 @@ public class QuartersAdminCommand implements TabExecutor {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Stream<String> stream = switch (args.length) {
-            case 1 -> Stream.of("delete", "evict", "port", "sell", "set", "toggle", "trust", "reload");
+            case 1 -> Stream.of("delete", "evict", "meta", "port", "sell", "set", "toggle", "trust", "reload");
             case 2 -> switch (args[0]) {
+                case "meta" -> Stream.of("remove", "set");
                 case "port" -> Stream.of("true", "false");
                 case "sell" -> Stream.of("{price}", "cancel");
                 case "set" -> Stream.of("anchor", "colour", "name", "owner", "perm", "type");
@@ -63,6 +65,10 @@ public class QuartersAdminCommand implements TabExecutor {
                 default -> null;
             };
             case 3 -> switch (args[0]) {
+                case "meta" -> switch (args[1]) {
+                    case "remove", "set" -> Stream.of("{key}");
+                    default -> null;
+                };
                 case "set" -> switch (args[1]) {
                     case "colour" -> Stream.of("{hex}", "{r}");
                     case "name" -> Stream.of("{name}");
@@ -73,6 +79,10 @@ public class QuartersAdminCommand implements TabExecutor {
                 default -> null;
             };
             case 4 -> switch (args[0]) {
+                case "meta" -> switch (args[1]) {
+                    case "set" -> Stream.of("{value}");
+                    default -> null;
+                };
                 case "set" -> switch (args[1]) {
                     case "colour" -> Stream.of("{g}");
                     case "perm" -> Arrays.stream(PermLevel.values()).map(PermLevel::getLowerCase);
