@@ -258,6 +258,18 @@ permissions:
   quarters.command.quartersadmin.meta:
     default: op
 
+  quarters.command.quartersadmin.meta.*:
+    default: false
+    children:
+      quarters.command.quartersadmin.meta.remove: true
+      quarters.command.quartersadmin.meta.set: true
+
+  quarters.command.quartersadmin.meta.remove:
+    default: op
+
+  quarters.command.quartersadmin.meta.set:
+    default: op
+
   quarters.command.quartersadmin.port:
     default: op
 

@@ -5,9 +5,9 @@ import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import org.bukkit.command.CommandSender;
 
-public class ReloadConfigMethod extends CommandMethod {
+public class AdminReloadConfigMethod extends CommandMethod {
 
-    public ReloadConfigMethod(CommandSender sender, String[] args) {
+    public AdminReloadConfigMethod(CommandSender sender, String[] args) {
         super(sender, args, "quarters.command.quartersadmin.reload.config");
     }
 

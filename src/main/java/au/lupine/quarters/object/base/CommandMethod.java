@@ -110,6 +110,15 @@ public abstract class CommandMethod {
         }
     }
 
+    public String getArgOrThrow(int index, String throwMessage, boolean lowerCase) {
+        try {
+            if (lowerCase) return args[index].toLowerCase();
+            return args[index];
+        } catch (IndexOutOfBoundsException e) {
+            throw new CommandMethodException(throwMessage);
+        }
+    }
+
     public String getArgOrDefault(int index, String def) {
         try {
             return args[index].toLowerCase();

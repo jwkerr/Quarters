@@ -1,6 +1,6 @@
 package au.lupine.quarters.command.quartersadmin.method;
 
-import au.lupine.quarters.command.quartersadmin.method.reload.ReloadConfigMethod;
+import au.lupine.quarters.command.quartersadmin.method.reload.AdminReloadConfigMethod;
 import au.lupine.quarters.object.base.CommandArgument;
 import org.bukkit.command.CommandSender;
 
@@ -13,7 +13,7 @@ public class ReloadArgument extends CommandArgument {
     @Override
     protected void parseMethod(CommandSender sender, String method, String[] args) {
         switch (method) {
-            case "config" -> new ReloadConfigMethod(sender, args).execute();
+            case "config" -> new AdminReloadConfigMethod(sender, args).execute();
         }
     }
 }

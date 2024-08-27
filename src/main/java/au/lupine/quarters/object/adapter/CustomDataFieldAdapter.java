@@ -27,7 +27,7 @@ public class CustomDataFieldAdapter implements JsonSerializer<CustomDataField<?>
 
         jsonObject.addProperty("type_id", src.getTypeID());
         jsonObject.addProperty("key", src.getKey());
-        jsonObject.add("value", context.serialize(serialised));
+        jsonObject.addProperty("value", serialised);
 
         String label = src.getLabel();
         jsonObject.addProperty("label", label.equals("nil") ? null : label);
@@ -68,7 +68,7 @@ public class CustomDataFieldAdapter implements JsonSerializer<CustomDataField<?>
         Method method;
         try {
             method = clazz.getDeclaredMethod("serializeValueToString");
-        } catch (NoSuchMethodException e) { // CustomDataField implementation does not override method
+        } catch (NoSuchMethodException e) { // CustomDataField implementation does not override method, try superclass
             try {
                 clazz = clazz.getSuperclass();
                 method = clazz.getDeclaredMethod("serializeValueToString");
