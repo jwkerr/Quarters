@@ -36,13 +36,13 @@ public class Quarter extends TownyObject {
     private QuarterType type = QuarterType.APARTMENT;
     private boolean isEmbassy = false;
     private Long claimedAt;
-    private Color colour = ConfigManager.hasDefaultQuarterColour() ? ConfigManager.getDefaultQuarterColour() : getRandomColour();
+    private Color colour = ConfigManager.hasDefaultQuarterColour() ? ConfigManager.getDefaultQuarterColour() : createRandomColour();
     private final QuarterPermissions permissions = new QuarterPermissions();
     private Location anchor;
     private Float particleSize;
 
     public Quarter(Town town, List<Cuboid> cuboids, @Nullable UUID creator) {
-        super("Quarter");
+        super(createRandomName());
 
         this.town = town;
         this.cuboids = cuboids;
@@ -54,7 +54,7 @@ public class Quarter extends TownyObject {
      */
     @ApiStatus.Internal
     public Quarter(Town town, List<Cuboid> cuboids, UUID uuid, long registered, UUID owner, List<UUID> trusted, Double price, QuarterType type, boolean isEmbassy, Long claimedAt, Color colour) {
-        super("Quarter");
+        super(createRandomName());
 
         this.town = town;
         this.cuboids = cuboids;
@@ -159,11 +159,6 @@ public class Quarter extends TownyObject {
         if (!town.hasResident(resident)) return false;
 
         return player.hasPermission("quarters.landlord");
-    }
-
-    public Color getRandomColour() {
-        Random random = new Random();
-        return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
     }
 
     /**
@@ -415,6 +410,28 @@ public class Quarter extends TownyObject {
 
     public Float getParticleSize() {
         return particleSize;
+    }
+
+    // Constructor methods
+
+    private static Color createRandomColour() {
+        Random random = new Random();
+        return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+    }
+
+    private static String createRandomName() {
+        List<String> adverbs = List.of(
+                "Lovely", "Cheerful", "Upbeat", "Stylish", "Luxurious", "Elegant", "Inviting", "Welcoming",
+                "Annoying", "Perturbing", "Enraging", "Dingy", "Inconvenient", "Dull", "Bland", "Gloomy"
+        );
+
+        List<String> nouns = List.of("Quarter", "Apartment", "Flat", "Dwelling", "Residence", "Suite", "Property", "Tenement");
+
+        Random random = new Random();
+        String adverb = adverbs.get(random.nextInt(adverbs.size()));
+        String noun = nouns.get(random.nextInt(nouns.size()));
+
+        return adverb + " " + noun;
     }
 
     // TownyObject implementation
