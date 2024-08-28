@@ -52,6 +52,7 @@ public class QuarterIntegrityListener implements Listener {
 
             if (quarter.isOwner(uuid)) {
                 quarter.setOwner(null);
+                quarter.setPriceToDefaultIfApplicable();
                 wasChanged = true;
             }
 
