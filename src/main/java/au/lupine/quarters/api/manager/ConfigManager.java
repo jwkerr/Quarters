@@ -148,7 +148,12 @@ public final class ConfigManager {
     }
 
     public static Material getWandMaterial() {
-        return Material.valueOf(config.getString("wand_material", "FLINT"));
+        try {
+            return Material.valueOf(config.getString("wand_material", "FLINT"));
+        } catch (IllegalArgumentException e) {
+            Quarters.logWarning("Your configured wand material is invalid, ensure you capitalised it correctly e.g. BLAZE_ROD");
+            return Material.FLINT;
+        }
     }
 
     public static boolean doMayorsBypassCertainElevatedPerms() {

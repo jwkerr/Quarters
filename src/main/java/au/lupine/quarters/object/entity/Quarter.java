@@ -448,7 +448,7 @@ public class Quarter extends TownyObject {
     }
 
     private static String createRandomName() {
-        List<String> adjectives = List.of(
+        List<String> adjectives = List.of( // TODO: add config for random names
                 "Lovely", "Cheerful", "Upbeat", "Stylish", "Luxurious", "Elegant", "Inviting", "Welcoming",
                 "Annoying", "Perturbing", "Enraging", "Dingy", "Inconvenient", "Dull", "Bland", "Gloomy"
         );
