@@ -47,6 +47,11 @@ public class Quarter extends TownyObject {
         this.town = town;
         this.cuboids = cuboids;
         this.creator = creator;
+
+        Resident resident = getCreatorResident();
+        if (resident == null) return;
+
+        if (ConfigManager.hasDefaultQuarterColour() && resident.hasPermissionNode("quarters.bypass_default_colour")) colour = createRandomColour();
     }
 
     /**

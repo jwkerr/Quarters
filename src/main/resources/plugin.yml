@@ -29,6 +29,10 @@ permissions:
     description: "Grants permission to use the Quarters selection wand"
     default: true
 
+  quarters.bypass_default_colour:
+    description: "Grants the ability to bypass the default quarter colour if enabled"
+    default: false
+
   quarters.landlord:
     description: "Grants mayor-like permission to edit things that a quarter owner can edit"
     default: false
