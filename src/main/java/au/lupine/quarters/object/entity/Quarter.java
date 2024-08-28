@@ -187,7 +187,7 @@ public class Quarter extends TownyObject {
      * @return True if the quarter's owner is not null
      */
     public boolean hasOwner() {
-        return owner != null;
+        return getOwner() != null;
     }
 
     /**
