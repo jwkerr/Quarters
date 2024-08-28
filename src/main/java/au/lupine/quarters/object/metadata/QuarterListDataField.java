@@ -12,9 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Quarters uses Towny metadata to store all of its data, as it is only usable with Towny this significantly simplifies things in terms of development
@@ -53,7 +53,7 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
             setValue(JSONManager.getInstance().getGson().fromJson(string, quarterListType));
         } catch (JsonSyntaxException e) {
             Quarters.logSevere("Failed to set value of quarter list from string" + string);
-            setValue(new ArrayList<>());
+            setValue(new CopyOnWriteArrayList<>());
         }
     }
 
@@ -72,6 +72,6 @@ public class QuarterListDataField extends CustomDataField<List<Quarter>> {
 
     @Override
     public @NotNull CustomDataField<List<Quarter>> clone() {
-        return new QuarterListDataField(getKey(), new ArrayList<>(getValue()), hasLabel() ? getLabel() : null);
+        return new QuarterListDataField(getKey(), new CopyOnWriteArrayList<>(getValue()), hasLabel() ? getLabel() : null);
     }
 }

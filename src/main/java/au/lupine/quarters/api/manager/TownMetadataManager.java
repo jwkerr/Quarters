@@ -6,8 +6,8 @@ import au.lupine.quarters.object.metadata.QuarterListDataField;
 import com.palmergames.bukkit.towny.object.Town;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class TownMetadataManager extends MetadataManager<Town> {
 
@@ -55,9 +55,9 @@ public final class TownMetadataManager extends MetadataManager<Town> {
 
     private @NotNull List<Quarter> getMetadataAsQuarterList(@NotNull Town town, @NotNull String key) {
         QuarterListDataField qldf = (QuarterListDataField) town.getMetadata(key);
-        if (qldf == null) return new ArrayList<>();
+        if (qldf == null) return new CopyOnWriteArrayList<>();
 
         List<Quarter> quarters = qldf.getValue();
-        return quarters == null ? new ArrayList<>() : quarters;
+        return quarters == null ? new CopyOnWriteArrayList<>() : quarters;
     }
 }

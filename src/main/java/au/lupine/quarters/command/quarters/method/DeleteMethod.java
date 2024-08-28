@@ -12,7 +12,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class DeleteMethod extends CommandMethod {
 
@@ -40,7 +40,7 @@ public class DeleteMethod extends CommandMethod {
 
         if (deleteAll) {
             Confirmation.runOnAccept(() -> {
-                QuarterManager.getInstance().setQuarters(town, new ArrayList<>());
+                QuarterManager.getInstance().setQuarters(town, new CopyOnWriteArrayList<>());
                 QuartersMessaging.sendSuccessMessage(player, "Successfully deleted all quarters in " + town.getName());
                 QuartersMessaging.sendCommandFeedbackToTown(town, player, "has deleted all quarters in " + town.getName(), null);
             })

@@ -306,6 +306,7 @@ public class Quarter extends TownyObject {
      * @return The quarter owner's UUID
      */
     public @Nullable UUID getOwner() {
+        if (getOwnerResident() == null) owner = null; // Owner is no longer a resident, delete them from the quarter's data
         return owner;
     }
 
@@ -325,6 +326,8 @@ public class Quarter extends TownyObject {
      * @return A list of trusted residents' UUIDs
      */
     public List<UUID> getTrusted() {
+        trusted.removeIf(uuid -> TownyAPI.getInstance().getResident(uuid) == null); // Delete any trusted that may no longer exist to prevent invalid state
+
         return trusted;
     }
 

@@ -1,6 +1,5 @@
 package au.lupine.quarters.api.manager;
 
-import au.lupine.quarters.Quarters;
 import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.entity.Quarter;
 import com.palmergames.bukkit.towny.TownyAPI;
@@ -13,10 +12,10 @@ import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class QuarterManager {
 
@@ -68,7 +67,7 @@ public final class QuarterManager {
      * @return Every single currently registered quarter
      */
     public List<Quarter> getAllQuarters() {
-        List<Quarter> quarters = new ArrayList<>();
+        List<Quarter> quarters = new CopyOnWriteArrayList<>();
 
         for (Town town : TownyAPI.getInstance().getTowns()) {
             List<Quarter> currentTownQuarterList = getQuarters(town);
@@ -110,7 +109,7 @@ public final class QuarterManager {
      * @return A list of all quarters in the specified nation
      */
     public List<Quarter> getQuarters(@NotNull Nation nation) {
-        List<Quarter> quarters = new ArrayList<>();
+        List<Quarter> quarters = new CopyOnWriteArrayList<>();
 
         for (Town town : nation.getTowns()) {
             quarters.addAll(getQuarters(town));
@@ -130,7 +129,7 @@ public final class QuarterManager {
      * @return A list of all quarters owned by the specified player
      */
     public List<Quarter> getQuarters(@NotNull OfflinePlayer player) {
-        List<Quarter> quarters = new ArrayList<>();
+        List<Quarter> quarters = new CopyOnWriteArrayList<>();
 
         for (Quarter quarter : getAllQuarters()) {
             if (player.getUniqueId().equals(quarter.getOwner())) quarters.add(quarter);
@@ -164,7 +163,7 @@ public final class QuarterManager {
      * @return Every quarter that intersects with this worldcoord
      */
     public List<Quarter> getQuarters(@NotNull WorldCoord worldCoord) {
-        List<Quarter> quarters = new ArrayList<>();
+        List<Quarter> quarters = new CopyOnWriteArrayList<>();
 
         Town town = worldCoord.getTownOrNull();
         if (town == null) return quarters;
@@ -204,7 +203,7 @@ public final class QuarterManager {
      * @return Every quarter in the specified area within that radius
      */
     public List<Quarter> getQuartersNear(@NotNull Location location, double radius) {
-        List<Quarter> quarters = new ArrayList<>();
+        List<Quarter> quarters = new CopyOnWriteArrayList<>();
 
         for (Quarter quarter : getAllQuarters()) {
             if (quarter.getDistanceFrom(location) <= radius) quarters.add(quarter);
@@ -219,7 +218,7 @@ public final class QuarterManager {
      */
     public List<Quarter> getQuartersInTownSortedByDistance(@NotNull Location location) {
         Town town = TownyAPI.getInstance().getTown(location);
-        if (town == null) return new ArrayList<>();
+        if (town == null) return new CopyOnWriteArrayList<>();
 
         return getQuarters(town).stream()
                 .sorted(Comparator.comparingDouble(quarter -> quarter.getDistanceFrom(location)))
