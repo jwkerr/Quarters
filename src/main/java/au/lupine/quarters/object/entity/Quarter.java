@@ -248,9 +248,12 @@ public class Quarter extends TownyObject {
         ParticleManager.getInstance().drawParticlesAtQuarter(this, resident);
     }
 
+    /**
+     * Method used to set this quarter's price to the default if both the town has sell on delete enabled, and it is not already for sale
+     */
     public void setPriceToDefaultIfApplicable() {
         TownMetadataManager tmm = TownMetadataManager.getInstance();
-        if (tmm.getSellOnDelete(town)) setPrice(tmm.getDefaultSellPrice(town));
+        if (tmm.getSellOnDelete(town) && price == null) setPrice(tmm.getDefaultSellPrice(town));
     }
 
     /**
