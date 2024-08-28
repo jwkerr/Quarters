@@ -1,9 +1,6 @@
 package au.lupine.quarters.object.entity;
 
-import au.lupine.quarters.api.manager.ConfigManager;
-import au.lupine.quarters.api.manager.ParticleManager;
-import au.lupine.quarters.api.manager.QuarterManager;
-import au.lupine.quarters.api.manager.ResidentMetadataManager;
+import au.lupine.quarters.api.manager.*;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.QuarterType;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;
@@ -251,6 +248,11 @@ public class Quarter extends TownyObject {
         ParticleManager.getInstance().drawParticlesAtQuarter(this, resident);
     }
 
+    public void setPriceToDefaultIfApplicable() {
+        TownMetadataManager tmm = TownMetadataManager.getInstance();
+        if (tmm.getSellOnDelete(town)) setPrice(tmm.getDefaultSellPrice(town));
+    }
+
     /**
      * @return The town that this quarter is located in
      */
@@ -306,6 +308,12 @@ public class Quarter extends TownyObject {
      * @return The quarter owner's UUID
      */
     public @Nullable UUID getOwner() {
+        if (owner != null && getOwnerResident() == null) {
+            setOwner(null); // Owner is no longer a resident, delete them from the quarter's data
+            setPriceToDefaultIfApplicable();
+            save();
+        }
+
         return owner;
     }
 
@@ -325,6 +333,9 @@ public class Quarter extends TownyObject {
      * @return A list of trusted residents' UUIDs
      */
     public List<UUID> getTrusted() {
+        if (trusted.removeIf(uuid -> TownyAPI.getInstance().getResident(uuid) == null)) // Delete any trusted that may no longer exist to prevent invalid state
+            save();
+
         return trusted;
     }
 

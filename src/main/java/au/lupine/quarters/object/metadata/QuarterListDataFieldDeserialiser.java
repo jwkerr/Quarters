@@ -9,17 +9,17 @@ import com.palmergames.bukkit.towny.object.metadata.DataFieldDeserializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class QuarterListDataFieldDeserialiser implements DataFieldDeserializer<QuarterListDataField> {
 
     @Override
     public @Nullable QuarterListDataField deserialize(@NotNull String key, @Nullable String value) {
-        if (value == null) return new QuarterListDataField(key, new ArrayList<>());
+        if (value == null) return new QuarterListDataField(key, new CopyOnWriteArrayList<>());
 
-        List<Quarter> quarters = new ArrayList<>();
+        List<Quarter> quarters = new CopyOnWriteArrayList<>();
 
         byte[] bytes = Base64.getDecoder().decode(value);
         String decoded = new String(bytes);

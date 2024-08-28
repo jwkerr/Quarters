@@ -1,12 +1,11 @@
 package au.lupine.quarters.listener;
 
 import au.lupine.quarters.api.manager.QuarterManager;
-import au.lupine.quarters.api.manager.TownMetadataManager;
 import au.lupine.quarters.object.entity.Quarter;
 import com.palmergames.bukkit.towny.TownyMessaging;
-import com.palmergames.bukkit.towny.event.DeletePlayerEvent;
 import com.palmergames.bukkit.towny.event.TownRemoveResidentEvent;
 import com.palmergames.bukkit.towny.event.plot.changeowner.PlotPreClaimEvent;
+import com.palmergames.bukkit.towny.event.resident.NewResidentEvent;
 import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * This class listens to events to clean up and maintain the integrity of quarters' internal state such as when a resident is deleted
+ * This class listens to events to clean up and maintain the integrity of quarters' internal state
  */
 public class QuarterIntegrityListener implements Listener {
 
@@ -45,24 +44,25 @@ public class QuarterIntegrityListener implements Listener {
     }
 
     @EventHandler
-    public void onTownyDeletePlayer(DeletePlayerEvent event) {
-        UUID uuid = event.getPlayerUUID();
+    public void onNewResident(NewResidentEvent event) {
+        UUID uuid = event.getResident().getUUID();
 
-        // Delete from owner and trusted so that quarters don't break from having non-existent residents
         for (Quarter quarter : QuarterManager.getInstance().getAllQuarters()) {
+            boolean wasChanged = false;
+
             if (quarter.isOwner(uuid)) {
                 quarter.setOwner(null);
-
-                Town town = quarter.getTown();
-                TownMetadataManager tmm = TownMetadataManager.getInstance();
-                if (tmm.getSellOnDelete(town)) quarter.setPrice(tmm.getDefaultSellPrice(town));
+                quarter.setPriceToDefaultIfApplicable();
+                wasChanged = true;
             }
 
-            List<UUID> trustedList = quarter.getTrusted();
-            trustedList.remove(uuid);
-            quarter.setTrusted(trustedList);
+            List<UUID> trusted = quarter.getTrusted();
+            if (trusted.remove(uuid)) {
+                quarter.setTrusted(trusted);
+                wasChanged = true;
+            }
 
-            quarter.save();
+            if (wasChanged) quarter.save();
         }
     }
 

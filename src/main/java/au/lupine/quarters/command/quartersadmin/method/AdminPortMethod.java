@@ -17,6 +17,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AdminPortMethod extends CommandMethod {
 
@@ -61,7 +62,7 @@ public class AdminPortMethod extends CommandMethod {
 
         String[] split = value.split("\\|");
 
-        List<Quarter> quarters = new ArrayList<>();
+        List<Quarter> quarters = new CopyOnWriteArrayList<>();
         for (String quarterString : split) {
             try {
                 Quarter quarter = getPortedQuarter(quarterString);
