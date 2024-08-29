@@ -105,6 +105,16 @@
         ]
     },
     {
+        "name": "twitchy",
+        "colour": "800080",
+        "description": "Just a goober that likes Quarters",
+        "cat_mode": false,
+        "decorations": [],
+        "members": [
+            "98e1592c-4952-4af1-9dc1-9815c29c03f3"
+        ]
+    },
+    {
         "name": "zach",
         "colour": "5865F2",
         "description": "Gary my beloved",
