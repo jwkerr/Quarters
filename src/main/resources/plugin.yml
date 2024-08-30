@@ -50,6 +50,7 @@ permissions:
       quarters.command.quarters.claim: true
       quarters.command.quarters.create: true
       quarters.command.quarters.delete: true
+      quarters.command.quarters.delete.*: true
       quarters.command.quarters.edit: true
       quarters.command.quarters.edit.*: true
       quarters.command.quarters.evict: true
@@ -77,6 +78,18 @@ permissions:
     default: false
 
   quarters.command.quarters.delete:
+    default: false
+
+  quarters.command.quarters.delete.*:
+    default: false
+    children:
+      quarters.command.quarters.delete.all: true
+      quarters.command.quarters.delete.plot: true
+
+  quarters.command.quarters.delete.all:
+    default: false
+
+  quarters.command.quarters.delete.plot:
     default: false
 
   quarters.command.quarters.edit:

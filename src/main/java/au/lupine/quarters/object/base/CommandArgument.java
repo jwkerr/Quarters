@@ -13,6 +13,10 @@ public abstract class CommandArgument extends CommandMethod {
         super(sender, args, permission);
     }
 
+    public CommandArgument(CommandSender sender, String[] args, String permission, boolean hasMayorPermBypass) {
+        super(sender, args, permission, hasMayorPermBypass);
+    }
+
     @Override
     public void execute() {
         if (args.length == 0) throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
