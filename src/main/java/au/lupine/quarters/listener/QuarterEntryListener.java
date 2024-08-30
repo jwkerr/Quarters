@@ -36,6 +36,8 @@ public class QuarterEntryListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+        if (!event.hasChangedBlock()) return;
+
         Player player = event.getPlayer();
 
         Resident resident = TownyAPI.getInstance().getResident(player);
