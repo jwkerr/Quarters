@@ -40,7 +40,7 @@ public class QuartersCommand implements TabExecutor {
         switch (method) {
             case "claim" -> new ClaimMethod(sender, args).execute();
             case "create" -> new CreateMethod(sender, args).execute();
-            case "delete" -> new DeleteMethod(sender, args).execute();
+            case "delete" -> new DeleteArgument(sender, args).execute();
             case "edit" -> new EditArgument(sender, args).execute();
             case "evict" -> new EvictMethod(sender, args).execute();
             case "fame" -> new FameMethod(sender, args).execute();
@@ -63,7 +63,7 @@ public class QuartersCommand implements TabExecutor {
         Stream<String> stream = switch (args.length) {
             case 1 -> Stream.of("claim", "create", "delete", "edit", "evict", "fame", "here", "info", "pos", "selection", "sell", "set", "toggle", "trust", "unclaim", "wand");
             case 2 -> switch (args[0]) {
-                case "delete" -> Stream.of("all");
+                case "delete" -> Stream.of("all", "plot");
                 case "edit" -> Stream.of("addselection", "remove");
                 case "pos" -> Stream.of("one", "two");
                 case "selection" -> Stream.of("add", "clear", "copy", "paste", "remove");
