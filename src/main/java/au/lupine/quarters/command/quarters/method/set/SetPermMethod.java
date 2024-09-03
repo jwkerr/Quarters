@@ -43,7 +43,7 @@ public class SetPermMethod extends CommandMethod {
         quarter.save();
 
         String lowerCaseLevel = level.name().toLowerCase();
-        String lowerCaseType = type.name().toLowerCase();
+        String lowerCaseType = type.getCommonName().toLowerCase();
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully set " + lowerCaseLevel + " " + lowerCaseType + " permissions to " + allowed);
         QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has set a quarter's " + lowerCaseLevel + " " + lowerCaseType + " permissions to " + allowed, player.getLocation());

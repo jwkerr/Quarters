@@ -4,7 +4,7 @@ public enum ActionType {
     BUILD("Build"),
     DESTROY("Destroy"),
     SWITCH("Switch"),
-    ITEM_USE("ItemUse");
+    ITEM_USE("Item Use");
 
     private final String commonName;
 
@@ -17,6 +17,6 @@ public enum ActionType {
     }
 
     public String getLowerCase() {
-        return commonName.toLowerCase();
+        return name().toLowerCase();
     }
 }

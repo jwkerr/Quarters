@@ -40,7 +40,7 @@ public class AdminSetPermMethod extends CommandMethod {
         quarter.save();
 
         String lowerCaseLevel = level.name().toLowerCase();
-        String lowerCaseType = type.name().toLowerCase();
+        String lowerCaseType = type.getCommonName().toLowerCase();
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully set " + lowerCaseLevel + " " + lowerCaseType + " permissions to " + allowed);
     }
