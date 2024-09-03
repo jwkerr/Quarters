@@ -99,12 +99,12 @@ permissions:
     default: false
     children:
       quarters.command.quarters.edit.addselection: true
-      quarters.command.quarteres.edit.remove: true
+      quarters.command.quarters.edit.remove: true
 
   quarters.command.quarters.edit.addselection:
     default: false
 
-  quarters.command.quarteres.edit.remove:
+  quarters.command.quarters.edit.remove:
     default: false
 
   quarters.command.quarters.evict:
