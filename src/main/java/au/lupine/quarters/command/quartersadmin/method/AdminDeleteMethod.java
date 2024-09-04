@@ -1,6 +1,7 @@
 package au.lupine.quarters.command.quartersadmin.method;
 
 import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.api.event.QuarterDeleteEvent;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.wrapper.StringConstants;
@@ -18,8 +19,9 @@ public class AdminDeleteMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow();
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        quarter.delete();
-
-        QuartersMessaging.sendSuccessMessage(player, StringConstants.SUCCESSFULLY_DELETED_THIS_QUARTER);
+        boolean deleted = quarter.delete(QuarterDeleteEvent.Cause.ADMIN_COMMAND, player);
+        if (deleted) {
+            QuartersMessaging.sendSuccessMessage(player, StringConstants.SUCCESSFULLY_DELETED_THIS_QUARTER);
+        }
     }
 }

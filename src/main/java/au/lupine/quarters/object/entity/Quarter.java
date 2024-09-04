@@ -1,16 +1,19 @@
 package au.lupine.quarters.object.entity;
 
+import au.lupine.quarters.api.event.QuarterDeleteEvent;
 import au.lupine.quarters.api.manager.*;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.QuarterType;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownyObject;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.ApiStatus;
@@ -100,6 +103,28 @@ public class Quarter extends TownyObject {
         quarters.remove(this);
 
         qm.setQuarters(town, quarters);
+    }
+
+    /**
+     * Permanently delete this quarter from the town's metadata, with a cause and optional sender.
+     * @return true if the quarter was successfully deleted, false if deletion was cancelled.
+     */
+    public boolean delete(@NotNull QuarterDeleteEvent.Cause cause, @Nullable CommandSender sender) {
+        QuarterDeleteEvent event = new QuarterDeleteEvent(this, cause, sender);
+        if (!event.callEvent() && cause.ignoresCancellation()) {
+            if (sender != null) {
+                TownyMessaging.sendErrorMsg(sender, event.getCancelMessage());
+            }
+            return false;
+        }
+
+        QuarterManager qm = QuarterManager.getInstance();
+
+        List<Quarter> quarters = qm.getQuarters(town);
+        quarters.remove(this);
+
+        qm.setQuarters(town, quarters);
+        return true;
     }
 
     /**
