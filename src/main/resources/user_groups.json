@@ -115,6 +115,16 @@
         ]
     },
     {
+        "name": "jarod",
+        "colour": "C433FF",
+        "description": "thecactusjarod",
+        "cat_mode": true,
+        "decorations": [],
+        "members": [
+            "74569d03-65cd-4292-afbf-dd889128c918"
+        ]
+    },
+    {
         "name": "zach",
         "colour": "5865F2",
         "description": "Gary my beloved",
