@@ -1,12 +1,12 @@
 package au.lupine.quarters.object.entity;
 
-import au.lupine.quarters.api.event.QuarterDeleteEvent;
+import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.api.event.CancellableQuarterDeleteEvent;
 import au.lupine.quarters.api.manager.*;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.QuarterType;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -94,7 +94,7 @@ public class Quarter extends TownyObject {
     }
 
     /**
-     * Permanently delete this quarter from the town's metadata
+     * Permanently and forcefully delete this quarter from the town's metadata
      */
     public void delete() {
         QuarterManager qm = QuarterManager.getInstance();
@@ -106,24 +106,20 @@ public class Quarter extends TownyObject {
     }
 
     /**
-     * Permanently delete this quarter from the town's metadata, with a cause and optional sender.
-     * @return true if the quarter was successfully deleted, false if deletion was cancelled.
+     * Permanently delete this quarter from the town's metadata, with a cause and optional sender
+     * @return true if the quarter was successfully deleted, false if deletion was cancelled
      */
-    public boolean delete(@NotNull QuarterDeleteEvent.Cause cause, @Nullable CommandSender sender) {
-        QuarterDeleteEvent event = new QuarterDeleteEvent(this, cause, sender);
-        if (!event.callEvent() && cause.ignoresCancellation()) {
-            if (sender != null) {
-                TownyMessaging.sendErrorMsg(sender, event.getCancelMessage());
-            }
+    public boolean delete(@NotNull CancellableQuarterDeleteEvent.Cause cause, @Nullable CommandSender sender) {
+        CancellableQuarterDeleteEvent event = new CancellableQuarterDeleteEvent(this, cause, sender);
+
+        if (!event.callEvent()) {
+            String cancelMessage = event.getCancelMessage();
+            if (sender != null && cancelMessage != null) QuartersMessaging.sendErrorMessage(sender, cancelMessage);
             return false;
         }
 
-        QuarterManager qm = QuarterManager.getInstance();
+        delete();
 
-        List<Quarter> quarters = qm.getQuarters(town);
-        quarters.remove(this);
-
-        qm.setQuarters(town, quarters);
         return true;
     }
 

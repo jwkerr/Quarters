@@ -4,18 +4,18 @@ import au.lupine.quarters.object.base.CancellableQuartersEvent;
 import au.lupine.quarters.object.entity.Quarter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class QuarterDeleteEvent extends CancellableQuartersEvent {
+public class CancellableQuarterDeleteEvent extends CancellableQuartersEvent {
+
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
     private final Quarter quarter;
     private final Cause cause;
     private final CommandSender sender;
 
-    public QuarterDeleteEvent(@NotNull Quarter quarter, @NotNull Cause cause, @Nullable CommandSender sender) {
+    public CancellableQuarterDeleteEvent(@NotNull Quarter quarter, @NotNull Cause cause, @Nullable CommandSender sender) {
         this.quarter = quarter;
         this.cause = cause;
         this.sender = sender;
@@ -38,7 +38,7 @@ public class QuarterDeleteEvent extends CancellableQuartersEvent {
     }
 
     /**
-     * @return The {@link CommandSender sender} who caused the deletion.
+     * @return The {@link CommandSender sender} who caused the deletion
      */
     @Nullable
     public CommandSender getSender() {
@@ -47,28 +47,30 @@ public class QuarterDeleteEvent extends CancellableQuartersEvent {
 
     public enum Cause {
         UNKNOWN,
-        /**
-         * The quarter was deleted for containing Wilderness.
-         */
-        CONTAINS_WILDERNESS,
-        /**
-         * The quarter was deleted because a player used /quarters delete.
-         */
-        COMMAND,
-        /**
-         * The quarter was deleted because an admin used /quartersadmin delete.
-         */
-        ADMIN_COMMAND;
 
-        @ApiStatus.Internal
-        public boolean ignoresCancellation() {
-            return this == CONTAINS_WILDERNESS;
-        }
+        /**
+         * The quarter was deleted because a player used /quarters delete
+         */
+        DELETE_COMMAND,
+
+        /**
+         * The quarter was deleted because a player used /quarters delete all
+         */
+        DELETE_ALL_COMMAND,
+
+        /**
+         * The quarter was deleted because a player used /quarters delete plot
+         */
+        DELETE_PLOT_COMMAND,
+
+        /**
+         * The quarter was deleted because an admin used /quartersadmin delete
+         */
+        ADMIN_DELETE_COMMAND
     }
 
-    @NotNull
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLER_LIST;
     }
 

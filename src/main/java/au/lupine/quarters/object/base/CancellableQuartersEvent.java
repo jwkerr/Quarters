@@ -1,13 +1,12 @@
 package au.lupine.quarters.object.base;
 
-import org.bukkit.ChatColor;
 import org.bukkit.event.Cancellable;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class CancellableQuartersEvent extends QuartersEvent implements Cancellable {
 
     private boolean isCancelled;
-    private String cancelMessage = ChatColor.RED + "A plugin cancelled this event.";
+    private String cancelMessage = null;
 
     public CancellableQuartersEvent() {
         super();
@@ -17,12 +16,14 @@ public abstract class CancellableQuartersEvent extends QuartersEvent implements 
         super(isAsync);
     }
 
-    @NotNull
-    public String getCancelMessage() {
+    public @Nullable String getCancelMessage() {
         return cancelMessage;
     }
 
-    public void setCancelMessage(@NotNull String cancelMessage) {
+    /**
+     * If a cancel message is set, this can be used by the event but depends on the event's implementation
+     */
+    public void setCancelMessage(String cancelMessage) {
         this.cancelMessage = cancelMessage;
     }
 

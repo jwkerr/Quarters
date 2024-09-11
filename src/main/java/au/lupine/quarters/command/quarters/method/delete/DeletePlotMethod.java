@@ -1,7 +1,7 @@
 package au.lupine.quarters.command.quarters.method.delete;
 
 import au.lupine.quarters.api.QuartersMessaging;
-import au.lupine.quarters.api.event.QuarterDeleteEvent;
+import au.lupine.quarters.api.event.CancellableQuarterDeleteEvent;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
@@ -38,7 +38,7 @@ public class DeletePlotMethod extends CommandMethod {
 
         Confirmation.runOnAccept(() -> {
             for (Quarter quarter : quarters) {
-                quarter.delete(QuarterDeleteEvent.Cause.COMMAND, player);
+                quarter.delete(CancellableQuarterDeleteEvent.Cause.DELETE_PLOT_COMMAND, player);
             }
 
             QuartersMessaging.sendSuccessMessage(player, "Successfully deleted all quarters in this townblock");
