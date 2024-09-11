@@ -2,6 +2,7 @@ package au.lupine.quarters.object.entity;
 
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.event.CancellableQuarterDeleteEvent;
+import au.lupine.quarters.api.event.QuarterDeleteEvent;
 import au.lupine.quarters.api.manager.*;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.QuarterType;
@@ -91,6 +92,9 @@ public class Quarter extends TownyObject {
         quarters.add(this);
 
         qm.setQuarters(town, quarters);
+
+        QuarterDeleteEvent event = new QuarterDeleteEvent(this, null);
+        event.callEvent();
     }
 
     /**
@@ -110,15 +114,17 @@ public class Quarter extends TownyObject {
      * @return true if the quarter was successfully deleted, false if deletion was cancelled
      */
     public boolean delete(@NotNull CancellableQuarterDeleteEvent.Cause cause, @Nullable CommandSender sender) {
-        CancellableQuarterDeleteEvent event = new CancellableQuarterDeleteEvent(this, cause, sender);
+        CancellableQuarterDeleteEvent cqde = new CancellableQuarterDeleteEvent(this, cause, sender);
 
-        if (!event.callEvent()) {
-            String cancelMessage = event.getCancelMessage();
+        if (!cqde.callEvent()) {
+            String cancelMessage = cqde.getCancelMessage();
             if (sender != null && cancelMessage != null) QuartersMessaging.sendErrorMessage(sender, cancelMessage);
             return false;
         }
 
         delete();
+
+        new QuarterDeleteEvent(this, sender).callEvent();
 
         return true;
     }

@@ -24,24 +24,21 @@ public class CancellableQuarterDeleteEvent extends CancellableQuartersEvent {
     /**
      * @return The deleted quarter.
      */
-    @NotNull
-    public Quarter getQuarter() {
+    public @NotNull Quarter getQuarter() {
         return quarter;
     }
 
     /**
      * @return The {@link Cause cause} of the quarter's deletion.
      */
-    @NotNull
-    public Cause getCause() {
+    public @NotNull Cause getCause() {
         return cause;
     }
 
     /**
      * @return The {@link CommandSender sender} who caused the deletion
      */
-    @Nullable
-    public CommandSender getSender() {
+    public @Nullable CommandSender getSender() {
         return sender;
     }
 
