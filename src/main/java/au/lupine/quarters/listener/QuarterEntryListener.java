@@ -22,10 +22,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -33,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class QuarterEntryListener implements Listener {
 
-    private static final Map<UUID, Quarter> QUARTER_PLAYER_IS_IN = new ConcurrentHashMap<>();
+    private static final Map<UUID, Optional<Quarter>> QUARTER_PLAYER_IS_IN = new ConcurrentHashMap<>();
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
@@ -48,11 +45,11 @@ public class QuarterEntryListener implements Listener {
 
         Quarter quarter = QuarterManager.getInstance().getQuarter(to);
 
-        Quarter previousQuarter = QUARTER_PLAYER_IS_IN.get(player.getUniqueId());
-        if (quarter != null && (previousQuarter == null || !previousQuarter.equals(quarter)))
+        Optional<Quarter> previousQuarter = QUARTER_PLAYER_IS_IN.get(player.getUniqueId());
+        if (quarter != null && (previousQuarter.isEmpty() || !previousQuarter.get().equals(quarter)))
             onQuarterEntry(quarter, resident);
 
-        QUARTER_PLAYER_IS_IN.put(player.getUniqueId(), quarter);
+        QUARTER_PLAYER_IS_IN.put(player.getUniqueId(), Optional.ofNullable(quarter));
     }
 
     @EventHandler
@@ -63,7 +60,12 @@ public class QuarterEntryListener implements Listener {
 
         Quarter quarter = QuarterManager.getInstance().getQuarter(player.getLocation());
 
-        QUARTER_PLAYER_IS_IN.put(player.getUniqueId(), quarter);
+        QUARTER_PLAYER_IS_IN.put(player.getUniqueId(), Optional.ofNullable(quarter));
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        QUARTER_PLAYER_IS_IN.remove(event.getPlayer().getUniqueId());
     }
 
     private void onQuarterEntry(Quarter quarter, Resident resident) {
@@ -109,10 +111,5 @@ public class QuarterEntryListener implements Listener {
             case ACTION_BAR -> player.sendActionBar(notification);
             case CHAT -> QuartersMessaging.sendMessage(player, notification);
         }
-    }
-
-    @EventHandler
-    public void cleanupCachedQuarter(final PlayerQuitEvent event) {
-        QUARTER_PLAYER_IS_IN.remove(event.getPlayer().getUniqueId());
     }
 }
