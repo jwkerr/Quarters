@@ -45,7 +45,7 @@ public class QuarterEntryListener implements Listener {
 
         Quarter quarter = QuarterManager.getInstance().getQuarter(to);
 
-        Optional<Quarter> previousQuarter = QUARTER_PLAYER_IS_IN.get(player.getUniqueId());
+        Optional<Quarter> previousQuarter = QUARTER_PLAYER_IS_IN.getOrDefault(player.getUniqueId(), Optional.empty());
         if (quarter != null && (previousQuarter.isEmpty() || !previousQuarter.get().equals(quarter)))
             onQuarterEntry(quarter, resident);
 
