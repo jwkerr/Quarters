@@ -2,6 +2,7 @@ package au.lupine.quarters.api.event;
 
 import au.lupine.quarters.object.base.CancellableQuartersEvent;
 import au.lupine.quarters.object.entity.Quarter;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +17,7 @@ public class CancellableQuarterDeleteEvent extends CancellableQuartersEvent {
     private final CommandSender sender;
 
     public CancellableQuarterDeleteEvent(@NotNull Quarter quarter, @NotNull Cause cause, @Nullable CommandSender sender) {
+        super(!Bukkit.isPrimaryThread());
         this.quarter = quarter;
         this.cause = cause;
         this.sender = sender;
