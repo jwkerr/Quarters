@@ -54,6 +54,6 @@ public class EditAddSelectionMethod extends CommandMethod {
         sm.clearCuboids(player);
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully added your selection to this quarter");
-        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has added " + cuboids.size() + " cuboid(s) to a quarter", quarter.getFirstCornerOfFirstCuboid());
+        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has added " + cuboids.size() + " cuboid(s) to a quarter", quarter.getFirstCornerOfFirstCuboid()); // TODO: fix num cuboids added being wrong
     }
 }
