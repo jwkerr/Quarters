@@ -28,9 +28,9 @@ public class PosMethod extends CommandMethod {
             default -> throw new CommandMethodException(StringConstants.A_PROVIDED_ARGUMENT_WAS_INVALID + arg);
         };
 
-        int adjustX = Integer.parseInt(getArgOrDefault(1, "0"));
-        int adjustY = Integer.parseInt(getArgOrDefault(2, "0"));;
-        int adjustZ = Integer.parseInt(getArgOrDefault(3, "0"));;
+        int adjustX = parseArgumentToInt(1);
+        int adjustY = parseArgumentToInt(2);
+        int adjustZ = parseArgumentToInt(3);
 
         Location location = player.getLocation();
         location.add(adjustX, adjustY, adjustZ);
@@ -40,5 +40,15 @@ public class PosMethod extends CommandMethod {
         sm.selectPosition(player, location, type);
 
         QuartersMessaging.sendMessage(player, sm.getSelectedPositionComponent(type, location));
+    }
+
+    private int parseArgumentToInt(int index) {
+        final String arg = getArgOrDefault(index, "0");
+
+        try {
+            return Integer.parseInt(arg);
+        } catch (NumberFormatException e) {
+            throw new CommandMethodException(StringConstants.A_PROVIDED_ARGUMENT_WAS_INVALID + arg);
+        }
     }
 }
