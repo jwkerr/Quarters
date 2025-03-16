@@ -64,6 +64,16 @@
         ]
     },
     {
+        "name": "k1kimor",
+        "colour": "4480BD",
+        "description": "<#4480BD>lizard",
+        "cat_mode": true,
+        "decorations": [],
+        "members": [
+            "686b1bfa-38de-4eb9-9628-43ed3b56b76e"
+        ]
+    },
+    {
         "name": "masterewild",
         "colour": "00D9FA",
         "description": "<gray>Just a Wild</gray> <#00D9FA>Wild</#00D9FA> <gray>doing Wild things in a Wild world wondering why I choose to enable <italic>cat mode</italic> on my quarters plugin</gray>",
