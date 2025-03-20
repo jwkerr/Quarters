@@ -1,5 +1,8 @@
 package au.lupine.quarters.object.entity;
 
+import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.api.event.CancellableQuarterDeleteEvent;
+import au.lupine.quarters.api.event.QuarterDeleteEvent;
 import au.lupine.quarters.api.manager.*;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.QuarterType;
@@ -11,6 +14,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownyObject;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.ApiStatus;
@@ -88,10 +92,13 @@ public class Quarter extends TownyObject {
         quarters.add(this);
 
         qm.setQuarters(town, quarters);
+
+        QuarterDeleteEvent event = new QuarterDeleteEvent(this, null);
+        event.callEvent();
     }
 
     /**
-     * Permanently delete this quarter from the town's metadata
+     * Permanently and forcefully delete this quarter from the town's metadata
      */
     public void delete() {
         QuarterManager qm = QuarterManager.getInstance();
@@ -100,6 +107,26 @@ public class Quarter extends TownyObject {
         quarters.remove(this);
 
         qm.setQuarters(town, quarters);
+    }
+
+    /**
+     * Permanently delete this quarter from the town's metadata, with a cause and optional sender
+     * @return true if the quarter was successfully deleted, false if deletion was cancelled
+     */
+    public boolean delete(@NotNull CancellableQuarterDeleteEvent.Cause cause, @Nullable CommandSender sender) {
+        CancellableQuarterDeleteEvent cqde = new CancellableQuarterDeleteEvent(this, cause, sender);
+
+        if (!cqde.callEvent()) {
+            String cancelMessage = cqde.getCancelMessage();
+            if (sender != null && cancelMessage != null) QuartersMessaging.sendErrorMessage(sender, cancelMessage);
+            return false;
+        }
+
+        delete();
+
+        new QuarterDeleteEvent(this, sender).callEvent();
+
+        return true;
     }
 
     /**

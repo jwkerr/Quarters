@@ -1,5 +1,6 @@
 package au.lupine.quarters.listener;
 
+import au.lupine.quarters.api.event.CancellableQuarterDeleteEvent;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.object.entity.Quarter;
 import com.palmergames.bukkit.towny.TownyMessaging;

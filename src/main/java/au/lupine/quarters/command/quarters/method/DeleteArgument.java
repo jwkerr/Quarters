@@ -1,6 +1,7 @@
 package au.lupine.quarters.command.quarters.method;
 
 import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.api.event.CancellableQuarterDeleteEvent;
 import au.lupine.quarters.command.quarters.method.delete.DeleteAllMethod;
 import au.lupine.quarters.command.quarters.method.delete.DeletePlotMethod;
 import au.lupine.quarters.object.base.CommandArgument;
@@ -47,9 +48,9 @@ public class DeleteArgument extends CommandArgument {
 
         if (!quarter.isPlayerInTown(player)) throw new CommandMethodException(StringConstants.THIS_QUARTER_IS_NOT_PART_OF_YOUR_TOWN);
 
-        quarter.delete();
-
-        QuartersMessaging.sendSuccessMessage(player, StringConstants.SUCCESSFULLY_DELETED_THIS_QUARTER);
-        QuartersMessaging.sendCommandFeedbackToTown(town, player, "has deleted a quarter", player.getLocation());
+        if (quarter.delete(CancellableQuarterDeleteEvent.Cause.DELETE_COMMAND, player)) {
+            QuartersMessaging.sendSuccessMessage(player, StringConstants.SUCCESSFULLY_DELETED_THIS_QUARTER);
+            QuartersMessaging.sendCommandFeedbackToTown(town, player, "has deleted a quarter", player.getLocation());
+        }
     }
 }
