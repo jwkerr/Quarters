@@ -25,17 +25,17 @@ repositories {
     }
 
     maven {
-        url = "https://jitpack.io"
+        url = "https://repo.extendedclip.com/content/repositories/placeholderapi/"
     }
 
     maven {
-        url = "https://repo.extendedclip.com/content/repositories/placeholderapi/"
+        url = "https://repo.glaremasters.me/repository/towny/"
     }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    compileOnly("com.github.TownyAdvanced:Towny:0.100.3.0")
+    compileOnly("com.palmergames.bukkit.towny:towny:0.101.0.0")
     compileOnly("me.clip:placeholderapi:2.11.6")
 }
 
