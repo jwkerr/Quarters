@@ -43,7 +43,9 @@ public final class Quarters extends JavaPlugin {
         );
 
         // Don't register this listener if a towny version pre 0.101.2.5 is being used, it breaks otherwise
-        if (!JavaUtil.classExists("com.palmergames.adventure.text.Component")) {
+        if (JavaUtil.classExists("com.palmergames.adventure.text.Component")) {
+            logWarning("You seem to be using an older version of Towny, version 0.101.2.5 or above is required for quarters statistics to show in resident/town status screens.");
+        } else {
             registerListeners(new StatusScreenListener());
         }
 
