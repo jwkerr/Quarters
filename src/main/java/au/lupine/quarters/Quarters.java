@@ -9,6 +9,7 @@ import au.lupine.quarters.object.metadata.QuarterListDataField;
 import au.lupine.quarters.object.metadata.QuarterListDataFieldDeserialiser;
 import au.lupine.quarters.object.wrapper.Pair;
 import com.palmergames.bukkit.towny.object.metadata.MetadataLoader;
+import com.palmergames.util.JavaUtil;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.Listener;
@@ -40,6 +41,11 @@ public final class Quarters extends JavaPlugin {
                 new StatusScreenListener(),
                 new TownyActionListener()
         );
+
+        // Don't register this listener if a towny version pre 0.101.2.5 is being used, it breaks otherwise
+        if (!JavaUtil.classExists("com.palmergames.adventure.text.Component")) {
+            registerListeners(new StatusScreenListener());
+        }
 
         logInfo("Quarters enabled :3");
     }
