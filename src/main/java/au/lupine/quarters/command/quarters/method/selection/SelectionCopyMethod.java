@@ -13,11 +13,12 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SelectionCopyMethod extends CommandMethod {
 
-    public static final Map<Player, List<Cuboid>> SELECTION_VECTOR_MAP = new ConcurrentHashMap<>();
+    public static final Map<UUID, List<Cuboid>> SELECTION_VECTOR_MAP = new ConcurrentHashMap<>();
 
     public SelectionCopyMethod(CommandSender sender, String[] args) {
         super(sender, args, "quarters.command.quarters.selection.copy");
@@ -37,7 +38,7 @@ public class SelectionCopyMethod extends CommandMethod {
             vector.add(cuboid.subtract(location));
         }
 
-        SELECTION_VECTOR_MAP.put(player, vector);
+        SELECTION_VECTOR_MAP.put(player.getUniqueId(), vector);
 
         QuartersMessaging.sendSuccessMessage(player, "Successfully copied your selection to your clipboard, it is relative to your location");
     }

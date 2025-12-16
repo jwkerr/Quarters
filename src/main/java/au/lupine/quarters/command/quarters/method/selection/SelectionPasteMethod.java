@@ -23,7 +23,7 @@ public class SelectionPasteMethod extends CommandMethod {
     public void execute() {
         Player player = getSenderAsPlayerOrThrow();
 
-        List<Cuboid> vectors = SelectionCopyMethod.SELECTION_VECTOR_MAP.get(player);
+        List<Cuboid> vectors = SelectionCopyMethod.SELECTION_VECTOR_MAP.get(player.getUniqueId());
         if (vectors == null) throw new CommandMethodException("You have not copied a selection, use /q selection copy");
 
         Location location = player.getLocation();

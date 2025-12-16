@@ -16,14 +16,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class SelectionManager {
 
     private static SelectionManager instance;
 
-    private static final Map<Player, CuboidSelection> CUBOID_SELECTION_MAP = new ConcurrentHashMap<>();
-    private static final Map<Player, List<Cuboid>> CUBOIDS_MAP = new ConcurrentHashMap<>();
+    private static final Map<UUID, CuboidSelection> CUBOID_SELECTION_MAP = new ConcurrentHashMap<>();
+    private static final Map<UUID, List<Cuboid>> CUBOIDS_MAP = new ConcurrentHashMap<>();
 
     private SelectionManager() {}
 
@@ -38,7 +39,7 @@ public final class SelectionManager {
      * @param type {@link SelectionType} to use, left for pos one, right for pos two
      */
     public void selectPosition(@NotNull Player player, @NotNull Location location, @NotNull SelectionType type) {
-        CuboidSelection selection = CUBOID_SELECTION_MAP.computeIfAbsent(player, s -> new CuboidSelection());
+        CuboidSelection selection = CUBOID_SELECTION_MAP.computeIfAbsent(player.getUniqueId(), s -> new CuboidSelection());
         switch (type) {
             case LEFT -> selection.setCornerOne(location);
             case RIGHT -> selection.setCornerTwo(location);
@@ -49,22 +50,22 @@ public final class SelectionManager {
      * @return The player's current selection, will return an empty selection if they have not selected anything
      */
     public CuboidSelection getSelection(Player player) {
-        return CUBOID_SELECTION_MAP.computeIfAbsent(player, s -> new CuboidSelection());
+        return CUBOID_SELECTION_MAP.computeIfAbsent(player.getUniqueId(), s -> new CuboidSelection());
     }
 
     public void clearSelection(Player player) {
-        CUBOID_SELECTION_MAP.remove(player);
+        CUBOID_SELECTION_MAP.remove(player.getUniqueId());
     }
 
     public void setCuboids(@NotNull Player player, @NotNull List<Cuboid> cuboids) {
-        CUBOIDS_MAP.put(player, cuboids);
+        CUBOIDS_MAP.put(player.getUniqueId(), cuboids);
     }
 
     /**
      * @return The player's currently added cuboids using /q selection add
      */
     public List<Cuboid> getCuboids(Player player) {
-        return CUBOIDS_MAP.getOrDefault(player, new ArrayList<>());
+        return CUBOIDS_MAP.getOrDefault(player.getUniqueId(), new ArrayList<>());
     }
 
     /**
@@ -84,7 +85,7 @@ public final class SelectionManager {
     }
 
     public void clearCuboids(Player player) {
-        CUBOIDS_MAP.remove(player);
+        CUBOIDS_MAP.remove(player.getUniqueId());
     }
 
     /**
