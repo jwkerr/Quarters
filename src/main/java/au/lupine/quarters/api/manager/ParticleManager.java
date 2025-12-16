@@ -67,9 +67,7 @@ public final class ParticleManager {
 
         if (!player.getWorld().equals(cuboid.getWorld())) return;
 
-        if (cuboid.distanceTo(player.getLocation()) > ConfigManager.getMaxDistanceForCuboidParticles()) return;
-
-        for (Location location : computeCuboidEdges(cuboid)) {
+        for (Location location : computeCuboidEdges(cuboid, player.getLocation())) {
             if (dustOptions != null) {
                 player.spawnParticle(particle, location, 1, dustOptions);
             } else {
@@ -78,7 +76,7 @@ public final class ParticleManager {
         }
     }
 
-    public List<Location> computeCuboidEdges(@NotNull Cuboid cuboid) {
+    public List<Location> computeCuboidEdges(@NotNull Cuboid cuboid, @NotNull Location viewerLocation) {
         Location cornerOne = cuboid.getCornerOne();
         Location cornerTwo = cuboid.getCornerTwo();
 
@@ -91,32 +89,68 @@ public final class ParticleManager {
         int y2 = cornerTwo.getBlockY();
         int z2 = cornerTwo.getBlockZ();
 
+        final int range = ConfigManager.getMaxDistanceForCuboidParticles();
+        final int viewerX = viewerLocation.getBlockX();
+        final int viewerY = viewerLocation.getBlockY();
+        final int viewerZ = viewerLocation.getBlockZ();
+
+        final int minX = Math.min(x1, x2);
+        final int maxX = Math.max(x1, x2);
+        final int minY = Math.min(y1, y2);
+        final int maxY = Math.max(y1, y2);
+        final int minZ = Math.min(z1, z2);
+        final int maxZ = Math.max(z1, z2);
+
+        // skip doing any work if the viewer is more than range blocks outside the cuboid
+        if (viewerX <= minX - range || viewerX >= maxX + range || viewerY <= minY - range || viewerY >= maxY + range || viewerZ <= minZ - range || viewerZ >= maxZ + range) {
+            return List.of();
+        }
+
+        // do the same but for being inside the cuboid
+        if (viewerX >= minX + range && viewerX <= maxX - range && viewerZ >= minZ + range && viewerZ <= maxZ - range) {
+            return List.of();
+        }
+
+        final int rangedMinX = Math.max(minX, viewerX - range);
+        final int rangedMaxX = Math.min(maxX, viewerX + range);
+        final int rangedMinY = Math.max(minY, viewerY - range);
+        final int rangedMaxY = Math.min(maxY, viewerY + range);
+        final int rangedMinZ = Math.max(minZ, viewerZ - range);
+        final int rangedMaxZ = Math.min(maxZ, viewerZ + range);
+
         List<Location> locations = new ArrayList<>();
-        for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
-            locations.add(getBlockCentredLocation(world, x, y1, z1));
-            locations.add(getBlockCentredLocation(world, x, y2, z1));
-            locations.add(getBlockCentredLocation(world, x, y1, z2));
-            locations.add(getBlockCentredLocation(world, x, y2, z2));
+        final TriConsumer<Integer, Integer, Integer> visitor = (x, y, z) -> {
+            if (x >= rangedMinX && x <= rangedMaxX && y >= rangedMinY && y <= rangedMaxY && z >= rangedMinZ && z <= rangedMaxZ) {
+                locations.add(new Location(world, x + 0.5, y + 0.5, z + 0.5));
+            }
+        };
+
+        for (int x = rangedMinX; x <= rangedMaxX; x++) {
+            visitor.accept(x, y1, z1);
+            visitor.accept(x, y2, z1);
+            visitor.accept(x, y1, z2);
+            visitor.accept(x, y2, z2);
         }
 
-        for (int y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
-            locations.add(getBlockCentredLocation(world, x1, y, z1));
-            locations.add(getBlockCentredLocation(world, x2, y, z1));
-            locations.add(getBlockCentredLocation(world, x1, y, z2));
-            locations.add(getBlockCentredLocation(world, x2, y, z2));
+        for (int y = rangedMinY; y <= rangedMaxY; y++) {
+            visitor.accept(x1, y, z1);
+            visitor.accept(x2, y, z1);
+            visitor.accept(x1, y, z2);
+            visitor.accept(x2, y, z2);
         }
 
-        for (int z = Math.min(z1, z2); z <= Math.max(z1, z2); z++) {
-            locations.add(getBlockCentredLocation(world, x1, y1, z));
-            locations.add(getBlockCentredLocation(world, x2, y1, z));
-            locations.add(getBlockCentredLocation(world, x1, y2, z));
-            locations.add(getBlockCentredLocation(world, x2, y2, z));
+        for (int z = rangedMinZ; z <= rangedMaxZ; z++) {
+            visitor.accept(x1, y1, z);
+            visitor.accept(x2, y1, z);
+            visitor.accept(x1, y2, z);
+            visitor.accept(x2, y2, z);
         }
 
         return locations;
     }
 
-    public Location getBlockCentredLocation(World world, int x, int y, int z) {
-        return new Location(world, x + 0.5, y + 0.5, z + 0.5);
+    @FunctionalInterface
+    private interface TriConsumer<A, B, C> {
+        void accept(A a, B b, C c);
     }
 }

@@ -37,6 +37,10 @@ public class PosMethod extends CommandMethod {
 
         SelectionManager sm = SelectionManager.getInstance();
 
+        if (!sm.isLocationInsideWorldBounds(location)) {
+            throw new CommandMethodException(StringConstants.A_NUMBER_YOU_PROVIDED_WAS_INVALID);
+        }
+
         sm.selectPosition(player, location, type);
 
         QuartersMessaging.sendMessage(player, sm.getSelectedPositionComponent(type, location));
