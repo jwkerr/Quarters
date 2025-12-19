@@ -6,6 +6,8 @@ import au.lupine.quarters.object.wrapper.UserGroup;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Resident;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
@@ -132,9 +134,14 @@ public final class ConfigManager {
     public static Component getFormattedName(@Nullable UUID uuid, @Nullable Component def) {
         if (uuid == null) return def;
 
-        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        String name;
+        final Resident resident = TownyAPI.getInstance().getResident(uuid);
+        if (resident != null) {
+            name = resident.getName();
+        } else {
+            name = Bukkit.getOfflinePlayer(uuid).getName();
+        }
 
-        String name = player.getName();
         if (name == null) return def; // UUID didn't resolve to a player that has joined
 
         UserGroup userGroup = getUserGroupOrDefault(uuid, DEFAULT_USER_GROUP);

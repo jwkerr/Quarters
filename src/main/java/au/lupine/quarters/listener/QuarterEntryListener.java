@@ -82,7 +82,7 @@ public class QuarterEntryListener implements Listener {
         List<Component> components = new ArrayList<>();
 
         Component name = Component.text(quarter.getName(), TextColor.color(quarter.getColour().getRGB())).clickEvent(ClickEvent.runCommand("/quarters:q here " + quarter.getUUID()));
-        Component owner = quarter.hasOwner() ? ConfigManager.getFormattedName(quarter.getOwner(), null) : Component.text("Unowned", NamedTextColor.GRAY);
+        Component owner = quarter.hasOwner() ? ConfigManager.getFormattedName(quarter.getOwner(), Component.empty()) : Component.text("Unowned", NamedTextColor.GRAY);
         Component type = Component.text(quarter.getType().getCommonName(), NamedTextColor.GRAY);
 
         components.add(name);
