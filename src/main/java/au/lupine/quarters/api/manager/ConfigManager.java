@@ -253,6 +253,14 @@ public final class ConfigManager {
         return config.getBoolean("particles.entry_particle_blinking_on_by_default", false);
     }
 
+    public static boolean isBedrockPrefixFallbackEnabled() {
+        return config.getBoolean("bedrock.use_username_prefix_as_fallback", true);
+    }
+
+    public static String getBedrockUsernamePrefix() {
+        return config.getString("bedrock.username_prefix", ".");
+    }
+
     private void addValues() {
         config.options().setHeader(List.of("If comments are not present, please restart your server"));
 
@@ -283,6 +291,9 @@ public final class ConfigManager {
         config.addDefault("particles.constant_particle_outlines_on_by_default", true); config.setInlineComments("particles.constant_particle_outlines_on_by_default", List.of("If set to false players will have to opt in to constant particle outlines"));
         config.addDefault("particles.allow_entry_particle_blinking", true); config.setInlineComments("particles.allow_entry_particle_blinking", List.of("If set to true, players will be able to toggle quarter outlines to blink when entered"));
         config.addDefault("particles.entry_particle_blinking_on_by_default", false); config.setInlineComments("particles.entry_particle_blinking_on_by_default", List.of("If set to true, quarters will blink their particles for one tick upon entry by a player, this can be a good alternative to constant particle outlines if it is causing lag"));
+
+        config.addDefault("bedrock.use_username_prefix_as_fallback", true); config.setInlineComments("bedrock.use_username_prefix_as_fallback", List.of("If Floodgate is not installed or fails to detect a Bedrock player, fall back to checking the username prefix"));
+        config.addDefault("bedrock.username_prefix", "."); config.setInlineComments("bedrock.username_prefix", List.of("The username prefix used by Geyser for Bedrock players (default is \".\"), change this if your server uses a different prefix"));
 
         config.options().copyDefaults(true);
     }

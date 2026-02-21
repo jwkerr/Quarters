@@ -1,5 +1,6 @@
 package au.lupine.quarters.listener;
 
+import au.lupine.quarters.api.BedrockUtil;
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
@@ -48,6 +49,10 @@ public class QuarterEntryListener implements Listener {
         Optional<Quarter> previousQuarter = QUARTER_PLAYER_IS_IN.getOrDefault(player.getUniqueId(), Optional.empty());
         if (quarter != null && (previousQuarter.isEmpty() || !previousQuarter.get().equals(quarter)))
             onQuarterEntry(quarter, resident);
+
+        if (quarter == null && previousQuarter.isPresent() && BedrockUtil.isBedrockPlayer(player)) {
+            player.sendActionBar(Component.empty());
+        }
 
         QUARTER_PLAYER_IS_IN.put(player.getUniqueId(), Optional.ofNullable(quarter));
     }
@@ -107,8 +112,12 @@ public class QuarterEntryListener implements Listener {
         Player player = resident.getPlayer();
         if (player == null) return;
 
+        boolean isBedrock = BedrockUtil.isBedrockPlayer(player);
         switch (notificationType) {
-            case ACTION_BAR -> player.sendActionBar(notification);
+            case ACTION_BAR -> {
+                if (isBedrock) QuartersMessaging.sendMessage(player, notification);
+                else player.sendActionBar(notification);
+            }
             case CHAT -> QuartersMessaging.sendMessage(player, notification);
         }
     }

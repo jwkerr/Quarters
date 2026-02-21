@@ -1,5 +1,6 @@
 package au.lupine.quarters.listener;
 
+import au.lupine.quarters.api.BedrockUtil;
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.ParticleManager;
@@ -31,7 +32,7 @@ public class QuartersWandListener implements Listener {
 
         Location location = block.getLocation();
 
-        event.setCancelled(true);
+        if (!BedrockUtil.isBedrockPlayer(player)) event.setCancelled(true);
 
         SelectionType type = event.getAction().isLeftClick() ? SelectionType.LEFT : SelectionType.RIGHT;
 
@@ -47,6 +48,7 @@ public class QuartersWandListener implements Listener {
 
         Player player = event.getPlayer();
 
+        if (BedrockUtil.isBedrockPlayer(player)) return;
         if (!QuarterManager.getInstance().shouldRenderOutlinesForPlayer(player)) return;
 
         ParticleManager pm = ParticleManager.getInstance(); // Draw outlines on item hold to make them more snappy
