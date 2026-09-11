@@ -58,7 +58,7 @@ public final class ParticleManager {
         );
 
         for (Cuboid cuboid : quarter.getCuboids()) {
-            drawCuboidOutline(resident.getPlayer(), cuboid, Particle.REDSTONE, dustOptions);
+            drawCuboidOutline(resident.getPlayer(), cuboid, Particle.DUST, dustOptions);
         }
     }
 

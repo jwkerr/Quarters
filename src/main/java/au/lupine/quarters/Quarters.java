@@ -10,12 +10,19 @@ import au.lupine.quarters.object.metadata.QuarterListDataFieldDeserialiser;
 import au.lupine.quarters.object.wrapper.Pair;
 import com.palmergames.bukkit.towny.object.metadata.MetadataLoader;
 import com.palmergames.util.JavaUtil;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.minimessage.translation.MiniMessageTranslationStore;
+import net.kyori.adventure.translation.GlobalTranslator;
+import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 public final class Quarters extends JavaPlugin {
@@ -62,9 +69,31 @@ public final class Quarters extends JavaPlugin {
         instance = this;
         logger = getLogger();
 
+        registerTranslations();
+
         ConfigManager.getInstance().setup();
 
         MetadataLoader.getInstance().registerDeserializer(QuarterListDataField.typeID(), new QuarterListDataFieldDeserialiser());
+    }
+
+    private void registerTranslations() {
+        MiniMessageTranslationStore store = MiniMessageTranslationStore.create(Key.key(getPluginMeta().getName().toLowerCase(Locale.ROOT), "translations"));
+
+        for (Locale locale : Locale.getAvailableLocales()) {
+            try {
+                ResourceBundle bundle = ResourceBundle.getBundle(
+                        "lang.Bundle",
+                        locale,
+                        getClassLoader(),
+                        UTF8ResourceBundleControl.utf8ResourceBundleControl()
+                );
+
+                store.registerAll(locale, bundle, false);
+            } catch (MissingResourceException ignored) {
+            }
+        }
+
+        GlobalTranslator.translator().addSource(store);
     }
 
     @SafeVarargs

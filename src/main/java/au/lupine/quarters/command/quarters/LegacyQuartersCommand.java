@@ -1,7 +1,7 @@
 package au.lupine.quarters.command.quarters;
 
 import au.lupine.quarters.api.QuartersMessaging;
-import au.lupine.quarters.command.quarters.method.*;
+import au.lupine.quarters.command.quarters.legacy_method.*;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.ActionType;
