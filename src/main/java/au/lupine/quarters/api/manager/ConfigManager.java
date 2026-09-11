@@ -12,7 +12,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.Nullable;
@@ -163,6 +162,15 @@ public final class ConfigManager {
         }
     }
 
+    public static int getFreeWandAmount() {
+        // -1 is infinite, -2 is invalid
+        return Math.clamp(config.getInt("free_wand_amount", 1), -1, Integer.MAX_VALUE);
+    }
+
+    public static int getFreeWandCooldownSeconds() {
+        return Math.max(config.getInt("wand.cooldown_seconds", 300), 0);
+    }
+
     public static boolean doMayorsBypassCertainElevatedPerms() {
         return config.getBoolean("mayor_bypasses_certain_elevated_perms", true);
     }
@@ -259,6 +267,8 @@ public final class ConfigManager {
         config.addDefault("technical.can_plugin_request_user_groups", true); config.setInlineComments("technical.can_plugin_request_user_groups", List.of("If set to true, the plugin will be allowed to query GitHub for the latest sponsor data to correctly format names (please keep this enabled as sponsors are what keep development coming!)"));
 
         config.addDefault("wand_material", "FLINT"); config.setInlineComments("wand_material", List.of("Material of the wand item"));
+        config.addDefault("wand.free_amount", 1); config.setInlineComments("wand.free_amount", List.of("Amount of free wands a player can receive in total when using /q wand, set -1 for no limit, set 0 for no free wands"));
+        config.addDefault("wand.cooldown_seconds", 300); config.setInlineComments("wand.cooldown_seconds", List.of("Cooldown in seconds between uses of /q wand, set to 0 for no cooldown"));
         config.addDefault("mayor_bypasses_certain_elevated_perms", true); config.setInlineComments("mayor_bypasses_certain_elevated_perms", List.of("If this is set to true, mayors will bypass perms for certain command such as /q create, /q evict etc. This is intended to make configuration easier as most servers will want this behaviour"));
 
         config.addDefault("quarters.max_quarter_volume", -1); config.setInlineComments("quarters.max_quarter_volume", List.of("Maximum block volume of all cuboids in a quarter combined, set to -1 for no limit"));
