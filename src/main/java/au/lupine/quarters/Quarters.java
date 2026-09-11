@@ -1,7 +1,7 @@
 package au.lupine.quarters;
 
 import au.lupine.quarters.api.manager.ConfigManager;
-import au.lupine.quarters.command.quarters.QuartersCommand;
+import au.lupine.quarters.command.quarters.LegacyQuartersCommand;
 import au.lupine.quarters.command.quartersadmin.QuartersAdminCommand;
 import au.lupine.quarters.hook.QuartersPlaceholderExpansion;
 import au.lupine.quarters.listener.*;
@@ -27,7 +27,7 @@ public final class Quarters extends JavaPlugin {
     @Override
     public void onEnable() {
         registerCommands(
-                Pair.of("quarters", new QuartersCommand()),
+                Pair.of("quarters", new LegacyQuartersCommand()),
                 Pair.of("quartersadmin", new QuartersAdminCommand())
         );
 
