@@ -1,27 +1,27 @@
 package au.lupine.quarters.command.quartersadmin.method.meta;
 
-import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
-import au.lupine.quarters.object.entity.Quarter;
-import au.lupine.quarters.object.exception.CommandMethodException;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import org.jetbrains.annotations.NotNull;
 
-public class AdminMetaRemoveMethod extends CommandMethod {
+public final class AdminMetaRemoveMethod extends CommandMethod {
 
-    public AdminMetaRemoveMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quartersadmin.meta.remove");
+    public AdminMetaRemoveMethod() {
+        super("remove", "quarters.command.quartersadmin.meta.remove");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
-        Quarter quarter = getQuarterAtPlayerOrThrow(player);
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(Commands.argument("key", StringArgumentType.word())
+                        .executes(context -> run(context.getSource(), () -> new au.lupine.quarters.command.quartersadmin.legacy_method.meta.AdminMetaRemoveMethod(context.getSource().getSender(), new String[]{context.getArgument("key", String.class)}).execute())));
+    }
 
-        String key = getArgOrThrow(0, "No meta key provided", false);
-
-        if (!quarter.removeMetaData(key, true)) throw new CommandMethodException("This quarter has no meta named " + key);
-
-        QuartersMessaging.sendSuccessMessage(player, "Successfully removed meta key " + key + " from this quarter");
+    @Override
+    public void execute(@NotNull CommandSourceStack source) {
+        new au.lupine.quarters.command.quartersadmin.legacy_method.meta.AdminMetaRemoveMethod(source.getSender(), new String[0]).execute();
     }
 }

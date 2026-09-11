@@ -1,65 +1,46 @@
 package au.lupine.quarters.command.quartersadmin.method;
 
-import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.TownMetadataManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
-import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
-import com.palmergames.bukkit.towny.TownyEconomyHandler;
-import com.palmergames.bukkit.towny.object.Town;
-import org.bukkit.command.CommandSender;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class AdminSellMethod extends CommandMethod {
+import java.util.concurrent.CompletableFuture;
 
-    public AdminSellMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quartersadmin.sell");
+public final class AdminSellMethod extends CommandMethod {
+
+    public AdminSellMethod() {
+        super("sell", "quarters.command.quartersadmin.sell");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
-        Quarter quarter = getQuarterAtPlayerOrThrow(player);
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(Commands.argument("price", StringArgumentType.word())
+                        .suggests((context, builder) -> suggestPrice(context.getSource(), builder))
+                        .executes(context -> run(context.getSource(), () -> new au.lupine.quarters.command.quartersadmin.legacy_method.AdminSellMethod(context.getSource().getSender(), new String[]{context.getArgument("price", String.class)}).execute())));
+    }
 
-        Town town = quarter.getTown();
+    @Override
+    public void execute(@NotNull CommandSourceStack source) {
+        new au.lupine.quarters.command.quartersadmin.legacy_method.AdminSellMethod(source.getSender(), new String[0]).execute();
+    }
 
-        String arg = getArgOrNull(0);
-        if (arg == null) {
-            double defaultSellPrice = TownMetadataManager.getInstance().getDefaultSellPrice(town);
-            String formatted = TownyEconomyHandler.getFormattedBalance(defaultSellPrice);
+    private @NotNull CompletableFuture<Suggestions> suggestPrice(@NotNull CommandSourceStack source, @NotNull SuggestionsBuilder builder) {
+        if (!(source.getSender() instanceof Player player)) return suggestStrings(builder, "cancel");
 
-            quarter.setPrice(defaultSellPrice);
-            quarter.save();
+        Quarter quarter = getQuarterAtPlayerOrNull(player);
+        if (quarter == null) return suggestStrings(builder, "cancel");
 
-            QuartersMessaging.sendSuccessMessage(player, "This quarter is now for sale for " + formatted);
-            return;
-        }
+        double defaultSellPrice = TownMetadataManager.getInstance().getDefaultSellPrice(quarter.getTown());
 
-        if (arg.equalsIgnoreCase("cancel")) {
-            if (!quarter.isForSale()) throw new CommandMethodException("This quarter is not for sale");
-
-            quarter.setPrice(null);
-            quarter.save();
-
-            QuartersMessaging.sendSuccessMessage(player, "This quarter is no longer for sale");
-            return;
-        }
-
-        double price;
-        try {
-            price = Double.parseDouble(arg);
-        } catch (NumberFormatException e) {
-            throw new CommandMethodException(StringConstants.A_PROVIDED_ARGUMENT_WAS_INVALID + arg);
-        }
-
-        if (price < 0) throw new CommandMethodException("Price must be greater than or equal to 0");
-
-        String formatted = TownyEconomyHandler.getFormattedBalance(price);
-
-        quarter.setPrice(price);
-        quarter.save();
-
-        QuartersMessaging.sendSuccessMessage(player, "This quarter is now for sale for " + formatted);
+        return suggestStrings(builder, "cancel", Double.toString(defaultSellPrice));
     }
 }

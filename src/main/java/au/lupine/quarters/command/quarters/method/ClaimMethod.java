@@ -1,7 +1,7 @@
 package au.lupine.quarters.command.quarters.method;
 
 import au.lupine.quarters.api.QuartersMessaging;
-import au.lupine.quarters.object.base.SubCommand;
+import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import com.mojang.brigadier.Command;
@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class ClaimMethod extends SubCommand {
+public final class ClaimMethod extends CommandMethod {
 
     public ClaimMethod() {
         super("claim", "quarters.command.quarters.claim");
@@ -28,6 +28,7 @@ public final class ClaimMethod extends SubCommand {
     public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
         return super.build()
                 .then(Commands.argument("quarter", StringArgumentType.word())
+                        .suggests((context, builder) -> suggestQuarterUUIDs(builder))
                         .executes(context -> run(context.getSource(), context.getArgument("quarter", String.class))));
     }
 
@@ -49,7 +50,7 @@ public final class ClaimMethod extends SubCommand {
     private void executeClaim(@NotNull CommandSourceStack source, @Nullable String quarterArgument) {
         Player player = getSenderAsPlayerOrThrow(source);
 
-        Quarter quarter = getQuarterAtPlayerOrByUUID(player, quarterArgument);
+        Quarter quarter = getQuarterAtPlayerOrByUUIDOrThrow(player, quarterArgument);
 
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return;

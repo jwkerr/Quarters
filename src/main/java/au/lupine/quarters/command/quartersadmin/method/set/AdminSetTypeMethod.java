@@ -1,34 +1,31 @@
 package au.lupine.quarters.command.quartersadmin.method.set;
 
-import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
-import au.lupine.quarters.object.entity.Quarter;
-import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.QuarterType;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import org.jetbrains.annotations.NotNull;
 
-public class AdminSetTypeMethod extends CommandMethod {
+import java.util.Arrays;
 
-    public AdminSetTypeMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quartersadmin.set.type");
+public final class AdminSetTypeMethod extends CommandMethod {
+
+    public AdminSetTypeMethod() {
+        super("type", "quarters.command.quartersadmin.set.type");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
-        Quarter quarter = getQuarterAtPlayerOrThrow(player);
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(Commands.argument("type", StringArgumentType.word())
+                        .suggests((context, builder) -> suggestStrings(builder, Arrays.stream(QuarterType.values()).map(QuarterType::getLowerCase).toArray(String[]::new)))
+                        .executes(context -> run(context.getSource(), () -> new au.lupine.quarters.command.quartersadmin.legacy_method.set.AdminSetTypeMethod(context.getSource().getSender(), new String[]{context.getArgument("type", String.class)}).execute())));
+    }
 
-        QuarterType type;
-        try {
-            type = QuarterType.valueOf(getArgOrThrow(0, "No quarter type provided").toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new CommandMethodException("Invalid quarter type provided");
-        }
-
-        quarter.setType(type);
-        quarter.save();
-
-        QuartersMessaging.sendSuccessMessage(player, "This quarter has been set to type: " + quarter.getType().getCommonName());
+    @Override
+    public void execute(@NotNull CommandSourceStack source) {
+        new au.lupine.quarters.command.quartersadmin.legacy_method.set.AdminSetTypeMethod(source.getSender(), new String[0]).execute();
     }
 }

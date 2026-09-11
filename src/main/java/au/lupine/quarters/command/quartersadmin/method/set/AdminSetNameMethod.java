@@ -1,33 +1,27 @@
 package au.lupine.quarters.command.quartersadmin.method.set;
 
-import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
-import au.lupine.quarters.object.entity.Quarter;
-import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import org.jetbrains.annotations.NotNull;
 
-public class AdminSetNameMethod extends CommandMethod {
+public final class AdminSetNameMethod extends CommandMethod {
 
-    public AdminSetNameMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quartersadmin.set.name");
+    public AdminSetNameMethod() {
+        super("name", "quarters.command.quartersadmin.set.name");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
-        Quarter quarter = getQuarterAtPlayerOrThrow(player);
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(Commands.argument("name", StringArgumentType.greedyString())
+                        .executes(context -> run(context.getSource(), () -> new au.lupine.quarters.command.quartersadmin.legacy_method.set.AdminSetNameMethod(context.getSource().getSender(), context.getArgument("name", String.class).split(" ")).execute())));
+    }
 
-        if (args.length == 0) throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
-        String name = String.join(" ", args);
-
-        int maxNameLength = 32;
-        if (name.length() > maxNameLength) throw new CommandMethodException("Specified name is too long, max length is " + maxNameLength);
-
-        quarter.setName(name);
-        quarter.save();
-
-        QuartersMessaging.sendSuccessMessage(player, "Successfully changed this quarter's name to " + name);
+    @Override
+    public void execute(@NotNull CommandSourceStack source) {
+        new au.lupine.quarters.command.quartersadmin.legacy_method.set.AdminSetNameMethod(source.getSender(), new String[0]).execute();
     }
 }

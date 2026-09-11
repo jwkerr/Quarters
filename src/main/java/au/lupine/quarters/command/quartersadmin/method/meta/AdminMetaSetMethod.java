@@ -1,44 +1,31 @@
 package au.lupine.quarters.command.quartersadmin.method.meta;
 
-import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
-import au.lupine.quarters.object.entity.Quarter;
-import au.lupine.quarters.object.exception.CommandMethodException;
-import com.palmergames.bukkit.towny.TownyUniverse;
-import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
+public final class AdminMetaSetMethod extends CommandMethod {
 
-public class AdminMetaSetMethod extends CommandMethod {
-
-    public AdminMetaSetMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quartersadmin.meta.set");
+    public AdminMetaSetMethod() {
+        super("set", "quarters.command.quartersadmin.meta.set");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
-        Quarter quarter = getQuarterAtPlayerOrThrow(player);
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(Commands.argument("key", StringArgumentType.word())
+                        .then(Commands.argument("value", StringArgumentType.greedyString())
+                                .executes(context -> run(context.getSource(), () -> new au.lupine.quarters.command.quartersadmin.legacy_method.meta.AdminMetaSetMethod(context.getSource().getSender(), new String[]{
+                                        context.getArgument("key", String.class),
+                                        context.getArgument("value", String.class)
+                                }).execute()))));
+    }
 
-        String key = getArgOrThrow(0, "No meta key provided", false);
-        String value = getArgOrThrow(1, "No meta value provided", false);
-
-        CustomDataField<?> cdf = quarter.getMetadata(key);
-        if (cdf == null) {
-            Map<String, CustomDataField<?>> rmd = TownyUniverse.getInstance().getRegisteredMetadataMap();
-
-            CustomDataField<?> registeredDataField = rmd.get(key);
-            if (registeredDataField == null) throw new CommandMethodException("Specified meta key " + key + " does not exist");
-
-            cdf = registeredDataField.clone();
-        }
-
-        cdf.setValueFromString(value);
-
-        quarter.addMetaData(cdf, true);
-
-        QuartersMessaging.sendSuccessMessage(player, "Successfully set this quarter's meta key " + key + " to " + value);
+    @Override
+    public void execute(@NotNull CommandSourceStack source) {
+        new au.lupine.quarters.command.quartersadmin.legacy_method.meta.AdminMetaSetMethod(source.getSender(), new String[0]).execute();
     }
 }

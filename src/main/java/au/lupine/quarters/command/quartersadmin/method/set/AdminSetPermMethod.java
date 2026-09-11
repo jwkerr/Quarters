@@ -1,47 +1,40 @@
 package au.lupine.quarters.command.quartersadmin.method.set;
 
-import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
-import au.lupine.quarters.object.entity.Quarter;
-import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.PermLevel;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import org.jetbrains.annotations.NotNull;
 
-public class AdminSetPermMethod extends CommandMethod {
+import java.util.Arrays;
 
-    public AdminSetPermMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quartersadmin.set.perm");
+public final class AdminSetPermMethod extends CommandMethod {
+
+    public AdminSetPermMethod() {
+        super("perm", "quarters.command.quartersadmin.set.perm");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
-        Quarter quarter = getQuarterAtPlayerOrThrow(player);
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(Commands.argument("action", StringArgumentType.word())
+                        .suggests((context, builder) -> suggestStrings(builder, Arrays.stream(ActionType.values()).map(ActionType::getLowerCase).toArray(String[]::new)))
+                        .then(Commands.argument("level", StringArgumentType.word())
+                                .suggests((context, builder) -> suggestStrings(builder, Arrays.stream(PermLevel.values()).map(PermLevel::getLowerCase).toArray(String[]::new)))
+                                .then(Commands.argument("allowed", StringArgumentType.word())
+                                        .suggests((context, builder) -> suggestStrings(builder, "true", "false"))
+                                        .executes(context -> run(context.getSource(), () -> new au.lupine.quarters.command.quartersadmin.legacy_method.set.AdminSetPermMethod(context.getSource().getSender(), new String[]{
+                                                context.getArgument("action", String.class),
+                                                context.getArgument("level", String.class),
+                                                context.getArgument("allowed", String.class)
+                                        }).execute())))));
+    }
 
-        ActionType type;
-        try {
-            type = ActionType.valueOf(getArgOrThrow(0, "No action type provided").toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new CommandMethodException("Invalid action type provided");
-        }
-
-        PermLevel level;
-        try {
-            level = PermLevel.valueOf(getArgOrThrow(1, "No perm level provided").toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new CommandMethodException("Invalid perm level provided");
-        }
-
-        boolean allowed = Boolean.parseBoolean(getArgOrThrow(2, "No boolean provided"));
-
-        quarter.getPermissions().setPermission(type, level, allowed);
-        quarter.save();
-
-        String lowerCaseLevel = level.name().toLowerCase();
-        String lowerCaseType = type.getCommonName().toLowerCase();
-
-        QuartersMessaging.sendSuccessMessage(player, "Successfully set " + lowerCaseLevel + " " + lowerCaseType + " permissions to " + allowed);
+    @Override
+    public void execute(@NotNull CommandSourceStack source) {
+        new au.lupine.quarters.command.quartersadmin.legacy_method.set.AdminSetPermMethod(source.getSender(), new String[0]).execute();
     }
 }

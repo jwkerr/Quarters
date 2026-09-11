@@ -4,7 +4,7 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.api.manager.SelectionManager;
-import au.lupine.quarters.object.base.SubCommand;
+import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public final class CreateMethod extends SubCommand {
+public final class CreateMethod extends CommandMethod {
 
     public CreateMethod() {
         super("create", "quarters.command.quarters.create", true);
