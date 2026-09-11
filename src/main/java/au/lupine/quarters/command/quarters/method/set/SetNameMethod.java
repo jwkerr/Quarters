@@ -1,10 +1,15 @@
 package au.lupine.quarters.command.quarters.method.set;
 
+import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
+import au.lupine.quarters.object.entity.Quarter;
+import au.lupine.quarters.object.exception.CommandMethodException;
+import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public final class SetNameMethod extends CommandMethod {
@@ -17,11 +22,27 @@ public final class SetNameMethod extends CommandMethod {
     public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
         return super.build()
                 .then(Commands.argument("name", StringArgumentType.greedyString())
-                        .executes(context -> run(context.getSource(), () -> new au.lupine.quarters.command.quarters.legacy_method.set.SetNameMethod(context.getSource().getSender(), context.getArgument("name", String.class).split(" ")).execute())));
+                        .executes(context -> run(context.getSource(), () -> execute(context.getSource(), context.getArgument("name", String.class)))));
     }
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        new au.lupine.quarters.command.quarters.legacy_method.set.SetNameMethod(source.getSender(), new String[0]).execute();
+        throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
+    }
+
+    private void execute(@NotNull CommandSourceStack source, @NotNull String name) {
+        Player player = getSenderAsPlayerOrThrow(source);
+        Quarter quarter = getQuarterAtPlayerOrThrow(player);
+
+        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_PERFORM_THIS_ACTION);
+
+        int maxNameLength = 32;
+        if (name.length() > maxNameLength) throw new CommandMethodException("Specified name is too long, max length is " + maxNameLength);
+
+        quarter.setName(name);
+        quarter.save();
+
+        QuartersMessaging.sendSuccessMessage(player, "Successfully changed this quarter's name to " + name);
+        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has changed a quarter's name to " + name, quarter.getFirstCornerOfFirstCuboid());
     }
 }

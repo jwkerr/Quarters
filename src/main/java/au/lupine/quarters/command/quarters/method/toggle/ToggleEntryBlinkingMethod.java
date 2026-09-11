@@ -1,7 +1,12 @@
 package au.lupine.quarters.command.quarters.method.toggle;
 
+import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.api.manager.ResidentMetadataManager;
 import au.lupine.quarters.object.base.CommandMethod;
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Resident;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public final class ToggleEntryBlinkingMethod extends CommandMethod {
@@ -12,6 +17,20 @@ public final class ToggleEntryBlinkingMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        new au.lupine.quarters.command.quarters.legacy_method.toggle.ToggleEntryBlinkingMethod(source.getSender(), new String[0]).execute();
+        Player player = getSenderAsPlayerOrThrow(source);
+
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null) return;
+
+        ResidentMetadataManager rmm = ResidentMetadataManager.getInstance();
+        boolean hasEntryBlinking = rmm.hasEntryBlinking(resident);
+
+        rmm.setHasEntryBlinking(resident, !hasEntryBlinking);
+
+        if (hasEntryBlinking) {
+            QuartersMessaging.sendSuccessMessage(player, "Successfully disabled entry blinking");
+        } else {
+            QuartersMessaging.sendSuccessMessage(player, "Successfully enabled entry blinking");
+        }
     }
 }

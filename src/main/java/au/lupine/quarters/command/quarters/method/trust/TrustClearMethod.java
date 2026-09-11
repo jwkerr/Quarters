@@ -1,8 +1,16 @@
 package au.lupine.quarters.command.quarters.method.trust;
 
+import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
+import au.lupine.quarters.object.entity.Quarter;
+import au.lupine.quarters.object.exception.CommandMethodException;
+import au.lupine.quarters.object.wrapper.StringConstants;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.UUID;
 
 public final class TrustClearMethod extends CommandMethod {
 
@@ -12,6 +20,18 @@ public final class TrustClearMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        new au.lupine.quarters.command.quarters.legacy_method.trust.TrustClearMethod(source.getSender(), new String[0]).execute();
+        Player player = getSenderAsPlayerOrThrow(source);
+        Quarter quarter = getQuarterAtPlayerOrThrow(player);
+
+        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_PERFORM_THIS_ACTION);
+
+        List<UUID> trusted = quarter.getTrusted();
+        trusted.clear();
+
+        quarter.setTrusted(trusted);
+        quarter.save();
+
+        QuartersMessaging.sendSuccessMessage(player, StringConstants.ALL_TRUSTED_PLAYERS_HAVE_BEEN_REMOVED_FROM_THIS_QUARTER);
+        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has removed all trusted players from a quarter", player.getLocation());
     }
 }

@@ -1,7 +1,12 @@
 package au.lupine.quarters.command.quarters.method.toggle;
 
+import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.api.manager.ResidentMetadataManager;
 import au.lupine.quarters.object.base.CommandMethod;
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Resident;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public final class ToggleEntryNotificationsMethod extends CommandMethod {
@@ -12,6 +17,20 @@ public final class ToggleEntryNotificationsMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        new au.lupine.quarters.command.quarters.legacy_method.toggle.ToggleEntryNotificationsMethod(source.getSender(), new String[0]).execute();
+        Player player = getSenderAsPlayerOrThrow(source);
+
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null) return;
+
+        ResidentMetadataManager rmm = ResidentMetadataManager.getInstance();
+        boolean hasEntryNotifications = rmm.hasEntryNotifications(resident);
+
+        rmm.setHasEntryNotifications(resident, !hasEntryNotifications);
+
+        if (hasEntryNotifications) {
+            QuartersMessaging.sendSuccessMessage(player, "Successfully disabled entry notifications");
+        } else {
+            QuartersMessaging.sendSuccessMessage(player, "Successfully enabled entry notifications");
+        }
     }
 }
