@@ -58,7 +58,9 @@ public final class ParticleManager {
         );
 
         for (Cuboid cuboid : quarter.getCuboids()) {
-            drawCuboidOutline(resident.getPlayer(), cuboid, Particle.REDSTONE, dustOptions);
+            Player player = resident.getPlayer();
+            if (player == null) continue;
+            drawCuboidOutline(player, cuboid, Particle.DUST, dustOptions);
         }
     }
 
@@ -76,7 +78,7 @@ public final class ParticleManager {
         }
     }
 
-    public List<Location> computeCuboidEdges(@NotNull Cuboid cuboid, @NotNull Location viewerLocation) {
+    public @NotNull List<Location> computeCuboidEdges(@NotNull Cuboid cuboid, @NotNull Location viewerLocation) {
         Location cornerOne = cuboid.getCornerOne();
         Location cornerTwo = cuboid.getCornerTwo();
 

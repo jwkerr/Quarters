@@ -4,41 +4,32 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.command.quarters.method.delete.DeleteAllMethod;
 import au.lupine.quarters.command.quarters.method.delete.DeletePlotMethod;
 import au.lupine.quarters.object.base.CommandArgument;
-import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.wrapper.StringConstants;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class DeleteArgument extends CommandArgument {
+public final class DeleteArgument extends CommandArgument {
 
-    public DeleteArgument(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.delete", true);
+    public DeleteArgument() {
+        super("delete", "quarters.command.quarters.delete", true);
     }
 
     @Override
-    public void execute() {
-        if (args.length == 0) {
-            deleteQuarterAtLocation();
-            return;
-        }
-
-        parseMethod(sender, args[0].toLowerCase(), CommandMethod.removeFirstArgument(args));
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(new DeleteAllMethod().build())
+                .then(new DeletePlotMethod().build());
     }
 
     @Override
-    protected void parseMethod(CommandSender sender, String method, String[] args) {
-        switch (method) {
-            case "all" -> new DeleteAllMethod(sender, args).execute();
-            case "plot" -> new DeletePlotMethod(sender, args).execute();
-        }
-    }
-
-    private void deleteQuarterAtLocation() {
-        Player player = getSenderAsPlayerOrThrow();
+    public void execute(@NotNull CommandSourceStack source) {
+        Player player = getSenderAsPlayerOrThrow(source);
 
         Town town = TownyAPI.getInstance().getTown(player);
         if (town == null) throw new CommandMethodException(StringConstants.YOU_ARE_NOT_PART_OF_A_TOWN);

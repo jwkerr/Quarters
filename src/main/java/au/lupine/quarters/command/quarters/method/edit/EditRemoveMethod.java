@@ -6,20 +6,21 @@ import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.wrapper.StringConstants;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class EditRemoveMethod extends CommandMethod {
+public final class EditRemoveMethod extends CommandMethod {
 
-    public EditRemoveMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.edit.remove", true);
+    public EditRemoveMethod() {
+        super("remove", "quarters.command.quarters.edit.remove", true);
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public void execute(@NotNull CommandSourceStack source) {
+        Player player = getSenderAsPlayerOrThrow(source);
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
         if (!quarter.isPlayerInTown(player)) throw new CommandMethodException(StringConstants.THIS_QUARTER_IS_NOT_PART_OF_YOUR_TOWN);

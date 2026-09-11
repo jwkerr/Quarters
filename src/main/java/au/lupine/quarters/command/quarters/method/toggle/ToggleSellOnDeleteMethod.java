@@ -7,18 +7,19 @@ import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.wrapper.StringConstants;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class ToggleSellOnDeleteMethod extends CommandMethod {
+public final class ToggleSellOnDeleteMethod extends CommandMethod {
 
-    public ToggleSellOnDeleteMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.toggle.sellondelete", true);
+    public ToggleSellOnDeleteMethod() {
+        super("sellondelete", "quarters.command.quarters.toggle.sellondelete", true);
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public void execute(@NotNull CommandSourceStack source) {
+        Player player = getSenderAsPlayerOrThrow(source);
 
         Town town = TownyAPI.getInstance().getTown(player);
         if (town == null) throw new CommandMethodException(StringConstants.YOU_ARE_NOT_PART_OF_A_TOWN);

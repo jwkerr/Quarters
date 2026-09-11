@@ -7,21 +7,22 @@ import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-public class WandMethod extends CommandMethod {
+public final class WandMethod extends CommandMethod {
 
-    public WandMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.wand");
+    public WandMethod() {
+        super("wand", "quarters.command.quarters.wand");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public void execute(@NotNull CommandSourceStack stack) {
+        Player player = getSenderAsPlayerOrThrow(stack);
 
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return;

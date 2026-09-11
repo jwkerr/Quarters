@@ -12,28 +12,29 @@ import au.lupine.quarters.object.state.CuboidValidity;
 import au.lupine.quarters.object.wrapper.StringConstants;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class CreateMethod extends CommandMethod {
+public final class CreateMethod extends CommandMethod {
 
-    public CreateMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.create", true);
+    public CreateMethod() {
+        super("create", "quarters.command.quarters.create", true);
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public void execute(@NotNull CommandSourceStack source) {
+        Player player = getSenderAsPlayerOrThrow(source);
 
         SelectionManager sm = SelectionManager.getInstance();
 
         List<Cuboid> cuboids = sm.getCuboidsOrSelectionAsCuboid(player);
         if (cuboids.isEmpty()) throw new CommandMethodException(StringConstants.YOU_HAVE_NOT_SELECTED_ANY_AREAS);
 
-        Town town = TownyAPI.getInstance().getTown(cuboids.get(0).getCornerOne());
+        Town town = TownyAPI.getInstance().getTown(cuboids.getFirst().getCornerOne());
         if (town == null) throw new CommandMethodException("Could not resolve a town from the first selected position");
 
         if (!town.hasResident(player)) throw new CommandMethodException("You are not part of this town, you can only make quarters in your own town");
@@ -51,7 +52,7 @@ public class CreateMethod extends CommandMethod {
 
         List<Quarter> quarterList = QuarterManager.getInstance().getQuarters(town);
         int maxQuarters = ConfigManager.getMaxQuartersPerTown();
-        if (maxQuarters > -1 && quarterList.size() == maxQuarters) throw new CommandMethodException("Selected quarter could not be created as " + town.getName() + " will exceed the configured quarter limit of " + maxQuarters);
+        if (maxQuarters > -1 && quarterList.size() >= maxQuarters) throw new CommandMethodException("Selected quarter could not be created as " + town.getName() + " will exceed the configured quarter limit of " + maxQuarters);
 
         Quarter quarter = new Quarter(town, cuboids, player.getUniqueId());
 
@@ -69,4 +70,5 @@ public class CreateMethod extends CommandMethod {
 
         QuartersMessaging.sendCommandFeedbackToTown(town, player, "has created a quarter", location);
     }
+
 }

@@ -7,15 +7,22 @@ import au.lupine.quarters.hook.QuartersPlaceholderExpansion;
 import au.lupine.quarters.listener.*;
 import au.lupine.quarters.object.metadata.QuarterListDataField;
 import au.lupine.quarters.object.metadata.QuarterListDataFieldDeserialiser;
-import au.lupine.quarters.object.wrapper.Pair;
 import com.palmergames.bukkit.towny.object.metadata.MetadataLoader;
 import com.palmergames.util.JavaUtil;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.PluginCommand;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.minimessage.translation.MiniMessageTranslationStore;
+import net.kyori.adventure.translation.GlobalTranslator;
+import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 public final class Quarters extends JavaPlugin {
@@ -26,10 +33,7 @@ public final class Quarters extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        registerCommands(
-                Pair.of("quarters", new QuartersCommand()),
-                Pair.of("quartersadmin", new QuartersAdminCommand())
-        );
+        registerCommands();
 
         registerHooks();
 
@@ -62,24 +66,50 @@ public final class Quarters extends JavaPlugin {
         instance = this;
         logger = getLogger();
 
+        registerTranslations();
+
         ConfigManager.getInstance().setup();
 
         MetadataLoader.getInstance().registerDeserializer(QuarterListDataField.typeID(), new QuarterListDataFieldDeserialiser());
     }
 
-    @SafeVarargs
-    private void registerCommands(Pair<String, CommandExecutor>... commandPair) {
-        for (Pair<String, CommandExecutor> pair : commandPair) {
-            String name = pair.getFirst();
+    private void registerTranslations() {
+        MiniMessageTranslationStore store = MiniMessageTranslationStore.create(Key.key(getPluginMeta().getName().toLowerCase(Locale.ROOT), "translations"));
 
-            PluginCommand command = getCommand(name);
-            if (command == null) {
-                logSevere("Command " + name + " was null, failed to set a command executor");
-                continue;
+        for (Locale locale : Locale.getAvailableLocales()) {
+            try {
+                ResourceBundle bundle = ResourceBundle.getBundle(
+                        "lang.Bundle",
+                        locale,
+                        getClassLoader(),
+                        UTF8ResourceBundleControl.utf8ResourceBundleControl()
+                );
+
+                store.registerAll(locale, bundle, false);
+            } catch (MissingResourceException ignored) {
             }
-
-            command.setExecutor(pair.getSecond());
         }
+
+        GlobalTranslator.translator().addSource(store);
+    }
+
+    private void registerCommands() {
+        getLifecycleManager().registerEventHandler(
+                LifecycleEvents.COMMANDS,
+                event -> {
+                    event.registrar().register(
+                            QuartersCommand.build(),
+                            "Main Quarters command",
+                            List.of("q")
+                    );
+
+                    event.registrar().register(
+                            QuartersAdminCommand.build(),
+                            "Quarters administration command",
+                            List.of("qa")
+                    );
+                }
+        );
     }
 
     private void registerHooks() {
@@ -96,19 +126,19 @@ public final class Quarters extends JavaPlugin {
         }
     }
 
-    public static Quarters getInstance() {
+    public static @NotNull Quarters getInstance() {
         return instance;
     }
 
-    public static void logInfo(String msg) {
+    public static void logInfo(@NotNull String msg) {
         logger.info(msg);
     }
 
-    public static void logWarning(String msg) {
+    public static void logWarning(@NotNull String msg) {
         logger.warning(msg);
     }
 
-    public static void logSevere(String msg) {
+    public static void logSevere(@NotNull String msg) {
         logger.severe(msg);
     }
 }

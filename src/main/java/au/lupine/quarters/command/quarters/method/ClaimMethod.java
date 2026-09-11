@@ -4,24 +4,53 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.object.Resident;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class ClaimMethod extends CommandMethod {
+public final class ClaimMethod extends CommandMethod {
 
-    public ClaimMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.claim");
+    public ClaimMethod() {
+        super("claim", "quarters.command.quarters.claim");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(Commands.argument("quarter", StringArgumentType.word())
+                        .suggests((context, builder) -> suggestQuarterUUIDs(builder))
+                        .executes(context -> run(context.getSource(), context.getArgument("quarter", String.class))));
+    }
 
-        Quarter quarter = getQuarterAtPlayerOrByUUIDOrThrow(player, getArgOrNull(0));
+    @Override
+    public void execute(@NotNull CommandSourceStack source) {
+        executeClaim(source, null);
+    }
+
+    private int run(@NotNull CommandSourceStack source, @Nullable String quarterArgument) {
+        try {
+            executeClaim(source, quarterArgument);
+            return Command.SINGLE_SUCCESS;
+        } catch (CommandMethodException e) {
+            QuartersMessaging.sendErrorMessage(source.getSender(), e.getMessage());
+            return 0;
+        }
+    }
+
+    private void executeClaim(@NotNull CommandSourceStack source, @Nullable String quarterArgument) {
+        Player player = getSenderAsPlayerOrThrow(source);
+
+        Quarter quarter = getQuarterAtPlayerOrByUUIDOrThrow(player, quarterArgument);
 
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return;
@@ -31,18 +60,18 @@ public class ClaimMethod extends CommandMethod {
         sendClaimConfirmation(resident, quarter);
     }
 
-    private void canResidentClaimQuarter(Resident resident, Quarter quarter) {
+    private void canResidentClaimQuarter(@NotNull Resident resident, @NotNull Quarter quarter) {
         Double price = quarter.getPrice();
-        if (price == null) throw new CommandMethodException("This quarter is not for sale");
+        if (price == null) throw new CommandMethodException("quarters.command.quarters.claim.feedback.not_for_sale");
 
-        if (quarter.isResidentOwner(resident)) throw new CommandMethodException("You already own this quarter");
+        if (quarter.isResidentOwner(resident)) throw new CommandMethodException("quarters.command.quarters.claim.feedback.already_owner");
 
-        if (!quarter.isEmbassy() && !quarter.getTown().equals(resident.getTownOrNull())) throw new CommandMethodException("You cannot buy this quarter as it is not an embassy and it is not part of your town");
+        if (!quarter.isEmbassy() && !quarter.getTown().equals(resident.getTownOrNull())) throw new CommandMethodException("quarters.command.quarters.claim.feedback.not_embassy_or_town");
 
-        if (resident.getAccount().getHoldingBalance() < price) throw new CommandMethodException("You do not have sufficient funds to buy this quarter");
+        if (resident.getAccount().getHoldingBalance() < price) throw new CommandMethodException("quarters.command.quarters.claim.feedback.insufficient_funds");
     }
 
-    private void sendClaimConfirmation(Resident resident, Quarter quarter) {
+    private void sendClaimConfirmation(@NotNull Resident resident, @NotNull Quarter quarter) {
         Double currentPrice = quarter.getPrice();
         if (currentPrice == null) return; // This should never happen given prior state
 
@@ -53,34 +82,49 @@ public class ClaimMethod extends CommandMethod {
 
         if (currentPrice > 0) {
             Confirmation.runOnAccept(() -> {
-                try {
-                    canResidentClaimQuarter(resident, quarter);
-                    if (!currentPrice.equals(quarter.getPrice())) throw new CommandMethodException("Failed to buy this quarter as its price has changed");
-                } catch (CommandMethodException e) {
-                    QuartersMessaging.sendErrorMessage(player, e.getMessage());
-                    return;
-                }
+                    try {
+                        canResidentClaimQuarter(resident, quarter);
+                        if (!currentPrice.equals(quarter.getPrice())) throw new CommandMethodException("quarters.command.quarters.claim.feedback.price_changed");
+                    } catch (CommandMethodException e) {
+                        QuartersMessaging.sendErrorMessage(player, e.getMessage());
+                        return;
+                    }
 
-                String reason = "Quarter " + quarter.getUUID() + " sale";
-                resident.getAccount().withdraw(currentPrice, reason);
-                quarter.getTown().getAccount().deposit(currentPrice, reason);
+                    String reason = "Quarter " + quarter.getUUID() + " sale";
+                    resident.getAccount().withdraw(currentPrice, reason);
+                    quarter.getTown().getAccount().deposit(currentPrice, reason);
 
-                changeOwnerAndSave(quarter, resident);
+                    changeOwnerAndSave(quarter, resident);
 
-                QuartersMessaging.sendSuccessMessage(player, "You are now the owner of this quarter");
-                QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has claimed a quarter for " + formattedPrice, player.getLocation());
-            })
-                    .setTitle("Purchasing this quarter will cost " + formattedPrice + ", are you sure you want to purchase it?")
-                    .sendTo(player);
+                    QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.claim.feedback.success");
+                    QuartersMessaging.sendCommandFeedbackToTown(
+                            quarter.getTown(),
+                            player,
+                            "quarters.command.quarters.claim.feedback.town.paid",
+                            player.getLocation(),
+                            Argument.string("price", formattedPrice)
+                    );
+                })
+                .setTitle(QuartersMessaging.translate(
+                        player,
+                        "quarters.command.quarters.claim.confirmation.title",
+                        Argument.string("price", formattedPrice)
+                ))
+                .sendTo(player);
         } else {
             changeOwnerAndSave(quarter, resident);
 
-            QuartersMessaging.sendSuccessMessage(player, "You are now the owner of this quarter");
-            QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has claimed a quarter", player.getLocation());
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.claim.feedback.success");
+            QuartersMessaging.sendCommandFeedbackToTown(
+                    quarter.getTown(),
+                    player,
+                    "quarters.command.quarters.claim.feedback.town.free",
+                    player.getLocation()
+            );
         }
     }
 
-    private void changeOwnerAndSave(Quarter quarter, Resident resident) {
+    private void changeOwnerAndSave(@NotNull Quarter quarter, @NotNull Resident resident) {
         quarter.setOwner(resident.getUUID());
         quarter.setPrice(null);
         quarter.save();

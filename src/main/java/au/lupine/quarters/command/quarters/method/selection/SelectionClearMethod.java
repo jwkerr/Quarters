@@ -3,18 +3,19 @@ package au.lupine.quarters.command.quarters.method.selection;
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.SelectionManager;
 import au.lupine.quarters.object.base.CommandMethod;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class SelectionClearMethod extends CommandMethod {
+public final class SelectionClearMethod extends CommandMethod {
 
-    public SelectionClearMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.selection.clear");
+    public SelectionClearMethod() {
+        super("clear", "quarters.command.quarters.selection.clear");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public void execute(@NotNull CommandSourceStack source) {
+        Player player = getSenderAsPlayerOrThrow(source);
         SelectionManager sm = SelectionManager.getInstance();
 
         sm.clearSelection(player);

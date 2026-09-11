@@ -5,22 +5,34 @@ import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.wrapper.StringConstants;
-import org.bukkit.command.CommandSender;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class AdminSetNameMethod extends CommandMethod {
+public final class AdminSetNameMethod extends CommandMethod {
 
-    public AdminSetNameMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quartersadmin.set.name");
+    public AdminSetNameMethod() {
+        super("name", "quarters.command.quartersadmin.set.name");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
-        Quarter quarter = getQuarterAtPlayerOrThrow(player);
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(Commands.argument("name", StringArgumentType.greedyString())
+                        .executes(context -> run(context.getSource(), () -> execute(context.getSource(), context.getArgument("name", String.class)))));
+    }
 
-        if (args.length == 0) throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
-        String name = String.join(" ", args);
+    @Override
+    public void execute(@NotNull CommandSourceStack source) {
+        throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
+    }
+
+    private void execute(@NotNull CommandSourceStack source, @NotNull String name) {
+        Player player = getSenderAsPlayerOrThrow(source);
+        Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
         int maxNameLength = 32;
         if (name.length() > maxNameLength) throw new CommandMethodException("Specified name is too long, max length is " + maxNameLength);

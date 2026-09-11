@@ -7,6 +7,7 @@ import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.wrapper.UserGroup;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
@@ -14,7 +15,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,17 +22,28 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class FameMethod extends CommandMethod {
+public final class FameMethod extends CommandMethod {
 
     private static final Map<UUID, String> CACHED_NAMES = new ConcurrentHashMap<>();
 
-    public FameMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.fame");
+    public FameMethod() {
+        super("fame", "quarters.command.quarters.fame");
     }
 
     @Override
-    public void execute() {
+    public void execute(@NotNull CommandSourceStack stack) {
         List<UserGroup> userGroups = ConfigManager.getUserGroups();
+
+        // Sending a message as response to indicate that the command is being processed. This is a user-friendly design.
+        boolean hasUncachedName = userGroups.stream()
+                .filter(UserGroup::shouldDisplayInFame)
+                .flatMap(userGroup -> userGroup.getMembers().stream())
+                .anyMatch(uuid -> !CACHED_NAMES.containsKey(uuid));
+
+        // Only need to show if a name should be fetched from Mojang API
+        if (hasUncachedName) {
+            QuartersMessaging.sendMessage(stack.getSender(), Component.text("Fetching the wall of fame...").color(NamedTextColor.GRAY));
+        }
 
         List<CompletableFuture<Component>> futureNames = new ArrayList<>();
         for (UserGroup userGroup : userGroups) {
@@ -64,11 +75,11 @@ public class FameMethod extends CommandMethod {
             builder.append(Component.text("here!!!", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://github.com/sponsors/jwkerr")));
             builder.append(Component.text(" :3", NamedTextColor.GREEN));
 
-            QuartersMessaging.sendComponent(sender, builder.build());
+            QuartersMessaging.sendComponent(stack.getSender(), builder.build());
         });
     }
 
-    public CompletableFuture<@Nullable String> getUsernameByUUIDAsync(@NotNull UUID uuid) {
+    private CompletableFuture<@Nullable String> getUsernameByUUIDAsync(@NotNull UUID uuid) {
         return CompletableFuture.supplyAsync(() -> {
             String cachedName = CACHED_NAMES.get(uuid);
             if (cachedName != null) return cachedName;

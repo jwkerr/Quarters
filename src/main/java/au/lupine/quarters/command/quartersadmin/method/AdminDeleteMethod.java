@@ -4,18 +4,19 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.wrapper.StringConstants;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class AdminDeleteMethod extends CommandMethod {
+public final class AdminDeleteMethod extends CommandMethod {
 
-    public AdminDeleteMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quartersadmin.delete");
+    public AdminDeleteMethod() {
+        super("delete", "quarters.command.quartersadmin.delete");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public void execute(@NotNull CommandSourceStack source) {
+        Player player = getSenderAsPlayerOrThrow(source);
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
         quarter.delete();

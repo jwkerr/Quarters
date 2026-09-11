@@ -6,10 +6,13 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.translation.GlobalTranslator;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Locale;
 
 public class QuartersMessaging {
 
@@ -38,11 +42,29 @@ public class QuartersMessaging {
     }
 
     public static void sendSuccessMessage(@NotNull Audience audience, @NotNull String message) {
-        sendMessage(audience, Component.text(message, NamedTextColor.GREEN, TextDecoration.ITALIC));
+        sendSuccessMessage(audience, message, new ComponentLike[0]);
+    }
+
+    public static void sendSuccessMessage(@NotNull Audience audience, @NotNull String message, @NotNull ComponentLike... arguments) {
+        sendMessage(audience, Component.translatable(message, arguments).color(NamedTextColor.GREEN).decorate(TextDecoration.ITALIC));
     }
 
     public static void sendErrorMessage(@NotNull Audience audience, @NotNull String message) {
-        sendMessage(audience, Component.text(message, NamedTextColor.RED, TextDecoration.ITALIC));
+        sendErrorMessage(audience, message, new ComponentLike[0]);
+    }
+
+    public static void sendErrorMessage(@NotNull Audience audience, @NotNull String message, @NotNull ComponentLike... arguments) {
+        sendMessage(audience, Component.translatable(message, arguments).color(NamedTextColor.RED).decorate(TextDecoration.ITALIC));
+    }
+
+    public static @NotNull String translate(@NotNull Player player, @NotNull String message, @NotNull ComponentLike... arguments) {
+        Component component = Component.translatable(message, arguments);
+        return PlainTextComponentSerializer.plainText().serialize(GlobalTranslator.render(component, player.locale()));
+    }
+
+    public static @NotNull String translate(@NotNull String message, @NotNull ComponentLike... arguments) {
+        Component component = Component.translatable(message, arguments);
+        return PlainTextComponentSerializer.plainText().serialize(GlobalTranslator.render(component, Locale.US));
     }
 
     public static Component getListComponent(@NotNull Component header, @NotNull List<Pair<String, Component>> labelledEntries, @Nullable List<Pair<String, Component>> bracketEntries) {
@@ -82,10 +104,14 @@ public class QuartersMessaging {
     }
 
     public static void sendCommandFeedbackToTown(@NotNull Town town, @NotNull Player executingPlayer, @NotNull String message, @Nullable Location location) {
+        sendCommandFeedbackToTown(town, executingPlayer, message, location, new ComponentLike[0]);
+    }
+
+    public static void sendCommandFeedbackToTown(@NotNull Town town, @NotNull Player executingPlayer, @NotNull String message, @Nullable Location location, @NotNull ComponentLike... arguments) {
         TextComponent.Builder builder = Component.text();
         builder.append(ConfigManager.getFormattedName(executingPlayer.getUniqueId(), null));
         builder.appendSpace();
-        builder.append(Component.text(message, NamedTextColor.GRAY));
+        builder.append(Component.translatable(message, arguments).color(NamedTextColor.GRAY));
 
         if (location != null) {
             builder.appendSpace();
@@ -111,7 +137,7 @@ public class QuartersMessaging {
         }
     }
 
-    public static void sendInfoMessage(Player player, String message, @Nullable Location location) {
+    public static void sendInfoMessage(@NotNull Player player, @NotNull String message, @Nullable Location location) {
         TextComponent.Builder builder = Component.text();
         builder.append(Component.text(message, NamedTextColor.GRAY));
 

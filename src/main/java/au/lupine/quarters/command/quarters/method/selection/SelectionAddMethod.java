@@ -8,20 +8,21 @@ import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.CuboidValidity;
 import au.lupine.quarters.object.wrapper.CuboidSelection;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class SelectionAddMethod extends CommandMethod {
+public final class SelectionAddMethod extends CommandMethod {
 
-    public SelectionAddMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.selection.add");
+    public SelectionAddMethod() {
+        super("add", "quarters.command.quarters.selection.add");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public void execute(@NotNull CommandSourceStack source) {
+        Player player = getSenderAsPlayerOrThrow(source);
         SelectionManager sm = SelectionManager.getInstance();
 
         CuboidSelection selection = sm.getSelection(player);

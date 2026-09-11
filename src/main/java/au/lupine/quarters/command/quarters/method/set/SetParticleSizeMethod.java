@@ -6,32 +6,39 @@ import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.wrapper.StringConstants;
+import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class SetParticleSizeMethod extends CommandMethod {
+public final class SetParticleSizeMethod extends CommandMethod {
 
-    public SetParticleSizeMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.set.particlesize");
+    public SetParticleSizeMethod() {
+        super("particlesize", "quarters.command.quarters.set.particlesize");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(Commands.argument("size", FloatArgumentType.floatArg(0.0F, 4.0F))
+                        .suggests((context, builder) -> suggestStrings(builder, "1.0"))
+                        .executes(context -> run(context.getSource(), () -> execute(context.getSource(), context.getArgument("size", Float.class)))));
+    }
+
+    @Override
+    public void execute(@NotNull CommandSourceStack source) {
+        throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
+    }
+
+    private void execute(@NotNull CommandSourceStack source, float value) {
+        Player player = getSenderAsPlayerOrThrow(source);
 
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return;
-
-        String arg = getArgOrThrow(0, StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
-
-        float value;
-        try {
-            value = Float.parseFloat(arg);
-        } catch (NumberFormatException e) {
-            throw new CommandMethodException(StringConstants.A_PROVIDED_ARGUMENT_WAS_INVALID + arg);
-        }
 
         if (value < 0.0F || value > 4.0F) throw new CommandMethodException("Provided value is invalid, please provide a value between 0.0 and 4.0");
 

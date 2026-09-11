@@ -4,11 +4,17 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
+import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.wrapper.Pair;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Resident;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
@@ -16,7 +22,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,29 +33,49 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class HereMethod extends CommandMethod {
+public final class HereMethod extends CommandMethod {
 
-    private boolean catMode = false;
-
-    public HereMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.here");
+    public HereMethod() {
+        super("here", "quarters.command.quarters.here");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(Commands.argument("quarter", StringArgumentType.word())
+                        .suggests((context, builder) -> suggestQuarterUUIDs(builder))
+                        .executes(context -> run(context.getSource(), context.getArgument("quarter", String.class))));
+    }
 
-        Quarter quarter = getQuarterAtPlayerOrByUUIDOrThrow(player, getArgOrNull(0));
+    @Override
+    public void execute(@NotNull CommandSourceStack source) {
+        execute(source, null);
+    }
+
+    private int run(@NotNull CommandSourceStack source, @Nullable String quarterArgument) {
+        try {
+            execute(source, quarterArgument);
+            return Command.SINGLE_SUCCESS;
+        } catch (CommandMethodException e) {
+            QuartersMessaging.sendErrorMessage(source.getSender(), e.getMessage());
+            return 0;
+        }
+    }
+
+    private void execute(@NotNull CommandSourceStack source, @Nullable String quarterArgument) {
+        Player player = getSenderAsPlayerOrThrow(source);
+
+        Quarter quarter = getQuarterAtPlayerOrByUUIDOrThrow(player, quarterArgument);
 
         UUID owner = quarter.getOwner();
-        if (owner != null && ConfigManager.getUserGroupOrDefault(owner, ConfigManager.DEFAULT_USER_GROUP).hasCatMode()) catMode = true;
+        boolean catMode = owner != null && ConfigManager.getUserGroupOrDefault(owner, ConfigManager.DEFAULT_USER_GROUP).hasCatMode();
 
         TextComponent.Builder headerBuilder = Component.text();
         headerBuilder.append(Component.text(quarter.getName(), TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
         headerBuilder.appendSpace();
-        headerBuilder.append(getColourBadgeComponent(quarter.getColour()));
+        headerBuilder.append(getColourBadgeComponent(quarter.getColour(), catMode));
         headerBuilder.appendSpace();
-        headerBuilder.append(getAnchorBadgeComponent(quarter.getAnchor()));
+        headerBuilder.append(getAnchorBadgeComponent(quarter.getAnchor(), catMode));
 
         if (catMode) {
             headerBuilder.appendSpace();
@@ -63,13 +88,13 @@ public class HereMethod extends CommandMethod {
                 Pair.of(catMode ? "Purrprietor" : "Owner", ConfigManager.getFormattedName(quarter.getOwner(), Component.text("None", NamedTextColor.GRAY))),
                 Pair.of(catMode ? "Breed" : "Type", Component.text(quarter.getType().getCommonName(), NamedTextColor.GRAY)),
                 Pair.of(catMode ? "Where is this thing" : "Town", Component.text(quarter.getTown().getName(), NamedTextColor.GRAY).clickEvent(ClickEvent.runCommand("/towny:town " + quarter.getTown().getName()))),
-                Pair.of(catMode ? "How much 2 live here" : "Price", getPriceComponent(quarter)),
+                Pair.of(catMode ? "How much 2 live here" : "Price", getPriceComponent(quarter, catMode)),
                 Pair.of(catMode ? "Can randoz live here" : "Embassy", Component.text(quarter.isEmbassy() ? "True" : "False", NamedTextColor.GRAY))
         );
 
         List<Pair<String, Component>> brackets = List.of(
-                Pair.of(catMode ? "Thingz" : "Stats", getStatsHoverComponent(quarter)),
-                Pair.of(catMode ? "Purr-worthy" : "Trusted", getTrustedComponent(quarter)),
+                Pair.of(catMode ? "Thingz" : "Stats", getStatsHoverComponent(quarter, catMode)),
+                Pair.of(catMode ? "Purr-worthy" : "Trusted", getTrustedComponent(quarter, catMode)),
                 Pair.of(catMode ? "Who haz purrmz" : "Perms", getPermsComponent(quarter))
         );
 
@@ -78,7 +103,7 @@ public class HereMethod extends CommandMethod {
         QuartersMessaging.sendComponent(player, here);
     }
 
-    private Component getColourBadgeComponent(@NotNull Color colour) {
+    private Component getColourBadgeComponent(@NotNull Color colour, boolean catMode) {
         TextComponent.Builder builder = Component.text();
         builder.append(Component.text("✒", TextColor.color(colour.getRGB())));
 
@@ -96,7 +121,7 @@ public class HereMethod extends CommandMethod {
         return builder.build();
     }
 
-    private Component getAnchorBadgeComponent(@Nullable Location location) {
+    private Component getAnchorBadgeComponent(@Nullable Location location, boolean catMode) {
         TextComponent.Builder builder = Component.text();
         builder.append(Component.text("⚓", NamedTextColor.GRAY));
 
@@ -106,8 +131,8 @@ public class HereMethod extends CommandMethod {
         }
 
         builder.hoverEvent(QuartersMessaging.getLocationComponent(location)
-                        .appendNewline()
-                        .append(Component.text(catMode ? "Click 2 copy coordinatez" : "Click to copy coordinates", NamedTextColor.GRAY))
+                .appendNewline()
+                .append(Component.text(catMode ? "Click 2 copy coordinatez" : "Click to copy coordinates", NamedTextColor.GRAY))
         );
 
         int x = location.getBlockX();
@@ -129,7 +154,7 @@ public class HereMethod extends CommandMethod {
         return builder.build();
     }
 
-    private Component getPriceComponent(Quarter quarter) {
+    private Component getPriceComponent(Quarter quarter, boolean catMode) {
         String string;
         Double price = quarter.getPrice();
 
@@ -152,7 +177,7 @@ public class HereMethod extends CommandMethod {
         return builder.build();
     }
 
-    private Component getStatsHoverComponent(Quarter quarter) {
+    private Component getStatsHoverComponent(Quarter quarter, boolean catMode) {
         TextComponent.Builder builder = Component.text();
         builder.append(Component.text(catMode ? "Catboxes: " : "Cuboids: ", NamedTextColor.DARK_GRAY)).append(Component.text(quarter.getCuboids().size(), NamedTextColor.GRAY));
         builder.appendNewline();
@@ -169,7 +194,7 @@ public class HereMethod extends CommandMethod {
         return builder.build();
     }
 
-    private Component getTrustedComponent(Quarter quarter) {
+    private Component getTrustedComponent(Quarter quarter, boolean catMode) {
         List<Resident> trusted = quarter.getTrustedResidents();
         if (trusted.isEmpty()) return Component.text(catMode ? "No trust here,," : "None", NamedTextColor.GRAY);
 

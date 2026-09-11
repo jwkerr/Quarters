@@ -5,18 +5,19 @@ import au.lupine.quarters.api.manager.ResidentMetadataManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class ToggleEntryNotificationsMethod extends CommandMethod {
+public final class ToggleEntryNotificationsMethod extends CommandMethod {
 
-    public ToggleEntryNotificationsMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.toggle.entrynotifications");
+    public ToggleEntryNotificationsMethod() {
+        super("entrynotifications", "quarters.command.quarters.toggle.entrynotifications");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public void execute(@NotNull CommandSourceStack source) {
+        Player player = getSenderAsPlayerOrThrow(source);
 
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return;

@@ -7,6 +7,7 @@ import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.wrapper.Pair;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.plugin.configuration.PluginMeta;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -14,19 +15,19 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
 
-public class InfoMethod extends CommandMethod {
+public final class InfoMethod extends CommandMethod {
 
-    public InfoMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.info");
+    public InfoMethod() {
+        super("info", "quarters.command.quarters.info");
     }
 
     @Override
-    public void execute() {
+    public void execute(@NotNull CommandSourceStack source) {
         PluginMeta meta = Quarters.getInstance().getPluginMeta();
 
         int numQuarters = 0;
@@ -56,6 +57,6 @@ public class InfoMethod extends CommandMethod {
                 .append(Component.text("Wiki", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://github.com/jwkerr/Quarters/wiki"))).appendSpace()
                 .append(Component.text("Discord", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://discord.gg/ey6ZvnwAJp")));
 
-        QuartersMessaging.sendComponent(sender, info);
+        QuartersMessaging.sendComponent(source.getSender(), info);
     }
 }

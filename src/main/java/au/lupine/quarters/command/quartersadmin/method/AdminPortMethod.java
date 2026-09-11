@@ -5,43 +5,59 @@ import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.entity.Quarter;
-import au.lupine.quarters.object.state.QuarterType;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class AdminPortMethod extends CommandMethod {
+public final class AdminPortMethod extends CommandMethod {
 
     private boolean consoleOutput = false;
-    int numFailures = 0;
-    int successfulPorts = 0;
+    private int numFailures = 0;
+    private int successfulPorts = 0;
 
-    public AdminPortMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quartersadmin.port");
+    public AdminPortMethod() {
+        super("port", "quarters.command.quartersadmin.port");
     }
 
     @Override
-    public void execute() {
-        String arg = getArgOrDefault(0, "false");
-        consoleOutput = Boolean.parseBoolean(arg);
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(Commands.argument("consoleOutput", BoolArgumentType.bool())
+                        .suggests((context, builder) -> suggestStrings(builder, "true", "false"))
+                        .executes(context -> run(context.getSource(), () -> execute(context.getArgument("consoleOutput", Boolean.class)))));
+    }
+
+    @Override
+    public void execute(@NotNull CommandSourceStack source) {
+        execute(false);
+    }
+
+    private void execute(boolean consoleOutput) {
+        this.consoleOutput = consoleOutput;
+        numFailures = 0;
+        successfulPorts = 0;
 
         List<Town> towns = TownyAPI.getInstance().getTowns();
-        if (consoleOutput) Quarters.logInfo("Porting legacy quarters of " + towns.size() + " towns");
+        if (this.consoleOutput) Quarters.logInfo("Porting legacy quarters of " + towns.size() + " towns");
 
         for (Town town : towns) {
             portLegacyQuarters(town);
         }
 
-        if (consoleOutput) Quarters.logInfo("Porting has completed, " + successfulPorts + "/" + towns.size() + " towns had quarters ported, " + numFailures + " towns had quarters that were unsuccessfully ported, view log for errors if any failed");
+        if (this.consoleOutput) Quarters.logInfo("Porting has completed, " + successfulPorts + "/" + towns.size() + " towns had quarters ported, " + numFailures + " towns had quarters that were unsuccessfully ported, view log for errors if any failed");
     }
 
     private void portLegacyQuarters(Town town) {
@@ -104,11 +120,11 @@ public class AdminPortMethod extends CommandMethod {
         String priceValue = split[5];
         Double price = priceValue.equals("null") ? null : Double.parseDouble(priceValue);
 
-        QuarterType type;
+        au.lupine.quarters.object.state.QuarterType type;
         try {
-            type = QuarterType.valueOf(split[6].toUpperCase());
+            type = au.lupine.quarters.object.state.QuarterType.valueOf(split[6].toUpperCase());
         } catch (IllegalArgumentException e) {
-            type = QuarterType.APARTMENT;
+            type = au.lupine.quarters.object.state.QuarterType.APARTMENT;
         }
 
         boolean isEmbassy = Boolean.parseBoolean(split[7]);
