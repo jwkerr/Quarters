@@ -18,6 +18,10 @@ public abstract class SubCommand {
 
     private final String name;
     private final String permission;
+    /**
+     * If this is true and the player is a mayor, they do not need to have the method permission (assuming this is enabled in config)
+     */
+    public final boolean hasMayorPermBypass;
 
     /**
      * Constructor for a sub command.
@@ -27,6 +31,18 @@ public abstract class SubCommand {
     public SubCommand(@NotNull String name, @Nullable String permission) {
         this.name = name;
         this.permission = permission;
+        this.hasMayorPermBypass = false;
+    }
+
+    /**
+     * Constructor for a sub command.
+     * @param name The name of the sub command, this is what the player will type to execute it
+     * @param permission The permission required to execute this sub command, if null then no permission is required
+     */
+    public SubCommand(@NotNull String name, @Nullable String permission, boolean hasMayorPermBypass) {
+        this.name = name;
+        this.permission = permission;
+        this.hasMayorPermBypass = hasMayorPermBypass;
     }
 
     public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
@@ -53,7 +69,7 @@ public abstract class SubCommand {
      * @throws CommandMethodException if the command source stack is not a player
      * @return The player from the command source stack
      */
-    public @NotNull Player getPlayer(@NotNull CommandSourceStack source) {
+    public @NotNull Player getSenderAsPlayerOrThrow(@NotNull CommandSourceStack source) {
         if (!(source.getSender() instanceof Player player)) throw new CommandMethodException("quarters.command.quarter.feedback.only_players");
         return player;
     }

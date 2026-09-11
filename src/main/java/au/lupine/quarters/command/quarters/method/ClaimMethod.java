@@ -47,7 +47,7 @@ public final class ClaimMethod extends SubCommand {
     }
 
     private void executeClaim(@NotNull CommandSourceStack source, @Nullable String quarterArgument) {
-        Player player = getPlayer(source);
+        Player player = getSenderAsPlayerOrThrow(source);
 
         Quarter quarter = getQuarterAtPlayerOrByUUID(player, quarterArgument);
 
@@ -81,35 +81,35 @@ public final class ClaimMethod extends SubCommand {
 
         if (currentPrice > 0) {
             Confirmation.runOnAccept(() -> {
-                        try {
-                            canResidentClaimQuarter(resident, quarter);
-                            if (!currentPrice.equals(quarter.getPrice())) throw new CommandMethodException("quarters.command.quarters.claim.feedback.price_changed");
-                        } catch (CommandMethodException e) {
-                            QuartersMessaging.sendErrorMessage(player, e.getMessage());
-                            return;
-                        }
+                    try {
+                        canResidentClaimQuarter(resident, quarter);
+                        if (!currentPrice.equals(quarter.getPrice())) throw new CommandMethodException("quarters.command.quarters.claim.feedback.price_changed");
+                    } catch (CommandMethodException e) {
+                        QuartersMessaging.sendErrorMessage(player, e.getMessage());
+                        return;
+                    }
 
-                        String reason = "Quarter " + quarter.getUUID() + " sale";
-                        resident.getAccount().withdraw(currentPrice, reason);
-                        quarter.getTown().getAccount().deposit(currentPrice, reason);
+                    String reason = "Quarter " + quarter.getUUID() + " sale";
+                    resident.getAccount().withdraw(currentPrice, reason);
+                    quarter.getTown().getAccount().deposit(currentPrice, reason);
 
-                        changeOwnerAndSave(quarter, resident);
+                    changeOwnerAndSave(quarter, resident);
 
-                        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.claim.feedback.success");
-                        QuartersMessaging.sendCommandFeedbackToTown(
-                                quarter.getTown(),
-                                player,
-                                "quarters.command.quarters.claim.feedback.town.paid",
-                                player.getLocation(),
-                                Argument.string("price", formattedPrice)
-                        );
-                    })
-                    .setTitle(QuartersMessaging.translate(
+                    QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.claim.feedback.success");
+                    QuartersMessaging.sendCommandFeedbackToTown(
+                            quarter.getTown(),
                             player,
-                            "quarters.command.quarters.claim.confirmation.title",
+                            "quarters.command.quarters.claim.feedback.town.paid",
+                            player.getLocation(),
                             Argument.string("price", formattedPrice)
-                    ))
-                    .sendTo(player);
+                    );
+                })
+                .setTitle(QuartersMessaging.translate(
+                        player,
+                        "quarters.command.quarters.claim.confirmation.title",
+                        Argument.string("price", formattedPrice)
+                ))
+                .sendTo(player);
         } else {
             changeOwnerAndSave(quarter, resident);
 

@@ -2,6 +2,7 @@ package au.lupine.quarters.command.quarters;
 
 import au.lupine.quarters.command.quarters.method.ClaimMethod;
 import au.lupine.quarters.command.quarters.legacy_method.InfoMethod;
+import au.lupine.quarters.command.quarters.method.CreateMethod;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -21,6 +22,7 @@ public final class QuartersCommand {
 
         // Sub commands
         root.then(new ClaimMethod().build());
+        root.then(new CreateMethod().build());
 
         return root.build();
     }
