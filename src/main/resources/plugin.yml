@@ -9,7 +9,7 @@ description: The modern "apartment" plugin for Towny
 website: https://earthmc.net
 folia-supported: true
 depend: [Towny]
-softdepend: [PlaceholderAPI]
+softdepend: [PlaceholderAPI, floodgate]
 
 commands:
   quarters:

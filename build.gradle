@@ -31,12 +31,17 @@ repositories {
     maven {
         url = "https://repo.glaremasters.me/repository/towny/"
     }
+
+    maven {
+        url = "https://repo.opencollab.dev/main/"
+    }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
     compileOnly("com.palmergames.bukkit.towny:towny:0.101.2.5")
     compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("org.geysermc.floodgate:api:2.2.5-SNAPSHOT")
 }
 
 def targetJavaVersion = 21

@@ -2,6 +2,7 @@ package au.lupine.quarters.command.quarters.method;
 
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.ConfigManager;
+import au.lupine.quarters.api.manager.FloodgateManager;
 import au.lupine.quarters.api.manager.JSONManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.wrapper.UserGroup;
@@ -72,7 +73,12 @@ public final class FameMethod extends CommandMethod {
             builder.append(Component.join(JoinConfiguration.separator(Component.text(", ", NamedTextColor.GRAY)), names)).appendNewline();
 
             builder.append(Component.text("If you love Quarters and would like your own coloured name, please consider supporting development ", NamedTextColor.GREEN));
-            builder.append(Component.text("here!!!", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://github.com/sponsors/jwkerr")));
+            if (FloodgateManager.getInstance().isBedrockPlayer(stack.getSender())) {
+                // Bedrock does not support clickable components, so displaying the link directly is the most straight forward approach
+                builder.append(Component.text("here: https://github.com/sponsors/jwkerr!!!", TextColor.color(0x2F81F7)));
+            } else {
+                builder.append(Component.text("here!!!", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://github.com/sponsors/jwkerr")));
+            }
             builder.append(Component.text(" :3", NamedTextColor.GREEN));
 
             QuartersMessaging.sendComponent(stack.getSender(), builder.build());

@@ -97,12 +97,6 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
         return (remainingMillis + 999) / 1000;
     }
 
-    public boolean canReceiveFreeWandAfterCooldown(
-            @NotNull Resident resident
-    ) {
-        return getRemainingFreeWandCooldown(resident) == 0;
-    }
-
     public void setParticleSize(@NotNull Resident resident, float value) {
         setMetadataAsDecimal(resident, PARTICLE_SIZE_KEY, (double) value);
     }
