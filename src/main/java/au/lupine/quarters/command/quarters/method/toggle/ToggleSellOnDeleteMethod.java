@@ -8,6 +8,7 @@ import au.lupine.quarters.object.wrapper.StringConstants;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,11 +31,23 @@ public final class ToggleSellOnDeleteMethod extends CommandMethod {
         tmm.setSellOnDelete(town, !sellOnDelete);
 
         if (!sellOnDelete) {
-            QuartersMessaging.sendSuccessMessage(player, "Quarters will now be set for sale when the owner is deleted by Towny");
-            QuartersMessaging.sendCommandFeedbackToTown(town, player, "has toggled quarters in " + town.getName() + " to be automatically sold when the owner is deleted by Towny", player.getLocation());
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.sellondelete.feedback.enabled");
+            QuartersMessaging.sendCommandFeedbackToTown(
+                    town,
+                    player,
+                    "quarters.command.quarters.toggle.sellondelete.feedback.town.enabled",
+                    player.getLocation(),
+                    Argument.string("town", town.getName())
+            );
         } else {
-            QuartersMessaging.sendSuccessMessage(player, "Quarters will no longer be set for sale when the owner is deleted by Towny");
-            QuartersMessaging.sendCommandFeedbackToTown(town, player, "has toggled quarters in " + town.getName() + " to no longer be automatically sold when the owner is deleted by Towny", player.getLocation());
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.sellondelete.feedback.disabled");
+            QuartersMessaging.sendCommandFeedbackToTown(
+                    town,
+                    player,
+                    "quarters.command.quarters.toggle.sellondelete.feedback.town.disabled",
+                    player.getLocation(),
+                    Argument.string("town", town.getName())
+            );
         }
     }
 }

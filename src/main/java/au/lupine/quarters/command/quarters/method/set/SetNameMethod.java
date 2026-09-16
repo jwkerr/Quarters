@@ -9,6 +9,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,12 +38,21 @@ public final class SetNameMethod extends CommandMethod {
         if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_PERFORM_THIS_ACTION);
 
         int maxNameLength = 32;
-        if (name.length() > maxNameLength) throw new CommandMethodException("Specified name is too long, max length is " + maxNameLength);
+        if (name.length() > maxNameLength) throw new CommandMethodException(
+                "quarters.command.quarters.set.name.feedback.too_long",
+                Argument.string("max", Integer.toString(maxNameLength))
+        );
 
         quarter.setName(name);
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully changed this quarter's name to " + name);
-        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has changed a quarter's name to " + name, quarter.getFirstCornerOfFirstCuboid());
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.set.name.feedback.success", Argument.string("name", name));
+        QuartersMessaging.sendCommandFeedbackToTown(
+                quarter.getTown(),
+                player,
+                "quarters.command.quarters.set.name.feedback.town",
+                quarter.getFirstCornerOfFirstCuboid(),
+                Argument.string("name", name)
+        );
     }
 }

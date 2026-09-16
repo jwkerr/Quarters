@@ -12,6 +12,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +46,7 @@ public final class SetPermMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        throw new CommandMethodException("No action type provided");
+        throw new CommandMethodException("quarters.command.quarters.set.perm.feedback.no_action");
     }
 
     private void execute(@NotNull CommandSourceStack source, @NotNull String action, @NotNull String permLevel, @NotNull String allowedValue) {
@@ -57,14 +59,14 @@ public final class SetPermMethod extends CommandMethod {
         try {
             type = ActionType.valueOf(action.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new CommandMethodException("Invalid action type provided");
+            throw new CommandMethodException("quarters.command.quarters.set.perm.feedback.invalid_action");
         }
 
         PermLevel level;
         try {
             level = PermLevel.valueOf(permLevel.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new CommandMethodException("Invalid perm level provided");
+            throw new CommandMethodException("quarters.command.quarters.set.perm.feedback.invalid_level");
         }
 
         boolean allowed = Boolean.parseBoolean(allowedValue);
@@ -72,10 +74,21 @@ public final class SetPermMethod extends CommandMethod {
         quarter.getPermissions().setPermission(type, level, allowed);
         quarter.save();
 
-        String lowerCaseLevel = level.name().toLowerCase();
-        String lowerCaseType = type.getCommonName().toLowerCase();
-
-        QuartersMessaging.sendSuccessMessage(player, "Successfully set " + lowerCaseLevel + " " + lowerCaseType + " permissions to " + allowed);
-        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has set a quarter's " + lowerCaseLevel + " " + lowerCaseType + " permissions to " + allowed, player.getLocation());
+        QuartersMessaging.sendSuccessMessage(
+                player,
+                "quarters.command.quarters.set.perm.feedback.success",
+                Argument.string("level", level.getCommonName()),
+                Argument.string("action", type.getCommonName()),
+                Argument.string("allowed", Boolean.toString(allowed))
+        );
+        QuartersMessaging.sendCommandFeedbackToTown(
+                quarter.getTown(),
+                player,
+                "quarters.command.quarters.set.perm.feedback.town",
+                player.getLocation(),
+                Argument.string("level", level.getCommonName()),
+                Argument.string("action", type.getCommonName()),
+                Argument.string("allowed", Boolean.toString(allowed))
+        );
     }
 }

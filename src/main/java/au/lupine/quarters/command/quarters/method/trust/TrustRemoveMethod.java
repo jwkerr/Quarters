@@ -11,6 +11,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,7 @@ public final class TrustRemoveMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        throw new CommandMethodException("No player name provided");
+        throw new CommandMethodException("quarters.command.feedback.no_player_name");
     }
 
     private void execute(@NotNull CommandSourceStack source, @NotNull String targetResidentName) {
@@ -55,8 +56,14 @@ public final class TrustRemoveMethod extends CommandMethod {
             quarter.save();
 
             QuartersMessaging.sendSuccessMessage(player, StringConstants.SPECIFIED_PLAYER_HAS_BEEN_REMOVED_FROM_THIS_QUARTERS_TRUSTED_LIST);
-            QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has removed " + resident.getName() + " from a quarter's trusted list", player.getLocation());
-            if (resident.getPlayer() != null) QuartersMessaging.sendInfoMessage(resident.getPlayer(), "You have been removed as trusted in a quarter", player.getLocation());
+            QuartersMessaging.sendCommandFeedbackToTown(
+                    quarter.getTown(),
+                    player,
+                    "quarters.command.quarters.trust.remove.feedback.town",
+                    player.getLocation(),
+                    Argument.string("player", resident.getName())
+            );
+            if (resident.getPlayer() != null) QuartersMessaging.sendInfoMessage(resident.getPlayer(), "quarters.command.quarters.trust.remove.feedback.target", player.getLocation());
         } else {
             QuartersMessaging.sendErrorMessage(player, StringConstants.SPECIFIED_PLAYER_IS_NOT_TRUSTED_IN_THIS_QUARTER);
         }

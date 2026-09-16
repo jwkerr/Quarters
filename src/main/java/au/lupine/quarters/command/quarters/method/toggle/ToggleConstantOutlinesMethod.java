@@ -28,9 +28,9 @@ public final class ToggleConstantOutlinesMethod extends CommandMethod {
         rmm.setHasConstantOutlines(resident, !hasConstantOutlines);
 
         if (hasConstantOutlines) {
-            QuartersMessaging.sendSuccessMessage(player, "Successfully disabled constant particle outlines");
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.constantoutlines.feedback.disabled");
         } else {
-            QuartersMessaging.sendSuccessMessage(player, "Successfully enabled constant particle outlines");
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.constantoutlines.feedback.enabled");
         }
     }
 }

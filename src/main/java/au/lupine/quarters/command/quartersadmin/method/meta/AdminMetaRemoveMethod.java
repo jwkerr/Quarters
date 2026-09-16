@@ -8,6 +8,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,15 +27,15 @@ public final class AdminMetaRemoveMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        throw new CommandMethodException("No meta key provided");
+        throw new CommandMethodException("quarters.command.quartersadmin.meta.feedback.no_key");
     }
 
     private void execute(@NotNull CommandSourceStack source, @NotNull String key) {
         Player player = getSenderAsPlayerOrThrow(source);
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        if (!quarter.removeMetaData(key, true)) throw new CommandMethodException("This quarter has no meta named " + key);
+        if (!quarter.removeMetaData(key, true)) throw new CommandMethodException("quarters.command.quartersadmin.meta.remove.feedback.missing", Argument.string("key", key));
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully removed meta key " + key + " from this quarter");
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quartersadmin.meta.remove.feedback.success", Argument.string("key", key));
     }
 }

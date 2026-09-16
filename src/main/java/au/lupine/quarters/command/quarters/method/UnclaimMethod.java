@@ -30,6 +30,6 @@ public final class UnclaimMethod extends CommandMethod {
         quarter.setOwner(null);
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, "You have successfully unclaimed this quarter");
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.unclaim.feedback.success");
     }
 }

@@ -10,6 +10,7 @@ import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +36,7 @@ public final class AdminMetaSetMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        throw new CommandMethodException("No meta key provided");
+        throw new CommandMethodException("quarters.command.quartersadmin.meta.feedback.no_key");
     }
 
     private void execute(@NotNull CommandSourceStack source, @NotNull String key, @NotNull String value) {
@@ -47,7 +48,7 @@ public final class AdminMetaSetMethod extends CommandMethod {
             Map<String, CustomDataField<?>> registeredMetadata = TownyUniverse.getInstance().getRegisteredMetadataMap();
 
             CustomDataField<?> registeredDataField = registeredMetadata.get(key);
-            if (registeredDataField == null) throw new CommandMethodException("Specified meta key " + key + " does not exist");
+            if (registeredDataField == null) throw new CommandMethodException("quarters.command.quartersadmin.meta.set.feedback.unknown_key", Argument.string("key", key));
 
             cdf = registeredDataField.clone();
         }
@@ -56,6 +57,11 @@ public final class AdminMetaSetMethod extends CommandMethod {
 
         quarter.addMetaData(cdf, true);
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully set this quarter's meta key " + key + " to " + value);
+        QuartersMessaging.sendSuccessMessage(
+                player,
+                "quarters.command.quartersadmin.meta.set.feedback.success",
+                Argument.string("key", key),
+                Argument.string("value", value)
+        );
     }
 }

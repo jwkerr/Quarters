@@ -8,6 +8,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -102,7 +103,10 @@ public final class SelectionManager {
         int pos = type.equals(SelectionType.LEFT) ? 1 : 2;
 
         TextComponent.Builder builder = Component.text();
-        builder.append(Component.text("Position " + pos + ": ", NamedTextColor.GRAY, TextDecoration.ITALIC));
+        builder.append(Component.translatable(
+                "quarters.selection.feedback.position",
+                Argument.string("position", Integer.toString(pos))
+        ).color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC));
         builder.append(QuartersMessaging.getLocationComponent(location));
 
         return builder.build();

@@ -10,6 +10,7 @@ import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.CuboidValidity;
 import au.lupine.quarters.object.wrapper.StringConstants;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,18 +37,21 @@ public final class EditAddSelectionMethod extends CommandMethod {
         for (Cuboid cuboid : cuboids) {
             CuboidValidity validity = cuboid.checkValidity();
             switch (validity) {
-                case CONTAINS_WILDERNESS -> throw new CommandMethodException("Failed to add selection as it contains wilderness");
-                case INTERSECTS -> throw new CommandMethodException("Failed to add selection as it intersects with a pre-existing quarter");
-                case SPANS_MULTIPLE_TOWNS -> throw new CommandMethodException("Failed to add selection as it spans multiple towns");
-                case OUTSIDE_WORLD_BOUNDS -> throw new CommandMethodException("Failed to add selection as it outside of this world's maximum or minimum height");
-                case TOO_LARGE -> throw new CommandMethodException("Failed to add selection as at least one of its cuboids is too large");
+                case CONTAINS_WILDERNESS -> throw new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.contains_wilderness");
+                case INTERSECTS -> throw new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.intersects");
+                case SPANS_MULTIPLE_TOWNS -> throw new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.spans_multiple_towns");
+                case OUTSIDE_WORLD_BOUNDS -> throw new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.outside_world_bounds");
+                case TOO_LARGE -> throw new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.too_large_cuboid");
             }
         }
 
         List<Cuboid> currentCuboids = quarter.getCuboids();
 
         int maxCuboids = ConfigManager.getMaxCuboidsPerQuarter();
-        if (maxCuboids > -1 && cuboids.size() + currentCuboids.size() >= maxCuboids) throw new CommandMethodException("Selection could not be added as it will exceed the configured cuboid limit of " + maxCuboids);
+        if (maxCuboids > -1 && cuboids.size() + currentCuboids.size() >= maxCuboids) throw new CommandMethodException(
+                "quarters.command.quarters.edit.addselection.feedback.cuboid_limit",
+                Argument.string("max", Integer.toString(maxCuboids))
+        );
 
         int addedCuboids = cuboids.size();
         cuboids.addAll(currentCuboids);
@@ -57,7 +61,13 @@ public final class EditAddSelectionMethod extends CommandMethod {
         sm.clearSelection(player);
         sm.clearCuboids(player);
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully added your selection to this quarter");
-        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has added " + addedCuboids + " cuboid(s) to a quarter", quarter.getFirstCornerOfFirstCuboid());
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.edit.addselection.feedback.success");
+        QuartersMessaging.sendCommandFeedbackToTown(
+                quarter.getTown(),
+                player,
+                "quarters.command.quarters.edit.addselection.feedback.town",
+                quarter.getFirstCornerOfFirstCuboid(),
+                Argument.string("amount", Integer.toString(addedCuboids))
+        );
     }
 }

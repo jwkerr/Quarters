@@ -50,7 +50,7 @@ public final class MeowMethod extends CommandMethod {
             execute(stack, argument);
             return Command.SINGLE_SUCCESS;
         } catch (CommandMethodException e) {
-            QuartersMessaging.sendErrorMessage(stack.getSender(), e.getMessage());
+            QuartersMessaging.sendErrorMessage(stack.getSender(), e.getMessage(), e.getArguments());
             return 0;
         }
     }

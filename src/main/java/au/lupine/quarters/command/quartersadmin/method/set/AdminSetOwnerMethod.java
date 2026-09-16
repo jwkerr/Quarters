@@ -11,6 +11,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -46,6 +47,6 @@ public final class AdminSetOwnerMethod extends CommandMethod {
         quarter.setOwner(resident.getUUID());
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully set this quarter's owner to " + resident.getName());
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.set.owner.feedback.success", Argument.string("player", resident.getName()));
     }
 }

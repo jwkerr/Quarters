@@ -28,9 +28,9 @@ public final class ToggleEntryBlinkingMethod extends CommandMethod {
         rmm.setHasEntryBlinking(resident, !hasEntryBlinking);
 
         if (hasEntryBlinking) {
-            QuartersMessaging.sendSuccessMessage(player, "Successfully disabled entry blinking");
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.entryblinking.feedback.disabled");
         } else {
-            QuartersMessaging.sendSuccessMessage(player, "Successfully enabled entry blinking");
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.entryblinking.feedback.enabled");
         }
     }
 }

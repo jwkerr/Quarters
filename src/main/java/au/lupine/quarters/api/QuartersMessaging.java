@@ -82,7 +82,7 @@ public class QuartersMessaging {
             }
 
             Pair<String, Component> labelledEntry = labelledEntries.get(i);
-            if (labelledEntry.getFirst() != null) builder.append(Component.text(labelledEntry.getFirst() + ": ", NamedTextColor.DARK_GRAY));
+            if (labelledEntry.getFirst() != null) builder.append(getLabelComponent(labelledEntry.getFirst()));
             builder.append(labelledEntry.getSecond());
         }
 
@@ -93,7 +93,7 @@ public class QuartersMessaging {
             TextComponent.Builder bracketBuilder = Component.text();
 
             bracketBuilder.append(OPEN_SQUARE_BRACKET)
-                    .append(Component.text(bracketEntry.getFirst(), TextColor.color(PLUGIN_COLOUR.getRGB())))
+                    .append(getTranslatableOrText(bracketEntry.getFirst()).color(TextColor.color(PLUGIN_COLOUR.getRGB())))
                     .append(CLOSED_SQUARE_BRACKET).hoverEvent(bracketEntry.getSecond());
 
             builder.append(bracketBuilder.build());
@@ -138,8 +138,12 @@ public class QuartersMessaging {
     }
 
     public static void sendInfoMessage(@NotNull Player player, @NotNull String message, @Nullable Location location) {
+        sendInfoMessage(player, message, location, new ComponentLike[0]);
+    }
+
+    public static void sendInfoMessage(@NotNull Player player, @NotNull String message, @Nullable Location location, @NotNull ComponentLike... arguments) {
         TextComponent.Builder builder = Component.text();
-        builder.append(Component.text(message, NamedTextColor.GRAY));
+        builder.append(Component.translatable(message, arguments).color(NamedTextColor.GRAY));
 
         if (location != null) {
             builder.appendSpace();
@@ -162,5 +166,14 @@ public class QuartersMessaging {
         builder.append(Component.text("Z=" + location.getBlockZ(), NamedTextColor.BLUE));
 
         return builder.build();
+    }
+
+    private static @NotNull Component getLabelComponent(@NotNull String label) {
+        return getTranslatableOrText(label).color(NamedTextColor.DARK_GRAY).append(Component.text(": ", NamedTextColor.DARK_GRAY));
+    }
+
+    private static @NotNull Component getTranslatableOrText(@NotNull String value) {
+        if (value.startsWith("quarters.")) return Component.translatable(value);
+        return Component.text(value);
     }
 }

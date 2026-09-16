@@ -26,11 +26,11 @@ public final class ToggleEmbassyMethod extends CommandMethod {
         quarter.save();
 
         if (quarter.isEmbassy()) {
-            QuartersMessaging.sendSuccessMessage(player, "This quarter is now an embassy");
-            QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has toggled a quarter's embassy status on", player.getLocation());
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.embassy.feedback.enabled");
+            QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "quarters.command.quarters.toggle.embassy.feedback.town.enabled", player.getLocation());
         } else {
-            QuartersMessaging.sendSuccessMessage(player, "This quarter is no longer an embassy");
-            QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has toggled a quarter's embassy status off", player.getLocation());
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.embassy.feedback.disabled");
+            QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "quarters.command.quarters.toggle.embassy.feedback.town.disabled", player.getLocation());
         }
     }
 }

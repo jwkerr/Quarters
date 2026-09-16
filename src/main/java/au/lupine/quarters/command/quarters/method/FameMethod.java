@@ -43,7 +43,7 @@ public final class FameMethod extends CommandMethod {
 
         // Only need to show if a name should be fetched from Mojang API
         if (hasUncachedName) {
-            QuartersMessaging.sendMessage(stack.getSender(), Component.text("Fetching the wall of fame...").color(NamedTextColor.GRAY));
+            QuartersMessaging.sendMessage(stack.getSender(), Component.translatable("quarters.command.quarters.fame.feedback.fetching").color(NamedTextColor.GRAY));
         }
 
         List<CompletableFuture<Component>> futureNames = new ArrayList<>();
@@ -68,16 +68,16 @@ public final class FameMethod extends CommandMethod {
 
             TextComponent.Builder builder = Component.text();
             builder.append(QuartersMessaging.OPEN_SQUARE_BRACKET);
-            builder.append(Component.text("Quarters Wall of Fame", TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
+            builder.append(Component.translatable("quarters.command.quarters.fame.title", TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
             builder.append(QuartersMessaging.CLOSED_SQUARE_BRACKET).appendNewline();
             builder.append(Component.join(JoinConfiguration.separator(Component.text(", ", NamedTextColor.GRAY)), names)).appendNewline();
 
-            builder.append(Component.text("If you love Quarters and would like your own coloured name, please consider supporting development ", NamedTextColor.GREEN));
+            builder.append(Component.translatable("quarters.command.quarters.fame.support.prefix", NamedTextColor.GREEN));
             if (FloodgateManager.getInstance().isBedrockPlayer(stack.getSender())) {
                 // Bedrock does not support clickable components, so displaying the link directly is the most straight forward approach
-                builder.append(Component.text("here: https://github.com/sponsors/jwkerr!!!", TextColor.color(0x2F81F7)));
+                builder.append(Component.translatable("quarters.command.quarters.fame.support.bedrock_link", TextColor.color(0x2F81F7)));
             } else {
-                builder.append(Component.text("here!!!", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://github.com/sponsors/jwkerr")));
+                builder.append(Component.translatable("quarters.command.quarters.fame.support.link", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://github.com/sponsors/jwkerr")));
             }
             builder.append(Component.text(" :3", NamedTextColor.GREEN));
 

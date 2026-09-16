@@ -9,6 +9,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.object.Town;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,9 +30,9 @@ public final class DeleteAllMethod extends CommandMethod {
 
         Confirmation.runOnAccept(() -> {
             QuarterManager.getInstance().setQuarters(town, new CopyOnWriteArrayList<>());
-            QuartersMessaging.sendSuccessMessage(player, "Successfully deleted all quarters in " + town.getName());
-            QuartersMessaging.sendCommandFeedbackToTown(town, player, "has deleted all quarters in " + town.getName(), null);
-        }).setTitle("Are you sure you want to delete all the quarters in " + town.getName() + "?")
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.delete.all.feedback.success", Argument.string("town", town.getName()));
+            QuartersMessaging.sendCommandFeedbackToTown(town, player, "quarters.command.quarters.delete.all.feedback.town", null, Argument.string("town", town.getName()));
+        }).setTitle(QuartersMessaging.translate(player, "quarters.command.quarters.delete.all.confirmation.title", Argument.string("town", town.getName())))
                 .sendTo(player);
     }
 }

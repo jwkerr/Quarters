@@ -11,6 +11,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -48,8 +49,14 @@ public final class SetOwnerMethod extends CommandMethod {
         quarter.setOwner(resident.getUUID());
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully set this quarter's owner to " + resident.getName());
-        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has set a quarter's owner to " + resident.getName(), player.getLocation());
-        if (resident.getPlayer() != null) QuartersMessaging.sendInfoMessage(resident.getPlayer(), "You have been set as the owner of a quarter", player.getLocation());
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.set.owner.feedback.success", Argument.string("player", resident.getName()));
+        QuartersMessaging.sendCommandFeedbackToTown(
+                quarter.getTown(),
+                player,
+                "quarters.command.quarters.set.owner.feedback.town",
+                player.getLocation(),
+                Argument.string("player", resident.getName())
+        );
+        if (resident.getPlayer() != null) QuartersMessaging.sendInfoMessage(resident.getPlayer(), "quarters.command.quarters.set.owner.feedback.target", player.getLocation());
     }
 }

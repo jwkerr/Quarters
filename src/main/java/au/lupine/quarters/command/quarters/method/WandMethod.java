@@ -8,6 +8,7 @@ import au.lupine.quarters.object.exception.CommandMethodException;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,7 @@ public final class WandMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack stack) {
-        if (ConfigManager.getFreeWandAmount() == 0) throw new CommandMethodException("You cannot receive a free Quarters wand");
+        if (ConfigManager.getFreeWandAmount() == 0) throw new CommandMethodException("quarters.command.quarters.wand.feedback.disabled");
 
         Player player = getSenderAsPlayerOrThrow(stack);
 
@@ -32,18 +33,21 @@ public final class WandMethod extends CommandMethod {
         ResidentMetadataManager rmm = ResidentMetadataManager.getInstance();
 
         boolean canReceivedFreeWand = rmm.canReceiveFreeWand(resident);
-        if (!canReceivedFreeWand) throw new CommandMethodException("You have already received all free Quarters wands");
+        if (!canReceivedFreeWand) throw new CommandMethodException("quarters.command.quarters.wand.feedback.already_received");
 
         long remainingCooldown = rmm.getRemainingFreeWandCooldown(resident);
-        if (remainingCooldown > 0) throw new CommandMethodException("You must wait " + formatDuration(remainingCooldown) + " before receiving another free Quarters wand");
+        if (remainingCooldown > 0) throw new CommandMethodException(
+                "quarters.command.quarters.wand.feedback.cooldown",
+                Argument.string("duration", formatDuration(remainingCooldown))
+        );
 
         HashMap<Integer, ItemStack> remaining = player.getInventory().addItem(new ItemStack(ConfigManager.getWandMaterial()));
-        if (!remaining.isEmpty()) throw new CommandMethodException("Please open a slot in your inventory and use the command again");
+        if (!remaining.isEmpty()) throw new CommandMethodException("quarters.command.quarters.wand.feedback.inventory_full");
 
         rmm.incrementReceivedFreeWands(resident);
         rmm.setLastReceivedFreeWand(resident);
 
-        QuartersMessaging.sendSuccessMessage(player, "Enjoy your free wand! Read the wiki on /q for help");
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.wand.feedback.success");
     }
 
     /**

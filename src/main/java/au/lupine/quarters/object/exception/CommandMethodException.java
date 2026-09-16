@@ -1,6 +1,7 @@
 package au.lupine.quarters.object.exception;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.jetbrains.annotations.NotNull;
@@ -9,10 +10,12 @@ public class CommandMethodException extends RuntimeException {
 
     private final String message;
     private final Component component;
+    private final ComponentLike[] arguments;
 
-    public CommandMethodException(@NotNull String message) {
+    public CommandMethodException(@NotNull String message, @NotNull ComponentLike... arguments) {
         this.message = message;
-        this.component = Component.translatable(message, NamedTextColor.RED, TextDecoration.ITALIC);
+        this.arguments = arguments;
+        this.component = Component.translatable(message, arguments).color(NamedTextColor.RED).decorate(TextDecoration.ITALIC);
     }
 
     /**
@@ -25,5 +28,9 @@ public class CommandMethodException extends RuntimeException {
 
     public @NotNull Component getComponent() {
         return component;
+    }
+
+    public @NotNull ComponentLike[] getArguments() {
+        return arguments;
     }
 }

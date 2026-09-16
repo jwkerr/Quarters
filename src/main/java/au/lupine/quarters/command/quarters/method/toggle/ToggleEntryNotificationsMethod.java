@@ -28,9 +28,9 @@ public final class ToggleEntryNotificationsMethod extends CommandMethod {
         rmm.setHasEntryNotifications(resident, !hasEntryNotifications);
 
         if (hasEntryNotifications) {
-            QuartersMessaging.sendSuccessMessage(player, "Successfully disabled entry notifications");
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.entrynotifications.feedback.disabled");
         } else {
-            QuartersMessaging.sendSuccessMessage(player, "Successfully enabled entry notifications");
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.entrynotifications.feedback.enabled");
         }
     }
 }

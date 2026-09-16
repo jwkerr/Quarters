@@ -9,6 +9,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,11 +36,14 @@ public final class AdminSetNameMethod extends CommandMethod {
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
         int maxNameLength = 32;
-        if (name.length() > maxNameLength) throw new CommandMethodException("Specified name is too long, max length is " + maxNameLength);
+        if (name.length() > maxNameLength) throw new CommandMethodException(
+                "quarters.command.quarters.set.name.feedback.too_long",
+                Argument.string("max", Integer.toString(maxNameLength))
+        );
 
         quarter.setName(name);
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully changed this quarter's name to " + name);
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.set.name.feedback.success", Argument.string("name", name));
     }
 }

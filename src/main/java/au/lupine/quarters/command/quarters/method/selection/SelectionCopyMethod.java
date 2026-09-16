@@ -41,6 +41,6 @@ public final class SelectionCopyMethod extends CommandMethod {
 
         SELECTION_VECTOR_MAP.put(player.getUniqueId(), vector);
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully copied your selection to your clipboard, it is relative to your location");
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.selection.copy.feedback.success");
     }
 }

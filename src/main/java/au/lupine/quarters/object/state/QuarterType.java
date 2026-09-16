@@ -1,5 +1,7 @@
 package au.lupine.quarters.object.state;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum QuarterType {
     APARTMENT("Apartment"), // Default type
     INN("Inn"), // Allows bed usage
@@ -7,15 +9,15 @@ public enum QuarterType {
 
     private final String commonName;
 
-    QuarterType(String commonName) {
+    QuarterType(@NotNull String commonName) {
         this.commonName = commonName;
     }
 
-    public String getCommonName() {
+    public @NotNull String getCommonName() {
         return commonName;
     }
 
-    public String getLowerCase() {
+    public @NotNull String getLowerCase() {
         return name().toLowerCase();
     }
 }

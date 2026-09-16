@@ -16,6 +16,6 @@ public final class AdminReloadConfigMethod extends CommandMethod {
     public void execute(@NotNull CommandSourceStack source) {
         ConfigManager.getInstance().reload();
 
-        QuartersMessaging.sendSuccessMessage(source.getSender(), "Successfully reloaded Quarters' config :3");
+        QuartersMessaging.sendSuccessMessage(source.getSender(), "quarters.command.quartersadmin.reload.config.feedback.success");
     }
 }

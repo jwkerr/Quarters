@@ -22,9 +22,9 @@ public final class AdminToggleEmbassyMethod extends CommandMethod {
         quarter.save();
 
         if (quarter.isEmbassy()) {
-            QuartersMessaging.sendSuccessMessage(player, "This quarter is now an embassy");
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.embassy.feedback.enabled");
         } else {
-            QuartersMessaging.sendSuccessMessage(player, "This quarter is no longer an embassy");
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.embassy.feedback.disabled");
         }
     }
 }

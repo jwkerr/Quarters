@@ -42,7 +42,7 @@ public final class ClaimMethod extends CommandMethod {
             executeClaim(source, quarterArgument);
             return Command.SINGLE_SUCCESS;
         } catch (CommandMethodException e) {
-            QuartersMessaging.sendErrorMessage(source.getSender(), e.getMessage());
+            QuartersMessaging.sendErrorMessage(source.getSender(), e.getMessage(), e.getArguments());
             return 0;
         }
     }
@@ -86,7 +86,7 @@ public final class ClaimMethod extends CommandMethod {
                         canResidentClaimQuarter(resident, quarter);
                         if (!currentPrice.equals(quarter.getPrice())) throw new CommandMethodException("quarters.command.quarters.claim.feedback.price_changed");
                     } catch (CommandMethodException e) {
-                        QuartersMessaging.sendErrorMessage(player, e.getMessage());
+                        QuartersMessaging.sendErrorMessage(player, e.getMessage(), e.getArguments());
                         return;
                     }
 

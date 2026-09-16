@@ -11,6 +11,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +31,7 @@ public final class SetDefaultSellPriceMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        throw new CommandMethodException("You did not specify a price");
+        throw new CommandMethodException("quarters.command.quarters.set.defaultsellprice.feedback.no_price");
     }
 
     private void execute(@NotNull CommandSourceStack source, double price) {
@@ -39,11 +40,23 @@ public final class SetDefaultSellPriceMethod extends CommandMethod {
         Town town = TownyAPI.getInstance().getTown(player);
         if (town == null) throw new CommandMethodException(StringConstants.YOU_ARE_NOT_PART_OF_A_TOWN);
 
-        if (price < 0) throw new CommandMethodException("Price must be greater than or equal to 0");
+        if (price < 0) throw new CommandMethodException("quarters.command.feedback.price_not_negative");
 
         TownMetadataManager.getInstance().setDefaultSellPrice(town, price);
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully changed the default quarter sale price of " + town.getName() + " to " + price);
-        QuartersMessaging.sendCommandFeedbackToTown(town, player, "has changed the default quarter sale price of " + town.getName() + " to " + price, null);
+        QuartersMessaging.sendSuccessMessage(
+                player,
+                "quarters.command.quarters.set.defaultsellprice.feedback.success",
+                Argument.string("town", town.getName()),
+                Argument.string("price", Double.toString(price))
+        );
+        QuartersMessaging.sendCommandFeedbackToTown(
+                town,
+                player,
+                "quarters.command.quarters.set.defaultsellprice.feedback.town",
+                null,
+                Argument.string("town", town.getName()),
+                Argument.string("price", Double.toString(price))
+        );
     }
 }

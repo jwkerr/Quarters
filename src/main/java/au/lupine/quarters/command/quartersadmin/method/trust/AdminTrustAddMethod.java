@@ -34,7 +34,7 @@ public final class AdminTrustAddMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        throw new CommandMethodException("No player name provided");
+        throw new CommandMethodException("quarters.command.feedback.no_player_name");
     }
 
     private void execute(@NotNull CommandSourceStack source, @NotNull String targetResidentName) {

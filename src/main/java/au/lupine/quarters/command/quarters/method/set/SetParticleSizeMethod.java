@@ -12,6 +12,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,19 +41,25 @@ public final class SetParticleSizeMethod extends CommandMethod {
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return;
 
-        if (value < 0.0F || value > 4.0F) throw new CommandMethodException("Provided value is invalid, please provide a value between 0.0 and 4.0");
+        if (value < 0.0F || value > 4.0F) throw new CommandMethodException("quarters.command.quarters.set.particlesize.feedback.invalid_value");
 
         Quarter quarter = getQuarterAtPlayerOrNull(player);
 
         if (quarter != null && quarter.hasBasicCommandPermissions(player)) {
             quarter.setParticleSize(value);
 
-            QuartersMessaging.sendSuccessMessage(player, "Successfully changed this quarter's particle size to " + value);
-            QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has changed a quarter's particle size to " + value, player.getLocation());
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.set.particlesize.feedback.quarter_success", Argument.string("value", Float.toString(value)));
+            QuartersMessaging.sendCommandFeedbackToTown(
+                    quarter.getTown(),
+                    player,
+                    "quarters.command.quarters.set.particlesize.feedback.town",
+                    player.getLocation(),
+                    Argument.string("value", Float.toString(value))
+            );
             return;
         }
 
         ResidentMetadataManager.getInstance().setParticleSize(resident, value);
-        QuartersMessaging.sendSuccessMessage(player, "Successfully changed your default quarter particle size to " + value);
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.set.particlesize.feedback.default_success", Argument.string("value", Float.toString(value)));
     }
 }

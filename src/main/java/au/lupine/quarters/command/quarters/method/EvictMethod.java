@@ -31,6 +31,6 @@ public final class EvictMethod extends CommandMethod {
         quarter.save();
 
         QuartersMessaging.sendSuccessMessage(player, StringConstants.YOU_HAVE_SUCCESSFULLY_EVICTED_THIS_QUARTERS_OWNER);
-        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has evicted the owner of a quarter", player.getLocation());
+        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "quarters.command.quarters.evict.feedback.town", player.getLocation());
     }
 }

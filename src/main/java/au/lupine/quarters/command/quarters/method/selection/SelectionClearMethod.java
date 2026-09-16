@@ -21,6 +21,6 @@ public final class SelectionClearMethod extends CommandMethod {
         sm.clearSelection(player);
         sm.clearCuboids(player);
 
-        QuartersMessaging.sendSuccessMessage(player, "Selection cleared");
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.selection.clear.feedback.success");
     }
 }

@@ -28,6 +28,6 @@ public final class SetAnchorMethod extends CommandMethod {
         quarter.save();
 
         QuartersMessaging.sendSuccessMessage(player, StringConstants.SUCCESSFULLY_SET_THIS_QUARTERS_ANCHOR_POINT);
-        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has changed a quarter's anchor point", location);
+        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "quarters.command.quarters.set.anchor.feedback.town", location);
     }
 }

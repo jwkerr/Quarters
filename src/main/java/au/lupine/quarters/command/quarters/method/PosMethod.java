@@ -67,7 +67,7 @@ public final class PosMethod extends CommandMethod {
             execute(source, position, adjustX, adjustY, adjustZ);
             return Command.SINGLE_SUCCESS;
         } catch (CommandMethodException e) {
-            QuartersMessaging.sendErrorMessage(source.getSender(), e.getMessage());
+            QuartersMessaging.sendErrorMessage(source.getSender(), e.getMessage(), e.getArguments());
             return 0;
         }
     }

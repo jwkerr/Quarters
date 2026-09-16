@@ -108,7 +108,7 @@ public abstract class CommandMethod {
             if (resident.isMayor()) return;
         }
 
-        if (!sender.hasPermission(permission)) throw new CommandMethodException("You do not have permission to perform this method");
+        if (!sender.hasPermission(permission)) throw new CommandMethodException("quarters.command.feedback.no_method_permission");
     }
 
     protected int run(@NotNull CommandSourceStack source) {
@@ -116,7 +116,7 @@ public abstract class CommandMethod {
             execute(source);
             return Command.SINGLE_SUCCESS;
         } catch (CommandMethodException e) {
-            QuartersMessaging.sendErrorMessage(source.getSender(), e.getMessage());
+            QuartersMessaging.sendErrorMessage(source.getSender(), e.getMessage(), e.getArguments());
             return 0;
         }
     }
@@ -126,7 +126,7 @@ public abstract class CommandMethod {
             runnable.run();
             return Command.SINGLE_SUCCESS;
         } catch (CommandMethodException e) {
-            QuartersMessaging.sendErrorMessage(source.getSender(), e.getMessage());
+            QuartersMessaging.sendErrorMessage(source.getSender(), e.getMessage(), e.getArguments());
             return 0;
         }
     }

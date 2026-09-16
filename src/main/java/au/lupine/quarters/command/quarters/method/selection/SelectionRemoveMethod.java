@@ -24,11 +24,11 @@ public final class SelectionRemoveMethod extends CommandMethod {
         for (Cuboid cuboid : cuboids) {
             if (cuboid.getPlayersInsideBounds().contains(player)) {
                 cuboids.remove(cuboid);
-                QuartersMessaging.sendSuccessMessage(player, "Successfully removed the cuboid you are standing in from the selection");
+                QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.selection.remove.feedback.success");
                 return;
             }
         }
 
-        QuartersMessaging.sendErrorMessage(player, "Could not find any cuboid at your location to remove");
+        QuartersMessaging.sendErrorMessage(player, "quarters.command.quarters.selection.remove.feedback.no_cuboid");
     }
 }

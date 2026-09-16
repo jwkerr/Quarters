@@ -9,6 +9,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +31,7 @@ public final class AdminSetTypeMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        throw new CommandMethodException("No quarter type provided");
+        throw new CommandMethodException("quarters.command.quarters.set.type.feedback.no_type");
     }
 
     private void execute(@NotNull CommandSourceStack source, @NotNull String typeName) {
@@ -41,12 +42,16 @@ public final class AdminSetTypeMethod extends CommandMethod {
         try {
             type = QuarterType.valueOf(typeName.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new CommandMethodException("Invalid quarter type provided");
+            throw new CommandMethodException("quarters.command.quarters.set.type.feedback.invalid_type");
         }
 
         quarter.setType(type);
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, "This quarter has been set to type: " + quarter.getType().getCommonName());
+        QuartersMessaging.sendSuccessMessage(
+                player,
+                "quarters.command.quarters.set.type.feedback.success",
+                Argument.string("type", quarter.getType().getCommonName())
+        );
     }
 }

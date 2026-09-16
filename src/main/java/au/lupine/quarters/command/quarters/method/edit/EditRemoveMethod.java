@@ -28,13 +28,13 @@ public final class EditRemoveMethod extends CommandMethod {
         Cuboid cuboid = quarter.getCuboidAtPlayer(player);
         List<Cuboid> cuboids = quarter.getCuboids();
 
-        if (cuboids.size() == 1) throw new CommandMethodException("This cuboid is the only cuboid in this quarter, please use /q delete instead");
+        if (cuboids.size() == 1) throw new CommandMethodException("quarters.command.quarters.edit.remove.feedback.only_cuboid");
 
         cuboids.remove(cuboid);
         quarter.setCuboids(cuboids);
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, "Successfully removed the cuboid at your location");
-        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "has remove a cuboid from a quarter", player.getLocation());
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.edit.remove.feedback.success");
+        QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "quarters.command.quarters.edit.remove.feedback.town", player.getLocation());
     }
 }

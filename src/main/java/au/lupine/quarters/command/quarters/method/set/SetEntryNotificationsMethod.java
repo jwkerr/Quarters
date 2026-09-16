@@ -11,6 +11,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +33,7 @@ public final class SetEntryNotificationsMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        throw new CommandMethodException("No entry notification type provided");
+        throw new CommandMethodException("quarters.command.quarters.set.entrynotifications.feedback.no_type");
     }
 
     private void execute(@NotNull CommandSourceStack source, @NotNull String typeName) {
@@ -42,7 +43,7 @@ public final class SetEntryNotificationsMethod extends CommandMethod {
         try {
             type = EntryNotificationType.valueOf(typeName.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new CommandMethodException("Invalid entry notification type provided");
+            throw new CommandMethodException("quarters.command.quarters.set.entrynotifications.feedback.invalid_type");
         }
 
         Resident resident = TownyAPI.getInstance().getResident(player);
@@ -50,6 +51,10 @@ public final class SetEntryNotificationsMethod extends CommandMethod {
 
         ResidentMetadataManager.getInstance().setEntryNotificationType(resident, type);
 
-        QuartersMessaging.sendSuccessMessage(player, "Your entry notification type has been set to: " + type.getCommonName());
+        QuartersMessaging.sendSuccessMessage(
+                player,
+                "quarters.command.quarters.set.entrynotifications.feedback.success",
+                Argument.string("type", type.getCommonName())
+        );
     }
 }

@@ -34,7 +34,7 @@ public class StatusScreenListener implements Listener {
         if (quarters.isEmpty()) return;
 
         TextComponent.Builder builder = Component.text();
-        builder.append(Component.text("Quarters: ", NamedTextColor.DARK_GREEN));
+        builder.append(Component.translatable("quarters.status.resident.quarters", NamedTextColor.DARK_GREEN));
         builder.append(Component.text(quarters.size(), NamedTextColor.GREEN));
 
         event.getStatusScreen().addComponentOf("Quarters_resident_quarter_count", builder.build());

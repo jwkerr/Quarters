@@ -41,6 +41,6 @@ public final class DeleteArgument extends CommandArgument {
         quarter.delete();
 
         QuartersMessaging.sendSuccessMessage(player, StringConstants.SUCCESSFULLY_DELETED_THIS_QUARTER);
-        QuartersMessaging.sendCommandFeedbackToTown(town, player, "has deleted a quarter", player.getLocation());
+        QuartersMessaging.sendCommandFeedbackToTown(town, player, "quarters.command.quarters.delete.feedback.town", player.getLocation());
     }
 }

@@ -38,18 +38,18 @@ public final class InfoMethod extends CommandMethod {
         }
 
         List<Pair<String, Component>> labelledEntries = List.of(
-                Pair.of("Author", ConfigManager.getFormattedName(UUID.fromString("fed0ec4a-f1ad-4b97-9443-876391668b34"), Component.text("Fruitloopins", NamedTextColor.GRAY))),
-                Pair.of("Version", Component.text(meta.getVersion(), NamedTextColor.GRAY)),
-                Pair.of("Quarters", Component.text(numQuarters, NamedTextColor.GRAY)),
-                Pair.of("Cuboids", Component.text(numCuboids, NamedTextColor.GRAY))
+                Pair.of("quarters.command.quarters.info.label.author", ConfigManager.getFormattedName(UUID.fromString("fed0ec4a-f1ad-4b97-9443-876391668b34"), Component.text("Fruitloopins", NamedTextColor.GRAY))),
+                Pair.of("quarters.command.quarters.info.label.version", Component.text(meta.getVersion(), NamedTextColor.GRAY)),
+                Pair.of("quarters.command.quarters.info.label.quarters", Component.text(numQuarters, NamedTextColor.GRAY)),
+                Pair.of("quarters.command.quarters.info.label.cuboids", Component.text(numCuboids, NamedTextColor.GRAY))
         );
 
         TextComponent.Builder bracketBuilder = Component.text();
 
         bracketBuilder.append(QuartersMessaging.OPEN_SQUARE_BRACKET);
-        bracketBuilder.append(Component.text("Fame", TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
+        bracketBuilder.append(Component.translatable("quarters.command.quarters.info.button.fame", TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
         bracketBuilder.append(QuartersMessaging.CLOSED_SQUARE_BRACKET);
-        bracketBuilder.hoverEvent(Component.text("Click to view Quarters' most famous players", NamedTextColor.GRAY));
+        bracketBuilder.hoverEvent(Component.translatable("quarters.command.quarters.info.button.fame.hover", NamedTextColor.GRAY));
         bracketBuilder.clickEvent(ClickEvent.runCommand("/quarters:q fame"));
 
         Component info = QuartersMessaging.getListComponent(QuartersMessaging.PLUGIN_WORDMARK_COMPONENT, labelledEntries, null).appendNewline()

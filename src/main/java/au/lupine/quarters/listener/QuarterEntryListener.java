@@ -82,7 +82,7 @@ public class QuarterEntryListener implements Listener {
         List<Component> components = new ArrayList<>();
 
         Component name = Component.text(quarter.getName(), TextColor.color(quarter.getColour().getRGB())).clickEvent(ClickEvent.runCommand("/quarters:q here " + quarter.getUUID()));
-        Component owner = quarter.hasOwner() ? ConfigManager.getFormattedName(quarter.getOwner(), Component.empty()) : Component.text("Unowned", NamedTextColor.GRAY);
+        Component owner = quarter.hasOwner() ? ConfigManager.getFormattedName(quarter.getOwner(), Component.empty()) : Component.translatable("quarters.quarter.owner.unowned", NamedTextColor.GRAY);
         Component type = Component.text(quarter.getType().getCommonName(), NamedTextColor.GRAY);
 
         components.add(name);
@@ -93,7 +93,7 @@ public class QuarterEntryListener implements Listener {
             Component price = QuartersMessaging.OPEN_SQUARE_BRACKET
                     .append(Component.text(TownyEconomyHandler.getFormattedBalance(quarter.getPrice()), NamedTextColor.GRAY))
                     .append(QuartersMessaging.CLOSED_SQUARE_BRACKET)
-                    .hoverEvent(Component.text("Click to claim!", NamedTextColor.GRAY))
+                    .hoverEvent(Component.translatable("quarters.quarter.price.hover.claim", NamedTextColor.GRAY))
                     .clickEvent(ClickEvent.runCommand("/quarters:q claim " + quarter.getUUID()));
 
             components.add(price);
