@@ -114,6 +114,9 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
         @Section("default_quarter_colour")
         public @NotNull QuarterColour defaultQuarterColour = new QuarterColour();
 
+        @Section("arena_quarter")
+        public @NotNull ArenaQuarter arenaQuarter = new ArenaQuarter();
+
         @Key("allow_quarter_entry_notifications")
         @Comment("If set to true, players will be allowed to toggle notifications when entering a quarter")
         public boolean allowQuarterEntryNotifications = true;
@@ -143,6 +146,46 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
 
         @Key("blue")
         public int blue = 255;
+    }
+
+    public static class ArenaQuarter {
+        @Key("enabled")
+        @Comment({
+                "Enable to make arena quarters functional",
+                "When false, arena quarters work like regular quarters",
+                "WARNING: Players may exploit this by making invisible traps",
+                "Enable on own risk!"
+        })
+        public boolean enabled = false;
+
+        @Key("visible_boundary")
+        @Comment("If set to true, arena quarters will have a forced visible boundary that cannot be disabled")
+        public boolean visibleBoundary = true;
+
+        @Key("entry_grace_period_seconds")
+        @Comment({
+                "Number of seconds after entering an arena before players can take PvP damage",
+                "Useful in case a player entered an arena plot by accident"
+        })
+        public int entryGracePeriodSeconds = 3;
+
+        @Key("item_drops_on_death")
+        @Comment("If set to true, items will drop on death")
+        public boolean itemsDropsOnDeath = true;
+
+        @Key("exp_drops_on_death")
+        @Comment("If set to true, exp will drop on death")
+        public boolean expDropsOnDeath = true;
+
+        @Key("friendly_fire_town")
+        @Comment("If set to true, players from the same town can damage each other")
+        public boolean friendlyFireTown = false;
+
+        @Key("friendly_fire_nation")
+        @Comment("If set to true, players from the same nation can damage each other")
+        public boolean friendlyFireNation = true;
+
+        // TODO: Possibly hook into McMMO to also check for party friendly fire?
     }
 
     public static class ParticlesSection {

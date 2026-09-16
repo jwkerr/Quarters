@@ -1,19 +1,25 @@
 package au.lupine.quarters.listener;
 
+import au.lupine.quarters.Quarters;
+import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.QuarterType;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.actions.*;
+import com.palmergames.bukkit.towny.event.damage.TownyPlayerDamagePlayerEvent;
 import com.palmergames.bukkit.towny.event.player.PlayerDeniedBedUseEvent;
+import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -50,12 +56,13 @@ public class TownyActionListener implements Listener {
         parseEvent(event, ActionType.ITEM_USE);
     }
 
+    @EventHandler
+    public void onPlayerDamage(TownyPlayerDamagePlayerEvent event) {
+        parseEvent(event);
+    }
+
     public void parseEvent(@NotNull TownyActionEvent event, @NotNull ActionType type) {
-        if (event.isInWilderness()) return;
-
-        Location location = event.getLocation();
-
-        Quarter quarter = QuarterManager.getInstance().getQuarter(location);
+        Quarter quarter = getEventQuarter(event.isInWilderness(), event.getLocation());
         if (quarter == null) return;
 
         Resident resident = TownyAPI.getInstance().getResident(event.getPlayer());
@@ -67,6 +74,19 @@ public class TownyActionListener implements Listener {
         }
 
         if (quarter.getType().equals(QuarterType.STATION)) handleStation(event, quarter);
+    }
+
+    // TODO: This may require some cleanup since TownyPlayerDamagePlayerEvent isn't an instance of TownyActionEvent
+    public void parseEvent(@NotNull TownyPlayerDamagePlayerEvent event) {
+        Quarter quarter = getEventQuarter(event.isInWilderness(), event.getLocation());
+        if (quarter == null) return;
+
+        if (quarter.getType().equals(QuarterType.ARENA)) handleArenaDamage(event, quarter);
+    }
+
+    private @Nullable Quarter getEventQuarter(boolean isInWilderness, @NotNull Location location) {
+        if (isInWilderness) return null;
+        return QuarterManager.getInstance().getQuarter(location);
     }
 
     private void handleStation(TownyActionEvent event, Quarter quarter) {
@@ -82,6 +102,36 @@ public class TownyActionListener implements Listener {
 
     private boolean isVehicle(Material material) {
         return VEHICLE_MATERIALS.contains(material);
+    }
+
+    private void handleArenaDamage(TownyPlayerDamagePlayerEvent event, Quarter quarter) {
+        ConfigManager config = Quarters.getInstance().config();
+        if (!config.quarters.arenaQuarter.enabled) return;
+
+        // Explicitly allow the damage first
+        event.setCancelled(false);
+
+        Town attackerTown = TownyAPI.getInstance().getTown(event.getAttackingPlayer());
+        Town victimTown = TownyAPI.getInstance().getTown(event.getVictimPlayer());
+
+        if (attackerTown != null && victimTown != null) {
+            if (!config.quarters.arenaQuarter.friendlyFireTown && attackerTown.getUUID().equals(victimTown.getUUID())) {
+                event.setCancelled(true);
+                return;
+            }
+
+            if (!config.quarters.arenaQuarter.friendlyFireNation) {
+                Nation attackerNation = attackerTown.getNationOrNull();
+                Nation victimNation = victimTown.getNationOrNull();
+
+                if (attackerNation == null || victimNation == null) return;
+
+                if (attackerNation.getUUID().equals(victimNation.getUUID())) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
     }
 
     @EventHandler

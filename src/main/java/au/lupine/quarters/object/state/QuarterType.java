@@ -5,7 +5,8 @@ import org.jetbrains.annotations.NotNull;
 public enum QuarterType {
     APARTMENT("Apartment"), // Default type
     INN("Inn"), // Allows bed usage
-    STATION("Station"); // Allows vehicle placing and usage
+    STATION("Station"), // Allows vehicle placing and usage
+    ARENA("Arena"); // Allows PvP
 
     private final String commonName;
 
