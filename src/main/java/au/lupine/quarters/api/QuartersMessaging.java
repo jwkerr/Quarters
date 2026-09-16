@@ -1,5 +1,6 @@
 package au.lupine.quarters.api;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.object.wrapper.Pair;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -129,7 +130,7 @@ public class QuartersMessaging {
             if (player == null) continue;
 
             boolean hasCommandFeedbackPerm = player.hasPermission("quarters.landlord.receive_command_feedback_from_town_members");
-            boolean hasMayorPerm = resident.isMayor() && ConfigManager.doMayorsBypassCertainElevatedPerms();
+            boolean hasMayorPerm = resident.isMayor() && Quarters.getInstance().config().technical.doMayorsBypassCertainElevatedPerms;
 
             if (!hasCommandFeedbackPerm && !hasMayorPerm) continue;
 

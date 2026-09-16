@@ -1,7 +1,7 @@
 package au.lupine.quarters.command.quarters.method;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
-import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.ResidentMetadataManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.exception.CommandMethodException;
@@ -23,7 +23,7 @@ public final class WandMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack stack) {
-        if (ConfigManager.getFreeWandAmount() == 0) throw new CommandMethodException("quarters.command.quarters.wand.feedback.disabled");
+        if (Math.clamp(Quarters.getInstance().config().wand.freeAmount, -1, Integer.MAX_VALUE) == 0) throw new CommandMethodException("quarters.command.quarters.wand.feedback.disabled");
 
         Player player = getSenderAsPlayerOrThrow(stack);
 
@@ -41,7 +41,7 @@ public final class WandMethod extends CommandMethod {
                 Argument.string("duration", formatDuration(remainingCooldown))
         );
 
-        HashMap<Integer, ItemStack> remaining = player.getInventory().addItem(new ItemStack(ConfigManager.getWandMaterial()));
+        HashMap<Integer, ItemStack> remaining = player.getInventory().addItem(new ItemStack(Quarters.getInstance().config().wand.material));
         if (!remaining.isEmpty()) throw new CommandMethodException("quarters.command.quarters.wand.feedback.inventory_full");
 
         rmm.incrementReceivedFreeWands(resident);

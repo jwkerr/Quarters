@@ -1,7 +1,7 @@
 package au.lupine.quarters.object.base;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
-import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
@@ -102,7 +102,7 @@ public abstract class CommandMethod {
         if (permission == null) return;
 
         Player player = getSenderAsPlayerOrNull();
-        if (player != null && hasMayorPermBypass && ConfigManager.doMayorsBypassCertainElevatedPerms()) {
+        if (player != null && hasMayorPermBypass && Quarters.getInstance().config().technical.doMayorsBypassCertainElevatedPerms) {
             Resident resident = TownyAPI.getInstance().getResident(player);
             if (resident == null) return;
             if (resident.isMayor()) return;

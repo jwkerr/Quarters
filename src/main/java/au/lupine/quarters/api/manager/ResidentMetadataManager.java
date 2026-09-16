@@ -1,5 +1,6 @@
 package au.lupine.quarters.api.manager;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.object.base.MetadataManager;
 import au.lupine.quarters.object.state.EntryNotificationType;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -29,7 +30,7 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
     }
 
     public boolean hasEntryNotifications(@NotNull Resident resident) {
-        return getMetadataAsBoolean(resident, HAS_ENTRY_NOTIFICATIONS_KEY, ConfigManager.getQuarterEntryNotificationsOnByDefault());
+        return getMetadataAsBoolean(resident, HAS_ENTRY_NOTIFICATIONS_KEY, Quarters.getInstance().config().quarters.quarterEntryNotificationsOnByDefault);
     }
 
     public void setEntryNotificationType(@NotNull Resident resident, @NotNull EntryNotificationType type) {
@@ -37,7 +38,7 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
     }
 
     public @NotNull EntryNotificationType getEntryNotificationType(@NotNull Resident resident) {
-        EntryNotificationType def = ConfigManager.getDefaultQuarterEntryNotificationType();
+        EntryNotificationType def = Quarters.getInstance().config().quarters.defaultQuarterEntryNotificationType;
         String typeString = getMetadataAsString(resident, ENTRY_NOTIFICATION_TYPE_KEY, def.toString());
 
         try {
@@ -52,7 +53,7 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
     }
 
     public boolean hasEntryBlinking(@NotNull Resident resident) {
-        return getMetadataAsBoolean(resident, HAS_ENTRY_BLINKING_KEY, ConfigManager.getEntryParticleBlinkingOnByDefault());
+        return getMetadataAsBoolean(resident, HAS_ENTRY_BLINKING_KEY, Quarters.getInstance().config().particles.entryParticleBlinkingOnByDefault);
     }
 
     public void setHasConstantOutlines(@NotNull Resident resident, boolean value) {
@@ -60,7 +61,7 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
     }
 
     public boolean hasConstantOutlines(@NotNull Resident resident) {
-        return getMetadataAsBoolean(resident, HAS_CONSTANT_OUTLINES_KEY, ConfigManager.getConstantParticleOutlinesOnByDefault());
+        return getMetadataAsBoolean(resident, HAS_CONSTANT_OUTLINES_KEY, Quarters.getInstance().config().particles.constantParticleOutlinesOnByDefault);
     }
 
     public void incrementReceivedFreeWands(@NotNull Resident resident) {
@@ -71,7 +72,7 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
     }
 
     public boolean canReceiveFreeWand(@NotNull Resident resident) {
-        int maxFreeWands = ConfigManager.getFreeWandAmount();
+        int maxFreeWands = Math.clamp(Quarters.getInstance().config().wand.freeAmount, -1, Integer.MAX_VALUE);
         // Always allow a free wand if -1
         if (maxFreeWands == -1) return true;
         return getMetadataAsInteger(resident, AMOUNT_RECEIVED_FREE_WAND_KEY, 0) < maxFreeWands;
@@ -86,7 +87,7 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
     }
 
     public long getRemainingFreeWandCooldown(@NotNull Resident resident) {
-        long cooldownSeconds = ConfigManager.getFreeWandCooldownSeconds();
+        long cooldownSeconds = Math.max(Quarters.getInstance().config().wand.cooldownSeconds, 0);
 
         long lastReceived = getLastReceivedFreeWand(resident);
         long cooldownMillis = cooldownSeconds * 1000L;
@@ -102,6 +103,6 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
     }
 
     public float getParticleSize(@NotNull Resident resident) {
-        return getMetadataAsDecimal(resident, PARTICLE_SIZE_KEY, (double) ConfigManager.getDefaultParticleSize()).floatValue();
+        return getMetadataAsDecimal(resident, PARTICLE_SIZE_KEY, (double) Quarters.getInstance().config().particles.defaultParticleSize).floatValue();
     }
 }

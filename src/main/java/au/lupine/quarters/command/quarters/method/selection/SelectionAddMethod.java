@@ -1,7 +1,7 @@
 package au.lupine.quarters.command.quarters.method.selection;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
-import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.SelectionManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Cuboid;
@@ -31,7 +31,7 @@ public final class SelectionAddMethod extends CommandMethod {
         if (newCuboid == null) throw new CommandMethodException("quarters.command.quarters.selection.add.feedback.invalid_selection");
 
         List<Cuboid> cuboids = sm.getCuboids(player);
-        int maxCuboids = ConfigManager.getMaxCuboidsPerQuarter();
+        int maxCuboids = Quarters.getInstance().config().quarters.maxCuboidsPerQuarter;
         if (maxCuboids > -1 && cuboids.size() == maxCuboids) throw new CommandMethodException(
                 "quarters.command.quarters.selection.add.feedback.cuboid_limit",
                 Argument.string("max", Integer.toString(maxCuboids))

@@ -1,7 +1,6 @@
 package au.lupine.quarters.listener;
 
 import au.lupine.quarters.Quarters;
-import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.ParticleManager;
 import au.lupine.quarters.api.manager.QuarterManager;
 import org.bukkit.entity.Player;
@@ -22,7 +21,7 @@ public class QuarterParticleListener implements Listener {
             ParticleManager pm = ParticleManager.getInstance();
             pm.drawParticlesAtCurrentSelection(player);
             pm.drawParticlesAtAllQuarters(player);
-            }, () -> {}, 1L, ConfigManager.getTicksBetweenParticleOutlines()
+            }, () -> {}, 1L, Quarters.getInstance().config().particles.ticksBetweenParticleOutlines
         );
     }
 }

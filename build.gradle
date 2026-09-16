@@ -42,6 +42,8 @@ dependencies {
     compileOnly("com.palmergames.bukkit.towny:towny:0.101.2.5")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("org.geysermc.floodgate:api:2.2.5-SNAPSHOT")
+    compileOnly("de.bsommerfeld.jshepherd:core:4.1.1")
+    compileOnly("de.bsommerfeld.jshepherd:toml:4.1.1")
 }
 
 def targetJavaVersion = 21

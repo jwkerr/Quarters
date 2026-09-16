@@ -4,12 +4,13 @@ main: au.lupine.quarters.Quarters
 api-version: "1.20"
 prefix: Quarters
 authors: [Fruitloopins]
-contributors: [Warriorrr]
+contributors: [Warriorrr, pernio]
 description: The modern "apartment" plugin for Towny
 website: https://earthmc.net
 folia-supported: true
 depend: [Towny]
 softdepend: [PlaceholderAPI, floodgate]
+libraries: [de.bsommerfeld.jshepherd:core:4.1.1, de.bsommerfeld.jshepherd:toml:4.1.1]
 
 commands:
   quarters:

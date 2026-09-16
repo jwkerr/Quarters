@@ -1,7 +1,7 @@
 package au.lupine.quarters.command.quarters.method;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
-import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.api.manager.SelectionManager;
 import au.lupine.quarters.object.base.CommandMethod;
@@ -52,7 +52,7 @@ public final class CreateMethod extends CommandMethod {
         }
 
         List<Quarter> quarterList = QuarterManager.getInstance().getQuarters(town);
-        int maxQuarters = ConfigManager.getMaxQuartersPerTown();
+        int maxQuarters = Quarters.getInstance().config().quarters.maxQuartersPerTown;
         if (maxQuarters > -1 && quarterList.size() >= maxQuarters) throw new CommandMethodException(
                 "quarters.command.quarters.create.feedback.town_limit",
                 Argument.string("town", town.getName()),
@@ -61,7 +61,7 @@ public final class CreateMethod extends CommandMethod {
 
         Quarter quarter = new Quarter(town, cuboids, player.getUniqueId());
 
-        int maxVolume = ConfigManager.getMaxQuarterVolume();
+        int maxVolume = Quarters.getInstance().config().quarters.maxQuarterVolume;
         if (maxVolume > -1 && quarter.getVolume() > maxVolume) throw new CommandMethodException(
                 "quarters.command.quarters.create.feedback.max_volume",
                 Argument.string("max", Integer.toString(maxVolume))

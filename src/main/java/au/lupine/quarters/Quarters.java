@@ -10,6 +10,9 @@ import au.lupine.quarters.object.metadata.QuarterListDataField;
 import au.lupine.quarters.object.metadata.QuarterListDataFieldDeserialiser;
 import com.palmergames.bukkit.towny.object.metadata.MetadataLoader;
 import com.palmergames.util.JavaUtil;
+import de.bsommerfeld.jshepherd.core.ConfigurationLoader;
+import de.bsommerfeld.jshepherd.core.PersistenceDelegateFactoryRegistry;
+import de.bsommerfeld.jshepherd.toml.TomlPersistenceDelegateFactory;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.translation.MiniMessageTranslationStore;
@@ -19,6 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.Locale;
@@ -29,11 +33,15 @@ import java.util.logging.Logger;
 public final class Quarters extends JavaPlugin {
 
     private static Quarters instance;
+    private static ConfigManager config;
+    private static boolean configPersistenceRegistered;
 
     private static Logger logger;
 
     @Override
     public void onEnable() {
+        loadConfig();
+
         registerCommands();
 
         FloodgateManager.getInstance().setup(this);
@@ -71,9 +79,23 @@ public final class Quarters extends JavaPlugin {
 
         registerTranslations();
 
-        ConfigManager.getInstance().setup();
-
         MetadataLoader.getInstance().registerDeserializer(QuarterListDataField.typeID(), new QuarterListDataFieldDeserialiser());
+    }
+
+    public void reloadQuartersConfig() {
+        loadConfig();
+    }
+
+    private void loadConfig() {
+        if (!configPersistenceRegistered) {
+            PersistenceDelegateFactoryRegistry.registerFactory(new TomlPersistenceDelegateFactory());
+            configPersistenceRegistered = true;
+        }
+
+        config = ConfigurationLoader.from(getDataPath().resolve("config.toml"))
+                .withComments()
+                .load(ConfigManager::new);
+        config.loadRuntimeData();
     }
 
     private void registerTranslations() {
@@ -132,6 +154,8 @@ public final class Quarters extends JavaPlugin {
     public static @NotNull Quarters getInstance() {
         return instance;
     }
+
+    public @NonNull ConfigManager config() { return config; }
 
     public static void logInfo(@NotNull String msg) {
         logger.info(msg);

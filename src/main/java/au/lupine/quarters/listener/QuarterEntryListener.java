@@ -1,5 +1,6 @@
 package au.lupine.quarters.listener;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
@@ -70,11 +71,12 @@ public class QuarterEntryListener implements Listener {
 
     private void onQuarterEntry(Quarter quarter, Resident resident) {
         ResidentMetadataManager rmm = ResidentMetadataManager.getInstance();
+        ConfigManager config = Quarters.getInstance().config();
 
-        if (rmm.hasEntryNotifications(resident) && ConfigManager.areEntryNotificationsAllowed())
+        if (rmm.hasEntryNotifications(resident) && config.quarters.allowQuarterEntryNotifications)
             sendEntryNotification(quarter, resident);
 
-        if (rmm.hasEntryBlinking(resident) && ConfigManager.isEntryParticleBlinkingAllowed())
+        if (rmm.hasEntryBlinking(resident) && config.particles.enabled && config.particles.allowEntryParticleBlinking)
             quarter.blinkForResident(resident);
     }
 
