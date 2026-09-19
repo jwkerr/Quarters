@@ -303,7 +303,7 @@ public class Quarter extends TownyObject {
         return registered;
     }
 
-    public void setOwner(UUID uuid) {
+    public void setOwner(@Nullable UUID uuid) {
         this.owner = uuid;
 
         if (owner == null) {

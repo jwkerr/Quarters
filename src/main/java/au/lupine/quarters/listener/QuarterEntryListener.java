@@ -2,6 +2,9 @@ package au.lupine.quarters.listener;
 
 import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.api.event.QuarterEnterEvent;
+import au.lupine.quarters.api.event.QuarterEntryNotificationEvent;
+import au.lupine.quarters.api.event.QuarterExitEvent;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.api.manager.ResidentMetadataManager;
@@ -22,6 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,8 +51,13 @@ public class QuarterEntryListener implements Listener {
         Quarter quarter = QuarterManager.getInstance().getQuarter(to);
 
         Optional<Quarter> previousQuarter = QUARTER_PLAYER_IS_IN.getOrDefault(player.getUniqueId(), Optional.empty());
-        if (quarter != null && (previousQuarter.isEmpty() || !previousQuarter.get().equals(quarter)))
+        if (previousQuarter.isPresent() && !previousQuarter.get().equals(quarter))
+            new QuarterExitEvent(player, resident, previousQuarter.get(), quarter, false).callEvent();
+
+        if (quarter != null && (previousQuarter.isEmpty() || !previousQuarter.get().equals(quarter))) {
+            new QuarterEnterEvent(player, resident, quarter, previousQuarter.orElse(null), false).callEvent();
             onQuarterEntry(quarter, resident);
+        }
 
         QUARTER_PLAYER_IS_IN.put(player.getUniqueId(), Optional.ofNullable(quarter));
     }
@@ -61,15 +70,29 @@ public class QuarterEntryListener implements Listener {
 
         Quarter quarter = QuarterManager.getInstance().getQuarter(player.getLocation());
 
+        if (quarter != null) new QuarterEnterEvent(player, resident, quarter, null, true).callEvent();
+
         QUARTER_PLAYER_IS_IN.put(player.getUniqueId(), Optional.ofNullable(quarter));
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        QUARTER_PLAYER_IS_IN.remove(event.getPlayer().getUniqueId());
+        Player player = event.getPlayer();
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null) {
+            QUARTER_PLAYER_IS_IN.remove(player.getUniqueId());
+            return;
+        }
+
+        Optional<Quarter> quarter = QUARTER_PLAYER_IS_IN.getOrDefault(player.getUniqueId(), Optional.empty());
+        if (quarter.isEmpty()) quarter = Optional.ofNullable(QuarterManager.getInstance().getQuarter(player.getLocation()));
+
+        quarter.ifPresent(value -> new QuarterExitEvent(player, resident, value, null, true).callEvent());
+
+        QUARTER_PLAYER_IS_IN.remove(player.getUniqueId());
     }
 
-    private void onQuarterEntry(Quarter quarter, Resident resident) {
+    private void onQuarterEntry(@NotNull Quarter quarter, @NotNull Resident resident) {
         ResidentMetadataManager rmm = ResidentMetadataManager.getInstance();
         ConfigManager config = Quarters.getInstance().config();
 
@@ -80,7 +103,7 @@ public class QuarterEntryListener implements Listener {
             quarter.blinkForResident(resident);
     }
 
-    private void sendEntryNotification(Quarter quarter, Resident resident) {
+    private void sendEntryNotification(@NotNull Quarter quarter, @NotNull Resident resident) {
         List<Component> components = new ArrayList<>();
 
         Component name = Component.text(quarter.getName(), TextColor.color(quarter.getColour().getRGB())).clickEvent(ClickEvent.runCommand("/quarters:q here " + quarter.getUUID()));
@@ -101,15 +124,20 @@ public class QuarterEntryListener implements Listener {
             components.add(price);
         }
 
-        JoinConfiguration jc = JoinConfiguration.separator(Component.text(" - ", TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
-        Component notification = Component.join(jc, components);
-
-        EntryNotificationType notificationType = ResidentMetadataManager.getInstance().getEntryNotificationType(resident);
-
         Player player = resident.getPlayer();
         if (player == null) return;
 
-        switch (notificationType) {
+        EntryNotificationType notificationType = ResidentMetadataManager.getInstance().getEntryNotificationType(resident);
+
+        QuarterEntryNotificationEvent event = new QuarterEntryNotificationEvent(player, resident, quarter, components, notificationType);
+        event.callEvent();
+        if (event.isCancelled()) return;
+        components = event.getNotifications();
+
+        JoinConfiguration jc = JoinConfiguration.separator(Component.text(" - ", TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
+        Component notification = Component.join(jc, components);
+
+        switch (event.getNotificationType()) {
             case ACTION_BAR -> player.sendActionBar(notification);
             case CHAT -> QuartersMessaging.sendMessage(player, notification);
         }

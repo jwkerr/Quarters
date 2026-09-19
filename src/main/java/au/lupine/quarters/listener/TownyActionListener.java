@@ -89,7 +89,7 @@ public class TownyActionListener implements Listener {
         return QuarterManager.getInstance().getQuarter(location);
     }
 
-    private void handleStation(TownyActionEvent event, Quarter quarter) {
+    private void handleStation(@NotNull TownyActionEvent event, @NotNull Quarter quarter) {
         if (!isVehicle(event.getMaterial())) return;
 
         if (quarter.isEmbassy()) {
@@ -104,7 +104,7 @@ public class TownyActionListener implements Listener {
         return VEHICLE_MATERIALS.contains(material);
     }
 
-    private void handleArenaDamage(TownyPlayerDamagePlayerEvent event, Quarter quarter) {
+    private void handleArenaDamage(@NotNull TownyPlayerDamagePlayerEvent event, @NotNull Quarter quarter) {
         ConfigManager config = Quarters.getInstance().config();
         if (!config.quarters.arenaQuarter.enabled) return;
 
