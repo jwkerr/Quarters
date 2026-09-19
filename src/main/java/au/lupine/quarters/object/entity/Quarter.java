@@ -448,24 +448,21 @@ public class Quarter extends TownyObject {
 
     // Constructor methods
 
-    private static Color createRandomColour() {
+    private static @NotNull Color createRandomColour() {
         Random random = new Random();
         return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
     }
 
-    private static Color createInitialColour() {
+    private static @NotNull Color createInitialColour() {
         ConfigManager.QuarterColour colour = Quarters.getInstance().config().quarters.defaultQuarterColour;
         if (!colour.enabled) return createRandomColour();
         return new Color(colour.red, colour.green, colour.blue);
     }
 
-    private static String createRandomName() {
-        List<String> adjectives = List.of( // TODO: add config for random names
-                "Lovely", "Cheerful", "Upbeat", "Stylish", "Luxurious", "Elegant", "Inviting", "Welcoming",
-                "Annoying", "Perturbing", "Enraging", "Dingy", "Inconvenient", "Dull", "Bland", "Gloomy"
-        );
+    private static @NotNull String createRandomName() {
+        List<String> adjectives = Quarters.getInstance().config().quarters.nameAdjectives;
 
-        List<String> nouns = List.of("Quarter", "Apartment", "Flat", "Dwelling", "Residence", "Suite", "Property", "Tenement");
+        List<String> nouns = Quarters.getInstance().config().quarters.nameNouns;
 
         Random random = new Random();
         String adjective = adjectives.get(random.nextInt(adjectives.size()));

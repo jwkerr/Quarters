@@ -128,6 +128,17 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
         @Key("default_quarter_entry_notification_type")
         @Comment("Configure this to change the default quarter entry notification type")
         public @NotNull EntryNotificationType defaultQuarterEntryNotificationType = EntryNotificationType.ACTION_BAR;
+
+        @Key("name_adjectives")
+        @Comment("Adjectives used when generating a random quarter name")
+        public @NotNull List<String> nameAdjectives = List.of(
+                "Lovely", "Cheerful", "Upbeat", "Stylish", "Luxurious", "Elegant", "Inviting", "Welcoming",
+                "Annoying", "Perturbing", "Enraging", "Dingy", "Inconvenient", "Dull", "Bland", "Gloomy"
+        );
+
+        @Key("name_nouns")
+        @Comment("Nouns used when generating a random quarter name")
+        public @NotNull List<String> nameNouns = List.of("Quarter", "Apartment", "Flat", "Dwelling", "Residence", "Suite", "Property", "Tenement");
     }
 
     public static class QuarterColour {
