@@ -4,24 +4,38 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import org.bukkit.command.CommandSender;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class AdminMetaRemoveMethod extends CommandMethod {
+public final class AdminMetaRemoveMethod extends CommandMethod {
 
-    public AdminMetaRemoveMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quartersadmin.meta.remove");
+    public AdminMetaRemoveMethod() {
+        super("remove", "quarters.command.quartersadmin.meta.remove");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(Commands.argument("key", StringArgumentType.word())
+                        .executes(context -> run(context.getSource(), () -> execute(context.getSource(), context.getArgument("key", String.class)))));
+    }
+
+    @Override
+    public void execute(@NotNull CommandSourceStack source) {
+        throw new CommandMethodException("quarters.command.quartersadmin.meta.feedback.no_key");
+    }
+
+    private void execute(@NotNull CommandSourceStack source, @NotNull String key) {
+        Player player = getSenderAsPlayerOrThrow(source);
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        String key = getArgOrThrow(0, "No meta key provided", false);
+        if (!quarter.removeMetaData(key, true)) throw new CommandMethodException("quarters.command.quartersadmin.meta.remove.feedback.missing", Argument.string("key", key));
 
-        if (!quarter.removeMetaData(key, true)) throw new CommandMethodException("This quarter has no meta named " + key);
-
-        QuartersMessaging.sendSuccessMessage(player, "Successfully removed meta key " + key + " from this quarter");
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quartersadmin.meta.remove.feedback.success", Argument.string("key", key));
     }
 }

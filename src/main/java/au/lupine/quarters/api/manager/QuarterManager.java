@@ -1,5 +1,6 @@
 package au.lupine.quarters.api.manager;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.entity.Quarter;
 import com.palmergames.bukkit.towny.TownyAPI;
@@ -229,13 +230,14 @@ public final class QuarterManager {
      * @return True if particles should be drawn for this player given the server config, the player's own settings and the item they are holding
      */
     public boolean shouldRenderOutlinesForPlayer(Player player) {
-        if (!ConfigManager.areParticlesEnabled()) return false;
+        ConfigManager config = Quarters.getInstance().config();
+        if (!config.particles.enabled) return false;
 
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return false;
 
-        if (ResidentMetadataManager.getInstance().hasConstantOutlines(resident) && ConfigManager.areConstantParticleOutlinesAllowed()) return true;
+        if (ResidentMetadataManager.getInstance().hasConstantOutlines(resident) && config.particles.allowConstantParticleOutlines) return true;
 
-        return player.getInventory().getItemInMainHand().getType().equals(ConfigManager.getWandMaterial());
+        return player.getInventory().getItemInMainHand().getType().equals(config.wand.material);
     }
 }

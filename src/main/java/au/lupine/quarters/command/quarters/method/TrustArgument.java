@@ -4,20 +4,22 @@ import au.lupine.quarters.command.quarters.method.trust.TrustAddMethod;
 import au.lupine.quarters.command.quarters.method.trust.TrustClearMethod;
 import au.lupine.quarters.command.quarters.method.trust.TrustRemoveMethod;
 import au.lupine.quarters.object.base.CommandArgument;
-import org.bukkit.command.CommandSender;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import org.jetbrains.annotations.NotNull;
 
-public class TrustArgument extends CommandArgument {
+public final class TrustArgument extends CommandArgument {
 
-    public TrustArgument(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.trust");
+    public TrustArgument() {
+        super("trust", "quarters.command.quarters.trust");
     }
 
     @Override
-    protected void parseMethod(CommandSender sender, String method, String[] args) {
-        switch (method) {
-            case "add" -> new TrustAddMethod(sender, args).execute();
-            case "clear" -> new TrustClearMethod(sender, args).execute();
-            case "remove" -> new TrustRemoveMethod(sender, args).execute();
-        }
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(new TrustAddMethod().build())
+                .then(new TrustClearMethod().build())
+                .then(new TrustRemoveMethod().build());
     }
+
 }

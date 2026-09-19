@@ -9,20 +9,17 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * This can be used to register additional type adapters or configure the builder used by Quarters.
  * @author Fruitloopins
- * @since 1.0.5
- * @deprecated Since 2.0.0. Use {@link QuartersPreBuildGsonEvent} instead. This was renamed to make it clear that it belongs to the Quarters API. The internal logic still works, but the new name is preferred.
+ * @since 2.0.0
  */
-@Deprecated(forRemoval = true)
-public class PreBuildGsonEvent extends QuartersEvent {
+public class QuartersPreBuildGsonEvent extends QuartersEvent {
 
     private final GsonBuilder builder;
 
     /**
      * Creates a pre-build Gson event.
-     *
      * @param builder The Gson builder that will be used to create Quarters' shared Gson instance.
      */
-    public PreBuildGsonEvent(@NotNull GsonBuilder builder) {
+    public QuartersPreBuildGsonEvent(@NotNull GsonBuilder builder) {
         super(true);
         this.builder = builder;
     }

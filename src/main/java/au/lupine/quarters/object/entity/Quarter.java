@@ -1,5 +1,6 @@
 package au.lupine.quarters.object.entity;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.manager.*;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.QuarterType;
@@ -36,7 +37,7 @@ public class Quarter extends TownyObject {
     private QuarterType type = QuarterType.APARTMENT;
     private boolean isEmbassy = false;
     private Long claimedAt;
-    private Color colour = ConfigManager.hasDefaultQuarterColour() ? ConfigManager.getDefaultQuarterColour() : createRandomColour();
+    private Color colour = createInitialColour();
     private final QuarterPermissions permissions = new QuarterPermissions();
     private Location anchor;
     private Float particleSize;
@@ -51,7 +52,7 @@ public class Quarter extends TownyObject {
         Resident resident = getCreatorResident();
         if (resident == null) return;
 
-        if (ConfigManager.hasDefaultQuarterColour() && resident.hasPermissionNode("quarters.bypass_default_colour")) colour = createRandomColour();
+        if (Quarters.getInstance().config().quarters.defaultQuarterColour.enabled && resident.hasPermissionNode("quarters.bypass_default_colour")) colour = createRandomColour();
     }
 
     /**
@@ -302,7 +303,7 @@ public class Quarter extends TownyObject {
         return registered;
     }
 
-    public void setOwner(UUID uuid) {
+    public void setOwner(@Nullable UUID uuid) {
         this.owner = uuid;
 
         if (owner == null) {
@@ -447,18 +448,21 @@ public class Quarter extends TownyObject {
 
     // Constructor methods
 
-    private static Color createRandomColour() {
+    private static @NotNull Color createRandomColour() {
         Random random = new Random();
         return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
     }
 
-    private static String createRandomName() {
-        List<String> adjectives = List.of( // TODO: add config for random names
-                "Lovely", "Cheerful", "Upbeat", "Stylish", "Luxurious", "Elegant", "Inviting", "Welcoming",
-                "Annoying", "Perturbing", "Enraging", "Dingy", "Inconvenient", "Dull", "Bland", "Gloomy"
-        );
+    private static @NotNull Color createInitialColour() {
+        ConfigManager.QuarterColour colour = Quarters.getInstance().config().quarters.defaultQuarterColour;
+        if (!colour.enabled) return createRandomColour();
+        return new Color(colour.red, colour.green, colour.blue);
+    }
 
-        List<String> nouns = List.of("Quarter", "Apartment", "Flat", "Dwelling", "Residence", "Suite", "Property", "Tenement");
+    private static @NotNull String createRandomName() {
+        List<String> adjectives = Quarters.getInstance().config().quarters.nameAdjectives;
+
+        List<String> nouns = Quarters.getInstance().config().quarters.nameNouns;
 
         Random random = new Random();
         String adjective = adjectives.get(random.nextInt(adjectives.size()));
