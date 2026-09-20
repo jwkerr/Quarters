@@ -2,6 +2,8 @@ package au.lupine.quarters.command.quarters.method;
 
 import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.api.event.QuarterCreateEvent;
+import au.lupine.quarters.api.event.QuarterPreCreateEvent;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.api.manager.SelectionManager;
 import au.lupine.quarters.object.base.CommandMethod;
@@ -11,8 +13,10 @@ import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.CuboidValidity;
 import au.lupine.quarters.object.wrapper.StringConstants;
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -32,7 +36,20 @@ public final class CreateMethod extends CommandMethod {
 
         SelectionManager sm = SelectionManager.getInstance();
 
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null) return;
+
         List<Cuboid> cuboids = sm.getCuboidsOrSelectionAsCuboid(player);
+
+        QuarterPreCreateEvent preEvent = new QuarterPreCreateEvent(player, resident, cuboids);
+        preEvent.callEvent();
+        if (preEvent.isCancelled()) {
+            String cancelMessage = preEvent.getCancelMessage();
+            if (cancelMessage != null) QuartersMessaging.sendErrorMessage(player, cancelMessage);
+            return;
+        }
+
+        cuboids = preEvent.getCuboids();
         if (cuboids.isEmpty()) throw new CommandMethodException(StringConstants.YOU_HAVE_NOT_SELECTED_ANY_AREAS);
 
         Town town = TownyAPI.getInstance().getTown(cuboids.getFirst().getCornerOne());
@@ -77,6 +94,9 @@ public final class CreateMethod extends CommandMethod {
         sm.clearCuboids(player);
 
         QuartersMessaging.sendCommandFeedbackToTown(town, player, "quarters.command.quarters.create.feedback.town", location);
+
+        QuarterCreateEvent postEvent = new QuarterCreateEvent(quarter);
+        postEvent.callEvent();
     }
 
 }

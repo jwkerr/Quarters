@@ -2,6 +2,7 @@ package au.lupine.quarters.listener;
 
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.object.entity.Quarter;
+import au.lupine.quarters.object.state.QuarterDeleteCause;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.event.TownRemoveResidentEvent;
 import com.palmergames.bukkit.towny.event.plot.changeowner.PlotPreClaimEvent;
@@ -39,7 +40,7 @@ public class QuarterIntegrityListener implements Listener {
         if (town == null) return;
 
         for (Quarter quarter : QuarterManager.getInstance().getQuarters(event.getWorldCoord())) {
-            quarter.delete(); // The quarter now contains wilderness and should not exist
+            quarter.delete(null, QuarterDeleteCause.PLOT_UNCLAIM); // The quarter now contains wilderness and should not exist
         }
     }
 

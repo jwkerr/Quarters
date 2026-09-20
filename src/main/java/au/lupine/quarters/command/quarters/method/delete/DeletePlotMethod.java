@@ -5,6 +5,7 @@ import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
+import au.lupine.quarters.object.state.QuarterDeleteCause;
 import au.lupine.quarters.object.wrapper.StringConstants;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
@@ -38,7 +39,7 @@ public final class DeletePlotMethod extends CommandMethod {
 
         Confirmation.runOnAccept(() -> {
             for (Quarter quarter : quarters) {
-                quarter.delete();
+                quarter.delete(source.getSender(), QuarterDeleteCause.DELETE_PLOT_COMMAND);
             }
 
             QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.delete.plot.feedback.success");

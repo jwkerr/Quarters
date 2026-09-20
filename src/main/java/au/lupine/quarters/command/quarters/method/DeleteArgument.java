@@ -6,6 +6,7 @@ import au.lupine.quarters.command.quarters.method.delete.DeletePlotMethod;
 import au.lupine.quarters.object.base.CommandArgument;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
+import au.lupine.quarters.object.state.QuarterDeleteCause;
 import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.palmergames.bukkit.towny.TownyAPI;
@@ -38,7 +39,7 @@ public final class DeleteArgument extends CommandArgument {
 
         if (!quarter.isPlayerInTown(player)) throw new CommandMethodException(StringConstants.THIS_QUARTER_IS_NOT_PART_OF_YOUR_TOWN);
 
-        quarter.delete();
+        quarter.delete(source.getSender(), QuarterDeleteCause.DELETE_COMMAND);
 
         QuartersMessaging.sendSuccessMessage(player, StringConstants.SUCCESSFULLY_DELETED_THIS_QUARTER);
         QuartersMessaging.sendCommandFeedbackToTown(town, player, "quarters.command.quarters.delete.feedback.town", player.getLocation());

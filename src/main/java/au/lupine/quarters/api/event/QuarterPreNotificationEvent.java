@@ -6,22 +6,21 @@ import au.lupine.quarters.object.state.EntryNotificationType;
 import com.palmergames.bukkit.towny.object.Resident;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Called when a player receives the entry notification when entering a quarter.
- * <p>
- * This event is fired after Quarters has built the notification component, but before the
- * notification is sent to the player.
- * <p>
- * Cancelling this event prevents the notification from being sent.
- *
+ * Called before a {@link Player player} receives the entry notification when entering a {@link Quarter quarter}. Cancelling this event prevents the notification from being sent.
  * @since 2.0.0
  * @author pernio, galacticwarrior9
  */
-public class QuarterEntryNotificationEvent extends CancellableQuartersEvent {
+public class QuarterPreNotificationEvent extends CancellableQuartersEvent {
+
+    private static final HandlerList HANDLERS = new HandlerList();
 
     private final Player player;
     private final Resident resident;
@@ -30,37 +29,46 @@ public class QuarterEntryNotificationEvent extends CancellableQuartersEvent {
     private EntryNotificationType notificationType;
 
     /**
-     * Creates a quarter entry notification event.
-     * @param player The player receiving the notification.
-     * @param resident The Towny resident receiving the notification.
-     * @param quarter The quarter the player entered.
+     * Creates a {@link Quarter quarter} entry notification event.
+     * @param player The {@link Player player} receiving the notification.
+     * @param resident The {@link Resident resident} receiving the notification.
+     * @param quarter The {@link Quarter quarter} the player entered.
      * @param notifications The notification components that will be sent before they are merged together into a message.
      * @param notificationType The way the notification will be sent.
      */
-    public QuarterEntryNotificationEvent(@NotNull Player player, @NotNull Resident resident, @NotNull Quarter quarter, @NotNull List<Component> notifications, @NotNull EntryNotificationType notificationType) {
+    public QuarterPreNotificationEvent(@NotNull Player player, @NotNull Resident resident, @NotNull Quarter quarter, @NotNull List<Component> notifications, @NotNull EntryNotificationType notificationType) {
         this.player = player;
         this.resident = resident;
         this.quarter = quarter;
-        this.notifications = notifications;
+        this.notifications = new ArrayList<>(notifications);
         this.notificationType = notificationType;
     }
 
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
+    }
+
+    @Override
+    public @NotNull HandlerList getHandlers() {
+        return HANDLERS;
+    }
+
     /**
-     * @return The player receiving the notification.
+     * @return The {@link Player player} receiving the notification.
      */
     public @NotNull Player getPlayer() {
         return player;
     }
 
     /**
-     * @return The Towny resident receiving the notification.
+     * @return The {@link Resident resident} receiving the notification.
      */
     public @NotNull Resident getResident() {
         return resident;
     }
 
     /**
-     * @return The quarter the player entered.
+     * @return The {@link Quarter quarter} the {@link Player player} entered.
      */
     public @NotNull Quarter getQuarter() {
         return quarter;
@@ -68,17 +76,18 @@ public class QuarterEntryNotificationEvent extends CancellableQuartersEvent {
 
     /**
      * @return The notification components that will be sent before they are merged together into a message.
+     * @apiNote This is passed as an unmodifiable list.
      */
     public @NotNull List<Component> getNotifications() {
-        return notifications;
+        return Collections.unmodifiableList(notifications);
     }
 
     /**
      * Sets the notification components that will be sent.
-     * @param notification The new notification component.
+     * @param notifications The new notification components.
      */
-    public void setNotifications(@NotNull List<Component> notification) {
-        this.notifications = notification;
+    public void setNotifications(@NotNull List<Component> notifications) {
+        this.notifications = new ArrayList<>(notifications);
     }
 
     /**

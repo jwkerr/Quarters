@@ -3,7 +3,7 @@ package au.lupine.quarters.listener;
 import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.event.QuarterEnterEvent;
-import au.lupine.quarters.api.event.QuarterEntryNotificationEvent;
+import au.lupine.quarters.api.event.QuarterPreNotificationEvent;
 import au.lupine.quarters.api.event.QuarterExitEvent;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
@@ -129,9 +129,13 @@ public class QuarterEntryListener implements Listener {
 
         EntryNotificationType notificationType = ResidentMetadataManager.getInstance().getEntryNotificationType(resident);
 
-        QuarterEntryNotificationEvent event = new QuarterEntryNotificationEvent(player, resident, quarter, components, notificationType);
+        QuarterPreNotificationEvent event = new QuarterPreNotificationEvent(player, resident, quarter, components, notificationType);
         event.callEvent();
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            String cancelMessage = event.getCancelMessage();
+            if (cancelMessage != null) player.sendMessage(Component.text(cancelMessage));
+            return;
+        }
         components = event.getNotifications();
 
         JoinConfiguration jc = JoinConfiguration.separator(Component.text(" - ", TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
