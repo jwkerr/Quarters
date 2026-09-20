@@ -12,19 +12,6 @@ depend: [Towny]
 softdepend: [PlaceholderAPI, floodgate]
 libraries: [de.bsommerfeld.jshepherd:core:4.1.1, de.bsommerfeld.jshepherd:toml:4.1.1]
 
-commands:
-  quarters:
-    description: Primary Quarters command
-    permission: quarters.command.quarters
-    aliases:
-      - q
-
-  quartersadmin:
-    description: Admin Quarters command
-    permission: quarters.command.quartersadmin
-    aliases:
-      - qa
-
 permissions:
   quarters.wand:
     description: "Grants permission to use the Quarters selection wand"

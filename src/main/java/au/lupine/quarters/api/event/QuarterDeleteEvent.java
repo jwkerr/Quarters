@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * Called after a quarter is deleted. This cannot be cancelled and only acts as a read-only event. Useful for logging purposes.
  * @since 2.0.0
- * @author pernio
+ * @author pernio, galacticwarrior9
  */
 public class QuarterDeleteEvent extends QuartersEvent {
 
