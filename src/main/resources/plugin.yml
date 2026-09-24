@@ -43,6 +43,8 @@ permissions:
       quarters.command.quarters.edit.*: true
       quarters.command.quarters.evict: true
       quarters.command.quarters.fame: true
+      quarters.command.quarters.find: true
+      quarters.command.quarters.find.*: true
       quarters.command.quarters.here: true
       quarters.command.quarters.info: true
       quarters.command.quarters.meow: true
@@ -100,6 +102,14 @@ permissions:
 
   quarters.command.quarters.fame:
     default: true
+
+  quarters.command.quarters.find:
+    default: true
+
+  quarters.command.quarters.find.*:
+    default: false
+    children:
+      quarters.command.quarters.find.forsale: true
 
   quarters.command.quarters.here:
     default: true

@@ -234,5 +234,4 @@ public abstract class CommandMethod {
 
         return builder.buildFuture();
     }
-
 }

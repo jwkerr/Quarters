@@ -24,7 +24,6 @@ public class PreBuildGsonEvent extends QuartersEvent {
      * @param builder The Gson builder that will be used to create Quarters' shared Gson instance.
      */
     public PreBuildGsonEvent(@NotNull GsonBuilder builder) {
-        super(true);
         this.builder = builder;
     }
 

@@ -23,6 +23,7 @@ public final class QuartersCommand {
                 .then(new EditArgument().build())
                 .then(new EvictMethod().build())
                 .then(new FameMethod().build())
+                .then(new FindArgument().build())
                 .then(new HereMethod().build())
                 .then(new InfoMethod().build())
                 .then(new MeowMethod().build())

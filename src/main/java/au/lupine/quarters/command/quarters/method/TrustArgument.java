@@ -21,5 +21,4 @@ public final class TrustArgument extends CommandArgument {
                 .then(new TrustClearMethod().build())
                 .then(new TrustRemoveMethod().build());
     }
-
 }
