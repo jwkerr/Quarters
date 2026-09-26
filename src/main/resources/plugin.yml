@@ -89,9 +89,13 @@ permissions:
     default: false
     children:
       quarters.command.quarters.edit.addselection: true
+      quarters.command.quarters.edit.merge: true
       quarters.command.quarters.edit.remove: true
 
   quarters.command.quarters.edit.addselection:
+    default: false
+
+  quarters.command.quarters.edit.merge:
     default: false
 
   quarters.command.quarters.edit.remove:

@@ -82,7 +82,7 @@ public class Quarter extends TownyObject {
 
     /**
      * This method must be called to save the quarter's instance to metadata after any change
-     * The only exception is when using the {@link #delete()} method, that will save itself
+     * The only exception is when using the {@link #delete(CommandSender, QuarterDeleteCause)} method, that will save itself
      */
     @Override
     public void save() {
@@ -99,12 +99,13 @@ public class Quarter extends TownyObject {
      * Permanently delete this quarter from the town's metadata
      * @param sender The person who caused/requested to delete the quarter. Null if no person was involved, e.g. unclaiming the plot.
      * @param cause The cause of deleting the quarter.
+     * @return True if the delete was successful.
      */
-    public void delete(@Nullable CommandSender sender, @NotNull QuarterDeleteCause cause) {
+    public boolean delete(@Nullable CommandSender sender, @NotNull QuarterDeleteCause cause) {
         QuarterManager qm = QuarterManager.getInstance();
 
         List<Quarter> quarters = qm.getQuarters(town);
-        if (!quarters.contains(this)) return;
+        if (!quarters.contains(this)) return false;
 
         // TODO: If the quarter is caught by an external plugin and kept a reference to this object, the garbage collector won't delete it, causing a memory leak.
         QuarterPreDeleteEvent preDeleteEvent = new QuarterPreDeleteEvent(sender, this, cause);
@@ -112,7 +113,7 @@ public class Quarter extends TownyObject {
         if (preDeleteEvent.isCancelled()) {
             String cancelMessage = preDeleteEvent.getCancelMessage();
             if (sender != null && cancelMessage != null) QuartersMessaging.sendErrorMessage(sender, cancelMessage);
-            return;
+            return false;
         }
 
         quarters.remove(this);
@@ -120,6 +121,7 @@ public class Quarter extends TownyObject {
 
         QuarterDeleteEvent postDeleteEvent = new QuarterDeleteEvent(sender, cause, owner, getOwnerResident(), town);
         postDeleteEvent.callEvent();
+        return true;
     }
 
     /**
