@@ -6,7 +6,6 @@ import au.lupine.quarters.command.quarters.method.set.SetDefaultSellPriceMethod;
 import au.lupine.quarters.command.quarters.method.set.SetEntryNotificationsMethod;
 import au.lupine.quarters.command.quarters.method.set.SetNameMethod;
 import au.lupine.quarters.command.quarters.method.set.SetOwnerMethod;
-import au.lupine.quarters.command.quarters.method.set.SetParticleSizeMethod;
 import au.lupine.quarters.command.quarters.method.set.SetPermMethod;
 import au.lupine.quarters.command.quarters.method.set.SetTypeMethod;
 import au.lupine.quarters.object.base.CommandArgument;
@@ -29,7 +28,6 @@ public final class SetArgument extends CommandArgument {
                 .then(new SetEntryNotificationsMethod().build())
                 .then(new SetNameMethod().build())
                 .then(new SetOwnerMethod().build())
-                .then(new SetParticleSizeMethod().build())
                 .then(new SetPermMethod().build())
                 .then(new SetTypeMethod().build());
     }

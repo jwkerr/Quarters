@@ -12,11 +12,10 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
 
     public static final String HAS_ENTRY_NOTIFICATIONS_KEY = METADATA_PREFIX + "has_entry_notifications";
     public static final String ENTRY_NOTIFICATION_TYPE_KEY = METADATA_PREFIX + "entry_notification_type";
-    public static final String HAS_ENTRY_BLINKING_KEY = METADATA_PREFIX + "has_entry_blinking";
     public static final String HAS_CONSTANT_OUTLINES_KEY = METADATA_PREFIX + "has_constant_outlines";
+    public static final String HAS_SELECTION_GLOW_KEY = METADATA_PREFIX + "has_selection_glow";
     public static final String AMOUNT_RECEIVED_FREE_WAND_KEY = METADATA_PREFIX + "free_wands_received";
     public static final String LAST_RECEIVED_FREE_WAND_KEY = METADATA_PREFIX + "last_received_free_wand";
-    public static final String PARTICLE_SIZE_KEY = METADATA_PREFIX + "particle_size";
 
     private ResidentMetadataManager() {}
 
@@ -48,20 +47,20 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
         }
     }
 
-    public void setHasEntryBlinking(@NotNull Resident resident, boolean value) {
-        setMetadataAsBoolean(resident, HAS_ENTRY_BLINKING_KEY, value);
-    }
-
-    public boolean hasEntryBlinking(@NotNull Resident resident) {
-        return getMetadataAsBoolean(resident, HAS_ENTRY_BLINKING_KEY, Quarters.getInstance().config().particles.entryParticleBlinkingOnByDefault);
-    }
-
     public void setHasConstantOutlines(@NotNull Resident resident, boolean value) {
         setMetadataAsBoolean(resident, HAS_CONSTANT_OUTLINES_KEY, value);
     }
 
     public boolean hasConstantOutlines(@NotNull Resident resident) {
-        return getMetadataAsBoolean(resident, HAS_CONSTANT_OUTLINES_KEY, Quarters.getInstance().config().particles.constantParticleOutlinesOnByDefault);
+        return getMetadataAsBoolean(resident, HAS_CONSTANT_OUTLINES_KEY, false);
+    }
+
+    public void setHasSelectionGlow(@NotNull Resident resident, boolean value) {
+        setMetadataAsBoolean(resident, HAS_SELECTION_GLOW_KEY, value);
+    }
+
+    public boolean hasSelectionGlow(@NotNull Resident resident) {
+        return getMetadataAsBoolean(resident, HAS_SELECTION_GLOW_KEY, true);
     }
 
     public void incrementReceivedFreeWands(@NotNull Resident resident) {
@@ -96,13 +95,5 @@ public final class ResidentMetadataManager extends MetadataManager<Resident> {
 
         // Round up, so 1 ms remaining still displays as 1 second.
         return (remainingMillis + 999) / 1000;
-    }
-
-    public void setParticleSize(@NotNull Resident resident, float value) {
-        setMetadataAsDecimal(resident, PARTICLE_SIZE_KEY, (double) value);
-    }
-
-    public float getParticleSize(@NotNull Resident resident) {
-        return getMetadataAsDecimal(resident, PARTICLE_SIZE_KEY, (double) Quarters.getInstance().config().particles.defaultParticleSize).floatValue();
     }
 }

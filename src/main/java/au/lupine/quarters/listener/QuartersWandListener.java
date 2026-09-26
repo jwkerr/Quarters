@@ -2,8 +2,8 @@ package au.lupine.quarters.listener;
 
 import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
-import au.lupine.quarters.api.manager.ParticleManager;
 import au.lupine.quarters.api.manager.QuarterManager;
+import au.lupine.quarters.api.manager.SelectionRendererManager;
 import au.lupine.quarters.api.manager.SelectionManager;
 import au.lupine.quarters.object.state.SelectionType;
 import org.bukkit.Location;
@@ -43,14 +43,12 @@ public class QuartersWandListener implements Listener {
 
     @EventHandler
     public void onItemHeld(PlayerItemHeldEvent event) {
-        if (!Quarters.getInstance().config().particles.enabled) return;
+        if (!Quarters.getInstance().config().renderer.enabled) return;
 
         Player player = event.getPlayer();
 
         if (!QuarterManager.getInstance().shouldRenderOutlinesForPlayer(player)) return;
 
-        ParticleManager pm = ParticleManager.getInstance(); // Draw outlines on item hold to make them more snappy
-        pm.drawParticlesAtCurrentSelection(player);
-        pm.drawParticlesAtAllQuarters(player);
+        SelectionRendererManager.getInstance().render(player); // Draw outlines on item hold to make them more snappy
     }
 }

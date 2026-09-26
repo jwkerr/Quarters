@@ -45,7 +45,6 @@ public class Quarter extends TownyObject {
     private Color colour = createInitialColour();
     private final QuarterPermissions permissions = new QuarterPermissions();
     private Location anchor;
-    private Float particleSize;
 
     public Quarter(@NotNull Town town, @NotNull List<Cuboid> cuboids, @Nullable UUID creator) {
         super(createRandomName());
@@ -259,21 +258,6 @@ public class Quarter extends TownyObject {
         return null;
     }
 
-    public float getParticleSizeOrResidentDefault(@NotNull Resident resident) {
-        return getParticleSize() == null ? ResidentMetadataManager.getInstance().getParticleSize(resident) : getParticleSize();
-    }
-
-    public void blinkForResident(@NotNull Resident resident) {
-        blinkForPlayer(resident.getPlayer());
-    }
-
-    public void blinkForPlayer(@NotNull Player player) {
-        Resident resident = TownyAPI.getInstance().getResident(player);
-        if (resident == null) return;
-
-        ParticleManager.getInstance().drawParticlesAtQuarter(this, resident);
-    }
-
     /**
      * Method used to set this quarter's price to the default if both the town has sell on delete enabled, and it is not already for sale
      */
@@ -456,14 +440,6 @@ public class Quarter extends TownyObject {
 
     public @Nullable Location getAnchor() {
         return anchor;
-    }
-
-    public void setParticleSize(Float particleSize) {
-        this.particleSize = particleSize;
-    }
-
-    public Float getParticleSize() {
-        return particleSize;
     }
 
     // Constructor methods

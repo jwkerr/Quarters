@@ -93,14 +93,11 @@ public class QuarterEntryListener implements Listener {
     }
 
     private void onQuarterEntry(@NotNull Quarter quarter, @NotNull Resident resident) {
-        ResidentMetadataManager rmm = ResidentMetadataManager.getInstance();
         ConfigManager config = Quarters.getInstance().config();
 
-        if (rmm.hasEntryNotifications(resident) && config.quarters.allowQuarterEntryNotifications)
+        if (ResidentMetadataManager.getInstance().hasEntryNotifications(resident) && config.quarters.allowQuarterEntryNotifications)
             sendEntryNotification(quarter, resident);
 
-        if (rmm.hasEntryBlinking(resident) && config.particles.enabled && config.particles.allowEntryParticleBlinking)
-            quarter.blinkForResident(resident);
     }
 
     private void sendEntryNotification(@NotNull Quarter quarter, @NotNull Resident resident) {

@@ -9,10 +9,10 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public final class ToggleEntryBlinkingMethod extends CommandMethod {
+public final class ToggleGlowMethod extends CommandMethod {
 
-    public ToggleEntryBlinkingMethod() {
-        super("entryblinking", "quarters.command.quarters.toggle.entryblinking");
+    public ToggleGlowMethod() {
+        super("glow", "quarters.command.quarters.toggle.glow");
     }
 
     @Override
@@ -23,14 +23,14 @@ public final class ToggleEntryBlinkingMethod extends CommandMethod {
         if (resident == null) return;
 
         ResidentMetadataManager rmm = ResidentMetadataManager.getInstance();
-        boolean hasEntryBlinking = rmm.hasEntryBlinking(resident);
+        boolean hasGlow = rmm.hasSelectionGlow(resident);
 
-        rmm.setHasEntryBlinking(resident, !hasEntryBlinking);
+        rmm.setHasSelectionGlow(resident, !hasGlow);
 
-        if (hasEntryBlinking) {
-            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.entryblinking.feedback.disabled");
+        if (hasGlow) {
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.glow.feedback.disabled");
         } else {
-            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.entryblinking.feedback.enabled");
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.glow.feedback.enabled");
         }
     }
 }

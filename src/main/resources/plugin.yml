@@ -8,7 +8,7 @@ contributors: [Warriorrr, pernio]
 description: The modern "apartment" plugin for Towny
 website: https://earthmc.net
 folia-supported: true
-depend: [Towny]
+depend: [Towny, packetevents]
 softdepend: [PlaceholderAPI, floodgate]
 libraries: [de.bsommerfeld.jshepherd:core:4.1.1, de.bsommerfeld.jshepherd:toml:4.1.1]
 
@@ -165,7 +165,6 @@ permissions:
       quarters.command.quarters.set.entrynotifications: true
       quarters.command.quarters.set.name: true
       quarters.command.quarters.set.owner: true
-      quarters.command.quarters.set.particlesize: true
       quarters.command.quarters.set.perm: true
       quarters.command.quarters.set.type: true
 
@@ -187,9 +186,6 @@ permissions:
   quarters.command.quarters.set.owner:
     default: false
 
-  quarters.command.quarters.set.particlesize:
-    default: true
-
   quarters.command.quarters.set.perm:
     default: true
 
@@ -204,8 +200,8 @@ permissions:
     children:
       quarters.command.quarters.toggle.constantoutlines: true
       quarters.command.quarters.toggle.embassy: true
-      quarters.command.quarters.toggle.entryblinking: true
       quarters.command.quarters.toggle.entrynotifications: true
+      quarters.command.quarters.toggle.glow: true
       quarters.command.quarters.toggle.sellondelete: true
 
   quarters.command.quarters.toggle.constantoutlines:
@@ -214,10 +210,10 @@ permissions:
   quarters.command.quarters.toggle.embassy:
     default: false
 
-  quarters.command.quarters.toggle.entryblinking:
+  quarters.command.quarters.toggle.entrynotifications:
     default: true
 
-  quarters.command.quarters.toggle.entrynotifications:
+  quarters.command.quarters.toggle.glow:
     default: true
 
   quarters.command.quarters.toggle.sellondelete:

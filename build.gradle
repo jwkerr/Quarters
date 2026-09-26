@@ -35,6 +35,10 @@ repositories {
     maven {
         url = "https://repo.opencollab.dev/main/"
     }
+
+    maven {
+        url = "https://repo.codemc.io/repository/maven-releases/"
+    }
 }
 
 dependencies {
@@ -42,6 +46,7 @@ dependencies {
     compileOnly("com.palmergames.bukkit.towny:towny:0.101.2.5")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("org.geysermc.floodgate:api:2.2.5-SNAPSHOT")
+    compileOnly("com.github.retrooper:packetevents-spigot:2.14.0")
     compileOnly("de.bsommerfeld.jshepherd:core:4.1.1")
     compileOnly("de.bsommerfeld.jshepherd:toml:4.1.1")
 }

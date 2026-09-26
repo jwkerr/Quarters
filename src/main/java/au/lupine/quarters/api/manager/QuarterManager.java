@@ -227,16 +227,16 @@ public final class QuarterManager {
     }
 
     /**
-     * @return True if particles should be drawn for this player given the server config, the player's own settings and the item they are holding
+     * @return True if outlines should be rendered for this player given the server config, the player's own settings and the item they are holding
      */
     public boolean shouldRenderOutlinesForPlayer(Player player) {
         ConfigManager config = Quarters.getInstance().config();
-        if (!config.particles.enabled) return false;
+        if (!config.renderer.enabled) return false;
 
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return false;
 
-        if (ResidentMetadataManager.getInstance().hasConstantOutlines(resident) && config.particles.allowConstantParticleOutlines) return true;
+        if (ResidentMetadataManager.getInstance().hasConstantOutlines(resident)) return true;
 
         return player.getInventory().getItemInMainHand().getType().equals(config.wand.material);
     }

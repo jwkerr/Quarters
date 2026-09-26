@@ -16,7 +16,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,8 +44,8 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
     @Section("quarters")
     public @NotNull QuartersSection quarters = new QuartersSection();
 
-    @Section("particles")
-    public @NotNull ParticlesSection particles = new ParticlesSection();
+    @Section("renderer")
+    public @NotNull RendererSection renderer = new RendererSection();
 
     public static class TechnicalSection {
         @Key("can_plugin_request_user_groups")
@@ -199,49 +198,18 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
         // TODO: Possibly hook into McMMO to also check for party friendly fire?
     }
 
-    public static class ParticlesSection {
+    public static class RendererSection {
         @Key("enabled")
-        @Comment("Set to false to completely disable particle outlines around cuboids")
+        @Comment("Set to false to completely disable visual outlines around cuboids")
         public boolean enabled = true;
 
-        @Key("current_selection_particle")
-        @Comment("Particle outline of the currently selected area")
-        public @NotNull Particle currentSelectionParticle = Particle.SCRAPE;
+        @Key("ticks_between_outline_updates")
+        @Comment("The number of ticks between visual outline updates")
+        public int ticksBetweenOutlineUpdates = 5;
 
-        @Key("current_cuboids_particle")
-        @Comment("Particle outline of current cuboids added to the selection")
-        public @NotNull Particle currentCuboidsParticle = Particle.WAX_OFF;
-
-        @Key("ticks_between_particle_outlines")
-        @Comment("The number of ticks between particle outline updates")
-        public int ticksBetweenParticleOutlines = 5;
-
-        @Key("max_distance_for_cuboid_particles")
-        @Comment("The maximum distance a player can be from a cuboid before outline particles stop being sent to their client")
-        public int maxDistanceForCuboidParticles = 48;
-
-        @Key("default_particle_size")
-        @Comment("Sets the default size for particles of quarters that have been made")
-        public float defaultParticleSize = 1F;
-
-        @Key("allow_constant_particle_outlines")
-        @Comment("If set to true, players will be able to toggle quarter outlines to display constantly")
-        public boolean allowConstantParticleOutlines = true;
-
-        @Key("constant_particle_outlines_on_by_default")
-        @Comment("If set to false, players will have to opt in to constant particle outlines")
-        public boolean constantParticleOutlinesOnByDefault = true;
-
-        @Key("allow_entry_particle_blinking")
-        @Comment("If set to true, players will be able to toggle quarter outlines to blink when entered")
-        public boolean allowEntryParticleBlinking = true;
-
-        @Key("entry_particle_blinking_on_by_default")
-        @Comment({
-                "If set to true, quarters will blink their particles for one tick upon entry by a player",
-                "This can be a good alternative to constant particle outlines if they are causing lag"
-        })
-        public boolean entryParticleBlinkingOnByDefault = false;
+        @Key("max_distance_for_outlines")
+        @Comment("The maximum distance a player can be from a cuboid before outline entities stop being sent to their client")
+        public int maxDistanceForOutlines = 48;
     }
 
     public void loadRuntimeData() {

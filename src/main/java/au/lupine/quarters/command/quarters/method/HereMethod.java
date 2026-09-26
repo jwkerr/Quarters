@@ -185,8 +185,6 @@ public final class HereMethod extends CommandMethod {
         builder.appendNewline();
         builder.append(statLabel(catMode, "volume")).append(Component.translatable("quarters.command.quarters.here.stats.volume.value", NamedTextColor.GRAY, Argument.string("volume", Integer.toString(quarter.getVolume()))));
         builder.appendNewline();
-        builder.append(statLabel(catMode, "particle_size")).append(Component.text(quarter.getParticleSize() != null ? quarter.getParticleSize() : Quarters.getInstance().config().particles.defaultParticleSize, NamedTextColor.GRAY));
-        builder.appendNewline();
         builder.append(statLabel(catMode, "creator")).append(ConfigManager.getFormattedName(quarter.getCreator(), Component.translatable("quarters.common.none", NamedTextColor.GRAY)));
         builder.appendNewline();
         builder.append(statLabel(catMode, "registered")).append(getFormattedDate(quarter.getRegistered()));
