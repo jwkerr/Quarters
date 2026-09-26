@@ -20,10 +20,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -57,12 +61,15 @@ public final class PacketEventsSelectionRenderer implements SelectionRenderer {
     @Override
     public void show(@NotNull Player player, @NotNull Collection<Cuboid> cuboids, @NotNull Color colour, boolean glow) {
         List<Integer> entityIds = visibleEntities.computeIfAbsent(player.getUniqueId(), key -> new ArrayList<>());
+        List<Cuboid> visibleCuboids = cuboids.stream()
+                .filter(cuboid -> player.getWorld().equals(cuboid.getWorld()))
+                .toList();
 
-        for (Cuboid cuboid : cuboids) {
-            if (!player.getWorld().equals(cuboid.getWorld())) continue;
-            if (!isWithinRenderRange(player, cuboid)) continue;
+        if (visibleCuboids.isEmpty()) return;
+        if (visibleCuboids.stream().noneMatch(cuboid -> isWithinRenderRange(player, cuboid))) return;
 
-            addEdges(player, cuboid, colour, glow, entityIds);
+        for (EdgeSegment edge : getMergedEdges(visibleCuboids)) {
+            addDisplay(player, edge.renderX(), edge.renderY(), edge.renderZ(), edge.scaleX(), edge.scaleY(), edge.scaleZ(), colour, glow, entityIds);
         }
     }
 
@@ -87,26 +94,6 @@ public final class PacketEventsSelectionRenderer implements SelectionRenderer {
                 && viewerY < cuboid.getMaxY() + range
                 && viewerZ > cuboid.getMinZ() - range
                 && viewerZ < cuboid.getMaxZ() + range;
-    }
-
-    private void addEdges(@NotNull Player player, @NotNull Cuboid cuboid, @NotNull Color colour, boolean glow, @NotNull List<Integer> entityIds) {
-        Bounds bounds = Bounds.from(cuboid);
-        double t = EDGE_THICKNESS;
-
-        addDisplay(player, bounds.minX, bounds.minY, bounds.minZ, bounds.width, t, t, colour, glow, entityIds);
-        addDisplay(player, bounds.minX, bounds.minY, bounds.maxZ - t, bounds.width, t, t, colour, glow, entityIds);
-        addDisplay(player, bounds.minX, bounds.maxY - t, bounds.minZ, bounds.width, t, t, colour, glow, entityIds);
-        addDisplay(player, bounds.minX, bounds.maxY - t, bounds.maxZ - t, bounds.width, t, t, colour, glow, entityIds);
-
-        addDisplay(player, bounds.minX, bounds.minY, bounds.minZ, t, bounds.height, t, colour, glow, entityIds);
-        addDisplay(player, bounds.maxX - t, bounds.minY, bounds.minZ, t, bounds.height, t, colour, glow, entityIds);
-        addDisplay(player, bounds.minX, bounds.minY, bounds.maxZ - t, t, bounds.height, t, colour, glow, entityIds);
-        addDisplay(player, bounds.maxX - t, bounds.minY, bounds.maxZ - t, t, bounds.height, t, colour, glow, entityIds);
-
-        addDisplay(player, bounds.minX, bounds.minY, bounds.minZ, t, t, bounds.depth, colour, glow, entityIds);
-        addDisplay(player, bounds.maxX - t, bounds.minY, bounds.minZ, t, t, bounds.depth, colour, glow, entityIds);
-        addDisplay(player, bounds.minX, bounds.maxY - t, bounds.minZ, t, t, bounds.depth, colour, glow, entityIds);
-        addDisplay(player, bounds.maxX - t, bounds.maxY - t, bounds.minZ, t, t, bounds.depth, colour, glow, entityIds);
     }
 
     private void addDisplay(@NotNull Player player, double x, double y, double z, double scaleX, double scaleY, double scaleZ, @NotNull Color colour, boolean glow, @NotNull List<Integer> entityIds) {
@@ -138,18 +125,75 @@ public final class PacketEventsSelectionRenderer implements SelectionRenderer {
         entityIds.add(entityId);
     }
 
-    private record Bounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, double width, double height, double depth) {
-
-        private static @NotNull Bounds from(@NotNull Cuboid cuboid) {
-            double minX = cuboid.getMinX();
-            double minY = cuboid.getMinY();
-            double minZ = cuboid.getMinZ();
-            double maxX = cuboid.getMaxX() + 1D;
-            double maxY = cuboid.getMaxY() + 1D;
-            double maxZ = cuboid.getMaxZ() + 1D;
-
-            return new Bounds(minX, minY, minZ, maxX, maxY, maxZ, maxX - minX, maxY - minY, maxZ - minZ);
+    private @NotNull List<EdgeSegment> getMergedEdges(@NotNull Collection<Cuboid> cuboids) {
+        Set<BlockPos> occupied = new HashSet<>();
+        for (Cuboid cuboid : cuboids) {
+            for (int x = cuboid.getMinX(); x <= cuboid.getMaxX(); x++) {
+                for (int y = cuboid.getMinY(); y <= cuboid.getMaxY(); y++) {
+                    for (int z = cuboid.getMinZ(); z <= cuboid.getMaxZ(); z++) {
+                        occupied.add(new BlockPos(x, y, z));
+                    }
+                }
+            }
         }
+
+        Map<Direction, Set<UnitEdge>> faceEdges = new HashMap<>();
+        for (BlockPos block : occupied) {
+            addFaceEdgesIfExposed(faceEdges, occupied, block, Direction.X_NEG);
+            addFaceEdgesIfExposed(faceEdges, occupied, block, Direction.X_POS);
+            addFaceEdgesIfExposed(faceEdges, occupied, block, Direction.Y_NEG);
+            addFaceEdgesIfExposed(faceEdges, occupied, block, Direction.Y_POS);
+            addFaceEdgesIfExposed(faceEdges, occupied, block, Direction.Z_NEG);
+            addFaceEdgesIfExposed(faceEdges, occupied, block, Direction.Z_POS);
+        }
+
+        Set<UnitEdge> boundaryEdges = new HashSet<>();
+        for (Set<UnitEdge> edges : faceEdges.values()) {
+            boundaryEdges.addAll(edges);
+        }
+
+        return mergeUnitEdges(boundaryEdges);
+    }
+
+    private void addFaceEdgesIfExposed(@NotNull Map<Direction, Set<UnitEdge>> faceEdges, @NotNull Set<BlockPos> occupied, @NotNull BlockPos block, @NotNull Direction direction) {
+        BlockPos neighbour = new BlockPos(block.x() + direction.dx, block.y() + direction.dy, block.z() + direction.dz);
+        if (occupied.contains(neighbour)) return;
+
+        Set<UnitEdge> edges = faceEdges.computeIfAbsent(direction, key -> new HashSet<>());
+        for (UnitEdge edge : direction.getFaceEdges(block)) {
+            if (!edges.add(edge)) edges.remove(edge);
+        }
+    }
+
+    private @NotNull List<EdgeSegment> mergeUnitEdges(@NotNull Set<UnitEdge> unitEdges) {
+        Map<EdgeLine, List<Integer>> startsByLine = new HashMap<>();
+        for (UnitEdge edge : unitEdges) {
+            startsByLine.computeIfAbsent(edge.line(), key -> new ArrayList<>()).add(edge.start());
+        }
+
+        List<EdgeSegment> merged = new ArrayList<>();
+        for (Map.Entry<EdgeLine, List<Integer>> entry : startsByLine.entrySet()) {
+            List<Integer> starts = entry.getValue();
+            Collections.sort(starts);
+
+            int runStart = starts.getFirst();
+            int previous = runStart;
+            for (int index = 1; index < starts.size(); index++) {
+                int current = starts.get(index);
+                if (current == previous + 1) {
+                    previous = current;
+                    continue;
+                }
+
+                merged.add(entry.getKey().toSegment(runStart, previous + 1 - runStart));
+                runStart = current;
+                previous = current;
+            }
+
+            merged.add(entry.getKey().toSegment(runStart, previous + 1 - runStart));
+        }
+
+        return merged;
     }
 
     private @NotNull WrappedBlockState getClosestBlockState(@NotNull Color colour) {
@@ -173,6 +217,152 @@ public final class PacketEventsSelectionRenderer implements SelectionRenderer {
         int blue = first.getBlue() - second.getBlue();
 
         return red * red + green * green + blue * blue;
+    }
+
+    private enum Direction {
+        X_NEG(-1, 0, 0),
+        X_POS(1, 0, 0),
+        Y_NEG(0, -1, 0),
+        Y_POS(0, 1, 0),
+        Z_NEG(0, 0, -1),
+        Z_POS(0, 0, 1);
+
+        private final int dx;
+        private final int dy;
+        private final int dz;
+
+        Direction(int dx, int dy, int dz) {
+            this.dx = dx;
+            this.dy = dy;
+            this.dz = dz;
+        }
+
+        private @NotNull List<UnitEdge> getFaceEdges(@NotNull BlockPos block) {
+            return switch (this) {
+                case X_NEG -> getXFaceEdges(block.x(), block.y(), block.z());
+                case X_POS -> getXFaceEdges(block.x() + 1, block.y(), block.z());
+                case Y_NEG -> getYFaceEdges(block.x(), block.y(), block.z());
+                case Y_POS -> getYFaceEdges(block.x(), block.y() + 1, block.z());
+                case Z_NEG -> getZFaceEdges(block.x(), block.y(), block.z());
+                case Z_POS -> getZFaceEdges(block.x(), block.y(), block.z() + 1);
+            };
+        }
+
+        private @NotNull List<UnitEdge> getXFaceEdges(int x, int y, int z) {
+            return List.of(
+                    UnitEdge.y(x, y, z),
+                    UnitEdge.y(x, y, z + 1),
+                    UnitEdge.z(x, y, z),
+                    UnitEdge.z(x, y + 1, z)
+            );
+        }
+
+        private @NotNull List<UnitEdge> getYFaceEdges(int x, int y, int z) {
+            return List.of(
+                    UnitEdge.x(x, y, z),
+                    UnitEdge.x(x, y, z + 1),
+                    UnitEdge.z(x, y, z),
+                    UnitEdge.z(x + 1, y, z)
+            );
+        }
+
+        private @NotNull List<UnitEdge> getZFaceEdges(int x, int y, int z) {
+            return List.of(
+                    UnitEdge.x(x, y, z),
+                    UnitEdge.x(x, y + 1, z),
+                    UnitEdge.y(x, y, z),
+                    UnitEdge.y(x + 1, y, z)
+            );
+        }
+    }
+
+    private enum Axis {
+        X,
+        Y,
+        Z
+    }
+
+    private record BlockPos(int x, int y, int z) {}
+
+    private record EdgeLine(@NotNull Axis axis, int firstFixed, int secondFixed) {
+
+        private @NotNull EdgeSegment toSegment(int start, int length) {
+            return switch (axis) {
+                case X -> EdgeSegment.x(start, firstFixed, secondFixed, length);
+                case Y -> EdgeSegment.y(firstFixed, start, secondFixed, length);
+                case Z -> EdgeSegment.z(firstFixed, secondFixed, start, length);
+            };
+        }
+    }
+
+    private record UnitEdge(@NotNull Axis axis, int x, int y, int z) {
+
+        private static @NotNull UnitEdge x(int x, int y, int z) {
+            return new UnitEdge(Axis.X, x, y, z);
+        }
+
+        private static @NotNull UnitEdge y(int x, int y, int z) {
+            return new UnitEdge(Axis.Y, x, y, z);
+        }
+
+        private static @NotNull UnitEdge z(int x, int y, int z) {
+            return new UnitEdge(Axis.Z, x, y, z);
+        }
+
+        private @NotNull EdgeLine line() {
+            return switch (axis) {
+                case X -> new EdgeLine(axis, y, z);
+                case Y -> new EdgeLine(axis, x, z);
+                case Z -> new EdgeLine(axis, x, y);
+            };
+        }
+
+        private int start() {
+            return switch (axis) {
+                case X -> x;
+                case Y -> y;
+                case Z -> z;
+            };
+        }
+    }
+
+    private record EdgeSegment(@NotNull Axis axis, int x, int y, int z, int length) {
+
+        private static @NotNull EdgeSegment x(int x, int y, int z, int length) {
+            return new EdgeSegment(Axis.X, x, y, z, length);
+        }
+
+        private static @NotNull EdgeSegment y(int x, int y, int z, int length) {
+            return new EdgeSegment(Axis.Y, x, y, z, length);
+        }
+
+        private static @NotNull EdgeSegment z(int x, int y, int z, int length) {
+            return new EdgeSegment(Axis.Z, x, y, z, length);
+        }
+
+        private double scaleX() {
+            return axis == Axis.X ? length : EDGE_THICKNESS;
+        }
+
+        private double scaleY() {
+            return axis == Axis.Y ? length : EDGE_THICKNESS;
+        }
+
+        private double scaleZ() {
+            return axis == Axis.Z ? length : EDGE_THICKNESS;
+        }
+
+        private double renderX() {
+            return axis == Axis.X ? x : x - EDGE_THICKNESS / 2;
+        }
+
+        private double renderY() {
+            return axis == Axis.Y ? y : y - EDGE_THICKNESS / 2;
+        }
+
+        private double renderZ() {
+            return axis == Axis.Z ? z : z - EDGE_THICKNESS / 2;
+        }
     }
 
     private record DyeBlock(@NotNull Color colour, @NotNull WrappedBlockState blockState) {}
