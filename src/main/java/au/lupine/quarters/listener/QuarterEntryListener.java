@@ -1,6 +1,10 @@
 package au.lupine.quarters.listener;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.api.event.QuarterEnterEvent;
+import au.lupine.quarters.api.event.QuarterPreNotificationEvent;
+import au.lupine.quarters.api.event.QuarterExitEvent;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.api.manager.ResidentMetadataManager;
@@ -21,6 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,8 +51,13 @@ public class QuarterEntryListener implements Listener {
         Quarter quarter = QuarterManager.getInstance().getQuarter(to);
 
         Optional<Quarter> previousQuarter = QUARTER_PLAYER_IS_IN.getOrDefault(player.getUniqueId(), Optional.empty());
-        if (quarter != null && (previousQuarter.isEmpty() || !previousQuarter.get().equals(quarter)))
+        if (previousQuarter.isPresent() && !previousQuarter.get().equals(quarter))
+            new QuarterExitEvent(player, resident, previousQuarter.get(), quarter, false).callEvent();
+
+        if (quarter != null && (previousQuarter.isEmpty() || !previousQuarter.get().equals(quarter))) {
+            new QuarterEnterEvent(player, resident, quarter, previousQuarter.orElse(null), false).callEvent();
             onQuarterEntry(quarter, resident);
+        }
 
         QUARTER_PLAYER_IS_IN.put(player.getUniqueId(), Optional.ofNullable(quarter));
     }
@@ -60,29 +70,44 @@ public class QuarterEntryListener implements Listener {
 
         Quarter quarter = QuarterManager.getInstance().getQuarter(player.getLocation());
 
+        if (quarter != null) new QuarterEnterEvent(player, resident, quarter, null, true).callEvent();
+
         QUARTER_PLAYER_IS_IN.put(player.getUniqueId(), Optional.ofNullable(quarter));
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        QUARTER_PLAYER_IS_IN.remove(event.getPlayer().getUniqueId());
+        Player player = event.getPlayer();
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null) {
+            QUARTER_PLAYER_IS_IN.remove(player.getUniqueId());
+            return;
+        }
+
+        Optional<Quarter> quarter = QUARTER_PLAYER_IS_IN.getOrDefault(player.getUniqueId(), Optional.empty());
+        if (quarter.isEmpty()) quarter = Optional.ofNullable(QuarterManager.getInstance().getQuarter(player.getLocation()));
+
+        quarter.ifPresent(value -> new QuarterExitEvent(player, resident, value, null, true).callEvent());
+
+        QUARTER_PLAYER_IS_IN.remove(player.getUniqueId());
     }
 
-    private void onQuarterEntry(Quarter quarter, Resident resident) {
+    private void onQuarterEntry(@NotNull Quarter quarter, @NotNull Resident resident) {
         ResidentMetadataManager rmm = ResidentMetadataManager.getInstance();
+        ConfigManager config = Quarters.getInstance().config();
 
-        if (rmm.hasEntryNotifications(resident) && ConfigManager.areEntryNotificationsAllowed())
+        if (rmm.hasEntryNotifications(resident) && config.quarters.allowQuarterEntryNotifications)
             sendEntryNotification(quarter, resident);
 
-        if (rmm.hasEntryBlinking(resident) && ConfigManager.isEntryParticleBlinkingAllowed())
+        if (rmm.hasEntryBlinking(resident) && config.particles.enabled && config.particles.allowEntryParticleBlinking)
             quarter.blinkForResident(resident);
     }
 
-    private void sendEntryNotification(Quarter quarter, Resident resident) {
+    private void sendEntryNotification(@NotNull Quarter quarter, @NotNull Resident resident) {
         List<Component> components = new ArrayList<>();
 
         Component name = Component.text(quarter.getName(), TextColor.color(quarter.getColour().getRGB())).clickEvent(ClickEvent.runCommand("/quarters:q here " + quarter.getUUID()));
-        Component owner = quarter.hasOwner() ? ConfigManager.getFormattedName(quarter.getOwner(), Component.empty()) : Component.text("Unowned", NamedTextColor.GRAY);
+        Component owner = quarter.hasOwner() ? ConfigManager.getFormattedName(quarter.getOwner(), Component.empty()) : Component.translatable("quarters.quarter.owner.unowned", NamedTextColor.GRAY);
         Component type = Component.text(quarter.getType().getCommonName(), NamedTextColor.GRAY);
 
         components.add(name);
@@ -93,21 +118,30 @@ public class QuarterEntryListener implements Listener {
             Component price = QuartersMessaging.OPEN_SQUARE_BRACKET
                     .append(Component.text(TownyEconomyHandler.getFormattedBalance(quarter.getPrice()), NamedTextColor.GRAY))
                     .append(QuartersMessaging.CLOSED_SQUARE_BRACKET)
-                    .hoverEvent(Component.text("Click to claim!", NamedTextColor.GRAY))
+                    .hoverEvent(Component.translatable("quarters.quarter.price.hover.claim", NamedTextColor.GRAY))
                     .clickEvent(ClickEvent.runCommand("/quarters:q claim " + quarter.getUUID()));
 
             components.add(price);
         }
 
-        JoinConfiguration jc = JoinConfiguration.separator(Component.text(" - ", TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
-        Component notification = Component.join(jc, components);
-
-        EntryNotificationType notificationType = ResidentMetadataManager.getInstance().getEntryNotificationType(resident);
-
         Player player = resident.getPlayer();
         if (player == null) return;
 
-        switch (notificationType) {
+        EntryNotificationType notificationType = ResidentMetadataManager.getInstance().getEntryNotificationType(resident);
+
+        QuarterPreNotificationEvent event = new QuarterPreNotificationEvent(player, resident, quarter, components, notificationType);
+        event.callEvent();
+        if (event.isCancelled()) {
+            String cancelMessage = event.getCancelMessage();
+            if (cancelMessage != null) player.sendMessage(Component.text(cancelMessage));
+            return;
+        }
+        components = event.getNotifications();
+
+        JoinConfiguration jc = JoinConfiguration.separator(Component.text(" - ", TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
+        Component notification = Component.join(jc, components);
+
+        switch (event.getNotificationType()) {
             case ACTION_BAR -> player.sendActionBar(notification);
             case CHAT -> QuartersMessaging.sendMessage(player, notification);
         }

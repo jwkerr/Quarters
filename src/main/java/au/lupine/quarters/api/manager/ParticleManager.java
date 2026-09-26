@@ -1,5 +1,6 @@
 package au.lupine.quarters.api.manager;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.wrapper.CuboidSelection;
@@ -30,11 +31,12 @@ public final class ParticleManager {
 
     public void drawParticlesAtCurrentSelection(Player player) {
         CuboidSelection selection = SelectionManager.getInstance().getSelection(player);
-        drawCuboidOutline(player, selection.getCuboid(), ConfigManager.getCurrentSelectionParticle(), null);
+        ConfigManager config = Quarters.getInstance().config();
+        drawCuboidOutline(player, selection.getCuboid(), config.particles.currentSelectionParticle, null);
 
         List<Cuboid> cuboids = SelectionManager.getInstance().getCuboids(player);
         for (Cuboid cuboid : cuboids) {
-            drawCuboidOutline(player, cuboid, ConfigManager.getCurrentCuboidsParticle(), null);
+            drawCuboidOutline(player, cuboid, config.particles.currentCuboidsParticle, null);
         }
     }
 
@@ -58,7 +60,9 @@ public final class ParticleManager {
         );
 
         for (Cuboid cuboid : quarter.getCuboids()) {
-            drawCuboidOutline(resident.getPlayer(), cuboid, Particle.REDSTONE, dustOptions);
+            Player player = resident.getPlayer();
+            if (player == null) continue;
+            drawCuboidOutline(player, cuboid, Particle.DUST, dustOptions);
         }
     }
 
@@ -76,7 +80,7 @@ public final class ParticleManager {
         }
     }
 
-    public List<Location> computeCuboidEdges(@NotNull Cuboid cuboid, @NotNull Location viewerLocation) {
+    public @NotNull List<Location> computeCuboidEdges(@NotNull Cuboid cuboid, @NotNull Location viewerLocation) {
         Location cornerOne = cuboid.getCornerOne();
         Location cornerTwo = cuboid.getCornerTwo();
 
@@ -89,7 +93,7 @@ public final class ParticleManager {
         int y2 = cornerTwo.getBlockY();
         int z2 = cornerTwo.getBlockZ();
 
-        final int range = ConfigManager.getMaxDistanceForCuboidParticles();
+        final int range = Quarters.getInstance().config().particles.maxDistanceForCuboidParticles;
         final int viewerX = viewerLocation.getBlockX();
         final int viewerY = viewerLocation.getBlockY();
         final int viewerZ = viewerLocation.getBlockZ();

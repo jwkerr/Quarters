@@ -5,44 +5,46 @@ import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
+import au.lupine.quarters.object.state.QuarterDeleteCause;
 import au.lupine.quarters.object.wrapper.StringConstants;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class DeletePlotMethod extends CommandMethod {
+public final class DeletePlotMethod extends CommandMethod {
 
-    public DeletePlotMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.delete.plot", true);
+    public DeletePlotMethod() {
+        super("plot", "quarters.command.quarters.delete.plot", true);
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public void execute(@NotNull CommandSourceStack source) {
+        Player player = getSenderAsPlayerOrThrow(source);
 
         Town town = TownyAPI.getInstance().getTown(player);
         if (town == null) throw new CommandMethodException(StringConstants.YOU_ARE_NOT_PART_OF_A_TOWN);
 
         TownBlock townBlock = TownyAPI.getInstance().getTownBlock(player);
-        if (townBlock == null) throw new CommandMethodException("You are not standing within a townblock");
+        if (townBlock == null) throw new CommandMethodException("quarters.command.quarters.delete.plot.feedback.not_in_townblock");
 
-        if (!town.equals(townBlock.getTownOrNull())) throw new CommandMethodException("This townblock is not part of your town");
+        if (!town.equals(townBlock.getTownOrNull())) throw new CommandMethodException("quarters.command.quarters.delete.plot.feedback.townblock_not_in_town");
 
         List<Quarter> quarters = QuarterManager.getInstance().getQuarters(townBlock);
 
         Confirmation.runOnAccept(() -> {
             for (Quarter quarter : quarters) {
-                quarter.delete();
+                quarter.delete(source.getSender(), QuarterDeleteCause.DELETE_PLOT_COMMAND);
             }
 
-            QuartersMessaging.sendSuccessMessage(player, "Successfully deleted all quarters in this townblock");
-            QuartersMessaging.sendCommandFeedbackToTown(town, player, "has deleted all quarters in a townblock", player.getLocation());
-        }).setTitle("Are you sure you want to delete all the quarters in this townblock?")
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.delete.plot.feedback.success");
+            QuartersMessaging.sendCommandFeedbackToTown(town, player, "quarters.command.quarters.delete.plot.feedback.town", player.getLocation());
+        }).setTitle(QuartersMessaging.translate(player, "quarters.command.quarters.delete.plot.confirmation.title"))
                 .sendTo(player);
     }
 }

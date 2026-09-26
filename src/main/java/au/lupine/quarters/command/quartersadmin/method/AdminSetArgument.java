@@ -2,23 +2,24 @@ package au.lupine.quarters.command.quartersadmin.method;
 
 import au.lupine.quarters.command.quartersadmin.method.set.*;
 import au.lupine.quarters.object.base.CommandArgument;
-import org.bukkit.command.CommandSender;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import org.jetbrains.annotations.NotNull;
 
-public class AdminSetArgument extends CommandArgument {
+public final class AdminSetArgument extends CommandArgument {
 
-    public AdminSetArgument(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quartersadmin.set");
+    public AdminSetArgument() {
+        super("set", "quarters.command.quartersadmin.set");
     }
 
     @Override
-    protected void parseMethod(CommandSender sender, String method, String[] args) {
-        switch (method) {
-            case "anchor" -> new AdminSetAnchorMethod(sender, args).execute();
-            case "colour" -> new AdminSetColourMethod(sender, args).execute();
-            case "name" -> new AdminSetNameMethod(sender, args).execute();
-            case "owner" -> new AdminSetOwnerMethod(sender, args).execute();
-            case "perm" -> new AdminSetPermMethod(sender, args).execute();
-            case "type" -> new AdminSetTypeMethod(sender, args).execute();
-        }
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(new AdminSetAnchorMethod().build())
+                .then(new AdminSetColourMethod().build())
+                .then(new AdminSetNameMethod().build())
+                .then(new AdminSetOwnerMethod().build())
+                .then(new AdminSetPermMethod().build())
+                .then(new AdminSetTypeMethod().build());
     }
 }

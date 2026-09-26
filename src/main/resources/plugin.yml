@@ -4,25 +4,13 @@ main: au.lupine.quarters.Quarters
 api-version: "1.20"
 prefix: Quarters
 authors: [Fruitloopins]
-contributors: [Warriorrr]
+contributors: [Warriorrr, pernio]
 description: The modern "apartment" plugin for Towny
 website: https://earthmc.net
 folia-supported: true
 depend: [Towny]
-softdepend: [PlaceholderAPI]
-
-commands:
-  quarters:
-    description: Primary Quarters command
-    permission: quarters.command.quarters
-    aliases:
-      - q
-
-  quartersadmin:
-    description: Admin Quarters command
-    permission: quarters.command.quartersadmin
-    aliases:
-      - qa
+softdepend: [PlaceholderAPI, floodgate]
+libraries: [de.bsommerfeld.jshepherd:core:4.1.1, de.bsommerfeld.jshepherd:toml:4.1.1]
 
 permissions:
   quarters.wand:
@@ -55,6 +43,8 @@ permissions:
       quarters.command.quarters.edit.*: true
       quarters.command.quarters.evict: true
       quarters.command.quarters.fame: true
+      quarters.command.quarters.find: true
+      quarters.command.quarters.find.*: true
       quarters.command.quarters.here: true
       quarters.command.quarters.info: true
       quarters.command.quarters.meow: true
@@ -112,6 +102,14 @@ permissions:
 
   quarters.command.quarters.fame:
     default: true
+
+  quarters.command.quarters.find:
+    default: true
+
+  quarters.command.quarters.find.*:
+    default: false
+    children:
+      quarters.command.quarters.find.forsale: true
 
   quarters.command.quarters.here:
     default: true

@@ -1,7 +1,12 @@
 package au.lupine.quarters.object.entity;
 
+import au.lupine.quarters.Quarters;
+import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.api.event.QuarterDeleteEvent;
+import au.lupine.quarters.api.event.QuarterPreDeleteEvent;
 import au.lupine.quarters.api.manager.*;
 import au.lupine.quarters.object.state.ActionType;
+import au.lupine.quarters.object.state.QuarterDeleteCause;
 import au.lupine.quarters.object.state.QuarterType;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;
 import com.palmergames.bukkit.towny.TownyAPI;
@@ -11,6 +16,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownyObject;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.ApiStatus;
@@ -36,12 +42,12 @@ public class Quarter extends TownyObject {
     private QuarterType type = QuarterType.APARTMENT;
     private boolean isEmbassy = false;
     private Long claimedAt;
-    private Color colour = ConfigManager.hasDefaultQuarterColour() ? ConfigManager.getDefaultQuarterColour() : createRandomColour();
+    private Color colour = createInitialColour();
     private final QuarterPermissions permissions = new QuarterPermissions();
     private Location anchor;
     private Float particleSize;
 
-    public Quarter(Town town, List<Cuboid> cuboids, @Nullable UUID creator) {
+    public Quarter(@NotNull Town town, @NotNull List<Cuboid> cuboids, @Nullable UUID creator) {
         super(createRandomName());
 
         this.town = town;
@@ -51,7 +57,7 @@ public class Quarter extends TownyObject {
         Resident resident = getCreatorResident();
         if (resident == null) return;
 
-        if (ConfigManager.hasDefaultQuarterColour() && resident.hasPermissionNode("quarters.bypass_default_colour")) colour = createRandomColour();
+        if (Quarters.getInstance().config().quarters.defaultQuarterColour.enabled && resident.hasPermissionNode("quarters.bypass_default_colour")) colour = createRandomColour();
     }
 
     /**
@@ -92,14 +98,29 @@ public class Quarter extends TownyObject {
 
     /**
      * Permanently delete this quarter from the town's metadata
+     * @param sender The person who caused/requested to delete the quarter. Null if no person was involved, e.g. unclaiming the plot.
+     * @param cause The cause of deleting the quarter.
      */
-    public void delete() {
+    public void delete(@Nullable CommandSender sender, @NotNull QuarterDeleteCause cause) {
         QuarterManager qm = QuarterManager.getInstance();
 
         List<Quarter> quarters = qm.getQuarters(town);
-        quarters.remove(this);
+        if (!quarters.contains(this)) return;
 
+        // TODO: If the quarter is caught by an external plugin and kept a reference to this object, the garbage collector won't delete it, causing a memory leak.
+        QuarterPreDeleteEvent preDeleteEvent = new QuarterPreDeleteEvent(sender, this, cause);
+        preDeleteEvent.callEvent();
+        if (preDeleteEvent.isCancelled()) {
+            String cancelMessage = preDeleteEvent.getCancelMessage();
+            if (sender != null && cancelMessage != null) QuartersMessaging.sendErrorMessage(sender, cancelMessage);
+            return;
+        }
+
+        quarters.remove(this);
         qm.setQuarters(town, quarters);
+
+        QuarterDeleteEvent postDeleteEvent = new QuarterDeleteEvent(sender, cause, owner, getOwnerResident(), town);
+        postDeleteEvent.callEvent();
     }
 
     /**
@@ -302,7 +323,7 @@ public class Quarter extends TownyObject {
         return registered;
     }
 
-    public void setOwner(UUID uuid) {
+    public void setOwner(@Nullable UUID uuid) {
         this.owner = uuid;
 
         if (owner == null) {
@@ -447,18 +468,20 @@ public class Quarter extends TownyObject {
 
     // Constructor methods
 
-    private static Color createRandomColour() {
+    private static @NotNull Color createRandomColour() {
         Random random = new Random();
         return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
     }
 
-    private static String createRandomName() {
-        List<String> adjectives = List.of( // TODO: add config for random names
-                "Lovely", "Cheerful", "Upbeat", "Stylish", "Luxurious", "Elegant", "Inviting", "Welcoming",
-                "Annoying", "Perturbing", "Enraging", "Dingy", "Inconvenient", "Dull", "Bland", "Gloomy"
-        );
+    private static @NotNull Color createInitialColour() {
+        ConfigManager.QuarterColour colour = Quarters.getInstance().config().quarters.defaultQuarterColour;
+        if (!colour.enabled) return createRandomColour();
+        return new Color(colour.red, colour.green, colour.blue);
+    }
 
-        List<String> nouns = List.of("Quarter", "Apartment", "Flat", "Dwelling", "Residence", "Suite", "Property", "Tenement");
+    private static @NotNull String createRandomName() {
+        List<String> adjectives = Quarters.getInstance().config().quarters.nameAdjectives;
+        List<String> nouns = Quarters.getInstance().config().quarters.nameNouns;
 
         Random random = new Random();
         String adjective = adjectives.get(random.nextInt(adjectives.size()));

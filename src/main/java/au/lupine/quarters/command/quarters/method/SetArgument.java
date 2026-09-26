@@ -1,26 +1,36 @@
 package au.lupine.quarters.command.quarters.method;
 
-import au.lupine.quarters.command.quarters.method.set.*;
+import au.lupine.quarters.command.quarters.method.set.SetAnchorMethod;
+import au.lupine.quarters.command.quarters.method.set.SetColourMethod;
+import au.lupine.quarters.command.quarters.method.set.SetDefaultSellPriceMethod;
+import au.lupine.quarters.command.quarters.method.set.SetEntryNotificationsMethod;
+import au.lupine.quarters.command.quarters.method.set.SetNameMethod;
+import au.lupine.quarters.command.quarters.method.set.SetOwnerMethod;
+import au.lupine.quarters.command.quarters.method.set.SetParticleSizeMethod;
+import au.lupine.quarters.command.quarters.method.set.SetPermMethod;
+import au.lupine.quarters.command.quarters.method.set.SetTypeMethod;
 import au.lupine.quarters.object.base.CommandArgument;
-import org.bukkit.command.CommandSender;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import org.jetbrains.annotations.NotNull;
 
-public class SetArgument extends CommandArgument {
+public final class SetArgument extends CommandArgument {
 
-    public SetArgument(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.set");
+    public SetArgument() {
+        super("set", "quarters.command.quarters.set");
     }
 
-    protected void parseMethod(CommandSender sender, String method, String[] args) {
-        switch (method) {
-            case "anchor" -> new SetAnchorMethod(sender, args).execute();
-            case "colour" -> new SetColourMethod(sender, args).execute();
-            case "defaultsellprice" -> new SetDefaultSellPriceMethod(sender, args).execute();
-            case "entrynotifications" -> new SetEntryNotificationsMethod(sender, args).execute();
-            case "name" -> new SetNameMethod(sender, args).execute();
-            case "owner" -> new SetOwnerMethod(sender, args).execute();
-            case "particlesize" -> new SetParticleSizeMethod(sender, args).execute();
-            case "perm" -> new SetPermMethod(sender, args).execute();
-            case "type" -> new SetTypeMethod(sender, args).execute();
-        }
+    @Override
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(new SetAnchorMethod().build())
+                .then(new SetColourMethod().build())
+                .then(new SetDefaultSellPriceMethod().build())
+                .then(new SetEntryNotificationsMethod().build())
+                .then(new SetNameMethod().build())
+                .then(new SetOwnerMethod().build())
+                .then(new SetParticleSizeMethod().build())
+                .then(new SetPermMethod().build())
+                .then(new SetTypeMethod().build());
     }
 }
