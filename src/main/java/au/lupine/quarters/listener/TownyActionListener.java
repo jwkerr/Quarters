@@ -1,10 +1,13 @@
 package au.lupine.quarters.listener;
 
 import au.lupine.quarters.Quarters;
+import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.api.event.QuarterPrePvpEvent;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.state.ActionType;
+import au.lupine.quarters.object.state.FlagType;
 import au.lupine.quarters.object.state.QuarterType;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.actions.*;
@@ -18,6 +21,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,9 +83,30 @@ public class TownyActionListener implements Listener {
     // TODO: This may require some cleanup since TownyPlayerDamagePlayerEvent isn't an instance of TownyActionEvent
     public void parseEvent(@NotNull TownyPlayerDamagePlayerEvent event) {
         Quarter quarter = getEventQuarter(event.isInWilderness(), event.getLocation());
-        if (quarter == null) return;
 
-        if (quarter.getType().equals(QuarterType.ARENA)) handleArenaDamage(event, quarter);
+        QuarterPrePvpEvent prePvpEvent = new QuarterPrePvpEvent(event, quarter);
+        prePvpEvent.callEvent();
+        if (prePvpEvent.isCancelled()) {
+            String cancelMessage = prePvpEvent.getCancelMessage();
+            if (cancelMessage != null) QuartersMessaging.sendErrorMessage(event.getAttackingPlayer(), cancelMessage);
+            return;
+        }
+
+        if (quarter != null && quarter.hasFlag(FlagType.PVP))
+            handlePvpDamage(prePvpEvent);
+    }
+
+    public void parseEvent(@NotNull PlayerDeathEvent event) {
+        Quarter quarter = getEventQuarter(false, event.getPlayer().getLocation());
+
+        if (quarter == null || !quarter.hasFlag(FlagType.PVP)) return;
+
+        ConfigManager config = Quarters.getInstance().config();
+        event.setShouldDropExperience(config.quarters.pvpSettings.expDropsOnDeath);
+        if (!config.quarters.pvpSettings.itemsDropsOnDeath) {
+            event.setKeepInventory(true);
+            event.getDrops().clear(); // Explicitly remove dropped items to prevent duping
+        }
     }
 
     private @Nullable Quarter getEventQuarter(boolean isInWilderness, @NotNull Location location) {
@@ -104,23 +129,22 @@ public class TownyActionListener implements Listener {
         return VEHICLE_MATERIALS.contains(material);
     }
 
-    private void handleArenaDamage(@NotNull TownyPlayerDamagePlayerEvent event, @NotNull Quarter quarter) {
+    private void handlePvpDamage(@NotNull QuarterPrePvpEvent event) {
         ConfigManager config = Quarters.getInstance().config();
-        if (!config.quarters.arenaQuarter.enabled) return;
 
         // Explicitly allow the damage first
         event.setCancelled(false);
 
-        Town attackerTown = TownyAPI.getInstance().getTown(event.getAttackingPlayer());
-        Town victimTown = TownyAPI.getInstance().getTown(event.getVictimPlayer());
+        Town attackerTown = event.getAttackerTown();
+        Town victimTown = event.getVictimTown();
 
         if (attackerTown != null && victimTown != null) {
-            if (!config.quarters.arenaQuarter.friendlyFireTown && attackerTown.getUUID().equals(victimTown.getUUID())) {
+            if (!config.quarters.pvpSettings.friendlyFireTown && attackerTown.getUUID().equals(victimTown.getUUID())) {
                 event.setCancelled(true);
                 return;
             }
 
-            if (!config.quarters.arenaQuarter.friendlyFireNation) {
+            if (!config.quarters.pvpSettings.friendlyFireNation) {
                 Nation attackerNation = attackerTown.getNationOrNull();
                 Nation victimNation = victimTown.getNationOrNull();
 

@@ -2,15 +2,14 @@ package au.lupine.quarters.object.state;
 
 import org.jetbrains.annotations.NotNull;
 
-public enum QuarterType {
-    APARTMENT("Apartment"), // Default type
-    INN("Inn"), // Allows bed usage
-    STATION("Station"), // Allows vehicle placing and usage
-    ARENA("Arena"); // Forces pvp on
+public enum FlagType {
+    PVP("PVP"),
+    MOBS("Mobs"),
+    EXPLOSIONS("Explosions");
 
     private final String commonName;
 
-    QuarterType(@NotNull String commonName) {
+    FlagType(@NotNull String commonName) {
         this.commonName = commonName;
     }
 

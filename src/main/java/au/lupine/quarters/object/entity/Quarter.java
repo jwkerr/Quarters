@@ -6,6 +6,7 @@ import au.lupine.quarters.api.event.QuarterDeleteEvent;
 import au.lupine.quarters.api.event.QuarterPreDeleteEvent;
 import au.lupine.quarters.api.manager.*;
 import au.lupine.quarters.object.state.ActionType;
+import au.lupine.quarters.object.state.FlagType;
 import au.lupine.quarters.object.state.QuarterDeleteCause;
 import au.lupine.quarters.object.state.QuarterType;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;
@@ -24,10 +25,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
 public class Quarter extends TownyObject {
 
@@ -45,6 +44,7 @@ public class Quarter extends TownyObject {
     private Color colour = createInitialColour();
     private final QuarterPermissions permissions = new QuarterPermissions();
     private Location anchor;
+    private Set<FlagType> flags = EnumSet.noneOf(FlagType.class);
 
     public Quarter(@NotNull Town town, @NotNull List<Cuboid> cuboids, @Nullable UUID creator) {
         super(createRandomName());
@@ -442,6 +442,27 @@ public class Quarter extends TownyObject {
 
     public @Nullable Location getAnchor() {
         return anchor;
+    }
+
+    public void setFlag(@NotNull FlagType flag, boolean enabled) {
+        if (enabled) {
+            flags.add(flag);
+        } else {
+            flags.remove(flag);
+        }
+    }
+
+    public Set<FlagType> getFlags() {
+        return Collections.unmodifiableSet(flags);
+    }
+
+    public boolean hasFlag(@NotNull FlagType flag) {
+        return flags.contains(flag);
+    }
+
+    public boolean canChangeFlag(@NotNull FlagType flag) {
+        // Arena quarters shouldn't be able to change pvp flag
+        return !(getType() == QuarterType.ARENA && flag == FlagType.PVP);
     }
 
     // Constructor methods

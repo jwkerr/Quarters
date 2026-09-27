@@ -2,6 +2,7 @@ package au.lupine.quarters.api.manager;
 
 import au.lupine.quarters.Quarters;
 import au.lupine.quarters.object.state.EntryNotificationType;
+import au.lupine.quarters.object.state.FlagType;
 import au.lupine.quarters.object.wrapper.UserGroup;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -21,10 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Comment("If comments are not present, please restart your server")
@@ -113,8 +111,8 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
         @Section("default_quarter_colour")
         public @NotNull QuarterColour defaultQuarterColour = new QuarterColour();
 
-        @Section("arena_quarter")
-        public @NotNull ArenaQuarter arenaQuarter = new ArenaQuarter();
+        @Section("pvp_settings")
+        public @NotNull PvpSettings pvpSettings = new PvpSettings();
 
         @Key("allow_quarter_entry_notifications")
         @Comment("If set to true, players will be allowed to toggle notifications when entering a quarter")
@@ -138,6 +136,18 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
         @Key("name_nouns")
         @Comment("Nouns used when generating a random quarter name")
         public @NotNull List<String> nameNouns = List.of("Quarter", "Apartment", "Flat", "Dwelling", "Residence", "Suite", "Property", "Tenement");
+
+        @Key("allowed_flags")
+        @Comment({
+                "If a flag is set to true, it will be functional",
+                "When false, that flag cannot be enabled",
+                "Quarters that already have the flag will show false in the '/q here' menu and it will not work"
+        })
+        public @NotNull Map<FlagType, Boolean> allowedFlags = Map.of(
+                FlagType.MOBS, true,
+                FlagType.EXPLOSIONS, true,
+                FlagType.PVP, false
+        );
     }
 
     public static class QuarterColour {
@@ -158,33 +168,33 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
         public int blue = 255;
     }
 
-    public static class ArenaQuarter {
-        @Key("enabled")
-        @Comment({
-                "Enable to make arena quarters functional",
-                "When false, arena quarters work like regular quarters",
-                "WARNING: Players may exploit this by making invisible traps",
-                "Enable on own risk!"
-        })
-        public boolean enabled = false;
-
+    public static class PvpSettings {
         @Key("visible_boundary")
-        @Comment("If set to true, arena quarters will have a forced visible boundary that cannot be disabled")
+        @Comment("If set to true, pvp quarters will have a forced visible boundary that cannot be disabled or hidden")
         public boolean visibleBoundary = true;
+
+        @Key("visible_glow")
+        @Comment({
+                "If set to true, pvp quarters will have a forced visible glow that cannot be disabled",
+                "A glow allows players to see quarters through walls",
+                "This can help with quickly identifying where traps are"
+        })
+        public boolean visibleGlow = true;
 
         @Key("entry_grace_period_seconds")
         @Comment({
-                "Number of seconds after entering an arena before players can take PvP damage",
-                "Useful in case a player entered an arena plot by accident"
+                "Number of seconds after entering a pvp quarter before players can take PvP damage",
+                "Useful in case a player entered a pvp plot by accident",
+                "If you want to make players exempt from pvp quarters, give the 'quarters.exempt_from_pvp' permission"
         })
         public int entryGracePeriodSeconds = 3;
 
         @Key("item_drops_on_death")
-        @Comment("If set to true, items will drop on death")
+        @Comment("If set to true, items should drop on death")
         public boolean itemsDropsOnDeath = true;
 
         @Key("exp_drops_on_death")
-        @Comment("If set to true, exp will drop on death")
+        @Comment("If set to true, exp should drop on death")
         public boolean expDropsOnDeath = true;
 
         @Key("friendly_fire_town")
