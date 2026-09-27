@@ -3,6 +3,7 @@ package au.lupine.quarters.command.quarters.method;
 import au.lupine.quarters.command.quarters.method.toggle.ToggleConstantOutlinesMethod;
 import au.lupine.quarters.command.quarters.method.toggle.ToggleEmbassyMethod;
 import au.lupine.quarters.command.quarters.method.toggle.ToggleEntryNotificationsMethod;
+import au.lupine.quarters.command.quarters.method.toggle.ToggleFlagMethod;
 import au.lupine.quarters.command.quarters.method.toggle.ToggleGlowMethod;
 import au.lupine.quarters.command.quarters.method.toggle.ToggleSellOnDeleteMethod;
 import au.lupine.quarters.object.base.CommandArgument;
@@ -22,6 +23,7 @@ public final class ToggleArgument extends CommandArgument {
                 .then(new ToggleConstantOutlinesMethod().build())
                 .then(new ToggleEmbassyMethod().build())
                 .then(new ToggleEntryNotificationsMethod().build())
+                .then(new ToggleFlagMethod().buildArgument())
                 .then(new ToggleGlowMethod().build())
                 .then(new ToggleSellOnDeleteMethod().build());
     }

@@ -19,15 +19,18 @@ version = "${semVersion}+${gitBranch()}+${gitVersion()}"
 repositories {
     mavenCentral()
 
+    // Paper
     maven {
         name = "papermc-repo"
         url = "https://repo.papermc.io/repository/maven-public/"
     }
 
+    // Placeholder API (PAPI)
     maven {
         url = "https://repo.extendedclip.com/content/repositories/placeholderapi/"
     }
 
+    // Towny
     maven {
         url = "https://repo.glaremasters.me/repository/towny/"
     }
@@ -39,6 +42,11 @@ repositories {
     maven {
         url = "https://repo.codemc.io/repository/maven-releases/"
     }
+
+    // McMMO
+    maven {
+        url= "https://nexus.neetgames.com/repository/maven-public"
+    }
 }
 
 dependencies {
@@ -48,7 +56,8 @@ dependencies {
     compileOnly("org.geysermc.floodgate:api:2.2.5-SNAPSHOT")
     compileOnly("com.github.retrooper:packetevents-spigot:2.14.0")
     compileOnly("de.bsommerfeld.jshepherd:core:4.1.1")
-    compileOnly("de.bsommerfeld.jshepherd:toml:4.1.1")
+    compileOnly("de.bsommerfeld.jshepherd:yaml:4.1.1")
+    compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.3.001-SNAPSHOT")
 }
 
 def targetJavaVersion = 21

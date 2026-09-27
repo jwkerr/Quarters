@@ -175,7 +175,7 @@ public class ForsaleMethod extends CommandMethod {
         Location location = quarter.getAnchor();
         if (location == null) location = quarter.getFirstCornerOfFirstCuboid();
 
-        Component name = Component.text(quarter.getName(), TextColor.color(quarter.getColour().getRGB()))
+        Component name = Component.text(quarter.getName(), TextColor.color(quarter.getDisplayColour().getRGB()))
                 .hoverEvent(Component.translatable("quarters.command.quarter.find.forsale.quarter.hover", NamedTextColor.GRAY))
                 .clickEvent(ClickEvent.runCommand("/quarters:q here " + quarter.getUUID()));
 

@@ -7,9 +7,11 @@ import au.lupine.quarters.api.event.QuarterPreNotificationEvent;
 import au.lupine.quarters.api.event.QuarterExitEvent;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
+import au.lupine.quarters.api.manager.PvpGracePeriodManager;
 import au.lupine.quarters.api.manager.ResidentMetadataManager;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.state.EntryNotificationType;
+import au.lupine.quarters.object.state.FlagType;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -51,11 +53,14 @@ public class QuarterEntryListener implements Listener {
         Quarter quarter = QuarterManager.getInstance().getQuarter(to);
 
         Optional<Quarter> previousQuarter = QUARTER_PLAYER_IS_IN.getOrDefault(player.getUniqueId(), Optional.empty());
-        if (previousQuarter.isPresent() && !previousQuarter.get().equals(quarter))
+        if (previousQuarter.isPresent() && !previousQuarter.get().equals(quarter)) {
             new QuarterExitEvent(player, resident, previousQuarter.get(), quarter, false).callEvent();
+            PvpGracePeriodManager.getInstance().clear(player);
+        }
 
         if (quarter != null && (previousQuarter.isEmpty() || !previousQuarter.get().equals(quarter))) {
             new QuarterEnterEvent(player, resident, quarter, previousQuarter.orElse(null), false).callEvent();
+            startPvpGracePeriodIfApplicable(player, quarter);
             onQuarterEntry(quarter, resident);
         }
 
@@ -70,7 +75,10 @@ public class QuarterEntryListener implements Listener {
 
         Quarter quarter = QuarterManager.getInstance().getQuarter(player.getLocation());
 
-        if (quarter != null) new QuarterEnterEvent(player, resident, quarter, null, true).callEvent();
+        if (quarter != null) {
+            new QuarterEnterEvent(player, resident, quarter, null, true).callEvent();
+            startPvpGracePeriodIfApplicable(player, quarter);
+        }
 
         QUARTER_PLAYER_IS_IN.put(player.getUniqueId(), Optional.ofNullable(quarter));
     }
@@ -88,8 +96,14 @@ public class QuarterEntryListener implements Listener {
         if (quarter.isEmpty()) quarter = Optional.ofNullable(QuarterManager.getInstance().getQuarter(player.getLocation()));
 
         quarter.ifPresent(value -> new QuarterExitEvent(player, resident, value, null, true).callEvent());
+        PvpGracePeriodManager.getInstance().clear(player);
 
         QUARTER_PLAYER_IS_IN.remove(player.getUniqueId());
+    }
+
+    private void startPvpGracePeriodIfApplicable(@NotNull Player player, @NotNull Quarter quarter) {
+        if (!quarter.hasFlag(FlagType.PVP)) return;
+        PvpGracePeriodManager.getInstance().start(player, quarter);
     }
 
     private void onQuarterEntry(@NotNull Quarter quarter, @NotNull Resident resident) {
@@ -103,7 +117,7 @@ public class QuarterEntryListener implements Listener {
     private void sendEntryNotification(@NotNull Quarter quarter, @NotNull Resident resident) {
         List<Component> components = new ArrayList<>();
 
-        Component name = Component.text(quarter.getName(), TextColor.color(quarter.getColour().getRGB())).clickEvent(ClickEvent.runCommand("/quarters:q here " + quarter.getUUID()));
+        Component name = Component.text(quarter.getName(), TextColor.color(quarter.getDisplayColour().getRGB())).clickEvent(ClickEvent.runCommand("/quarters:q here " + quarter.getUUID()));
         Component owner = quarter.hasOwner() ? ConfigManager.getFormattedName(quarter.getOwner(), Component.empty()) : Component.translatable("quarters.quarter.owner.unowned", NamedTextColor.GRAY);
         Component type = Component.text(quarter.getType().getCommonName(), NamedTextColor.GRAY);
 
@@ -120,6 +134,8 @@ public class QuarterEntryListener implements Listener {
 
             components.add(price);
         }
+
+        if (quarter.hasFlag(FlagType.PVP)) components.add(Component.text("[" + FlagType.PVP.getCommonName() + "]", NamedTextColor.RED));
 
         Player player = resident.getPlayer();
         if (player == null) return;

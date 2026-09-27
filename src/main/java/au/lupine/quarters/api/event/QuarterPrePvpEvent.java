@@ -97,6 +97,12 @@ public class QuarterPrePvpEvent extends CancellableQuartersEvent {
         return townyEvent.getCause();
     }
 
+    @Override
+    public void setCancelled(boolean isCancelled) {
+        super.setCancelled(isCancelled);
+        townyEvent.setCancelled(isCancelled);
+    }
+
     public static HandlerList getHandlerList() {
         return HANDLERS;
     }

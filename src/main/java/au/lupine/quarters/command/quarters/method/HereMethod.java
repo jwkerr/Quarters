@@ -1,12 +1,12 @@
 package au.lupine.quarters.command.quarters.method;
 
-import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.ActionType;
+import au.lupine.quarters.object.state.FlagType;
 import au.lupine.quarters.object.wrapper.Pair;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;
 import com.mojang.brigadier.Command;
@@ -75,7 +75,7 @@ public final class HereMethod extends CommandMethod {
         TextComponent.Builder headerBuilder = Component.text();
         headerBuilder.append(Component.text(quarter.getName(), TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
         headerBuilder.appendSpace();
-        headerBuilder.append(getColourBadgeComponent(quarter.getColour(), catMode));
+        headerBuilder.append(getColourBadgeComponent(quarter.getDisplayColour(), catMode));
         headerBuilder.appendSpace();
         headerBuilder.append(getAnchorBadgeComponent(quarter.getAnchor(), catMode));
 
@@ -97,7 +97,8 @@ public final class HereMethod extends CommandMethod {
         List<Pair<String, Component>> brackets = List.of(
                 Pair.of(labelKey(catMode, "stats"), getStatsHoverComponent(quarter, catMode)),
                 Pair.of(labelKey(catMode, "trusted"), getTrustedComponent(quarter, catMode)),
-                Pair.of(labelKey(catMode, "perms"), getPermsComponent(quarter))
+                Pair.of(labelKey(catMode, "perms"), getPermsComponent(quarter)),
+                Pair.of(labelKey(catMode, "flags"), getFlagsComponent(quarter))
         );
 
         Component here = QuartersMessaging.getListComponent(header, labelled, brackets);
@@ -221,6 +222,24 @@ public final class HereMethod extends CommandMethod {
         builder.append(permLabel(ActionType.SWITCH)).append(Component.text(permissions.createPermissionLine(ActionType.SWITCH), NamedTextColor.GRAY));
         builder.appendNewline();
         builder.append(permLabel(ActionType.ITEM_USE)).append(Component.text(permissions.createPermissionLine(ActionType.ITEM_USE), NamedTextColor.GRAY));
+
+        return builder.build();
+    }
+
+    private Component getFlagsComponent(@NotNull Quarter quarter) {
+        TextComponent.Builder builder = Component.text();
+        boolean first = true;
+
+        for (FlagType flag : FlagType.values()) {
+            if (first) {
+                first = false;
+            } else {
+                builder.appendNewline();
+            }
+
+            builder.append(Component.text(flag.getCommonName() + ": ", NamedTextColor.DARK_GRAY));
+            builder.append(Component.translatable(quarter.hasFlag(flag) ? "quarters.common.true" : "quarters.common.false", NamedTextColor.GRAY));
+        }
 
         return builder.build();
     }

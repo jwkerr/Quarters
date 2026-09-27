@@ -45,6 +45,28 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
     @Section("renderer")
     public @NotNull RendererSection renderer = new RendererSection();
 
+    private static @NotNull Map<FlagType, Boolean> createAllowedFlags() {
+        Map<FlagType, Boolean> flags = new LinkedHashMap<>();
+        flags.put(FlagType.MOBS, true);
+        flags.put(FlagType.EXPLOSIONS, true);
+        flags.put(FlagType.PVP, false);
+        flags.put(FlagType.FIRE, true);
+        flags.put(FlagType.SNOW, true);
+        flags.put(FlagType.ICE, true);
+        return flags;
+    }
+
+    private static @NotNull Map<FlagType, Boolean> createDefaultFlags() {
+        Map<FlagType, Boolean> flags = new LinkedHashMap<>();
+        flags.put(FlagType.MOBS, false);
+        flags.put(FlagType.EXPLOSIONS, false);
+        flags.put(FlagType.PVP, false);
+        flags.put(FlagType.FIRE, false);
+        flags.put(FlagType.SNOW, false);
+        flags.put(FlagType.ICE, false);
+        return flags;
+    }
+
     public static class TechnicalSection {
         @Key("can_plugin_request_user_groups")
         @Comment("If set to true, the plugin will be allowed to query GitHub for the latest sponsor data to correctly format names")
@@ -139,15 +161,19 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
 
         @Key("allowed_flags")
         @Comment({
+                "Which flags are allowed to be used and functional",
                 "If a flag is set to true, it will be functional",
                 "When false, that flag cannot be enabled",
                 "Quarters that already have the flag will show false in the '/q here' menu and it will not work"
         })
-        public @NotNull Map<FlagType, Boolean> allowedFlags = Map.of(
-                FlagType.MOBS, true,
-                FlagType.EXPLOSIONS, true,
-                FlagType.PVP, false
-        );
+        public @NotNull Map<FlagType, Boolean> allowedFlags = createAllowedFlags();
+
+        @Key("default_flags")
+        @Comment({
+                "The flags a quarter gets when it's created",
+                "This will not affect already existing quarters"
+        })
+        public @NotNull Map<FlagType, Boolean> defaultFlags = createDefaultFlags();
     }
 
     public static class QuarterColour {
@@ -169,28 +195,48 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
     }
 
     public static class PvpSettings {
+        @Key("show_exempt_message")
+        @Comment("If set to true, the attacker will receive a translated message when the victim is exempt from PvP damage")
+        public boolean showExemptMessage = true;
+
         @Key("visible_boundary")
-        @Comment("If set to true, pvp quarters will have a forced visible boundary that cannot be disabled or hidden")
+        @Comment("If set to true, PvP quarters will have a forced visible boundary that cannot be disabled or hidden")
         public boolean visibleBoundary = true;
 
         @Key("visible_glow")
         @Comment({
-                "If set to true, pvp quarters will have a forced visible glow that cannot be disabled",
+                "If set to true, PvP quarters will have a forced visible glow that cannot be disabled",
                 "A glow allows players to see quarters through walls",
                 "This can help with quickly identifying where traps are"
         })
         public boolean visibleGlow = true;
 
+        @Section("pvp_quarter_colour")
+        @Comment("The colour all PvP quarters will use for boundaries and menus when enabled")
+        public @NotNull PvpQuarterColour pvpQuarterColour = new PvpQuarterColour();
+
         @Key("entry_grace_period_seconds")
         @Comment({
-                "Number of seconds after entering a pvp quarter before players can take PvP damage",
-                "Useful in case a player entered a pvp plot by accident",
-                "If you want to make players exempt from pvp quarters, give the 'quarters.exempt_from_pvp' permission"
+                "Number of seconds after entering a PvP quarter before players can take PvP damage",
+                "Useful in case a player entered a PvP quarter by accident",
+                "Set to 0 to disable the grace period",
+                "If you want to make players fully exempt from PvP quarters, give the 'quarters.exempt_from_pvp' permission"
         })
-        public int entryGracePeriodSeconds = 3;
+        public int entryGracePeriodSeconds = 0;
+
+        @Key("show_entry_grace_period_enter_message")
+        @Comment("If set to true, players will receive a translated message when their PvP grace period starts")
+        public boolean showEntryGracePeriodEnterMessage = false;
+
+        @Key("show_entry_grace_period_complete_message")
+        @Comment("If set to true, players will receive a translated message when their PvP grace period expires")
+        public boolean showEntryGracePeriodCompleteMessage = false;
 
         @Key("item_drops_on_death")
-        @Comment("If set to true, items should drop on death")
+        @Comment({
+                "If set to true, items should drop on death",
+                "Set to false for keep inventory"
+        })
         public boolean itemsDropsOnDeath = true;
 
         @Key("exp_drops_on_death")
@@ -205,7 +251,30 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
         @Comment("If set to true, players from the same nation can damage each other")
         public boolean friendlyFireNation = true;
 
-        // TODO: Possibly hook into McMMO to also check for party friendly fire?
+        @Key("friendly_fire_mcmmo_party")
+        @Comment({
+                "If set to true, players from the same McMMO party can damage each other",
+                "The McMMO plugin is required on the server to make this config work"
+        })
+        public boolean friendlyFireMcmmoParty = true;
+    }
+
+    public static class PvpQuarterColour {
+        @Key("enabled")
+        @Comment({
+                "Enable to give quarters a colour by default",
+                "Configure the colour values below"
+        })
+        public boolean enabled = true;
+
+        @Key("red")
+        public int red = 255;
+
+        @Key("green")
+        public int green = 0;
+
+        @Key("blue")
+        public int blue = 0;
     }
 
     public static class RendererSection {

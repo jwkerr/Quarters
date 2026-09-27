@@ -5,6 +5,7 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.event.QuarterPrePvpEvent;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
+import au.lupine.quarters.api.manager.PvpGracePeriodManager;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.FlagType;
@@ -16,6 +17,7 @@ import com.palmergames.bukkit.towny.event.player.PlayerDeniedBedUseEvent;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,6 +26,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.gmail.nossr50.api.PartyAPI;
 
 import java.util.Set;
 
@@ -32,6 +35,7 @@ import java.util.Set;
  */
 public class TownyActionListener implements Listener {
 
+    private final boolean isMcmmoPresent;
     public static final Set<Material> VEHICLE_MATERIALS = Set.of(
             Material.ACACIA_BOAT, Material.BAMBOO_RAFT, Material.BIRCH_BOAT, Material.CHERRY_BOAT,
             Material.DARK_OAK_BOAT, Material.JUNGLE_BOAT, Material.MANGROVE_BOAT, Material.OAK_BOAT,
@@ -39,6 +43,10 @@ public class TownyActionListener implements Listener {
             Material.CHERRY_CHEST_BOAT, Material.DARK_OAK_CHEST_BOAT, Material.JUNGLE_CHEST_BOAT, Material.MANGROVE_CHEST_BOAT,
             Material.OAK_CHEST_BOAT, Material.SPRUCE_CHEST_BOAT, Material.MINECART
     );
+
+    public TownyActionListener() {
+        isMcmmoPresent = Bukkit.getPluginManager().getPlugin("mcMMO") != null && Bukkit.getPluginManager().isPluginEnabled("mcMMO");
+    }
 
     @EventHandler
     public void onBuild(TownyBuildEvent event) {
@@ -62,6 +70,11 @@ public class TownyActionListener implements Listener {
 
     @EventHandler
     public void onPlayerDamage(TownyPlayerDamagePlayerEvent event) {
+        parseEvent(event);
+    }
+
+    @EventHandler
+    public void onPlayerDamage(PlayerDeathEvent event) {
         parseEvent(event);
     }
 
@@ -131,6 +144,22 @@ public class TownyActionListener implements Listener {
 
     private void handlePvpDamage(@NotNull QuarterPrePvpEvent event) {
         ConfigManager config = Quarters.getInstance().config();
+        Player attacker = event.getAttackingPlayer();
+        Player victim = event.getVictimPlayer();
+
+        if (victim.hasPermission("quarters.exempt_from_pvp")) {
+            if (config.quarters.pvpSettings.showExemptMessage) {
+                QuartersMessaging.sendErrorMessage(attacker, "quarters.pvp.exempt");
+            }
+            event.setCancelled(true);
+            return;
+        }
+
+        Quarter quarter = event.getQuarter();
+        if (quarter != null && PvpGracePeriodManager.getInstance().isProtected(victim, quarter)) {
+            event.setCancelled(true);
+            return;
+        }
 
         // Explicitly allow the damage first
         event.setCancelled(false);
@@ -155,6 +184,11 @@ public class TownyActionListener implements Listener {
                     return;
                 }
             }
+        }
+
+        if (isMcmmoPresent && !config.quarters.pvpSettings.friendlyFireMcmmoParty && PartyAPI.inSameParty(attacker, victim)) {
+            event.setCancelled(true);
+            return;
         }
     }
 

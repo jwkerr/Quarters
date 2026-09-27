@@ -12,7 +12,7 @@ import com.palmergames.bukkit.towny.object.metadata.MetadataLoader;
 import com.palmergames.util.JavaUtil;
 import de.bsommerfeld.jshepherd.core.ConfigurationLoader;
 import de.bsommerfeld.jshepherd.core.PersistenceDelegateFactoryRegistry;
-import de.bsommerfeld.jshepherd.toml.TomlPersistenceDelegateFactory;
+import de.bsommerfeld.jshepherd.yaml.YamlPersistenceDelegateFactory;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.translation.MiniMessageTranslationStore;
@@ -88,13 +88,14 @@ public final class Quarters extends JavaPlugin {
 
     private void loadConfig() {
         if (!configPersistenceRegistered) {
-            PersistenceDelegateFactoryRegistry.registerFactory(new TomlPersistenceDelegateFactory());
+            PersistenceDelegateFactoryRegistry.registerFactory(new YamlPersistenceDelegateFactory());
             configPersistenceRegistered = true;
         }
 
-        config = ConfigurationLoader.from(getDataPath().resolve("config.toml"))
+        config = ConfigurationLoader.from(getDataPath().resolve("config.yml"))
                 .withComments()
                 .load(ConfigManager::new);
+        config.save();
         config.loadRuntimeData();
     }
 

@@ -9,8 +9,8 @@ description: The modern "apartment" plugin for Towny
 website: https://earthmc.net
 folia-supported: true
 depend: [Towny, packetevents]
-softdepend: [PlaceholderAPI, floodgate]
-libraries: [de.bsommerfeld.jshepherd:core:4.1.1, de.bsommerfeld.jshepherd:toml:4.1.1]
+softdepend: [PlaceholderAPI, floodgate, mcMMO]
+libraries: [de.bsommerfeld.jshepherd:core:4.1.1, de.bsommerfeld.jshepherd:yaml:4.1.1]
 
 permissions:
   quarters.wand:
@@ -211,6 +211,12 @@ permissions:
       quarters.command.quarters.toggle.entrynotifications: true
       quarters.command.quarters.toggle.glow: true
       quarters.command.quarters.toggle.sellondelete: true
+      quarters.command.quarters.toggle.mobs: true
+      quarters.command.quarters.toggle.pvp: true
+      quarters.command.quarters.toggle.explosions: true
+      quarters.command.quarters.toggle.fire: true
+      quarters.command.quarters.toggle.snow: true
+      quarters.command.quarters.toggle.ice: true
 
   quarters.command.quarters.toggle.constantoutlines:
     default: true
@@ -225,6 +231,24 @@ permissions:
     default: true
 
   quarters.command.quarters.toggle.sellondelete:
+    default: false
+
+  quarters.command.quarters.toggle.mobs:
+    default: false
+
+  quarters.command.quarters.toggle.pvp:
+    default: false
+
+  quarters.command.quarters.toggle.explosions:
+    default: false
+
+  quarters.command.quarters.toggle.fire:
+    default: false
+
+  quarters.command.quarters.toggle.snow:
+    default: false
+
+  quarters.command.quarters.toggle.ice:
     default: false
 
   quarters.command.quarters.trust:

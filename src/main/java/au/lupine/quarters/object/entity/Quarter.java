@@ -57,6 +57,10 @@ public class Quarter extends TownyObject {
         if (resident == null) return;
 
         if (Quarters.getInstance().config().quarters.defaultQuarterColour.enabled && resident.hasPermissionNode("quarters.bypass_default_colour")) colour = createRandomColour();
+
+        for (Map.Entry<FlagType, Boolean> entry : Quarters.getInstance().config().quarters.defaultFlags.entrySet()) {
+            if (Boolean.TRUE.equals(entry.getValue()) && isFlagAllowed(entry.getKey())) flags.add(entry.getKey());
+        }
     }
 
     /**
@@ -432,6 +436,12 @@ public class Quarter extends TownyObject {
         return colour;
     }
 
+    public @NotNull Color getDisplayColour() {
+        ConfigManager.PvpQuarterColour pvpColour = Quarters.getInstance().config().quarters.pvpSettings.pvpQuarterColour;
+        if (hasFlag(FlagType.PVP) && pvpColour.enabled) return new Color(pvpColour.red, pvpColour.green, pvpColour.blue);
+        return getColour();
+    }
+
     public @NotNull QuarterPermissions getPermissions() {
         return permissions;
     }
@@ -446,23 +456,34 @@ public class Quarter extends TownyObject {
 
     public void setFlag(@NotNull FlagType flag, boolean enabled) {
         if (enabled) {
-            flags.add(flag);
+            ensureFlags().add(flag);
         } else {
-            flags.remove(flag);
+            ensureFlags().remove(flag);
         }
     }
 
-    public Set<FlagType> getFlags() {
-        return Collections.unmodifiableSet(flags);
+    /**
+     * @return If a quarter contains a flag and if the flag is allowed to be functional or toggled
+     */
+    public boolean hasFlag(@NotNull FlagType flag) {
+        return ensureFlags().contains(flag) && isFlagAllowed(flag);
     }
 
-    public boolean hasFlag(@NotNull FlagType flag) {
-        return flags.contains(flag);
+    /**
+     * @return If a flag is allowed to be functional or toggled
+     */
+    public boolean isFlagAllowed(@NotNull FlagType flag) {
+        return Boolean.TRUE.equals(Quarters.getInstance().config().quarters.allowedFlags.get(flag));
     }
 
     public boolean canChangeFlag(@NotNull FlagType flag) {
         // Arena quarters shouldn't be able to change pvp flag
         return !(getType() == QuarterType.ARENA && flag == FlagType.PVP);
+    }
+
+    private @NotNull Set<FlagType> ensureFlags() {
+        if (flags == null) flags = EnumSet.noneOf(FlagType.class);
+        return flags;
     }
 
     // Constructor methods

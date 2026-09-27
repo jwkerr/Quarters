@@ -5,7 +5,10 @@ import org.jetbrains.annotations.NotNull;
 public enum FlagType {
     PVP("PVP"),
     MOBS("Mobs"),
-    EXPLOSIONS("Explosions");
+    EXPLOSIONS("Explosions"),
+    FIRE("Fire"),
+    SNOW("Snow"),
+    ICE("Ice");
 
     private final String commonName;
 
