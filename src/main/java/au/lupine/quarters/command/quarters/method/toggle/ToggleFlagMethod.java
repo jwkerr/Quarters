@@ -51,7 +51,6 @@ public final class ToggleFlagMethod extends CommandMethod {
         if (!quarter.isFlagAllowed(flag)) throw new CommandMethodException("quarters.command.quarters.toggle.flag.feedback.disabled");
         if (!source.getSender().hasPermission("quarters.command.quarters.toggle." + flag.getLowerCase()))
             throw new CommandMethodException("quarters.command.feedback.no_method_permission");
-        if (!quarter.canChangeFlag(flag)) throw new CommandMethodException("quarters.command.quarters.toggle.flag.feedback.cannot_change");
 
         boolean enabled = !quarter.hasFlag(flag);
         quarter.setFlag(flag, enabled);

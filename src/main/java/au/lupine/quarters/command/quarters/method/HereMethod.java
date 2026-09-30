@@ -88,7 +88,6 @@ public final class HereMethod extends CommandMethod {
 
         List<Pair<String, Component>> labelled = List.of(
                 Pair.of(labelKey(catMode, "owner"), ConfigManager.getFormattedName(quarter.getOwner(), Component.translatable("quarters.common.none", NamedTextColor.GRAY))),
-                Pair.of(labelKey(catMode, "type"), Component.text(quarter.getType().getCommonName(), NamedTextColor.GRAY)),
                 Pair.of(labelKey(catMode, "town"), Component.text(quarter.getTown().getName(), NamedTextColor.GRAY).clickEvent(ClickEvent.runCommand("/towny:town " + quarter.getTown().getName()))),
                 Pair.of(labelKey(catMode, "price"), getPriceComponent(quarter, catMode)),
                 Pair.of(labelKey(catMode, "embassy"), Component.translatable(quarter.isEmbassy() ? "quarters.common.true" : "quarters.common.false", NamedTextColor.GRAY))

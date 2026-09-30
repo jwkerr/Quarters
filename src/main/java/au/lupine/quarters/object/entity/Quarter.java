@@ -8,7 +8,6 @@ import au.lupine.quarters.api.manager.*;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.FlagType;
 import au.lupine.quarters.object.state.QuarterDeleteCause;
-import au.lupine.quarters.object.state.QuarterType;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Nation;
@@ -38,7 +37,6 @@ public class Quarter extends TownyObject {
     private UUID owner;
     private List<UUID> trusted = new ArrayList<>();
     private Double price;
-    private QuarterType type = QuarterType.APARTMENT;
     private boolean isEmbassy = false;
     private Long claimedAt;
     private Color colour = createInitialColour();
@@ -67,7 +65,7 @@ public class Quarter extends TownyObject {
      * This constructor is EXCLUSIVELY for internal use when porting legacy quarters
      */
     @ApiStatus.Internal
-    public Quarter(Town town, List<Cuboid> cuboids, UUID uuid, long registered, UUID owner, List<UUID> trusted, Double price, QuarterType type, boolean isEmbassy, Long claimedAt, Color colour) {
+    public Quarter(Town town, List<Cuboid> cuboids, UUID uuid, long registered, UUID owner, List<UUID> trusted, Double price, boolean isEmbassy, Long claimedAt, Color colour) {
         super(createRandomName());
 
         this.town = town;
@@ -78,7 +76,6 @@ public class Quarter extends TownyObject {
         this.owner = owner;
         this.trusted = trusted;
         this.price = price;
-        this.type = type;
         this.isEmbassy = isEmbassy;
         this.claimedAt = claimedAt;
         this.colour = colour;
@@ -382,17 +379,6 @@ public class Quarter extends TownyObject {
         return price;
     }
 
-    public void setType(@NotNull QuarterType type) {
-        this.type = type;
-    }
-
-    /**
-     * @return The quarter's {@link QuarterType}
-     */
-    public QuarterType getType() {
-        return type;
-    }
-
     /**
      * Changing this to false will remove the current owner if they are not part of the quarter's town
      *
@@ -407,9 +393,8 @@ public class Quarter extends TownyObject {
 
     /**
      * Gets this quarter's embassy status
-     * As opposed to how Towny handles embassies, embassy is not its own quarter type, it is a separate flag
+     * As opposed to how Towny handles embassies, embassy is a separate setting.
      * Being an embassy allows for certain conditions outside just ownership when not in the quarter's town
-     * for example, quarters of the station or common type will have their functionality extended to non-residents
      *
      * @return A boolean representing whether the quarter is an embassy
      */
@@ -469,16 +454,15 @@ public class Quarter extends TownyObject {
         return ensureFlags().contains(flag) && isFlagAllowed(flag);
     }
 
+    public boolean hasStoredFlag(@NotNull FlagType flag) {
+        return ensureFlags().contains(flag);
+    }
+
     /**
      * @return If a flag is allowed to be functional or toggled
      */
     public boolean isFlagAllowed(@NotNull FlagType flag) {
         return Boolean.TRUE.equals(Quarters.getInstance().config().quarters.allowedFlags.get(flag));
-    }
-
-    public boolean canChangeFlag(@NotNull FlagType flag) {
-        // Arena quarters shouldn't be able to change pvp flag
-        return !(getType() == QuarterType.ARENA && flag == FlagType.PVP);
     }
 
     private @NotNull Set<FlagType> ensureFlags() {

@@ -19,7 +19,6 @@ public final class AdminSetArgument extends CommandArgument {
                 .then(new AdminSetColourMethod().build())
                 .then(new AdminSetNameMethod().build())
                 .then(new AdminSetOwnerMethod().build())
-                .then(new AdminSetPermMethod().build())
-                .then(new AdminSetTypeMethod().build());
+                .then(new AdminSetPermMethod().build());
     }
 }

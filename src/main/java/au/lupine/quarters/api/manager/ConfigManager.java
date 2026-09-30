@@ -45,26 +45,13 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
     @Section("renderer")
     public @NotNull RendererSection renderer = new RendererSection();
 
-    private static @NotNull Map<FlagType, Boolean> createAllowedFlags() {
-        Map<FlagType, Boolean> flags = new LinkedHashMap<>();
-        flags.put(FlagType.MOBS, true);
-        flags.put(FlagType.EXPLOSIONS, true);
-        flags.put(FlagType.PVP, false);
-        flags.put(FlagType.FIRE, true);
-        flags.put(FlagType.SNOW, true);
-        flags.put(FlagType.ICE, true);
-        return flags;
-    }
+    @Section("migrations")
+    public @NotNull MigrationsSection migrations = new MigrationsSection();
 
-    private static @NotNull Map<FlagType, Boolean> createDefaultFlags() {
-        Map<FlagType, Boolean> flags = new LinkedHashMap<>();
-        flags.put(FlagType.MOBS, false);
-        flags.put(FlagType.EXPLOSIONS, false);
-        flags.put(FlagType.PVP, false);
-        flags.put(FlagType.FIRE, false);
-        flags.put(FlagType.SNOW, false);
-        flags.put(FlagType.ICE, false);
-        return flags;
+    public static class MigrationsSection {
+        @Key("legacy_quarters_migrated")
+        @Comment("Set to true once old quarter data has been migrated to the current format")
+        public boolean legacyQuartersMigrated = false;
     }
 
     public static class TechnicalSection {
@@ -166,14 +153,32 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
                 "When false, that flag cannot be enabled",
                 "Quarters that already have the flag will show false in the '/q here' menu and it will not work"
         })
-        public @NotNull Map<FlagType, Boolean> allowedFlags = createAllowedFlags();
+        public @NotNull Map<FlagType, Boolean> allowedFlags = Map.of(
+                FlagType.MOBS, true,
+                FlagType.EXPLOSIONS, true,
+                FlagType.PVP, false,
+                FlagType.FIRE, true,
+                FlagType.SLEEPING, true,
+                FlagType.VEHICLES, true,
+                FlagType.SNOW, true,
+                FlagType.ICE, true
+        );
 
         @Key("default_flags")
         @Comment({
                 "The flags a quarter gets when it's created",
                 "This will not affect already existing quarters"
         })
-        public @NotNull Map<FlagType, Boolean> defaultFlags = createDefaultFlags();
+        public @NotNull Map<FlagType, Boolean> defaultFlags = Map.of(
+                FlagType.MOBS, false,
+                FlagType.EXPLOSIONS, false,
+                FlagType.PVP, false,
+                FlagType.FIRE, false,
+                FlagType.SLEEPING, false,
+                FlagType.VEHICLES, false,
+                FlagType.SNOW, false,
+                FlagType.ICE, false
+        );
     }
 
     public static class QuarterColour {

@@ -9,7 +9,6 @@ import au.lupine.quarters.api.manager.PvpGracePeriodManager;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.FlagType;
-import au.lupine.quarters.object.state.QuarterType;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.actions.*;
 import com.palmergames.bukkit.towny.event.damage.TownyPlayerDamagePlayerEvent;
@@ -90,7 +89,7 @@ public class TownyActionListener implements Listener {
             return;
         }
 
-        if (quarter.getType().equals(QuarterType.STATION)) handleStation(event, quarter);
+        if (quarter.hasFlag(FlagType.VEHICLES)) handleVehicles(event, quarter);
     }
 
     // TODO: This may require some cleanup since TownyPlayerDamagePlayerEvent isn't an instance of TownyActionEvent
@@ -127,7 +126,7 @@ public class TownyActionListener implements Listener {
         return QuarterManager.getInstance().getQuarter(location);
     }
 
-    private void handleStation(@NotNull TownyActionEvent event, @NotNull Quarter quarter) {
+    private void handleVehicles(@NotNull TownyActionEvent event, @NotNull Quarter quarter) {
         if (!isVehicle(event.getMaterial())) return;
 
         if (quarter.isEmbassy()) {
@@ -208,7 +207,7 @@ public class TownyActionListener implements Listener {
             return;
         }
 
-        if (!quarter.getType().equals(QuarterType.INN)) return;
+        if (!quarter.hasFlag(FlagType.SLEEPING)) return;
 
         if (quarter.isEmbassy()) {
             event.setCancelled(true);

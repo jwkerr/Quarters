@@ -45,6 +45,9 @@ repositories {
 
     // McMMO
     maven {
+        url= "https://maven.enginehub.org/repo/"
+    }
+    maven {
         url= "https://nexus.neetgames.com/repository/maven-public"
     }
 }
@@ -57,7 +60,7 @@ dependencies {
     compileOnly("com.github.retrooper:packetevents-spigot:2.14.0")
     compileOnly("de.bsommerfeld.jshepherd:core:4.1.1")
     compileOnly("de.bsommerfeld.jshepherd:yaml:4.1.1")
-    compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.3.001-SNAPSHOT")
+    compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.046-SNAPSHOT")
 }
 
 def targetJavaVersion = 21

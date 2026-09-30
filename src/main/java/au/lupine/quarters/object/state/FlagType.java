@@ -7,6 +7,8 @@ public enum FlagType {
     MOBS("Mobs"),
     EXPLOSIONS("Explosions"),
     FIRE("Fire"),
+    SLEEPING("Sleeping"),
+    VEHICLES("Vehicles"),
     SNOW("Snow"),
     ICE("Ice");
 

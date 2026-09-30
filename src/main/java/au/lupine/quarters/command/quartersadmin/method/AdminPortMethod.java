@@ -5,6 +5,7 @@ import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.entity.Quarter;
+import au.lupine.quarters.object.state.FlagType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.palmergames.bukkit.towny.TownyAPI;
@@ -120,12 +121,7 @@ public final class AdminPortMethod extends CommandMethod {
         String priceValue = split[5];
         Double price = priceValue.equals("null") ? null : Double.parseDouble(priceValue);
 
-        au.lupine.quarters.object.state.QuarterType type;
-        try {
-            type = au.lupine.quarters.object.state.QuarterType.valueOf(split[6].toUpperCase());
-        } catch (IllegalArgumentException e) {
-            type = au.lupine.quarters.object.state.QuarterType.APARTMENT;
-        }
+        String legacyType = split[6].toUpperCase();
 
         boolean isEmbassy = Boolean.parseBoolean(split[7]);
 
@@ -138,7 +134,16 @@ public final class AdminPortMethod extends CommandMethod {
         int b = Integer.parseInt(colourSplit[2]);
         Color colour = new Color(r, g, b);
 
-        return new Quarter(town, cuboids, uuid, registered, owner, trusted, price, type, isEmbassy, claimedAt, colour);
+        Quarter quarter = new Quarter(town, cuboids, uuid, registered, owner, trusted, price, isEmbassy, claimedAt, colour);
+        migrateLegacyType(quarter, legacyType);
+        return quarter;
+    }
+
+    private void migrateLegacyType(@NotNull Quarter quarter, @NotNull String legacyType) {
+        switch (legacyType) {
+            case "INN" -> quarter.setFlag(FlagType.SLEEPING, true);
+            case "STATION" -> quarter.setFlag(FlagType.VEHICLES, true);
+        }
     }
 
     private List<Cuboid> deserialiseCuboids(String value) {

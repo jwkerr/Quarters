@@ -174,7 +174,6 @@ permissions:
       quarters.command.quarters.set.name: true
       quarters.command.quarters.set.owner: true
       quarters.command.quarters.set.perm: true
-      quarters.command.quarters.set.type: true
 
   quarters.command.quarters.set.anchor:
     default: true
@@ -197,9 +196,6 @@ permissions:
   quarters.command.quarters.set.perm:
     default: true
 
-  quarters.command.quarters.set.type:
-    default: false
-
   quarters.command.quarters.toggle:
     default: true
 
@@ -215,6 +211,8 @@ permissions:
       quarters.command.quarters.toggle.pvp: true
       quarters.command.quarters.toggle.explosions: true
       quarters.command.quarters.toggle.fire: true
+      quarters.command.quarters.toggle.sleeping: true
+      quarters.command.quarters.toggle.vehicles: true
       quarters.command.quarters.toggle.snow: true
       quarters.command.quarters.toggle.ice: true
 
@@ -243,6 +241,12 @@ permissions:
     default: false
 
   quarters.command.quarters.toggle.fire:
+    default: false
+
+  quarters.command.quarters.toggle.sleeping:
+    default: false
+
+  quarters.command.quarters.toggle.vehicles:
     default: false
 
   quarters.command.quarters.toggle.snow:
@@ -335,7 +339,6 @@ permissions:
       quarters.command.quartersadmin.set.name: true
       quarters.command.quartersadmin.set.owner: true
       quarters.command.quartersadmin.set.perm: true
-      quarters.command.quartersadmin.set.type: true
 
   quarters.command.quartersadmin.set.anchor:
     default: op
@@ -350,9 +353,6 @@ permissions:
     default: op
 
   quarters.command.quartersadmin.set.perm:
-    default: op
-
-  quarters.command.quartersadmin.set.type:
     default: op
 
   quarters.command.quartersadmin.toggle:
