@@ -54,7 +54,8 @@ public final class Quarters extends JavaPlugin {
                 new QuarterRenderListener(),
                 new QuartersWandListener(),
                 new StatusScreenListener(),
-                new TownyActionListener()
+                new TownyActionListener(),
+                new VanillaActionListener()
         );
 
         // Don't register this listener if a towny version pre 0.101.2.5 is being used, it breaks otherwise

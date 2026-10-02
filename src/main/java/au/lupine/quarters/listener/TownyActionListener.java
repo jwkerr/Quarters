@@ -9,9 +9,7 @@ import au.lupine.quarters.api.manager.PvpGracePeriodManager;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.FlagType;
-import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.event.MobRemovalEvent;
 import com.palmergames.bukkit.towny.event.actions.*;
 import com.palmergames.bukkit.towny.event.damage.TownyPlayerDamagePlayerEvent;
 import com.palmergames.bukkit.towny.event.player.PlayerDeniedBedUseEvent;
@@ -21,16 +19,18 @@ import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.gmail.nossr50.api.PartyAPI;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -223,30 +223,31 @@ public class TownyActionListener implements Listener {
         if (quarter.isPlayerInTown(player)) event.setCancelled(true);
     }
 
-    // Towny uses NORMAL priority with ignore cancelled, so we can't cancel before Towny
-    // We need to cancel or accept after Towny has processed the event
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
-    public void onPreCreatureSpawn(@NotNull PreCreatureSpawnEvent event) {
-        Quarter quarter = QuarterManager.getInstance().getQuarter(event.getSpawnLocation());
+    @EventHandler
+    public void onEntityExplodeEvent(@NotNull TownyExplodingBlocksEvent event) {
+        List<Block> allowedBlocks = new ArrayList<>();
 
-        if (quarter == null || !quarter.hasFlag(FlagType.MOBS)) return;
-        event.setCancelled(false);
-    }
+        if (event.getBlockList() != null) {
+            allowedBlocks.addAll(event.getBlockList());
+        }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
-    public void onCreatureSpawn(@NotNull CreatureSpawnEvent event) {
-        Quarter quarter = QuarterManager.getInstance().getQuarter(event.getLocation());
+        // TODO: This is a temporary solution to allow explosions. Make it more efficient since calling quarter for each block is expensive
+        for (Block block : event.getVanillaBlockList()) {
+            Quarter quarter = QuarterManager.getInstance().getQuarter(block);
 
-        if (quarter == null || !quarter.hasFlag(FlagType.MOBS)) return;
-        event.setCancelled(false);
+            if (quarter == null || !quarter.hasFlag(FlagType.EXPLOSIONS)) continue;
+            if (!allowedBlocks.contains(block)) allowedBlocks.add(block);
+        }
+
+        event.setBlockList(allowedBlocks);
     }
 
     @EventHandler
-    public void onTownyMobRemoval(@NotNull MobRemovalEvent event) {
-        Quarter quarter = QuarterManager.getInstance().getQuarter(event.getEntity().getLocation());
-        if (quarter == null) return;
+    public void onTownyBurn(@NotNull TownyBurnEvent event) {
+        Quarter quarter = QuarterManager.getInstance().getQuarter(event.getLocation());
 
-        // Don't allow Towny to remove mobs if the mobs flag is enabled
-        if (quarter.hasFlag(FlagType.MOBS)) event.setCancelled(true);
+        if (quarter != null && quarter.hasFlag(FlagType.FIRE)) {
+            event.setCancelled(false);
+        }
     }
 }

@@ -25,6 +25,10 @@ permissions:
     description: "Exempts from taking pvp damage in a pvp quarter"
     default: false
 
+  quarters.access_vaults:
+    description: "Allows access to quarters with vaults enabled"
+    default: false
+
   quarters.landlord:
     description: "Grants mayor-like permission to edit things that a quarter owner can edit"
     default: false

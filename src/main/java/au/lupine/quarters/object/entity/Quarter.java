@@ -241,8 +241,17 @@ public class Quarter extends TownyObject {
      * @return True if the resident can perform the specified action
      */
     public boolean testPermission(@NotNull ActionType type, @NotNull Resident resident) {
-        if (isResidentOwner(resident) || getTrustedResidents().contains(resident)) return true;
-        return getPermissions().testPermission(type, resident, this);
+        if (isResidentOwner(resident)) return true;
+
+        boolean hasPermission = getPermissions().testPermission(type, resident, this);
+
+        if (hasFlag(FlagType.VAULT)) {
+            // If a player has this permnode, they do not bypass checks, but are just allowed to access it if they also have the correct perms
+            // Meaning if everyone has the permnode, vault types become useless
+            return resident.hasPermissionNode("quarters.access_vaults") && hasPermission;
+        }
+
+        return getTrustedResidents().contains(resident) || hasPermission;
     }
 
     public boolean intersectsWith(BoundingBox bounding) {

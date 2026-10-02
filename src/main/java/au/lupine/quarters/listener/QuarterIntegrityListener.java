@@ -12,6 +12,7 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,7 +23,7 @@ import java.util.UUID;
 public class QuarterIntegrityListener implements Listener {
 
     @EventHandler
-    public void onTownRemoveResident(TownRemoveResidentEvent event) {
+    public void onTownRemoveResident(@NotNull TownRemoveResidentEvent event) {
         Town town = event.getTown();
         Resident resident = event.getResident();
 
@@ -35,7 +36,7 @@ public class QuarterIntegrityListener implements Listener {
     }
 
     @EventHandler
-    public void onTownUnclaimTownBlock(TownUnclaimEvent event) {
+    public void onTownUnclaimTownBlock(@NotNull TownUnclaimEvent event) {
         Town town = event.getTown();
         if (town == null) return;
 
@@ -45,7 +46,7 @@ public class QuarterIntegrityListener implements Listener {
     }
 
     @EventHandler
-    public void onNewResident(NewResidentEvent event) {
+    public void onNewResident(@NotNull NewResidentEvent event) {
         UUID uuid = event.getResident().getUUID();
 
         for (Quarter quarter : QuarterManager.getInstance().getAllQuarters()) {
@@ -68,7 +69,7 @@ public class QuarterIntegrityListener implements Listener {
     }
 
     @EventHandler
-    public void onPlotPurchasedByPlayer(PlotPreClaimEvent event) {
+    public void onPlotPurchasedByPlayer(@NotNull PlotPreClaimEvent event) {
         Town town = event.getTownBlock().getTownOrNull();
         if (town == null) return;
 
