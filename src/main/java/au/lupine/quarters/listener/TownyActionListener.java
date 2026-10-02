@@ -9,7 +9,9 @@ import au.lupine.quarters.api.manager.PvpGracePeriodManager;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.FlagType;
+import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.event.MobRemovalEvent;
 import com.palmergames.bukkit.towny.event.actions.*;
 import com.palmergames.bukkit.towny.event.damage.TownyPlayerDamagePlayerEvent;
 import com.palmergames.bukkit.towny.event.player.PlayerDeniedBedUseEvent;
@@ -23,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,32 +52,32 @@ public class TownyActionListener implements Listener {
     }
 
     @EventHandler
-    public void onBuild(TownyBuildEvent event) {
+    public void onBuild(@NotNull TownyBuildEvent event) {
         parseEvent(event, ActionType.BUILD);
     }
 
     @EventHandler
-    public void onDestroy(TownyDestroyEvent event) {
+    public void onDestroy(@NotNull TownyDestroyEvent event) {
         parseEvent(event, ActionType.DESTROY);
     }
 
     @EventHandler
-    public void onSwitch(TownySwitchEvent event) {
+    public void onSwitch(@NotNull TownySwitchEvent event) {
         parseEvent(event, ActionType.SWITCH);
     }
 
     @EventHandler
-    public void onItemUse(TownyItemuseEvent event) {
+    public void onItemUse(@NotNull TownyItemuseEvent event) {
         parseEvent(event, ActionType.ITEM_USE);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerDamage(TownyPlayerDamagePlayerEvent event) {
+    public void onPlayerDamage(@NotNull TownyPlayerDamagePlayerEvent event) {
         parseEvent(event);
     }
 
     @EventHandler
-    public void onPlayerDamage(PlayerDeathEvent event) {
+    public void onPlayerDamage(@NotNull PlayerDeathEvent event) {
         parseEvent(event);
     }
 
@@ -138,7 +141,7 @@ public class TownyActionListener implements Listener {
         if (quarter.isPlayerInTown(event.getPlayer())) event.setCancelled(false);
     }
 
-    private boolean isVehicle(Material material) {
+    private boolean isVehicle(@NotNull Material material) {
         return VEHICLE_MATERIALS.contains(material);
     }
 
@@ -195,7 +198,7 @@ public class TownyActionListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeniedBedUse(PlayerDeniedBedUseEvent event) {
+    public void onPlayerDeniedBedUse(@NotNull PlayerDeniedBedUseEvent event) {
         Quarter quarter = QuarterManager.getInstance().getQuarter(event.getLocation());
         if (quarter == null) return;
 
@@ -218,5 +221,32 @@ public class TownyActionListener implements Listener {
         }
 
         if (quarter.isPlayerInTown(player)) event.setCancelled(true);
+    }
+
+    // Towny uses NORMAL priority with ignore cancelled, so we can't cancel before Towny
+    // We need to cancel or accept after Towny has processed the event
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
+    public void onPreCreatureSpawn(@NotNull PreCreatureSpawnEvent event) {
+        Quarter quarter = QuarterManager.getInstance().getQuarter(event.getSpawnLocation());
+
+        if (quarter == null || !quarter.hasFlag(FlagType.MOBS)) return;
+        event.setCancelled(false);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
+    public void onCreatureSpawn(@NotNull CreatureSpawnEvent event) {
+        Quarter quarter = QuarterManager.getInstance().getQuarter(event.getLocation());
+
+        if (quarter == null || !quarter.hasFlag(FlagType.MOBS)) return;
+        event.setCancelled(false);
+    }
+
+    @EventHandler
+    public void onTownyMobRemoval(@NotNull MobRemovalEvent event) {
+        Quarter quarter = QuarterManager.getInstance().getQuarter(event.getEntity().getLocation());
+        if (quarter == null) return;
+
+        // Don't allow Towny to remove mobs if the mobs flag is enabled
+        if (quarter.hasFlag(FlagType.MOBS)) event.setCancelled(true);
     }
 }

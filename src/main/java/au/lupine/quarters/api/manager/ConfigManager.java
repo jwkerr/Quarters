@@ -45,15 +45,6 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
     @Section("renderer")
     public @NotNull RendererSection renderer = new RendererSection();
 
-    @Section("migrations")
-    public @NotNull MigrationsSection migrations = new MigrationsSection();
-
-    public static class MigrationsSection {
-        @Key("legacy_quarters_migrated")
-        @Comment("Set to true once old quarter data has been migrated to the current format")
-        public boolean legacyQuartersMigrated = false;
-    }
-
     public static class TechnicalSection {
         @Key("can_plugin_request_user_groups")
         @Comment("If set to true, the plugin will be allowed to query GitHub for the latest sponsor data to correctly format names")
@@ -161,7 +152,8 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
                 FlagType.SLEEPING, true,
                 FlagType.VEHICLES, true,
                 FlagType.SNOW, true,
-                FlagType.ICE, true
+                FlagType.ICE, true,
+                FlagType.VAULT, true
         );
 
         @Key("default_flags")
@@ -176,8 +168,9 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
                 FlagType.FIRE, false,
                 FlagType.SLEEPING, false,
                 FlagType.VEHICLES, false,
-                FlagType.SNOW, false,
-                FlagType.ICE, false
+                FlagType.SNOW, true,
+                FlagType.ICE, true,
+                FlagType.VAULT, false
         );
     }
 
