@@ -28,6 +28,7 @@ public final class QuartersCommand {
                 .then(new InfoMethod().build())
                 .then(new MeowMethod().build())
                 .then(new PosMethod().build())
+                .then(new RentMethod().build())
                 .then(new SelectionArgument().build())
                 .then(new SellMethod().build())
                 .then(new SetArgument().build())

@@ -37,6 +37,7 @@ public class Quarter extends TownyObject {
     private UUID owner;
     private List<UUID> trusted = new ArrayList<>();
     private Double price;
+    private Double rentPrice;
     private boolean isEmbassy = false;
     private Long claimedAt;
     private Color colour = createInitialColour();
@@ -194,6 +195,13 @@ public class Quarter extends TownyObject {
      */
     public boolean isForSale() {
         return price != null;
+    }
+
+    /**
+     * @return True if the quarter has a rent price set
+     */
+    public boolean isForRent() {
+        return rentPrice != null;
     }
 
     public @NotNull Location getFirstCornerOfFirstCuboid() {
@@ -386,6 +394,17 @@ public class Quarter extends TownyObject {
      */
     public @Nullable Double getPrice() {
         return price;
+    }
+
+    public void setRentPrice(@Nullable Double rentPrice) {
+        this.rentPrice = rentPrice;
+    }
+
+    /**
+     * @return The current rent price or null if rent is not set
+     */
+    public @Nullable Double getRentPrice() {
+        return rentPrice;
     }
 
     /**

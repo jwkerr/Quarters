@@ -90,6 +90,7 @@ public final class HereMethod extends CommandMethod {
                 Pair.of(labelKey(catMode, "owner"), ConfigManager.getFormattedName(quarter.getOwner(), Component.translatable("quarters.common.none", NamedTextColor.GRAY))),
                 Pair.of(labelKey(catMode, "town"), Component.text(quarter.getTown().getName(), NamedTextColor.GRAY).clickEvent(ClickEvent.runCommand("/towny:town " + quarter.getTown().getName()))),
                 Pair.of(labelKey(catMode, "price"), getPriceComponent(quarter, catMode)),
+                Pair.of(labelKey(catMode, "rent"), getRentComponent(quarter, catMode)),
                 Pair.of(labelKey(catMode, "embassy"), Component.translatable(quarter.isEmbassy() ? "quarters.common.true" : "quarters.common.false", NamedTextColor.GRAY))
         );
 
@@ -177,6 +178,23 @@ public final class HereMethod extends CommandMethod {
         }
 
         return builder.build();
+    }
+
+    private Component getRentComponent(Quarter quarter, boolean catMode) {
+        String string;
+        Double rentPrice = quarter.getRentPrice();
+
+        if (rentPrice == null) {
+            return Component.translatable(catKey(catMode, "rent.not_for_rent"), NamedTextColor.GRAY);
+        } else if (rentPrice == 0) {
+            string = catKey(catMode, "rent.free");
+        } else {
+            string = TownyEconomyHandler.getFormattedBalance(rentPrice);
+        }
+
+        return rentPrice == 0
+                ? Component.translatable(string, NamedTextColor.GRAY)
+                : Component.text(string, NamedTextColor.GRAY);
     }
 
     private Component getStatsHoverComponent(Quarter quarter, boolean catMode) {

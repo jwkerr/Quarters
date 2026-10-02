@@ -57,6 +57,7 @@ permissions:
       quarters.command.quarters.info: true
       quarters.command.quarters.meow: true
       quarters.command.quarters.pos: true
+      quarters.command.quarters.rent: true
       quarters.command.quarters.selection: true
       quarters.command.quarters.selection.*: true
       quarters.command.quarters.sell: true
@@ -135,6 +136,9 @@ permissions:
   quarters.command.quarters.pos:
     default: true
 
+  quarters.command.quarters.rent:
+    default: false
+
   quarters.command.quarters.selection:
     default: true
 
@@ -173,6 +177,7 @@ permissions:
     children:
       quarters.command.quarters.set.anchor: true
       quarters.command.quarters.set.colour: true
+      quarters.command.quarters.set.defaultrentprice: true
       quarters.command.quarters.set.defaultsellprice: true
       quarters.command.quarters.set.entrynotifications: true
       quarters.command.quarters.set.name: true
@@ -186,6 +191,9 @@ permissions:
     default: true
 
   quarters.command.quarters.set.defaultsellprice:
+    default: false
+
+  quarters.command.quarters.set.defaultrentprice:
     default: false
 
   quarters.command.quarters.set.entrynotifications:

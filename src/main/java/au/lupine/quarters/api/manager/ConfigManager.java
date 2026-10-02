@@ -3,6 +3,8 @@ package au.lupine.quarters.api.manager;
 import au.lupine.quarters.Quarters;
 import au.lupine.quarters.object.state.EntryNotificationType;
 import au.lupine.quarters.object.state.FlagType;
+import au.lupine.quarters.object.state.RentCollector;
+import au.lupine.quarters.object.state.TaxType;
 import au.lupine.quarters.object.wrapper.UserGroup;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -113,6 +115,9 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
 
         @Section("pvp_settings")
         public @NotNull PvpSettings pvpSettings = new PvpSettings();
+
+        @Section("rent_settings")
+        public @NotNull RentSettings rentSettings = new RentSettings();
 
         @Key("allow_quarter_entry_notifications")
         @Comment("If set to true, players will be allowed to toggle notifications when entering a quarter")
@@ -273,6 +278,65 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
 
         @Key("blue")
         public int blue = 0;
+    }
+
+    public static class RentSettings {
+        @Key("collector")
+        @Comment({
+                "Who or what collects the rent",
+                "Server is a good gold sink if you want to remove money from the economy",
+                "TOWN - The town receives the rent (default)",
+                "MAYOR - The mayor of the town receives the rent",
+                "NATION - The nation receives the rent",
+                "LEADER - The leader of the nation receives the rent",
+                "SERVER - The rent is collected by the server and disposed"
+        })
+        public @NotNull RentCollector collector = RentCollector.TOWN;
+
+        @Key("min_price")
+        @Comment({
+                "The minimum price a quarter can be rented for",
+                "This is the amount before the tax is applied",
+        })
+        public double minPrice = 0.0;
+
+        @Key("max_price")
+        @Comment({
+                "The maximum price a quarter can be rented for",
+                "This is the amount before the tax is applied",
+        })
+        public double maxPrice = 1000000.0;
+
+        @Key("tax")
+        @Comment({
+                "The tax rate applied to the rent price",
+                "Tax is always disposed and not collected by anyone",
+                "Set to 0.0 to disable tax",
+                "Set price + tax = actual rent price"
+        })
+        public double tax = 0.0;
+
+        @Key("tax_type")
+        @Comment({
+                "The type of tax applied to the rent price",
+                "FLAT - The tax is a flat amount, for example $10",
+                "PERCENTAGE - The tax is a percentage, for example 10% of the rent price"
+        })
+        public @NotNull TaxType taxType = TaxType.FLAT;
+
+        @Key("min_tax")
+        @Comment({
+                "The minimum tax amount that will be applied to the rent price",
+                "If tax_type is PERCENTAGE, the percentage will be calculated and compared to this value"
+        })
+        public double minTax = 0.0;
+
+        @Key("max_tax")
+        @Comment({
+                "The maximum tax amount that will be applied to the rent price",
+                "If tax_type is PERCENTAGE, the percentage will be calculated and compared to this value"
+        })
+        public double maxTax = 1000000.0;
     }
 
     public static class RendererSection {

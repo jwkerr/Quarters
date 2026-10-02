@@ -9,8 +9,6 @@ import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.suggestion.Suggestions;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.object.Town;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -20,19 +18,17 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.concurrent.CompletableFuture;
+public final class RentMethod extends CommandMethod {
 
-public final class SellMethod extends CommandMethod {
-
-    public SellMethod() {
-        super("sell", "quarters.command.quarters.sell", true);
+    public RentMethod() {
+        super("rent", "quarters.command.quarters.rent", true);
     }
 
     @Override
     public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
         return super.build()
                 .then(Commands.argument("price", StringArgumentType.word())
-                        .suggests((context, builder) -> suggestDefaultSellPrice(context.getSource(), builder))
+                        .suggests((context, builder) -> suggestRentPrice(context.getSource(), builder))
                         .executes(context -> run(context.getSource(), context.getArgument("price", String.class))));
     }
 
@@ -59,25 +55,25 @@ public final class SellMethod extends CommandMethod {
         Town town = quarter.getTown();
 
         if (argument == null) {
-            double defaultSellPrice = TownMetadataManager.getInstance().getDefaultSellPrice(town);
-            String formatted = TownyEconomyHandler.getFormattedBalance(defaultSellPrice);
+            double defaultRentPrice = TownMetadataManager.getInstance().getDefaultRentPrice(town);
+            String formatted = TownyEconomyHandler.getFormattedBalance(defaultRentPrice);
 
-            quarter.setPrice(defaultSellPrice);
+            quarter.setRentPrice(defaultRentPrice);
             quarter.save();
 
-            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.sell.feedback.for_sale", Argument.string("price", formatted));
-            QuartersMessaging.sendCommandFeedbackToTown(town, player, "quarters.command.quarters.sell.feedback.town.for_sale", player.getLocation(), Argument.string("price", formatted));
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.rent.feedback.for_rent", Argument.string("price", formatted));
+            QuartersMessaging.sendCommandFeedbackToTown(town, player, "quarters.command.quarters.rent.feedback.town.for_rent", player.getLocation(), Argument.string("price", formatted));
             return;
         }
 
         if (argument.equalsIgnoreCase("cancel")) {
-            if (!quarter.isForSale()) throw new CommandMethodException("quarters.command.quarters.sell.feedback.not_for_sale");
+            if (!quarter.isForRent()) throw new CommandMethodException("quarters.command.quarters.rent.feedback.not_for_rent");
 
-            quarter.setPrice(null);
+            quarter.setRentPrice(null);
             quarter.save();
 
-            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.sell.feedback.not_for_sale_success");
-            QuartersMessaging.sendCommandFeedbackToTown(town, player, "quarters.command.quarters.sell.feedback.town.not_for_sale", player.getLocation());
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.rent.feedback.not_for_rent_success");
+            QuartersMessaging.sendCommandFeedbackToTown(town, player, "quarters.command.quarters.rent.feedback.town.not_for_rent", player.getLocation());
             return;
         }
 
@@ -92,10 +88,10 @@ public final class SellMethod extends CommandMethod {
 
         String formatted = TownyEconomyHandler.getFormattedBalance(price);
 
-        quarter.setPrice(price);
+        quarter.setRentPrice(price);
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.sell.feedback.for_sale", Argument.string("price", formatted));
-        QuartersMessaging.sendCommandFeedbackToTown(town, player, "quarters.command.quarters.sell.feedback.town.for_sale", player.getLocation(), Argument.string("price", formatted));
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.rent.feedback.for_rent", Argument.string("price", formatted));
+        QuartersMessaging.sendCommandFeedbackToTown(town, player, "quarters.command.quarters.rent.feedback.town.for_rent", player.getLocation(), Argument.string("price", formatted));
     }
 }

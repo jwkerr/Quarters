@@ -3,6 +3,7 @@ package au.lupine.quarters.object.base;
 import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.QuarterManager;
+import au.lupine.quarters.api.manager.TownMetadataManager;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.wrapper.StringConstants;
@@ -233,5 +234,27 @@ public abstract class CommandMethod {
         }
 
         return builder.buildFuture();
+    }
+
+    protected @NotNull CompletableFuture<Suggestions> suggestDefaultSellPrice(@NotNull CommandSourceStack source, @NotNull SuggestionsBuilder builder) {
+        if (!(source.getSender() instanceof Player player)) return suggestStrings(builder, "cancel");
+
+        Quarter quarter = getQuarterAtPlayerOrNull(player);
+        if (quarter == null) return suggestStrings(builder, "cancel");
+
+        double defaultSellPrice = TownMetadataManager.getInstance().getDefaultSellPrice(quarter.getTown());
+
+        return suggestStrings(builder, "cancel", Double.toString(defaultSellPrice));
+    }
+
+    protected @NotNull CompletableFuture<Suggestions> suggestRentPrice(@NotNull CommandSourceStack source, @NotNull SuggestionsBuilder builder) {
+        if (!(source.getSender() instanceof Player player)) return suggestStrings(builder, "cancel");
+
+        Quarter quarter = getQuarterAtPlayerOrNull(player);
+        if (quarter == null) return suggestStrings(builder, "cancel");
+
+        double defaultRentPrice = TownMetadataManager.getInstance().getDefaultRentPrice(quarter.getTown());
+
+        return suggestStrings(builder, "cancel", Double.toString(defaultRentPrice));
     }
 }

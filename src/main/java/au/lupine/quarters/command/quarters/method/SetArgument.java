@@ -2,6 +2,7 @@ package au.lupine.quarters.command.quarters.method;
 
 import au.lupine.quarters.command.quarters.method.set.SetAnchorMethod;
 import au.lupine.quarters.command.quarters.method.set.SetColourMethod;
+import au.lupine.quarters.command.quarters.method.set.SetDefaultRentPriceMethod;
 import au.lupine.quarters.command.quarters.method.set.SetDefaultSellPriceMethod;
 import au.lupine.quarters.command.quarters.method.set.SetEntryNotificationsMethod;
 import au.lupine.quarters.command.quarters.method.set.SetNameMethod;
@@ -23,6 +24,7 @@ public final class SetArgument extends CommandArgument {
         return super.build()
                 .then(new SetAnchorMethod().build())
                 .then(new SetColourMethod().build())
+                .then(new SetDefaultRentPriceMethod().build())
                 .then(new SetDefaultSellPriceMethod().build())
                 .then(new SetEntryNotificationsMethod().build())
                 .then(new SetNameMethod().build())
