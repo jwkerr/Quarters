@@ -52,6 +52,9 @@ public final class ToggleFlagMethod extends CommandMethod {
         if (!source.getSender().hasPermission("quarters.command.quarters.toggle." + flag.getLowerCase()))
             throw new CommandMethodException("quarters.command.feedback.no_method_permission");
 
+        if (flag == FlagType.PVP && quarter.getPlayersInsideBounds().stream().anyMatch(inside -> !inside.equals(player)))
+            throw new CommandMethodException("quarters.command.quarters.toggle.flag.feedback.pvp_occupied");
+
         boolean enabled = !quarter.hasFlag(flag);
         quarter.setFlag(flag, enabled);
         quarter.save();

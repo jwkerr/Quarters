@@ -10,7 +10,8 @@ public enum FlagType {
     SLEEPING("Sleeping"),
     VEHICLES("Vehicles"),
     SNOW("Snow"),
-    ICE("Ice");
+    ICE("Ice"),
+    VAULT("Vault");
 
     private final String commonName;
 

@@ -21,6 +21,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
@@ -67,7 +68,7 @@ public class TownyActionListener implements Listener {
         parseEvent(event, ActionType.ITEM_USE);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDamage(TownyPlayerDamagePlayerEvent event) {
         parseEvent(event);
     }
@@ -160,8 +161,10 @@ public class TownyActionListener implements Listener {
             return;
         }
 
-        // Explicitly allow the damage first
-        event.setCancelled(false);
+        if (quarter != null && PvpGracePeriodManager.getInstance().isProtected(attacker, quarter)) {
+            event.setCancelled(true);
+            return;
+        }
 
         Town attackerTown = event.getAttackerTown();
         Town victimTown = event.getVictimTown();
@@ -176,9 +179,7 @@ public class TownyActionListener implements Listener {
                 Nation attackerNation = attackerTown.getNationOrNull();
                 Nation victimNation = victimTown.getNationOrNull();
 
-                if (attackerNation == null || victimNation == null) return;
-
-                if (attackerNation.getUUID().equals(victimNation.getUUID())) {
+                if (attackerNation != null && victimNation != null && attackerNation.getUUID().equals(victimNation.getUUID())) {
                     event.setCancelled(true);
                     return;
                 }
@@ -189,6 +190,8 @@ public class TownyActionListener implements Listener {
             event.setCancelled(true);
             return;
         }
+
+        event.setCancelled(false);
     }
 
     @EventHandler
