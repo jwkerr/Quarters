@@ -5,18 +5,19 @@ import au.lupine.quarters.api.manager.ResidentMetadataManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class ToggleConstantOutlinesMethod extends CommandMethod {
+public final class ToggleConstantOutlinesMethod extends CommandMethod {
 
-    public ToggleConstantOutlinesMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.toggle.constantoutlines");
+    public ToggleConstantOutlinesMethod() {
+        super("constantoutlines", "quarters.command.quarters.toggle.constantoutlines");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public void execute(@NotNull CommandSourceStack source) {
+        Player player = getSenderAsPlayerOrThrow(source);
 
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return;
@@ -27,9 +28,9 @@ public class ToggleConstantOutlinesMethod extends CommandMethod {
         rmm.setHasConstantOutlines(resident, !hasConstantOutlines);
 
         if (hasConstantOutlines) {
-            QuartersMessaging.sendSuccessMessage(player, "Successfully disabled constant particle outlines");
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.constantoutlines.feedback.disabled");
         } else {
-            QuartersMessaging.sendSuccessMessage(player, "Successfully enabled constant particle outlines");
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.toggle.constantoutlines.feedback.enabled");
         }
     }
 }

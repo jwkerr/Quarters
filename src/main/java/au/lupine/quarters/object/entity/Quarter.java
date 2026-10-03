@@ -1,8 +1,13 @@
 package au.lupine.quarters.object.entity;
 
+import au.lupine.quarters.Quarters;
+import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.api.event.QuarterDeleteEvent;
+import au.lupine.quarters.api.event.QuarterPreDeleteEvent;
 import au.lupine.quarters.api.manager.*;
 import au.lupine.quarters.object.state.ActionType;
-import au.lupine.quarters.object.state.QuarterType;
+import au.lupine.quarters.object.state.FlagType;
+import au.lupine.quarters.object.state.QuarterDeleteCause;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Nation;
@@ -11,6 +16,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownyObject;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.ApiStatus;
@@ -18,10 +24,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
 public class Quarter extends TownyObject {
 
@@ -33,15 +37,15 @@ public class Quarter extends TownyObject {
     private UUID owner;
     private List<UUID> trusted = new ArrayList<>();
     private Double price;
-    private QuarterType type = QuarterType.APARTMENT;
+    private Double rentPrice;
     private boolean isEmbassy = false;
     private Long claimedAt;
-    private Color colour = ConfigManager.hasDefaultQuarterColour() ? ConfigManager.getDefaultQuarterColour() : createRandomColour();
+    private Color colour = createInitialColour();
     private final QuarterPermissions permissions = new QuarterPermissions();
     private Location anchor;
-    private Float particleSize;
+    private Set<FlagType> flags = EnumSet.noneOf(FlagType.class);
 
-    public Quarter(Town town, List<Cuboid> cuboids, @Nullable UUID creator) {
+    public Quarter(@NotNull Town town, @NotNull List<Cuboid> cuboids, @Nullable UUID creator) {
         super(createRandomName());
 
         this.town = town;
@@ -51,14 +55,18 @@ public class Quarter extends TownyObject {
         Resident resident = getCreatorResident();
         if (resident == null) return;
 
-        if (ConfigManager.hasDefaultQuarterColour() && resident.hasPermissionNode("quarters.bypass_default_colour")) colour = createRandomColour();
+        if (Quarters.getInstance().config().quarters.defaultQuarterColour.enabled && resident.hasPermissionNode("quarters.bypass_default_colour")) colour = createRandomColour();
+
+        for (Map.Entry<FlagType, Boolean> entry : Quarters.getInstance().config().quarters.defaultFlags.entrySet()) {
+            if (Boolean.TRUE.equals(entry.getValue()) && isFlagAllowed(entry.getKey())) flags.add(entry.getKey());
+        }
     }
 
     /**
      * This constructor is EXCLUSIVELY for internal use when porting legacy quarters
      */
     @ApiStatus.Internal
-    public Quarter(Town town, List<Cuboid> cuboids, UUID uuid, long registered, UUID owner, List<UUID> trusted, Double price, QuarterType type, boolean isEmbassy, Long claimedAt, Color colour) {
+    public Quarter(Town town, List<Cuboid> cuboids, UUID uuid, long registered, UUID owner, List<UUID> trusted, Double price, boolean isEmbassy, Long claimedAt, Color colour) {
         super(createRandomName());
 
         this.town = town;
@@ -69,7 +77,6 @@ public class Quarter extends TownyObject {
         this.owner = owner;
         this.trusted = trusted;
         this.price = price;
-        this.type = type;
         this.isEmbassy = isEmbassy;
         this.claimedAt = claimedAt;
         this.colour = colour;
@@ -77,7 +84,7 @@ public class Quarter extends TownyObject {
 
     /**
      * This method must be called to save the quarter's instance to metadata after any change
-     * The only exception is when using the {@link #delete()} method, that will save itself
+     * The only exception is when using the {@link #delete(CommandSender, QuarterDeleteCause)} method, that will save itself
      */
     @Override
     public void save() {
@@ -92,14 +99,31 @@ public class Quarter extends TownyObject {
 
     /**
      * Permanently delete this quarter from the town's metadata
+     * @param sender The person who caused/requested to delete the quarter. Null if no person was involved, e.g. unclaiming the plot.
+     * @param cause The cause of deleting the quarter.
+     * @return True if the delete was successful.
      */
-    public void delete() {
+    public boolean delete(@Nullable CommandSender sender, @NotNull QuarterDeleteCause cause) {
         QuarterManager qm = QuarterManager.getInstance();
 
         List<Quarter> quarters = qm.getQuarters(town);
-        quarters.remove(this);
+        if (!quarters.contains(this)) return false;
 
+        // TODO: If the quarter is caught by an external plugin and kept a reference to this object, the garbage collector won't delete it, causing a memory leak.
+        QuarterPreDeleteEvent preDeleteEvent = new QuarterPreDeleteEvent(sender, this, cause);
+        preDeleteEvent.callEvent();
+        if (preDeleteEvent.isCancelled()) {
+            String cancelMessage = preDeleteEvent.getCancelMessage();
+            if (sender != null && cancelMessage != null) QuartersMessaging.sendErrorMessage(sender, cancelMessage);
+            return false;
+        }
+
+        quarters.remove(this);
         qm.setQuarters(town, quarters);
+
+        QuarterDeleteEvent postDeleteEvent = new QuarterDeleteEvent(sender, cause, owner, getOwnerResident(), town);
+        postDeleteEvent.callEvent();
+        return true;
     }
 
     /**
@@ -173,6 +197,13 @@ public class Quarter extends TownyObject {
         return price != null;
     }
 
+    /**
+     * @return True if the quarter has a rent price set
+     */
+    public boolean isForRent() {
+        return rentPrice != null;
+    }
+
     public @NotNull Location getFirstCornerOfFirstCuboid() {
         return cuboids.get(0).getCornerOne();
     }
@@ -218,8 +249,17 @@ public class Quarter extends TownyObject {
      * @return True if the resident can perform the specified action
      */
     public boolean testPermission(@NotNull ActionType type, @NotNull Resident resident) {
-        if (isResidentOwner(resident) || getTrustedResidents().contains(resident)) return true;
-        return getPermissions().testPermission(type, resident, this);
+        if (isResidentOwner(resident)) return true;
+
+        boolean hasPermission = getPermissions().testPermission(type, resident, this);
+
+        if (hasFlag(FlagType.VAULT)) {
+            // If a player has this permnode, they do not bypass checks, but are just allowed to access it if they also have the correct perms
+            // Meaning if everyone has the permnode, vault types become useless
+            return resident.hasPermissionNode("quarters.access_vaults") && hasPermission;
+        }
+
+        return getTrustedResidents().contains(resident) || hasPermission;
     }
 
     public boolean intersectsWith(BoundingBox bounding) {
@@ -236,21 +276,6 @@ public class Quarter extends TownyObject {
         }
 
         return null;
-    }
-
-    public float getParticleSizeOrResidentDefault(@NotNull Resident resident) {
-        return getParticleSize() == null ? ResidentMetadataManager.getInstance().getParticleSize(resident) : getParticleSize();
-    }
-
-    public void blinkForResident(@NotNull Resident resident) {
-        blinkForPlayer(resident.getPlayer());
-    }
-
-    public void blinkForPlayer(@NotNull Player player) {
-        Resident resident = TownyAPI.getInstance().getResident(player);
-        if (resident == null) return;
-
-        ParticleManager.getInstance().drawParticlesAtQuarter(this, resident);
     }
 
     /**
@@ -302,7 +327,7 @@ public class Quarter extends TownyObject {
         return registered;
     }
 
-    public void setOwner(UUID uuid) {
+    public void setOwner(@Nullable UUID uuid) {
         this.owner = uuid;
 
         if (owner == null) {
@@ -371,15 +396,15 @@ public class Quarter extends TownyObject {
         return price;
     }
 
-    public void setType(@NotNull QuarterType type) {
-        this.type = type;
+    public void setRentPrice(@Nullable Double rentPrice) {
+        this.rentPrice = rentPrice;
     }
 
     /**
-     * @return The quarter's {@link QuarterType}
+     * @return The current rent price or null if rent is not set
      */
-    public QuarterType getType() {
-        return type;
+    public @Nullable Double getRentPrice() {
+        return rentPrice;
     }
 
     /**
@@ -396,9 +421,8 @@ public class Quarter extends TownyObject {
 
     /**
      * Gets this quarter's embassy status
-     * As opposed to how Towny handles embassies, embassy is not its own quarter type, it is a separate flag
+     * As opposed to how Towny handles embassies, embassy is a separate setting.
      * Being an embassy allows for certain conditions outside just ownership when not in the quarter's town
-     * for example, quarters of the station or common type will have their functionality extended to non-residents
      *
      * @return A boolean representing whether the quarter is an embassy
      */
@@ -425,6 +449,12 @@ public class Quarter extends TownyObject {
         return colour;
     }
 
+    public @NotNull Color getDisplayColour() {
+        ConfigManager.PvpQuarterColour pvpColour = Quarters.getInstance().config().quarters.pvpSettings.pvpQuarterColour;
+        if (hasFlag(FlagType.PVP) && pvpColour.enabled) return new Color(pvpColour.red, pvpColour.green, pvpColour.blue);
+        return getColour();
+    }
+
     public @NotNull QuarterPermissions getPermissions() {
         return permissions;
     }
@@ -437,28 +467,53 @@ public class Quarter extends TownyObject {
         return anchor;
     }
 
-    public void setParticleSize(Float particleSize) {
-        this.particleSize = particleSize;
+    public void setFlag(@NotNull FlagType flag, boolean enabled) {
+        if (enabled) {
+            ensureFlags().add(flag);
+        } else {
+            ensureFlags().remove(flag);
+        }
     }
 
-    public Float getParticleSize() {
-        return particleSize;
+    /**
+     * @return If a quarter contains a flag and if the flag is allowed to be functional or toggled
+     */
+    public boolean hasFlag(@NotNull FlagType flag) {
+        return ensureFlags().contains(flag) && isFlagAllowed(flag);
+    }
+
+    public boolean hasStoredFlag(@NotNull FlagType flag) {
+        return ensureFlags().contains(flag);
+    }
+
+    /**
+     * @return If a flag is allowed to be functional or toggled
+     */
+    public boolean isFlagAllowed(@NotNull FlagType flag) {
+        return Boolean.TRUE.equals(Quarters.getInstance().config().quarters.allowedFlags.get(flag));
+    }
+
+    private @NotNull Set<FlagType> ensureFlags() {
+        if (flags == null) flags = EnumSet.noneOf(FlagType.class);
+        return flags;
     }
 
     // Constructor methods
 
-    private static Color createRandomColour() {
+    private static @NotNull Color createRandomColour() {
         Random random = new Random();
         return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
     }
 
-    private static String createRandomName() {
-        List<String> adjectives = List.of( // TODO: add config for random names
-                "Lovely", "Cheerful", "Upbeat", "Stylish", "Luxurious", "Elegant", "Inviting", "Welcoming",
-                "Annoying", "Perturbing", "Enraging", "Dingy", "Inconvenient", "Dull", "Bland", "Gloomy"
-        );
+    private static @NotNull Color createInitialColour() {
+        ConfigManager.QuarterColour colour = Quarters.getInstance().config().quarters.defaultQuarterColour;
+        if (!colour.enabled) return createRandomColour();
+        return new Color(colour.red, colour.green, colour.blue);
+    }
 
-        List<String> nouns = List.of("Quarter", "Apartment", "Flat", "Dwelling", "Residence", "Suite", "Property", "Tenement");
+    private static @NotNull String createRandomName() {
+        List<String> adjectives = Quarters.getInstance().config().quarters.nameAdjectives;
+        List<String> nouns = Quarters.getInstance().config().quarters.nameNouns;
 
         Random random = new Random();
         String adjective = adjectives.get(random.nextInt(adjectives.size()));

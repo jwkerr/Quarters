@@ -1,6 +1,6 @@
 package au.lupine.quarters.object.entity;
 
-import au.lupine.quarters.api.manager.ConfigManager;
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.api.manager.SelectionManager;
 import au.lupine.quarters.object.state.CuboidValidity;
@@ -72,7 +72,7 @@ public class Cuboid {
 
         if (!isCuboidEntirelyWithinSingularTown()) return CuboidValidity.SPANS_MULTIPLE_TOWNS;
 
-        int maxCuboidVolume = ConfigManager.getMaxCuboidVolume();
+        int maxCuboidVolume = Quarters.getInstance().config().quarters.maxCuboidVolume;
         if (maxCuboidVolume > -1 && this.getVolume() > maxCuboidVolume) return CuboidValidity.TOO_LARGE;
 
         return CuboidValidity.VALID;

@@ -1,5 +1,6 @@
 package au.lupine.quarters.object.adapter;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.manager.ConfigManager;
 import com.google.gson.*;
 
@@ -36,7 +37,8 @@ public class ColorTypeAdapter implements JsonSerializer<Color>, JsonDeserializer
 
             return new Color(r, g, b, a);
         } catch (Exception e) {
-            return ConfigManager.getDefaultQuarterColour();
+            ConfigManager.QuarterColour colour = Quarters.getInstance().config().quarters.defaultQuarterColour;
+            return new Color(colour.red, colour.green, colour.blue);
         }
     }
 }

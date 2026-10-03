@@ -3,7 +3,7 @@ plugins {
     id "maven-publish"
 }
 
-def semVersion = "1.0.9"
+def semVersion = "2.0.0"
 
 def static gitBranch() {
     "git rev-parse --abbrev-ref HEAD".execute().text.trim()
@@ -19,27 +19,51 @@ version = "${semVersion}+${gitBranch()}+${gitVersion()}"
 repositories {
     mavenCentral()
 
+    // Paper
     maven {
         name = "papermc-repo"
         url = "https://repo.papermc.io/repository/maven-public/"
     }
 
+    // Placeholder API (PAPI)
     maven {
         url = "https://repo.extendedclip.com/content/repositories/placeholderapi/"
     }
 
+    // Towny
     maven {
         url = "https://repo.glaremasters.me/repository/towny/"
+    }
+
+    maven {
+        url = "https://repo.opencollab.dev/main/"
+    }
+
+    maven {
+        url = "https://repo.codemc.io/repository/maven-releases/"
+    }
+
+    // McMMO
+    maven {
+        url= "https://maven.enginehub.org/repo/"
+    }
+    maven {
+        url= "https://nexus.neetgames.com/repository/maven-public"
     }
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
     compileOnly("com.palmergames.bukkit.towny:towny:0.101.2.5")
     compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("org.geysermc.floodgate:api:2.2.5-SNAPSHOT")
+    compileOnly("com.github.retrooper:packetevents-spigot:2.14.0")
+    compileOnly("de.bsommerfeld.jshepherd:core:4.1.1")
+    compileOnly("de.bsommerfeld.jshepherd:yaml:4.1.1")
+    compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.046-SNAPSHOT")
 }
 
-def targetJavaVersion = 17
+def targetJavaVersion = 21
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion

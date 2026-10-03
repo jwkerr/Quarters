@@ -4,25 +4,13 @@ main: au.lupine.quarters.Quarters
 api-version: "1.20"
 prefix: Quarters
 authors: [Fruitloopins]
-contributors: [Warriorrr]
+contributors: [Warriorrr, pernio]
 description: The modern "apartment" plugin for Towny
 website: https://earthmc.net
 folia-supported: true
-depend: [Towny]
-softdepend: [PlaceholderAPI]
-
-commands:
-  quarters:
-    description: Primary Quarters command
-    permission: quarters.command.quarters
-    aliases:
-      - q
-
-  quartersadmin:
-    description: Admin Quarters command
-    permission: quarters.command.quartersadmin
-    aliases:
-      - qa
+depend: [Towny, packetevents]
+softdepend: [PlaceholderAPI, floodgate, mcMMO]
+libraries: [de.bsommerfeld.jshepherd:core:4.1.1, de.bsommerfeld.jshepherd:yaml:4.1.1]
 
 permissions:
   quarters.wand:
@@ -31,6 +19,14 @@ permissions:
 
   quarters.bypass_default_colour:
     description: "Grants the ability to bypass the default quarter colour if enabled"
+    default: false
+
+  quarters.exempt_from_pvp:
+    description: "Exempts from taking pvp damage in a pvp quarter"
+    default: false
+
+  quarters.access_vaults:
+    description: "Allows access to quarters with vaults enabled"
     default: false
 
   quarters.landlord:
@@ -55,10 +51,13 @@ permissions:
       quarters.command.quarters.edit.*: true
       quarters.command.quarters.evict: true
       quarters.command.quarters.fame: true
+      quarters.command.quarters.find: true
+      quarters.command.quarters.find.*: true
       quarters.command.quarters.here: true
       quarters.command.quarters.info: true
       quarters.command.quarters.meow: true
       quarters.command.quarters.pos: true
+      quarters.command.quarters.rent: true
       quarters.command.quarters.selection: true
       quarters.command.quarters.selection.*: true
       quarters.command.quarters.sell: true
@@ -99,9 +98,13 @@ permissions:
     default: false
     children:
       quarters.command.quarters.edit.addselection: true
+      quarters.command.quarters.edit.merge: true
       quarters.command.quarters.edit.remove: true
 
   quarters.command.quarters.edit.addselection:
+    default: false
+
+  quarters.command.quarters.edit.merge:
     default: false
 
   quarters.command.quarters.edit.remove:
@@ -112,6 +115,14 @@ permissions:
 
   quarters.command.quarters.fame:
     default: true
+
+  quarters.command.quarters.find:
+    default: true
+
+  quarters.command.quarters.find.*:
+    default: false
+    children:
+      quarters.command.quarters.find.forsale: true
 
   quarters.command.quarters.here:
     default: true
@@ -124,6 +135,9 @@ permissions:
 
   quarters.command.quarters.pos:
     default: true
+
+  quarters.command.quarters.rent:
+    default: false
 
   quarters.command.quarters.selection:
     default: true
@@ -163,13 +177,12 @@ permissions:
     children:
       quarters.command.quarters.set.anchor: true
       quarters.command.quarters.set.colour: true
+      quarters.command.quarters.set.defaultrentprice: true
       quarters.command.quarters.set.defaultsellprice: true
       quarters.command.quarters.set.entrynotifications: true
       quarters.command.quarters.set.name: true
       quarters.command.quarters.set.owner: true
-      quarters.command.quarters.set.particlesize: true
       quarters.command.quarters.set.perm: true
-      quarters.command.quarters.set.type: true
 
   quarters.command.quarters.set.anchor:
     default: true
@@ -178,6 +191,9 @@ permissions:
     default: true
 
   quarters.command.quarters.set.defaultsellprice:
+    default: false
+
+  quarters.command.quarters.set.defaultrentprice:
     default: false
 
   quarters.command.quarters.set.entrynotifications:
@@ -189,14 +205,8 @@ permissions:
   quarters.command.quarters.set.owner:
     default: false
 
-  quarters.command.quarters.set.particlesize:
-    default: true
-
   quarters.command.quarters.set.perm:
     default: true
-
-  quarters.command.quarters.set.type:
-    default: false
 
   quarters.command.quarters.toggle:
     default: true
@@ -206,9 +216,17 @@ permissions:
     children:
       quarters.command.quarters.toggle.constantoutlines: true
       quarters.command.quarters.toggle.embassy: true
-      quarters.command.quarters.toggle.entryblinking: true
       quarters.command.quarters.toggle.entrynotifications: true
+      quarters.command.quarters.toggle.glow: true
       quarters.command.quarters.toggle.sellondelete: true
+      quarters.command.quarters.toggle.mobs: true
+      quarters.command.quarters.toggle.pvp: true
+      quarters.command.quarters.toggle.explosions: true
+      quarters.command.quarters.toggle.fire: true
+      quarters.command.quarters.toggle.sleeping: true
+      quarters.command.quarters.toggle.vehicles: true
+      quarters.command.quarters.toggle.snow: true
+      quarters.command.quarters.toggle.ice: true
 
   quarters.command.quarters.toggle.constantoutlines:
     default: true
@@ -216,13 +234,37 @@ permissions:
   quarters.command.quarters.toggle.embassy:
     default: false
 
-  quarters.command.quarters.toggle.entryblinking:
-    default: true
-
   quarters.command.quarters.toggle.entrynotifications:
     default: true
 
+  quarters.command.quarters.toggle.glow:
+    default: true
+
   quarters.command.quarters.toggle.sellondelete:
+    default: false
+
+  quarters.command.quarters.toggle.mobs:
+    default: false
+
+  quarters.command.quarters.toggle.pvp:
+    default: false
+
+  quarters.command.quarters.toggle.explosions:
+    default: false
+
+  quarters.command.quarters.toggle.fire:
+    default: false
+
+  quarters.command.quarters.toggle.sleeping:
+    default: false
+
+  quarters.command.quarters.toggle.vehicles:
+    default: false
+
+  quarters.command.quarters.toggle.snow:
+    default: false
+
+  quarters.command.quarters.toggle.ice:
     default: false
 
   quarters.command.quarters.trust:
@@ -309,7 +351,6 @@ permissions:
       quarters.command.quartersadmin.set.name: true
       quarters.command.quartersadmin.set.owner: true
       quarters.command.quartersadmin.set.perm: true
-      quarters.command.quartersadmin.set.type: true
 
   quarters.command.quartersadmin.set.anchor:
     default: op
@@ -324,9 +365,6 @@ permissions:
     default: op
 
   quarters.command.quartersadmin.set.perm:
-    default: op
-
-  quarters.command.quartersadmin.set.type:
     default: op
 
   quarters.command.quartersadmin.toggle:

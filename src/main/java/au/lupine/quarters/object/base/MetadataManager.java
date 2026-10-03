@@ -1,9 +1,7 @@
 package au.lupine.quarters.object.base;
 
 import com.palmergames.bukkit.towny.object.TownyObject;
-import com.palmergames.bukkit.towny.object.metadata.BooleanDataField;
-import com.palmergames.bukkit.towny.object.metadata.DecimalDataField;
-import com.palmergames.bukkit.towny.object.metadata.StringDataField;
+import com.palmergames.bukkit.towny.object.metadata.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +26,32 @@ public abstract class MetadataManager<T extends TownyObject> {
         if (bdf == null) return def;
 
         return bdf.getValue();
+    }
+
+    public void setMetadataAsInteger(@NotNull T townyObject, @NotNull String key, int value) {
+        IntegerDataField idf = new IntegerDataField(key, value);
+        townyObject.addMetaData(idf);
+    }
+
+    public @Nullable Integer getMetadataAsInteger(@NotNull T townyObject, @NotNull String key) {
+        IntegerDataField idf = (IntegerDataField) townyObject.getMetadata(key);
+        if (idf == null) return null;
+
+        return idf.getValue();
+    }
+
+    public int getMetadataAsInteger(@NotNull T townyObject, @NotNull String key, int def) {
+        IntegerDataField idf = (IntegerDataField) townyObject.getMetadata(key);
+        if (idf == null) return def;
+
+        return idf.getValue();
+    }
+
+    public long getMetadataAsLong(@NotNull T townyObject, @NotNull String key, long def) {
+        LongDataField idf = (LongDataField) townyObject.getMetadata(key);
+        if (idf == null) return def;
+
+        return idf.getValue();
     }
 
     public void setMetadataAsDecimal(@NotNull T townyObject, @NotNull String key, Double value) {

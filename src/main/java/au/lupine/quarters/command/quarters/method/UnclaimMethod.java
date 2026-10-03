@@ -7,19 +7,19 @@ import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.wrapper.StringConstants;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
+public final class UnclaimMethod extends CommandMethod {
 
-public class UnclaimMethod extends CommandMethod {
-
-    public UnclaimMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.unclaim");
+    public UnclaimMethod() {
+        super("unclaim", "quarters.command.quarters.unclaim");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public void execute(@NotNull CommandSourceStack source) {
+        Player player = getSenderAsPlayerOrThrow(source);
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
         Resident resident = TownyAPI.getInstance().getResident(player);
@@ -30,6 +30,6 @@ public class UnclaimMethod extends CommandMethod {
         quarter.setOwner(null);
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, "You have successfully unclaimed this quarter");
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.unclaim.feedback.success");
     }
 }

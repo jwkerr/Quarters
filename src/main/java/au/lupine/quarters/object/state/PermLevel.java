@@ -1,5 +1,7 @@
 package au.lupine.quarters.object.state;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum PermLevel {
     RESIDENT("Resident"),
     NATION("Nation"),
@@ -8,15 +10,15 @@ public enum PermLevel {
 
     private final String commonName;
 
-    PermLevel(String commonName) {
+    PermLevel(@NotNull String commonName) {
         this.commonName = commonName;
     }
 
-    public String getCommonName() {
+    public @NotNull String getCommonName() {
         return commonName;
     }
 
-    public String getLowerCase() {
+    public @NotNull String getLowerCase() {
         return name().toLowerCase();
     }
 }

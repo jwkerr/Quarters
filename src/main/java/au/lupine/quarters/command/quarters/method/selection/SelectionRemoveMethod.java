@@ -4,30 +4,31 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.SelectionManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Cuboid;
-import org.bukkit.command.CommandSender;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class SelectionRemoveMethod extends CommandMethod {
+public final class SelectionRemoveMethod extends CommandMethod {
 
-    public SelectionRemoveMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.selection.remove");
+    public SelectionRemoveMethod() {
+        super("remove", "quarters.command.quarters.selection.remove");
     }
 
     @Override
-    public void execute() {
-        Player player = getSenderAsPlayerOrThrow();
+    public void execute(@NotNull CommandSourceStack source) {
+        Player player = getSenderAsPlayerOrThrow(source);
         List<Cuboid> cuboids = SelectionManager.getInstance().getCuboids(player);
 
         for (Cuboid cuboid : cuboids) {
             if (cuboid.getPlayersInsideBounds().contains(player)) {
                 cuboids.remove(cuboid);
-                QuartersMessaging.sendSuccessMessage(player, "Successfully removed the cuboid you are standing in from the selection");
+                QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.selection.remove.feedback.success");
                 return;
             }
         }
 
-        QuartersMessaging.sendErrorMessage(player, "Could not find any cuboid at your location to remove");
+        QuartersMessaging.sendErrorMessage(player, "quarters.command.quarters.selection.remove.feedback.no_cuboid");
     }
 }

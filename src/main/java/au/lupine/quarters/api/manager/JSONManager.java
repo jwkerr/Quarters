@@ -2,6 +2,7 @@ package au.lupine.quarters.api.manager;
 
 import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.event.PreBuildGsonEvent;
+import au.lupine.quarters.api.event.QuartersPreBuildGsonEvent;
 import au.lupine.quarters.object.adapter.*;
 import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;
@@ -44,8 +45,9 @@ public final class JSONManager {
                 .registerTypeAdapter(Town.class, new TownTypeAdapter())
                 .registerTypeAdapter(World.class, new WorldTypeAdapter());
 
-        PreBuildGsonEvent event = new PreBuildGsonEvent(builder);
-        event.callEvent();
+        // Still support old event for servers that still use this.
+        new PreBuildGsonEvent(builder).callEvent();
+        new QuartersPreBuildGsonEvent(builder).callEvent();
 
         gson = builder.create();
     }
