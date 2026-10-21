@@ -14,6 +14,7 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.economy.Account;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.minimessage.tag.resolver.Formatter;
 import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -65,27 +66,36 @@ public class RentListener implements Listener {
                 }
             }
 
+            int quarters = rentPayment.quarterCount();
             QuartersMessaging.sendSuccessMessage(resident, "quarters.rent.paid",
                     Argument.string("price", TownyEconomyHandler.getFormattedBalance(rentPayment.totalPaid())),
-                    Argument.string("quarters", String.valueOf(rentPayment.quarterCount())));
+                    Argument.string("quarters", String.valueOf(quarters)),
+                    Argument.tagResolver(Formatter.booleanChoice("plural", quarters == 1))
+            );
         }
 
         for (Map.Entry<RentReceiver, RentCollection> entry : rentCollections.entrySet()) {
             RentReceiver receiver = entry.getKey();
             RentCollection rentCollection = entry.getValue();
             if (receiver.account().deposit(rentCollection.total(), RENT_REASON)) {
+                int quarters = rentCollection.quarterCount();
                 QuartersMessaging.sendSuccessMessage(receiver.audience(), "quarters.rent.collected",
                         Argument.string("price", TownyEconomyHandler.getFormattedBalance(rentCollection.total())),
-                        Argument.string("quarters", String.valueOf(rentCollection.quarterCount())));
+                        Argument.string("quarters", String.valueOf(quarters)),
+                        Argument.tagResolver(Formatter.booleanChoice("plural", quarters == 1))
+                );
             }
         }
     }
 
     private void evictAndNotify(@NotNull Resident resident, @NotNull RentPayment rentPayment) {
         for (Quarter quarter : rentPayment.quarters()) quarter.evictOwner();
+        int quarters = rentPayment.quarterCount();
         QuartersMessaging.sendErrorMessage(resident, "quarters.rent.could_not_pay",
-                Argument.string("quarters", String.valueOf(rentPayment.quarterCount())),
-                Argument.string("price", TownyEconomyHandler.getFormattedBalance(rentPayment.totalPaid())));
+                Argument.numeric("quarters", quarters),
+                Argument.string("price", TownyEconomyHandler.getFormattedBalance(rentPayment.totalPaid())),
+                Argument.tagResolver(Formatter.booleanChoice("plural", quarters == 1))
+        );
     }
 
     private double getRentTax(double rent, @NotNull ConfigManager.RentSettings rentSettings) {

@@ -10,6 +10,7 @@ import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.CuboidValidity;
 import au.lupine.quarters.object.wrapper.StringConstants;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.minimessage.tag.resolver.Formatter;
 import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -67,7 +68,8 @@ public final class EditAddSelectionMethod extends CommandMethod {
                 player,
                 "quarters.command.quarters.edit.addselection.feedback.town",
                 quarter.getFirstCornerOfFirstCuboid(),
-                Argument.string("amount", Integer.toString(addedCuboids))
+                Argument.string("amount", Integer.toString(addedCuboids)),
+                Argument.tagResolver(Formatter.booleanChoice("plural", addedCuboids == 1))
         );
     }
 }
