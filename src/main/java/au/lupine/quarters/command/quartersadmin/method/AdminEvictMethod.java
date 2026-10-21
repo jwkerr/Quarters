@@ -25,8 +25,7 @@ public final class AdminEvictMethod extends CommandMethod {
         UUID owner = quarter.getOwner();
         if (owner == null) throw new CommandMethodException(StringConstants.THIS_QUARTER_HAS_NO_OWNER);
 
-        quarter.setOwner(null);
-        quarter.save();
+        quarter.evictOwner();
 
         QuartersMessaging.sendSuccessMessage(player, StringConstants.YOU_HAVE_SUCCESSFULLY_EVICTED_THIS_QUARTERS_OWNER);
     }

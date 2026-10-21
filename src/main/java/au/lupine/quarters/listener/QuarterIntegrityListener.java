@@ -29,8 +29,8 @@ public class QuarterIntegrityListener implements Listener {
 
         for (Quarter quarter : QuarterManager.getInstance().getQuarters(town)) {
             if (quarter.isResidentOwner(resident) && !quarter.isEmbassy()) {
-                quarter.setOwner(null); // Remove their ownership if it's not an embassy
-                quarter.save();
+                // Remove their ownership if it's not an embassy
+                quarter.evictOwner();
             }
         }
     }

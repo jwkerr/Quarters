@@ -55,6 +55,7 @@ public final class Quarters extends JavaPlugin {
                 new QuartersWandListener(),
                 new StatusScreenListener(),
                 new TownyActionListener(),
+                new RentListener(),
                 new VanillaActionListener()
         );
 

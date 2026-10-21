@@ -27,8 +27,7 @@ public final class UnclaimMethod extends CommandMethod {
 
         if (!quarter.isResidentOwner(resident)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_OWN_THIS_QUARTER);
 
-        quarter.setOwner(null);
-        quarter.save();
+        quarter.evictOwner();
 
         QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.unclaim.feedback.success");
     }

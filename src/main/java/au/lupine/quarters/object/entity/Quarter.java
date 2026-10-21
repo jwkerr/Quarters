@@ -270,6 +270,14 @@ public class Quarter extends TownyObject {
         return false;
     }
 
+    /**
+     * Evicts the owner of the quarter.
+     */
+    public void evictOwner() {
+        setOwner(null);
+        save();
+    }
+
     public @Nullable Cuboid getCuboidAtPlayer(@NotNull Player player) {
         for (Cuboid cuboid : cuboids) {
             if (cuboid.getPlayersInsideBounds().contains(player)) return cuboid;
@@ -342,9 +350,9 @@ public class Quarter extends TownyObject {
      */
     public @Nullable UUID getOwner() {
         if (owner != null && getOwnerResident() == null) {
-            setOwner(null); // Owner is no longer a resident, delete them from the quarter's data
+            // Owner is no longer a resident, delete them from the quarter's data
             setPriceToDefaultIfApplicable();
-            save();
+            evictOwner();
         }
 
         return owner;
