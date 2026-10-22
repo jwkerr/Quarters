@@ -7,7 +7,6 @@ import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.QuarterDeleteCause;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.minimessage.translation.Argument;
@@ -33,7 +32,7 @@ public final class EditMergeMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow(source);
         Quarter currentQuarter = getQuarterAtPlayerOrThrow(player);
 
-        if (!currentQuarter.isPlayerInTown(player)) throw new CommandMethodException(StringConstants.THIS_QUARTER_IS_NOT_PART_OF_YOUR_TOWN);
+        if (!currentQuarter.isPlayerInTown(player)) throw new CommandMethodException("quarters.command.feedback.quarter_not_part_of_your_town");
 
         UUID playerUUID = player.getUniqueId();
         UUID firstQuarterUUID = PENDING_MERGES.get(playerUUID);

@@ -3,7 +3,6 @@ package au.lupine.quarters.command.quartersadmin.method.trust;
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +27,6 @@ public final class AdminTrustClearMethod extends CommandMethod {
         quarter.setTrusted(trusted);
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, StringConstants.ALL_TRUSTED_PLAYERS_HAVE_BEEN_REMOVED_FROM_THIS_QUARTER);
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.trust.feedback.cleared");
     }
 }

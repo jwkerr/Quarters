@@ -4,7 +4,6 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -22,14 +21,14 @@ public final class EvictMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow(source);
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        if (!quarter.isPlayerInTown(player)) throw new CommandMethodException(StringConstants.THIS_QUARTER_IS_NOT_PART_OF_YOUR_TOWN);
+        if (!quarter.isPlayerInTown(player)) throw new CommandMethodException("quarters.command.feedback.quarter_not_part_of_your_town");
 
         UUID owner = quarter.getOwner();
-        if (owner == null) throw new CommandMethodException(StringConstants.THIS_QUARTER_HAS_NO_OWNER);
+        if (owner == null) throw new CommandMethodException("quarters.command.quarters.evict.feedback.no_owner");
 
         quarter.evictOwner();
 
-        QuartersMessaging.sendSuccessMessage(player, StringConstants.YOU_HAVE_SUCCESSFULLY_EVICTED_THIS_QUARTERS_OWNER);
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.evict.feedback.success");
         QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "quarters.command.quarters.evict.feedback.town", player.getLocation());
     }
 }

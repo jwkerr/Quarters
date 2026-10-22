@@ -1,11 +1,11 @@
 package au.lupine.quarters.command.quarters.method;
 
 import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.api.manager.RentManager;
 import au.lupine.quarters.api.manager.TownMetadataManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -51,11 +51,12 @@ public final class RentMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow(source);
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        if (!quarter.isPlayerInTown(player)) throw new CommandMethodException(StringConstants.THIS_QUARTER_IS_NOT_PART_OF_YOUR_TOWN);
+        if (!quarter.isPlayerInTown(player)) throw new CommandMethodException("quarters.command.feedback.quarter_not_part_of_your_town");
         Town town = quarter.getTown();
 
         if (argument == null) {
             double defaultRentPrice = TownMetadataManager.getInstance().getDefaultRentPrice(town);
+            validateRentPrice(defaultRentPrice);
             String formatted = TownyEconomyHandler.getFormattedBalance(defaultRentPrice);
 
             quarter.setRentPrice(defaultRentPrice);
@@ -81,10 +82,10 @@ public final class RentMethod extends CommandMethod {
         try {
             price = Double.parseDouble(argument);
         } catch (NumberFormatException e) {
-            throw new CommandMethodException(StringConstants.A_PROVIDED_ARGUMENT_WAS_INVALID);
+            throw new CommandMethodException("quarters.command.feedback.invalid_argument");
         }
 
-        if (price < 0) throw new CommandMethodException("quarters.command.feedback.price_not_negative");
+        validateRentPrice(price);
 
         String formatted = TownyEconomyHandler.getFormattedBalance(price);
 
@@ -93,5 +94,25 @@ public final class RentMethod extends CommandMethod {
 
         QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.rent.feedback.for_rent", Argument.string("price", formatted));
         QuartersMessaging.sendCommandFeedbackToTown(town, player, "quarters.command.quarters.rent.feedback.town.for_rent", player.getLocation(), Argument.string("price", formatted));
+    }
+
+    public static void validateRentPrice(double price) {
+        if (!Double.isFinite(price)) throw new CommandMethodException("quarters.command.feedback.invalid_argument");
+
+        double minimumPrice = RentManager.getMinimumPrice();
+        if (price < minimumPrice) {
+            throw new CommandMethodException(
+                    "quarters.command.quarters.rent.feedback.price_below_minimum",
+                    Argument.string("price", TownyEconomyHandler.getFormattedBalance(minimumPrice))
+            );
+        }
+
+        double maximumPrice = RentManager.getMaximumPrice();
+        if (price > maximumPrice) {
+            throw new CommandMethodException(
+                    "quarters.command.quarters.rent.feedback.price_above_maximum",
+                    Argument.string("price", TownyEconomyHandler.getFormattedBalance(maximumPrice))
+            );
+        }
     }
 }

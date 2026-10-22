@@ -5,7 +5,6 @@ import au.lupine.quarters.api.manager.SelectionManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.SelectionType;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -59,7 +58,7 @@ public final class PosMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
+        throw new CommandMethodException("quarters.command.feedback.required_argument_missing");
     }
 
     private int run(@NotNull CommandSourceStack source, @NotNull String position, int adjustX, int adjustY, int adjustZ) {
@@ -78,7 +77,7 @@ public final class PosMethod extends CommandMethod {
         SelectionType type = switch (position.toLowerCase()) {
             case "one" -> SelectionType.LEFT;
             case "two" -> SelectionType.RIGHT;
-            default -> throw new CommandMethodException(StringConstants.A_PROVIDED_ARGUMENT_WAS_INVALID);
+            default -> throw new CommandMethodException("quarters.command.feedback.invalid_argument");
         };
 
         Location location = player.getLocation();
@@ -87,7 +86,7 @@ public final class PosMethod extends CommandMethod {
         SelectionManager sm = SelectionManager.getInstance();
 
         if (!sm.isLocationInsideWorldBounds(location)) {
-            throw new CommandMethodException(StringConstants.A_NUMBER_YOU_PROVIDED_WAS_INVALID);
+            throw new CommandMethodException("quarters.command.feedback.invalid_number");
         }
 
         sm.selectPosition(player, location, type);

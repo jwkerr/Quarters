@@ -5,7 +5,6 @@ import au.lupine.quarters.api.manager.TownMetadataManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.suggestion.Suggestions;
@@ -82,7 +81,7 @@ public final class AdminSellMethod extends CommandMethod {
         try {
             price = Double.parseDouble(argument);
         } catch (NumberFormatException e) {
-            throw new CommandMethodException(StringConstants.A_PROVIDED_ARGUMENT_WAS_INVALID);
+            throw new CommandMethodException("quarters.command.feedback.invalid_argument");
         }
 
         if (price < 0) throw new CommandMethodException("quarters.command.feedback.price_not_negative");

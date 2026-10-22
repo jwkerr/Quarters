@@ -4,7 +4,6 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.state.QuarterDeleteCause;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +21,6 @@ public final class AdminDeleteMethod extends CommandMethod {
 
         quarter.delete(source.getSender(), QuarterDeleteCause.ADMIN_DELETE_COMMAND);
 
-        QuartersMessaging.sendSuccessMessage(player, StringConstants.SUCCESSFULLY_DELETED_THIS_QUARTER);
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.delete.feedback.success");
     }
 }

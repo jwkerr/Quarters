@@ -4,7 +4,6 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -25,7 +24,7 @@ public final class UnclaimMethod extends CommandMethod {
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return;
 
-        if (!quarter.isResidentOwner(resident)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_OWN_THIS_QUARTER);
+        if (!quarter.isResidentOwner(resident)) throw new CommandMethodException("quarters.command.quarters.unclaim.feedback.not_owner");
 
         quarter.evictOwner();
 

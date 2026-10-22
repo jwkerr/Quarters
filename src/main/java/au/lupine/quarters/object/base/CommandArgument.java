@@ -1,7 +1,6 @@
 package au.lupine.quarters.object.base;
 
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -27,12 +26,12 @@ public abstract class CommandArgument extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
+        throw new CommandMethodException("quarters.command.feedback.required_argument_missing");
     }
 
     @Override
     public void execute() {
-        if (args.length == 0) throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
+        if (args.length == 0) throw new CommandMethodException("quarters.command.feedback.required_argument_missing");
         parseMethod(sender, args[0].toLowerCase(), CommandMethod.removeFirstArgument(args));
     }
 

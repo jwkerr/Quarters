@@ -6,7 +6,6 @@ import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.QuarterDeleteCause;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.object.Town;
@@ -28,7 +27,7 @@ public final class DeletePlotMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow(source);
 
         Town town = TownyAPI.getInstance().getTown(player);
-        if (town == null) throw new CommandMethodException(StringConstants.YOU_ARE_NOT_PART_OF_A_TOWN);
+        if (town == null) throw new CommandMethodException("quarters.command.feedback.not_part_of_town");
 
         TownBlock townBlock = TownyAPI.getInstance().getTownBlock(player);
         if (townBlock == null) throw new CommandMethodException("quarters.command.quarters.delete.plot.feedback.not_in_townblock");

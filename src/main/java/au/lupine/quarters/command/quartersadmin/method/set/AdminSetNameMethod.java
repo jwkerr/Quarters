@@ -4,7 +4,6 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -28,7 +27,7 @@ public final class AdminSetNameMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
+        throw new CommandMethodException("quarters.command.feedback.required_argument_missing");
     }
 
     private void execute(@NotNull CommandSourceStack source, @NotNull String name) {

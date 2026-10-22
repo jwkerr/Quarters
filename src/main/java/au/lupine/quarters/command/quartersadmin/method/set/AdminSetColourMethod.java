@@ -4,7 +4,6 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -43,7 +42,7 @@ public final class AdminSetColourMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
+        throw new CommandMethodException("quarters.command.feedback.required_argument_missing");
     }
 
     private void execute(@NotNull CommandSourceStack source, @NotNull String hex) {
@@ -54,7 +53,7 @@ public final class AdminSetColourMethod extends CommandMethod {
         try {
             setColour(source, new Color(r, g, b));
         } catch (IllegalArgumentException e) {
-            throw new CommandMethodException(StringConstants.A_NUMBER_YOU_PROVIDED_WAS_INVALID);
+            throw new CommandMethodException("quarters.command.feedback.invalid_number");
         }
     }
 
@@ -65,7 +64,7 @@ public final class AdminSetColourMethod extends CommandMethod {
         quarter.setColour(colour);
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, StringConstants.SUCCESSFULLY_CHANGED_THIS_QUARTERS_COLOUR);
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.set.colour.feedback.success");
     }
 
     private Color parseColourAsHex(@NotNull String arg) {
@@ -87,7 +86,7 @@ public final class AdminSetColourMethod extends CommandMethod {
                 hex = Integer.parseInt(arg, 16);
             }
         } catch (Exception e) {
-            throw new CommandMethodException(StringConstants.A_NUMBER_YOU_PROVIDED_WAS_INVALID);
+            throw new CommandMethodException("quarters.command.feedback.invalid_number");
         }
 
         return new Color(hex);

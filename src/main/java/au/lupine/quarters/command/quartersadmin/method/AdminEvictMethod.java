@@ -4,7 +4,6 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -23,10 +22,10 @@ public final class AdminEvictMethod extends CommandMethod {
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
         UUID owner = quarter.getOwner();
-        if (owner == null) throw new CommandMethodException(StringConstants.THIS_QUARTER_HAS_NO_OWNER);
+        if (owner == null) throw new CommandMethodException("quarters.command.quarters.evict.feedback.no_owner");
 
         quarter.evictOwner();
 
-        QuartersMessaging.sendSuccessMessage(player, StringConstants.YOU_HAVE_SUCCESSFULLY_EVICTED_THIS_QUARTERS_OWNER);
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.evict.feedback.success");
     }
 }

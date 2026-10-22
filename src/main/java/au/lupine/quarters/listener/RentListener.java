@@ -4,9 +4,9 @@ import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
+import au.lupine.quarters.api.manager.RentManager;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.state.RentCollector;
-import au.lupine.quarters.object.state.TaxType;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.event.NewDayEvent;
 import com.palmergames.bukkit.towny.object.Nation;
@@ -44,7 +44,7 @@ public class RentListener implements Listener {
             Resident resident = quarter.getOwnerResident();
             if (resident == null) continue;
 
-            double tax = getRentTax(rent, rentSettings);
+            double tax = RentManager.getTax(rent);
             RentPayment rentPayment = rentPayments.computeIfAbsent(resident, ignored -> new RentPayment());
             rentPayment.add(quarter, getRentReceiver(quarter, rentSettings.collector), rent, rent + tax);
         }
@@ -98,11 +98,6 @@ public class RentListener implements Listener {
         );
     }
 
-    private double getRentTax(double rent, @NotNull ConfigManager.RentSettings rentSettings) {
-        double tax = rentSettings.taxType == TaxType.PERCENTAGE ? rent * rentSettings.tax / 100 : rentSettings.tax;
-        return Math.clamp(tax, rentSettings.minTax, rentSettings.maxTax);
-    }
-
     private @Nullable RentReceiver getRentReceiver(@NotNull Quarter quarter, @NotNull RentCollector collector) {
         Town town = quarter.getTown();
         return switch (collector) {
@@ -113,11 +108,13 @@ public class RentListener implements Listener {
             }
             case NATION -> {
                 Nation nation = town.getNationOrNull();
-                yield nation == null ? null : new RentReceiver(nation.getUUID(), nation.getAccount(), nation);
+                yield nation == null
+                        ? new RentReceiver(town.getUUID(), town.getAccount(), town)
+                        : new RentReceiver(nation.getUUID(), nation.getAccount(), nation);
             }
             case LEADER -> {
                 Nation nation = town.getNationOrNull();
-                if (nation == null) yield null;
+                if (nation == null) yield new RentReceiver(town.getUUID(), town.getAccount(), town);
                 Resident leader = nation.getKing();
                 yield new RentReceiver(leader.getUUID(), leader.getAccount(), leader);
             }

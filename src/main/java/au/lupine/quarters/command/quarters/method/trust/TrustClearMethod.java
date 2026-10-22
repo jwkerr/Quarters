@@ -4,7 +4,6 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +22,7 @@ public final class TrustClearMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow(source);
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_PERFORM_THIS_ACTION);
+        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException("quarters.command.feedback.no_action_permission");
 
         List<UUID> trusted = quarter.getTrusted();
         trusted.clear();
@@ -31,7 +30,7 @@ public final class TrustClearMethod extends CommandMethod {
         quarter.setTrusted(trusted);
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, StringConstants.ALL_TRUSTED_PLAYERS_HAVE_BEEN_REMOVED_FROM_THIS_QUARTER);
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.trust.feedback.cleared");
         QuartersMessaging.sendCommandFeedbackToTown(quarter.getTown(), player, "quarters.command.quarters.trust.clear.feedback.town", player.getLocation());
     }
 }

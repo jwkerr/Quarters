@@ -4,7 +4,6 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.palmergames.bukkit.towny.TownyAPI;
@@ -42,10 +41,10 @@ public final class TrustRemoveMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow(source);
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_PERFORM_THIS_ACTION);
+        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException("quarters.command.feedback.no_action_permission");
 
         Resident resident = TownyAPI.getInstance().getResident(targetResidentName);
-        if (resident == null || resident.isNPC()) throw new CommandMethodException(StringConstants.SPECIFIED_PLAYER_DOES_NOT_EXIST);
+        if (resident == null || resident.isNPC()) throw new CommandMethodException("quarters.command.quarters.trust.feedback.player_not_found");
 
         UUID uuid = resident.getUUID();
         List<UUID> trusted = quarter.getTrusted();
@@ -55,7 +54,7 @@ public final class TrustRemoveMethod extends CommandMethod {
             quarter.setTrusted(trusted);
             quarter.save();
 
-            QuartersMessaging.sendSuccessMessage(player, StringConstants.SPECIFIED_PLAYER_HAS_BEEN_REMOVED_FROM_THIS_QUARTERS_TRUSTED_LIST);
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.trust.feedback.removed");
             QuartersMessaging.sendCommandFeedbackToTown(
                     quarter.getTown(),
                     player,
@@ -65,7 +64,7 @@ public final class TrustRemoveMethod extends CommandMethod {
             );
             if (resident.getPlayer() != null) QuartersMessaging.sendInfoMessage(resident.getPlayer(), "quarters.command.quarters.trust.remove.feedback.target", player.getLocation());
         } else {
-            QuartersMessaging.sendErrorMessage(player, StringConstants.SPECIFIED_PLAYER_IS_NOT_TRUSTED_IN_THIS_QUARTER);
+            QuartersMessaging.sendErrorMessage(player, "quarters.command.quarters.trust.feedback.not_trusted");
         }
     }
 }

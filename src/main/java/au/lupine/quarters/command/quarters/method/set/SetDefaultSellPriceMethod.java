@@ -4,7 +4,6 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.api.manager.TownMetadataManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.palmergames.bukkit.towny.TownyAPI;
@@ -38,7 +37,7 @@ public final class SetDefaultSellPriceMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow(source);
 
         Town town = TownyAPI.getInstance().getTown(player);
-        if (town == null) throw new CommandMethodException(StringConstants.YOU_ARE_NOT_PART_OF_A_TOWN);
+        if (town == null) throw new CommandMethodException("quarters.command.feedback.not_part_of_town");
 
         if (price < 0) throw new CommandMethodException("quarters.command.feedback.price_not_negative");
 

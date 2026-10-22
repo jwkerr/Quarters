@@ -8,7 +8,6 @@ import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.CuboidValidity;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.minimessage.tag.resolver.Formatter;
 import net.kyori.adventure.text.minimessage.translation.Argument;
@@ -28,12 +27,12 @@ public final class EditAddSelectionMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow(source);
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        if (!quarter.isPlayerInTown(player)) throw new CommandMethodException(StringConstants.THIS_QUARTER_IS_NOT_PART_OF_YOUR_TOWN);
+        if (!quarter.isPlayerInTown(player)) throw new CommandMethodException("quarters.command.feedback.quarter_not_part_of_your_town");
 
         SelectionManager sm = SelectionManager.getInstance();
 
         List<Cuboid> cuboids = sm.getCuboidsOrSelectionAsCuboid(player);
-        if (cuboids.isEmpty()) throw new CommandMethodException(StringConstants.YOU_HAVE_NOT_SELECTED_ANY_AREAS);
+        if (cuboids.isEmpty()) throw new CommandMethodException("quarters.command.quarters.selection.feedback.none");
 
         for (Cuboid cuboid : cuboids) {
             CuboidValidity validity = cuboid.checkValidity();

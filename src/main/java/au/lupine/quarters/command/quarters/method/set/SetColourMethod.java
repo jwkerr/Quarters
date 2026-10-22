@@ -4,7 +4,6 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -50,12 +49,12 @@ public final class SetColourMethod extends CommandMethod {
 
     @Override
     public void execute(@NotNull CommandSourceStack source) {
-        throw new CommandMethodException(StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
+        throw new CommandMethodException("quarters.command.feedback.required_argument_missing");
     }
 
     private void execute(@NotNull CommandSourceStack source, @NotNull String colourName) {
         Color colour = COLOURS.get(colourName.toLowerCase(Locale.ROOT));
-        if (colour == null) throw new CommandMethodException(StringConstants.A_PROVIDED_ARGUMENT_WAS_INVALID);
+        if (colour == null) throw new CommandMethodException("quarters.command.feedback.invalid_argument");
 
         setColour(source, colour);
     }
@@ -64,11 +63,11 @@ public final class SetColourMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow(source);
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException(StringConstants.YOU_DO_NOT_HAVE_PERMISSION_TO_PERFORM_THIS_ACTION);
+        if (!quarter.hasBasicCommandPermissions(player)) throw new CommandMethodException("quarters.command.feedback.no_action_permission");
 
         quarter.setColour(colour);
         quarter.save();
 
-        QuartersMessaging.sendSuccessMessage(player, StringConstants.SUCCESSFULLY_CHANGED_THIS_QUARTERS_COLOUR);
+        QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.set.colour.feedback.success");
     }
 }

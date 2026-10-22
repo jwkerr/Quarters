@@ -11,7 +11,6 @@ import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.CuboidValidity;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -50,7 +49,7 @@ public final class CreateMethod extends CommandMethod {
         }
 
         cuboids = preEvent.getCuboids();
-        if (cuboids.isEmpty()) throw new CommandMethodException(StringConstants.YOU_HAVE_NOT_SELECTED_ANY_AREAS);
+        if (cuboids.isEmpty()) throw new CommandMethodException("quarters.command.quarters.selection.feedback.none");
 
         Town town = TownyAPI.getInstance().getTown(cuboids.getFirst().getCornerOne());
         if (town == null) throw new CommandMethodException("quarters.command.quarters.create.feedback.no_town");

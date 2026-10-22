@@ -4,7 +4,6 @@ import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.palmergames.bukkit.towny.TownyAPI;
@@ -42,7 +41,7 @@ public final class AdminTrustAddMethod extends CommandMethod {
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
         Resident resident = TownyAPI.getInstance().getResident(targetResidentName);
-        if (resident == null || resident.isNPC()) throw new CommandMethodException(StringConstants.SPECIFIED_PLAYER_DOES_NOT_EXIST);
+        if (resident == null || resident.isNPC()) throw new CommandMethodException("quarters.command.quarters.trust.feedback.player_not_found");
 
         UUID uuid = resident.getUUID();
         List<UUID> trusted = quarter.getTrusted();
@@ -52,9 +51,9 @@ public final class AdminTrustAddMethod extends CommandMethod {
             quarter.setTrusted(trusted);
             quarter.save();
 
-            QuartersMessaging.sendSuccessMessage(player, StringConstants.SPECIFIED_PLAYER_HAS_BEEN_ADDED_TO_THIS_QUARTERS_TRUSTED_LIST);
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.trust.feedback.added");
         } else {
-            QuartersMessaging.sendErrorMessage(player, StringConstants.SPECIFIED_PLAYER_IS_ALREADY_TRUSTED_IN_THIS_QUARTER);
+            QuartersMessaging.sendErrorMessage(player, "quarters.command.quarters.trust.feedback.already_trusted");
         }
     }
 }

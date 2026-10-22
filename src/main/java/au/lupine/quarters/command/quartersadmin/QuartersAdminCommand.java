@@ -2,7 +2,6 @@ package au.lupine.quarters.command.quartersadmin;
 
 import au.lupine.quarters.api.QuartersMessaging;
 import au.lupine.quarters.command.quartersadmin.method.*;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -15,7 +14,7 @@ public final class QuartersAdminCommand {
         return Commands.literal("quartersadmin")
                 .requires(source -> source.getSender().hasPermission("quarters.command.quartersadmin"))
                 .executes(context -> {
-                    QuartersMessaging.sendErrorMessage(context.getSource().getSender(), StringConstants.A_REQUIRED_ARGUMENT_WAS_NOT_PROVIDED);
+                    QuartersMessaging.sendErrorMessage(context.getSource().getSender(), "quarters.command.feedback.required_argument_missing");
                     return Command.SINGLE_SUCCESS;
                 })
                 .then(new AdminDeleteMethod().build())

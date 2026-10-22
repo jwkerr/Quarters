@@ -5,7 +5,6 @@ import au.lupine.quarters.api.manager.SelectionManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -30,7 +29,7 @@ public final class SelectionCopyMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow(source);
 
         List<Cuboid> cuboids = SelectionManager.getInstance().getCuboids(player);
-        if (cuboids.isEmpty()) throw new CommandMethodException(StringConstants.YOU_HAVE_NOT_SELECTED_ANY_AREAS);
+        if (cuboids.isEmpty()) throw new CommandMethodException("quarters.command.quarters.selection.feedback.none");
 
         Location location = player.getLocation();
 

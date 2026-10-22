@@ -6,7 +6,6 @@ import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.api.manager.TownMetadataManager;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.suggestion.Suggestions;
@@ -203,7 +202,7 @@ public abstract class CommandMethod {
 
     public @NotNull Quarter getQuarterAtPlayerOrThrow(@NotNull Player player) {
         Quarter quarter = getQuarterAtPlayerOrNull(player);
-        if (quarter == null) throw new CommandMethodException(StringConstants.YOU_ARE_NOT_STANDING_WITHIN_A_QUARTER);
+        if (quarter == null) throw new CommandMethodException("quarters.command.quarters.feedback.not_standing_in_quarter");
 
         return quarter;
     }

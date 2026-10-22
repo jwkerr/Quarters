@@ -5,7 +5,6 @@ import au.lupine.quarters.api.manager.TownMetadataManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
-import au.lupine.quarters.object.wrapper.StringConstants;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -55,7 +54,7 @@ public final class SellMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow(source);
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
-        if (!quarter.isPlayerInTown(player)) throw new CommandMethodException(StringConstants.THIS_QUARTER_IS_NOT_PART_OF_YOUR_TOWN);
+        if (!quarter.isPlayerInTown(player)) throw new CommandMethodException("quarters.command.feedback.quarter_not_part_of_your_town");
         Town town = quarter.getTown();
 
         if (argument == null) {
@@ -85,7 +84,7 @@ public final class SellMethod extends CommandMethod {
         try {
             price = Double.parseDouble(argument);
         } catch (NumberFormatException e) {
-            throw new CommandMethodException(StringConstants.A_PROVIDED_ARGUMENT_WAS_INVALID);
+            throw new CommandMethodException("quarters.command.feedback.invalid_argument");
         }
 
         if (price < 0) throw new CommandMethodException("quarters.command.feedback.price_not_negative");

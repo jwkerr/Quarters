@@ -295,8 +295,8 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
                 "Server is a good gold sink if you want to remove money from the economy",
                 "TOWN - The town receives the rent (default)",
                 "MAYOR - The mayor of the town receives the rent",
-                "NATION - The nation receives the rent",
-                "LEADER - The leader of the nation receives the rent",
+                "NATION - The nation receives the rent (the town receives it if it has no nation)",
+                "LEADER - The leader of the nation receives the rent (the town receives it if it has no nation)",
                 "SERVER - The rent is collected by the server and disposed"
         })
         public @NotNull RentCollector collector = RentCollector.TOWN;
