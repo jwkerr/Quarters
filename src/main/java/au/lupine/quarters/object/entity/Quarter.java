@@ -38,6 +38,9 @@ public class Quarter extends TownyObject {
     private List<UUID> trusted = new ArrayList<>();
     private Double price;
     private Double rentPrice;
+    private UUID unclaimedRentOwner;
+    private Double unclaimedRentPrice;
+    private Double unclaimedRentTax;
     private boolean isEmbassy = false;
     private Long claimedAt;
     private Color colour = createInitialColour();
@@ -287,6 +290,54 @@ public class Quarter extends TownyObject {
     public void evictOwner() {
         setOwner(null);
         save();
+    }
+
+    /**
+     * Removes the owner while retaining their rent obligation until the next Towny new-day cycle.
+     */
+    public void unclaimOwner() {
+        if (owner != null && rentPrice != null && rentPrice > 0) {
+            unclaimedRentOwner = owner;
+            unclaimedRentPrice = rentPrice;
+            unclaimedRentTax = null;
+        }
+
+        evictOwner();
+    }
+
+    public boolean hasUnclaimedRent() {
+        return unclaimedRentOwner != null && unclaimedRentPrice != null && unclaimedRentPrice > 0;
+    }
+
+    public boolean hasUnclaimedRentFor(@NotNull Resident resident) {
+        return hasUnclaimedRent() && unclaimedRentOwner.equals(resident.getUUID());
+    }
+
+    public @Nullable Resident getUnclaimedRentOwner() {
+        return unclaimedRentOwner == null ? null : TownyAPI.getInstance().getResident(unclaimedRentOwner);
+    }
+
+    public double getUnclaimedRentPrice() {
+        return unclaimedRentPrice == null ? 0 : unclaimedRentPrice;
+    }
+
+    public double getUnclaimedRentTax() {
+        return unclaimedRentTax == null ? 0 : unclaimedRentTax;
+    }
+
+    public boolean hasUnclaimedRentDebt() {
+        return hasUnclaimedRent() && unclaimedRentTax != null;
+    }
+
+    public void markUnclaimedRentDue(double tax) {
+        unclaimedRentTax = tax;
+        save();
+    }
+
+    public void clearUnclaimedRent() {
+        unclaimedRentOwner = null;
+        unclaimedRentPrice = null;
+        unclaimedRentTax = null;
     }
 
     public @Nullable Cuboid getCuboidAtPlayer(@NotNull Player player) {

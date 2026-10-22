@@ -52,6 +52,7 @@ public final class RentMethod extends CommandMethod {
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
         if (!quarter.isPlayerInTown(player)) throw new CommandMethodException("quarters.command.feedback.quarter_not_part_of_your_town");
+        if (quarter.hasOwner() && !quarter.isPlayerOwner(player)) throw new CommandMethodException("quarters.command.quarters.rent.feedback.occupied");
         Town town = quarter.getTown();
 
         if (argument == null) {

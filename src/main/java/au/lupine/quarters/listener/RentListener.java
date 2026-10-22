@@ -35,6 +35,7 @@ public class RentListener implements Listener {
     @EventHandler
     public void onNewDay(@NotNull NewDayEvent event) {
         ConfigManager.RentSettings rentSettings = Quarters.getInstance().config().quarters.rentSettings;
+        processUnclaimedRent();
         Map<Resident, RentPayment> rentPayments = new HashMap<>();
 
         for (Quarter quarter : QuarterManager.getInstance().getAllQuarters()) {
@@ -43,6 +44,7 @@ public class RentListener implements Listener {
             if (rent == null || rent <= 0) continue;
             Resident resident = quarter.getOwnerResident();
             if (resident == null) continue;
+            if (resident.hasPermissionNode("quarters.exempt.rent")) continue;
 
             double tax = RentManager.getTax(rent);
             RentPayment rentPayment = rentPayments.computeIfAbsent(resident, ignored -> new RentPayment());
@@ -88,6 +90,53 @@ public class RentListener implements Listener {
         }
     }
 
+    /**
+     * Marks rent owed when a player unclaims before the new-day cycle. It is collected only if the
+     * former owner later reclaims the quarter, so a player who has permanently left is not charged.
+     */
+    private void processUnclaimedRent() {
+        for (Quarter quarter : QuarterManager.getInstance().getAllQuarters()) {
+            if (!quarter.hasUnclaimedRent() || quarter.hasUnclaimedRentDebt()) continue;
+
+            Resident formerOwner = quarter.getUnclaimedRentOwner();
+            if (formerOwner == null) continue;
+            if (formerOwner.hasPermissionNode("quarters.exempt.rent")) {
+                quarter.clearUnclaimedRent();
+                quarter.save();
+                continue;
+            }
+
+            double rent = quarter.getUnclaimedRentPrice();
+            double tax = RentManager.getTax(rent);
+            quarter.markUnclaimedRentDue(tax);
+        }
+    }
+
+    /**
+     * Attempts to settle a former owner's recorded rent obligation.
+     *
+     * @return true when the payment was collected and transferred successfully
+     */
+    public static boolean collectUnclaimedRent(@NotNull Quarter quarter, @NotNull Resident resident) {
+        return collectUnclaimedRent(quarter, resident, Quarters.getInstance().config().quarters.rentSettings);
+    }
+
+    private static boolean collectUnclaimedRent(@NotNull Quarter quarter, @NotNull Resident resident, @NotNull ConfigManager.RentSettings rentSettings) {
+        if (!quarter.hasUnclaimedRentFor(resident)) return true;
+
+        double rent = quarter.getUnclaimedRentPrice();
+        double tax = quarter.getUnclaimedRentTax();
+        double total = rent + tax;
+        if (resident.getAccount().getHoldingBalance() < total || !resident.getAccount().withdraw(total, RENT_REASON)) return false;
+
+        RentReceiver receiver = getRentReceiver(quarter, rentSettings.collector);
+        if (receiver != null) receiver.account().deposit(rent, RENT_REASON);
+
+        quarter.clearUnclaimedRent();
+        quarter.save();
+        return true;
+    }
+
     private void evictAndNotify(@NotNull Resident resident, @NotNull RentPayment rentPayment) {
         for (Quarter quarter : rentPayment.quarters()) quarter.evictOwner();
         int quarters = rentPayment.quarterCount();
@@ -98,7 +147,7 @@ public class RentListener implements Listener {
         );
     }
 
-    private @Nullable RentReceiver getRentReceiver(@NotNull Quarter quarter, @NotNull RentCollector collector) {
+    private static @Nullable RentReceiver getRentReceiver(@NotNull Quarter quarter, @NotNull RentCollector collector) {
         Town town = quarter.getTown();
         return switch (collector) {
             case TOWN -> new RentReceiver(town.getUUID(), town.getAccount(), town);

@@ -231,7 +231,7 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
                 "Number of seconds after entering a PvP quarter before players can take PvP damage",
                 "Useful in case a player entered a PvP quarter by accident",
                 "Set to 0 to disable the grace period",
-                "If you want to make players fully exempt from PvP quarters, give the 'quarters.exempt_from_pvp' permission"
+                "If you want to make players fully exempt from PvP quarters, give the 'quarters.exempt.pvp' permission"
         })
         public int entryGracePeriodSeconds = 0;
 

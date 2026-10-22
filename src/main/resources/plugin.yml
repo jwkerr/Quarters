@@ -21,8 +21,19 @@ permissions:
     description: "Grants the ability to bypass the default quarter colour if enabled"
     default: false
 
-  quarters.exempt_from_pvp:
+  quarters.exempt.*:
+    default: false
+    description: "Makes players exempt from everything"
+    children:
+      quarters.exempt.pvp: true
+      quarters.exempt.rent: true
+
+  quarters.exempt.pvp:
     description: "Exempts from taking pvp damage in a pvp quarter"
+    default: false
+
+  quarters.exempt.rent:
+    description: "Exempts from paying rent for quarters"
     default: false
 
   quarters.access_vaults:

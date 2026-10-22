@@ -150,7 +150,7 @@ public class TownyActionListener implements Listener {
         Player attacker = event.getAttackingPlayer();
         Player victim = event.getVictimPlayer();
 
-        if (victim.hasPermission("quarters.exempt_from_pvp")) {
+        if (victim.hasPermission("quarters.exempt.pvp")) {
             if (config.quarters.pvpSettings.showExemptMessage) {
                 QuartersMessaging.sendErrorMessage(attacker, "quarters.pvp.exempt");
             }

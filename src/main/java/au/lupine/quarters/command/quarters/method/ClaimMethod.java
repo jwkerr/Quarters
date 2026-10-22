@@ -1,6 +1,7 @@
 package au.lupine.quarters.command.quarters.method;
 
 import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.listener.RentListener;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
@@ -55,6 +56,7 @@ public final class ClaimMethod extends CommandMethod {
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return;
 
+        settleUnclaimedRentOrThrow(quarter, resident);
         canResidentClaimQuarter(resident, quarter);
 
         sendClaimConfirmation(resident, quarter);
@@ -69,6 +71,28 @@ public final class ClaimMethod extends CommandMethod {
         if (!quarter.isEmbassy() && !quarter.getTown().equals(resident.getTownOrNull())) throw new CommandMethodException("quarters.command.quarters.claim.feedback.not_embassy_or_town");
 
         if (resident.getAccount().getHoldingBalance() < price) throw new CommandMethodException("quarters.command.quarters.claim.feedback.insufficient_funds");
+    }
+
+    private void settleUnclaimedRentOrThrow(@NotNull Quarter quarter, @NotNull Resident resident) {
+        if (!quarter.hasUnclaimedRentFor(resident)) return;
+        if (resident.hasPermissionNode("quarters.exempt.rent")) {
+            quarter.clearUnclaimedRent();
+            quarter.save();
+            return;
+        }
+        if (!quarter.hasUnclaimedRentDebt()) {
+            // The player reclaimed before the next new-day cycle, so no rent period was missed.
+            quarter.clearUnclaimedRent();
+            quarter.save();
+            return;
+        }
+
+        if (!RentListener.collectUnclaimedRent(quarter, resident)) {
+            throw new CommandMethodException(
+                    "quarters.command.quarters.claim.feedback.unpaid_rent",
+                    Argument.string("price", TownyEconomyHandler.getFormattedBalance(quarter.getUnclaimedRentPrice() + quarter.getUnclaimedRentTax()))
+            );
+        }
     }
 
     private void sendClaimConfirmation(@NotNull Resident resident, @NotNull Quarter quarter) {
@@ -126,6 +150,7 @@ public final class ClaimMethod extends CommandMethod {
 
     private void changeOwnerAndSave(@NotNull Quarter quarter, @NotNull Resident resident) {
         quarter.setOwner(resident.getUUID());
+        if (quarter.hasUnclaimedRent() && !quarter.hasUnclaimedRentFor(resident)) quarter.clearUnclaimedRent();
         quarter.setPrice(null);
         quarter.save();
     }
