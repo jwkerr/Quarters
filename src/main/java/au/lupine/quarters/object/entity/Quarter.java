@@ -29,7 +29,7 @@ import java.util.List;
 
 public class Quarter extends TownyObject {
 
-    private final Town town;
+    private Town town;
     private List<Cuboid> cuboids;
     private final UUID creator;
     private UUID uuid = UUID.randomUUID();
@@ -361,6 +361,13 @@ public class Quarter extends TownyObject {
      */
     public @NotNull Town getTown() {
         return town;
+    }
+
+    /**
+     * Moves this quarter to another town. Used when Towny merges the quarter's town into another town.
+     */
+    public void moveToTown(@NotNull Town town) {
+        this.town = town;
     }
 
     public void setCuboids(List<Cuboid> cuboids) {

@@ -13,6 +13,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.actions.*;
 import com.palmergames.bukkit.towny.event.damage.TownyPlayerDamagePlayerEvent;
 import com.palmergames.bukkit.towny.event.player.PlayerDeniedBedUseEvent;
+import com.palmergames.bukkit.towny.event.town.TownPreMergeEvent;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -39,7 +40,7 @@ import java.util.Set;
 public class TownyActionListener implements Listener {
 
     private final boolean isMcmmoPresent;
-    public static final Set<Material> VEHICLE_MATERIALS = Set.of(
+    private static final Set<Material> VEHICLE_MATERIALS = Set.of(
             Material.ACACIA_BOAT, Material.BAMBOO_RAFT, Material.BIRCH_BOAT, Material.CHERRY_BOAT,
             Material.DARK_OAK_BOAT, Material.JUNGLE_BOAT, Material.MANGROVE_BOAT, Material.OAK_BOAT,
             Material.SPRUCE_BOAT, Material.ACACIA_CHEST_BOAT, Material.BAMBOO_CHEST_RAFT, Material.BIRCH_CHEST_BOAT,
@@ -79,6 +80,25 @@ public class TownyActionListener implements Listener {
     @EventHandler
     public void onPlayerDamage(@NotNull PlayerDeathEvent event) {
         parseEvent(event);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onTownPreMerge(@NotNull TownPreMergeEvent event) {
+        Town remainingTown = event.getRemainingTown();
+        Town succumbingTown = event.getSuccumbingTown();
+
+        QuarterManager quarterManager = QuarterManager.getInstance();
+        List<Quarter> movedQuarters = new ArrayList<>(quarterManager.getQuarters(succumbingTown));
+        if (movedQuarters.isEmpty()) return;
+
+        quarterManager.setQuarters(succumbingTown, new ArrayList<>());
+
+        List<Quarter> remainingQuarters = new ArrayList<>(quarterManager.getQuarters(remainingTown));
+        for (Quarter quarter : movedQuarters) {
+            quarter.moveToTown(remainingTown);
+            if (!remainingQuarters.contains(quarter)) remainingQuarters.add(quarter);
+        }
+        quarterManager.setQuarters(remainingTown, remainingQuarters);
     }
 
     public void parseEvent(@NotNull TownyActionEvent event, @NotNull ActionType type) {
