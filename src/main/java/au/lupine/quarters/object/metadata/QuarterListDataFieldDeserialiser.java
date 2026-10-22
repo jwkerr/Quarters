@@ -1,5 +1,6 @@
 package au.lupine.quarters.object.metadata;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.manager.JSONManager;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.state.FlagType;
@@ -45,8 +46,15 @@ public class QuarterListDataFieldDeserialiser implements DataFieldDeserializer<Q
         if (typeElement == null || !typeElement.isJsonPrimitive()) return;
 
         switch (typeElement.getAsString().toUpperCase()) {
-            case "INN" -> quarter.setFlag(FlagType.SLEEPING, true);
-            case "STATION" -> quarter.setFlag(FlagType.VEHICLES, true);
+            case "INN" -> migrateLegacyType(quarter, FlagType.SLEEPING, "INN");
+            case "STATION" -> migrateLegacyType(quarter, FlagType.VEHICLES, "STATION");
         }
+    }
+
+    private void migrateLegacyType(@NotNull Quarter quarter, @NotNull FlagType flag, @NotNull String legacyType) {
+        if (quarter.hasStoredFlag(flag)) return;
+
+        quarter.setFlag(flag, true);
+        Quarters.logInfo("Migrated legacy " + legacyType + " quarter " + quarter.getUUID() + " to the " + flag + " flag.");
     }
 }
