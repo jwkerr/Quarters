@@ -39,6 +39,8 @@ public final class SetOwnerMethod extends CommandMethod {
         Quarter quarter = getQuarterAtPlayerOrThrow(player);
 
         if (!quarter.isPlayerInTown(player)) throw new CommandMethodException("quarters.command.feedback.quarter_not_part_of_your_town");
+        Double rentPrice = quarter.getRentPrice();
+        if (rentPrice != null && rentPrice > 0) throw new CommandMethodException("quarters.command.quarters.set.owner.feedback.rented");
 
         Resident resident = TownyAPI.getInstance().getResident(playerName);
         if (resident == null || resident.isNPC()) throw new CommandMethodException("quarters.command.quarters.trust.feedback.player_not_found");
