@@ -82,6 +82,14 @@ public class ConfigManager extends ConfigurablePojo<ConfigManager> {
     }
 
     public static class QuartersSection {
+        @Key("resident_permission_delay_seconds")
+        @Comment({
+                "How long a player must belong to a town before Quarters considers them a resident for its permission checks",
+                "This is only applied in towns that enable it with /quarters toggle residentdelay",
+                "Set to 0 to disable the delay even when a town has enabled it"
+        })
+        public int residentPermissionDelaySeconds = 10800;
+
         @Key("max_quarter_volume")
         @Comment({
                 "Maximum block volume of all cuboids in a quarter combined",

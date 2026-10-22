@@ -218,6 +218,7 @@ permissions:
       quarters.command.quarters.toggle.embassy: true
       quarters.command.quarters.toggle.entrynotifications: true
       quarters.command.quarters.toggle.glow: true
+      quarters.command.quarters.toggle.residentdelay: true
       quarters.command.quarters.toggle.sellondelete: true
       quarters.command.quarters.toggle.mobs: true
       quarters.command.quarters.toggle.pvp: true
@@ -239,6 +240,9 @@ permissions:
 
   quarters.command.quarters.toggle.glow:
     default: true
+
+  quarters.command.quarters.toggle.residentdelay:
+    default: false
 
   quarters.command.quarters.toggle.sellondelete:
     default: false

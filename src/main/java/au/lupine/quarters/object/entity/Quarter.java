@@ -140,10 +140,21 @@ public class Quarter extends TownyObject {
     }
 
     /**
-     * @return True if the specified player is in this quarter's town
+     * @return True if the specified player is in this quarter's town and is established enough to receive Quarters resident permissions
      */
     public boolean isPlayerInTown(@NotNull Player player) {
-        return town.hasResident(player);
+        if (!town.hasResident(player)) return false;
+
+        TownMetadataManager townMetadata = TownMetadataManager.getInstance();
+        long delaySeconds = Math.max(Quarters.getInstance().config().quarters.residentPermissionDelaySeconds, 0);
+        if (!townMetadata.isResidentPermissionDelayEnabled(town) || delaySeconds == 0) return true;
+
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident == null) return false;
+
+        long delayMillis = delaySeconds * 1000L;
+        long joinedTownAt = resident.getJoinedTownAt();
+        return joinedTownAt <= System.currentTimeMillis() - delayMillis;
     }
 
     /**

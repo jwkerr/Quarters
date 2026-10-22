@@ -45,11 +45,15 @@ public class QuarterPermissions {
      * Calculates the {@link PermLevel} the player is considered under these permissions
      * @return The {@link PermLevel} of the player under these permissions in the specified quarter
      */
-    public PermLevel getPermLevel(@NotNull Resident resident, @NotNull Quarter quarter) {
+    public @NotNull PermLevel getPermLevel(@NotNull Resident resident, @NotNull Quarter quarter) {
         Player player = resident.getPlayer();
         if (player == null) return PermLevel.OUTSIDER;
 
+        // Doesn't return true when the player has recently joined the town with the residentdelay enabled
         if (quarter.isPlayerInTown(player)) return PermLevel.RESIDENT;
+
+        // If previous check is false and this is true, it means that they have recently joined the town, so are considered outsiders
+        if (quarter.getTown().hasResident(player)) return PermLevel.OUTSIDER;
 
         Nation nation = quarter.getNation();
         if (nation != null) {

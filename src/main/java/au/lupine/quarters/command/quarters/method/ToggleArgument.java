@@ -5,6 +5,7 @@ import au.lupine.quarters.command.quarters.method.toggle.ToggleEmbassyMethod;
 import au.lupine.quarters.command.quarters.method.toggle.ToggleEntryNotificationsMethod;
 import au.lupine.quarters.command.quarters.method.toggle.ToggleFlagMethod;
 import au.lupine.quarters.command.quarters.method.toggle.ToggleGlowMethod;
+import au.lupine.quarters.command.quarters.method.toggle.ToggleResidentPermissionDelayMethod;
 import au.lupine.quarters.command.quarters.method.toggle.ToggleSellOnDeleteMethod;
 import au.lupine.quarters.object.base.CommandArgument;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -25,6 +26,7 @@ public final class ToggleArgument extends CommandArgument {
                 .then(new ToggleEntryNotificationsMethod().build())
                 .then(new ToggleFlagMethod().buildArgument())
                 .then(new ToggleGlowMethod().build())
+                .then(new ToggleResidentPermissionDelayMethod().build())
                 .then(new ToggleSellOnDeleteMethod().build());
     }
 

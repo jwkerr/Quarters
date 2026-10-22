@@ -83,7 +83,7 @@ public abstract class CommandMethod {
 
     public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
         return Commands.literal(name)
-                .requires(source -> permission == null || source.getSender().hasPermission(permission))
+                .requires(source -> hasRequiredPermission(source.getSender()))
                 .executes(context -> run(context.getSource()));
     }
 
@@ -100,16 +100,15 @@ public abstract class CommandMethod {
     }
 
     private void checkPermOrThrow() {
-        if (permission == null) return;
+        if (!hasRequiredPermission(sender)) throw new CommandMethodException("quarters.command.feedback.no_method_permission");
+    }
 
-        Player player = getSenderAsPlayerOrNull();
-        if (player != null && hasMayorPermBypass && Quarters.getInstance().config().technical.doMayorsBypassCertainElevatedPerms) {
-            Resident resident = TownyAPI.getInstance().getResident(player);
-            if (resident == null) return;
-            if (resident.isMayor()) return;
-        }
+    private boolean hasRequiredPermission(@NotNull CommandSender commandSender) {
+        if (permission == null || commandSender.hasPermission(permission)) return true;
+        if (!(commandSender instanceof Player player) || !hasMayorPermBypass || !Quarters.getInstance().config().technical.doMayorsBypassCertainElevatedPerms) return false;
 
-        if (!sender.hasPermission(permission)) throw new CommandMethodException("quarters.command.feedback.no_method_permission");
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        return resident != null && resident.isMayor();
     }
 
     protected int run(@NotNull CommandSourceStack source) {
