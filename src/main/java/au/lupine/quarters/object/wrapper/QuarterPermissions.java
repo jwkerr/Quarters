@@ -76,6 +76,24 @@ public class QuarterPermissions {
         }
     }
 
+    /**
+     * Sets every permission level for one action.
+     */
+    public void setPermissions(@NotNull ActionType type, boolean allowed) {
+        for (PermLevel level : PermLevel.values()) {
+            setPermission(type, level, allowed);
+        }
+    }
+
+    /**
+     * Sets every action at every permission level.
+     */
+    public void setPermissions(boolean allowed) {
+        for (ActionType type : ActionType.values()) {
+            setPermissions(type, allowed);
+        }
+    }
+
     public void setPermissions(@NotNull ActionType type, @NotNull Map<PermLevel, Boolean> perms) {
         verifyPermissionsOrThrow(perms);
 
