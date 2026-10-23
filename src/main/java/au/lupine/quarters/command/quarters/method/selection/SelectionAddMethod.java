@@ -6,6 +6,7 @@ import au.lupine.quarters.api.manager.SelectionManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.exception.CommandMethodException;
+import au.lupine.quarters.object.exception.MultiCommandMethodException;
 import au.lupine.quarters.object.state.CuboidValidity;
 import au.lupine.quarters.object.wrapper.CuboidSelection;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -13,6 +14,7 @@ import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class SelectionAddMethod extends CommandMethod {
@@ -31,24 +33,34 @@ public final class SelectionAddMethod extends CommandMethod {
         if (newCuboid == null) throw new CommandMethodException("quarters.command.quarters.selection.add.feedback.invalid_selection");
 
         List<Cuboid> cuboids = sm.getCuboids(player);
-        int maxCuboids = Quarters.getInstance().config().quarters.maxCuboidsPerQuarter;
-        if (maxCuboids > -1 && cuboids.size() == maxCuboids) throw new CommandMethodException(
-                "quarters.command.quarters.selection.add.feedback.cuboid_limit",
-                Argument.string("max", Integer.toString(maxCuboids))
-        );
+        List<CommandMethodException> validationErrors = new ArrayList<>();
 
-        CuboidValidity validity = newCuboid.checkValidity();
-        switch (validity) {
-            case CONTAINS_WILDERNESS -> throw new CommandMethodException("quarters.command.quarters.selection.add.feedback.contains_wilderness");
-            case INTERSECTS -> throw new CommandMethodException("quarters.command.quarters.selection.add.feedback.intersects");
-            case SPANS_MULTIPLE_TOWNS -> throw new CommandMethodException("quarters.command.quarters.selection.add.feedback.spans_multiple_towns");
-            case OUTSIDE_WORLD_BOUNDS -> throw new CommandMethodException("quarters.command.quarters.selection.add.feedback.outside_world_bounds");
-            case TOO_LARGE -> throw new CommandMethodException("quarters.command.quarters.selection.add.feedback.too_large");
+        int maxCuboids = Quarters.getInstance().config().quarters.maxCuboidsPerQuarter;
+        if (maxCuboids > -1 && cuboids.size() == maxCuboids) {
+            validationErrors.add(new CommandMethodException(
+                    "quarters.command.quarters.selection.add.feedback.cuboid_limit",
+                    Argument.string("max", Integer.toString(maxCuboids))
+            ));
+        }
+
+        for (CuboidValidity validity : newCuboid.checkValidity()) {
+            switch (validity) {
+                case CONTAINS_WILDERNESS -> validationErrors.add(new CommandMethodException("quarters.command.quarters.selection.add.feedback.contains_wilderness"));
+                case INTERSECTS -> validationErrors.add(new CommandMethodException("quarters.command.quarters.selection.add.feedback.intersects"));
+                case SPANS_MULTIPLE_TOWNS -> validationErrors.add(new CommandMethodException("quarters.command.quarters.selection.add.feedback.spans_multiple_towns"));
+                case OUTSIDE_WORLD_BOUNDS -> validationErrors.add(new CommandMethodException("quarters.command.quarters.selection.add.feedback.outside_world_bounds"));
+                case TOO_LARGE -> validationErrors.add(new CommandMethodException("quarters.command.quarters.selection.add.feedback.too_large"));
+                case VALID -> { }
+            }
         }
 
         for (Cuboid addedCuboid : cuboids) {
-            if (newCuboid.intersectsWith(addedCuboid)) throw new CommandMethodException("quarters.command.quarters.selection.add.feedback.intersects_selection");
+            if (newCuboid.intersectsWith(addedCuboid)) {
+                validationErrors.add(new CommandMethodException("quarters.command.quarters.selection.add.feedback.intersects_selection"));
+            }
         }
+
+        if (!validationErrors.isEmpty()) throw new MultiCommandMethodException(validationErrors);
 
         sm.clearSelection(player);
 

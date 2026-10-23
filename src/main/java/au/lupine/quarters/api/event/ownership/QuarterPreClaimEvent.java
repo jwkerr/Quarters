@@ -57,7 +57,7 @@ public class QuarterPreClaimEvent extends CancellableQuartersEvent {
     }
 
     /**
-     * @return the validated sale price; zero means the quarter is free
+     * @return the validated sale price, 0 means the quarter is free
      */
     public double getPrice() {
         return price;

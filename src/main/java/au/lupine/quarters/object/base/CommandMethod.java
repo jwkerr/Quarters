@@ -6,6 +6,7 @@ import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.api.manager.TownMetadataManager;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
+import au.lupine.quarters.object.exception.MultiCommandMethodException;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.suggestion.Suggestions;
@@ -114,6 +115,11 @@ public abstract class CommandMethod {
         try {
             execute(source);
             return Command.SINGLE_SUCCESS;
+        } catch (MultiCommandMethodException e) {
+            for (CommandMethodException error : e.getErrors()) {
+                QuartersMessaging.sendErrorMessage(source.getSender(), error.getMessage(), error.getArguments());
+            }
+            return 0;
         } catch (CommandMethodException e) {
             QuartersMessaging.sendErrorMessage(source.getSender(), e.getMessage(), e.getArguments());
             return 0;

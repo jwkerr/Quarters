@@ -7,6 +7,7 @@ import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.exception.CommandMethodException;
+import au.lupine.quarters.object.exception.MultiCommandMethodException;
 import au.lupine.quarters.object.state.CuboidValidity;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.minimessage.tag.resolver.Formatter;
@@ -14,6 +15,7 @@ import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class EditAddSelectionMethod extends CommandMethod {
@@ -34,24 +36,31 @@ public final class EditAddSelectionMethod extends CommandMethod {
         List<Cuboid> cuboids = sm.getCuboidsOrSelectionAsCuboid(player);
         if (cuboids.isEmpty()) throw new CommandMethodException("quarters.command.quarters.selection.feedback.none");
 
+        List<CommandMethodException> validationErrors = new ArrayList<>();
         for (Cuboid cuboid : cuboids) {
-            CuboidValidity validity = cuboid.checkValidity();
-            switch (validity) {
-                case CONTAINS_WILDERNESS -> throw new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.contains_wilderness");
-                case INTERSECTS -> throw new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.intersects");
-                case SPANS_MULTIPLE_TOWNS -> throw new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.spans_multiple_towns");
-                case OUTSIDE_WORLD_BOUNDS -> throw new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.outside_world_bounds");
-                case TOO_LARGE -> throw new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.too_large_cuboid");
+            for (CuboidValidity validity : cuboid.checkValidity()) {
+                switch (validity) {
+                    case CONTAINS_WILDERNESS -> validationErrors.add(new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.contains_wilderness"));
+                    case INTERSECTS -> validationErrors.add(new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.intersects"));
+                    case SPANS_MULTIPLE_TOWNS -> validationErrors.add(new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.spans_multiple_towns"));
+                    case OUTSIDE_WORLD_BOUNDS -> validationErrors.add(new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.outside_world_bounds"));
+                    case TOO_LARGE -> validationErrors.add(new CommandMethodException("quarters.command.quarters.edit.addselection.feedback.too_large_cuboid"));
+                    case VALID -> { }
+                }
             }
         }
 
         List<Cuboid> currentCuboids = quarter.getCuboids();
 
         int maxCuboids = Quarters.getInstance().config().quarters.maxCuboidsPerQuarter;
-        if (maxCuboids > -1 && cuboids.size() + currentCuboids.size() >= maxCuboids) throw new CommandMethodException(
-                "quarters.command.quarters.edit.addselection.feedback.cuboid_limit",
-                Argument.string("max", Integer.toString(maxCuboids))
-        );
+        if (maxCuboids > -1 && cuboids.size() + currentCuboids.size() >= maxCuboids) {
+            validationErrors.add(new CommandMethodException(
+                    "quarters.command.quarters.edit.addselection.feedback.cuboid_limit",
+                    Argument.string("max", Integer.toString(maxCuboids))
+            ));
+        }
+
+        if (!validationErrors.isEmpty()) throw new MultiCommandMethodException(validationErrors);
 
         int addedCuboids = cuboids.size();
         cuboids.addAll(currentCuboids);

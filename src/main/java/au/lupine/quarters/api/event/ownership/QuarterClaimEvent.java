@@ -57,7 +57,7 @@ public class QuarterClaimEvent extends QuartersEvent {
     }
 
     /**
-     * @return the sale price paid; zero means the quarter was free
+     * @return the sale price paid, 0 means the quarter was free
      */
     public double getPrice() {
         return price;

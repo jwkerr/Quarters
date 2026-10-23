@@ -63,22 +63,29 @@ public class Cuboid {
      *
      * @return True if the cuboid instance is in a valid location to be part of a quarter
      */
-    public CuboidValidity checkValidity() {
-        boolean isInsideWorldBounds = isCuboidInsideWorldBounds();
-        if (!isInsideWorldBounds) return CuboidValidity.OUTSIDE_WORLD_BOUNDS;
+    /**
+     * Gets every validation problem with this cuboid.
+     *
+     * @return an immutable list of all issues, or an empty list when this cuboid is valid
+     */
+    public @NotNull List<CuboidValidity> checkValidity() {
+        List<CuboidValidity> issues = new ArrayList<>();
+
+        if (!isCuboidInsideWorldBounds()) issues.add(CuboidValidity.OUTSIDE_WORLD_BOUNDS);
 
         boolean doesNotContainWilderness = doesCuboidNotContainWilderness();
-        if (!doesNotContainWilderness) return CuboidValidity.CONTAINS_WILDERNESS;
+        if (!doesNotContainWilderness) issues.add(CuboidValidity.CONTAINS_WILDERNESS);
 
-        boolean doesIntersect = doesCuboidIntersectWithPreExistingQuarters();
-        if (doesIntersect) return CuboidValidity.INTERSECTS;
+        if (doesCuboidIntersectWithPreExistingQuarters()) issues.add(CuboidValidity.INTERSECTS);
 
-        if (!isCuboidEntirelyWithinSingularTown()) return CuboidValidity.SPANS_MULTIPLE_TOWNS;
+        if (doesNotContainWilderness && !isCuboidEntirelyWithinSingularTown()) {
+            issues.add(CuboidValidity.SPANS_MULTIPLE_TOWNS);
+        }
 
         int maxCuboidVolume = Quarters.getInstance().config().quarters.maxCuboidVolume;
-        if (maxCuboidVolume > -1 && this.getVolume() > maxCuboidVolume) return CuboidValidity.TOO_LARGE;
+        if (maxCuboidVolume > -1 && this.getVolume() > maxCuboidVolume) issues.add(CuboidValidity.TOO_LARGE);
 
-        return CuboidValidity.VALID;
+        return List.copyOf(issues);
     }
 
     public boolean isCuboidInsideWorldBounds() {
