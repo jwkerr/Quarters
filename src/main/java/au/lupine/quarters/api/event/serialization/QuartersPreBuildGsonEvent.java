@@ -1,4 +1,4 @@
-package au.lupine.quarters.api.event;
+package au.lupine.quarters.api.event.serialization;
 
 import au.lupine.quarters.object.base.QuartersEvent;
 import com.google.gson.GsonBuilder;

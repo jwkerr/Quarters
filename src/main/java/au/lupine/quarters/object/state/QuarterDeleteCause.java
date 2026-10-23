@@ -19,6 +19,6 @@ public enum QuarterDeleteCause {
     /** The quarter was deleted because it was merged into another quarter. */
     MERGE_COMMAND,
 
-    /** The quarter was deleted because a plot was unclaimed (Includes manual unclaim & e.g. town falling). */
+    /** The quarter was deleted because a plot was unclaimed (includes manual unclaim &amp; town falling). */
     PLOT_UNCLAIM
 }

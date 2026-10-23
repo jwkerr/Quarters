@@ -1,6 +1,8 @@
 package au.lupine.quarters.command.quarters.method;
 
 import au.lupine.quarters.api.QuartersMessaging;
+import au.lupine.quarters.api.event.ownership.QuarterClaimEvent;
+import au.lupine.quarters.api.event.ownership.QuarterPreClaimEvent;
 import au.lupine.quarters.listener.RentListener;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
@@ -56,10 +58,25 @@ public final class ClaimMethod extends CommandMethod {
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null) return;
 
-        settleUnclaimedRentOrThrow(quarter, resident);
         canResidentClaimQuarter(resident, quarter);
+        if (!callPreClaimEvent(player, resident, quarter)) return;
 
-        sendClaimConfirmation(resident, quarter);
+        settleUnclaimedRentOrThrow(quarter, resident);
+
+        sendClaimConfirmation(player, resident, quarter);
+    }
+
+    private boolean callPreClaimEvent(@NotNull Player player, @NotNull Resident resident, @NotNull Quarter quarter) {
+        Double price = quarter.getPrice();
+        if (price == null) return false;
+
+        QuarterPreClaimEvent preClaimEvent = new QuarterPreClaimEvent(player, resident, quarter, price);
+        preClaimEvent.callEvent();
+        if (!preClaimEvent.isCancelled()) return true;
+
+        String cancelMessage = preClaimEvent.getCancelMessage();
+        if (cancelMessage != null) QuartersMessaging.sendErrorMessage(player, cancelMessage);
+        return false;
     }
 
     private void canResidentClaimQuarter(@NotNull Resident resident, @NotNull Quarter quarter) {
@@ -95,12 +112,9 @@ public final class ClaimMethod extends CommandMethod {
         }
     }
 
-    private void sendClaimConfirmation(@NotNull Resident resident, @NotNull Quarter quarter) {
+    private void sendClaimConfirmation(@NotNull Player player, @NotNull Resident resident, @NotNull Quarter quarter) {
         Double currentPrice = quarter.getPrice();
         if (currentPrice == null) return; // This should never happen given prior state
-
-        Player player = resident.getPlayer();
-        if (player == null) return;
 
         String formattedPrice = TownyEconomyHandler.getFormattedBalance(currentPrice);
 
@@ -118,7 +132,7 @@ public final class ClaimMethod extends CommandMethod {
                     resident.getAccount().withdraw(currentPrice, reason);
                     quarter.getTown().getAccount().deposit(currentPrice, reason);
 
-                    changeOwnerAndSave(quarter, resident);
+                    changeOwnerAndSave(player, quarter, resident, currentPrice);
 
                     QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.claim.feedback.success");
                     QuartersMessaging.sendCommandFeedbackToTown(
@@ -136,7 +150,7 @@ public final class ClaimMethod extends CommandMethod {
                 ))
                 .sendTo(player);
         } else {
-            changeOwnerAndSave(quarter, resident);
+            changeOwnerAndSave(player, quarter, resident, currentPrice);
 
             QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.claim.feedback.success");
             QuartersMessaging.sendCommandFeedbackToTown(
@@ -148,10 +162,12 @@ public final class ClaimMethod extends CommandMethod {
         }
     }
 
-    private void changeOwnerAndSave(@NotNull Quarter quarter, @NotNull Resident resident) {
+    private void changeOwnerAndSave(@NotNull Player player, @NotNull Quarter quarter, @NotNull Resident resident, double price) {
         quarter.setOwner(resident.getUUID());
         if (quarter.hasUnclaimedRent() && !quarter.hasUnclaimedRentFor(resident)) quarter.clearUnclaimedRent();
         quarter.setPrice(null);
         quarter.save();
+
+        new QuarterClaimEvent(player, resident, quarter, price).callEvent();
     }
 }

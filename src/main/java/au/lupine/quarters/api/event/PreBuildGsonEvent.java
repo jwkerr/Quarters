@@ -1,5 +1,6 @@
 package au.lupine.quarters.api.event;
 
+import au.lupine.quarters.api.event.serialization.QuartersPreBuildGsonEvent;
 import au.lupine.quarters.object.base.QuartersEvent;
 import com.google.gson.GsonBuilder;
 import org.bukkit.event.HandlerList;

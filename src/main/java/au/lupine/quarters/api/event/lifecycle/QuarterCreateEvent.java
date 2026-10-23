@@ -1,4 +1,4 @@
-package au.lupine.quarters.api.event;
+package au.lupine.quarters.api.event.lifecycle;
 
 import au.lupine.quarters.object.base.QuartersEvent;
 import au.lupine.quarters.object.entity.Quarter;

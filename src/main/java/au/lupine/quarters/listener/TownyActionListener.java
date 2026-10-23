@@ -2,7 +2,7 @@ package au.lupine.quarters.listener;
 
 import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
-import au.lupine.quarters.api.event.QuarterPrePvpEvent;
+import au.lupine.quarters.api.event.combat.QuarterPrePvpEvent;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.api.manager.PvpGracePeriodManager;

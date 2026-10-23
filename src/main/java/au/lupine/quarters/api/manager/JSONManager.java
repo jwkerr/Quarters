@@ -2,7 +2,7 @@ package au.lupine.quarters.api.manager;
 
 import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.event.PreBuildGsonEvent;
-import au.lupine.quarters.api.event.QuartersPreBuildGsonEvent;
+import au.lupine.quarters.api.event.serialization.QuartersPreBuildGsonEvent;
 import au.lupine.quarters.object.adapter.*;
 import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.wrapper.QuarterPermissions;

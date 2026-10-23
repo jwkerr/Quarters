@@ -2,9 +2,9 @@ package au.lupine.quarters.listener;
 
 import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
-import au.lupine.quarters.api.event.QuarterEnterEvent;
-import au.lupine.quarters.api.event.QuarterPreNotificationEvent;
-import au.lupine.quarters.api.event.QuarterExitEvent;
+import au.lupine.quarters.api.event.notification.QuarterPreNotificationEvent;
+import au.lupine.quarters.api.event.player.QuarterEnterEvent;
+import au.lupine.quarters.api.event.player.QuarterExitEvent;
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.api.manager.PvpGracePeriodManager;

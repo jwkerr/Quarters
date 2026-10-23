@@ -1,4 +1,4 @@
-package au.lupine.quarters.api.event;
+package au.lupine.quarters.api.event.notification;
 
 import au.lupine.quarters.object.base.CancellableQuartersEvent;
 import au.lupine.quarters.object.entity.Quarter;
@@ -76,7 +76,7 @@ public class QuarterPreNotificationEvent extends CancellableQuartersEvent {
 
     /**
      * @return The notification components that will be sent before they are merged together into a message.
-     * @apiNote This is passed as an unmodifiable list.
+     * <strong>API note:</strong> This is passed as an unmodifiable list.
      */
     public @NotNull List<Component> getNotifications() {
         return Collections.unmodifiableList(notifications);

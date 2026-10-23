@@ -2,8 +2,8 @@ package au.lupine.quarters.object.entity;
 
 import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
-import au.lupine.quarters.api.event.QuarterDeleteEvent;
-import au.lupine.quarters.api.event.QuarterPreDeleteEvent;
+import au.lupine.quarters.api.event.lifecycle.QuarterDeleteEvent;
+import au.lupine.quarters.api.event.lifecycle.QuarterPreDeleteEvent;
 import au.lupine.quarters.api.manager.*;
 import au.lupine.quarters.object.state.ActionType;
 import au.lupine.quarters.object.state.FlagType;

@@ -1,4 +1,4 @@
-package au.lupine.quarters.api.event;
+package au.lupine.quarters.api.event.lifecycle;
 
 import au.lupine.quarters.object.base.CancellableQuartersEvent;
 import au.lupine.quarters.object.entity.Quarter;
@@ -73,7 +73,7 @@ public class QuarterPreDeleteEvent extends CancellableQuartersEvent {
 
     /**
      * @return The {@link Quarter quarter} being deleted.
-     * @apiNote If you catch this object and keep a reference in cache alive, the garbage collector won't clean it up after the quarter has been deleted.
+     * <strong>API note:</strong> If you catch this object and keep a reference in cache alive, the garbage collector won't clean it up after the quarter has been deleted.
      */
     public @NotNull Quarter getQuarter() {
         return quarter;

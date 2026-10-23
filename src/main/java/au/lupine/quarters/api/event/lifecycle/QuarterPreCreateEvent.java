@@ -1,4 +1,4 @@
-package au.lupine.quarters.api.event;
+package au.lupine.quarters.api.event.lifecycle;
 
 import au.lupine.quarters.object.base.CancellableQuartersEvent;
 import au.lupine.quarters.object.entity.Cuboid;
@@ -62,7 +62,7 @@ public class QuarterPreCreateEvent extends CancellableQuartersEvent {
 
     /**
      * @return The {@link Cuboid cuboids} that will be used to make the {@link Quarter quarter}.
-     * @apiNote This is passed as an unmodifiable list.
+     * <strong>API note:</strong> This is passed as an unmodifiable list.
      */
     public @NotNull List<Cuboid> getCuboids() {
         return Collections.unmodifiableList(cuboids);
@@ -71,7 +71,7 @@ public class QuarterPreCreateEvent extends CancellableQuartersEvent {
     /**
      * Sets the {@link Cuboid cuboids} used to make the {@link Quarter quarter}.
      * @param cuboids List of {@link Cuboid cuboids} that will be used for the {@link Quarter quarter}.
-     * @apiNote Validation of {@link Cuboid cuboids} happens after this event. This means that Quarters will show errors and stop the creation if the {@link Cuboid cuboids} passed are not valid.
+     * <strong>API note:</strong> Validation of {@link Cuboid cuboids} happens after this event. This means that Quarters will show errors and stop the creation if the {@link Cuboid cuboids} passed are not valid.
      */
     public void setCuboids(@NotNull List<Cuboid> cuboids) {
         this.cuboids = new ArrayList<>(cuboids);

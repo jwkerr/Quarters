@@ -1,4 +1,4 @@
-package au.lupine.quarters.api.event;
+package au.lupine.quarters.api.event.combat;
 
 import au.lupine.quarters.object.base.CancellableQuartersEvent;
 import au.lupine.quarters.object.entity.Quarter;
