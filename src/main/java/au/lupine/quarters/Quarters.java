@@ -2,6 +2,7 @@ package au.lupine.quarters;
 
 import au.lupine.quarters.api.manager.ConfigManager;
 import au.lupine.quarters.api.manager.FloodgateManager;
+import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.command.quarters.QuartersCommand;
 import au.lupine.quarters.command.quartersadmin.QuartersAdminCommand;
 import au.lupine.quarters.hook.QuartersPlaceholderExpansion;
@@ -41,6 +42,8 @@ public final class Quarters extends JavaPlugin {
     @Override
     public void onEnable() {
         loadConfig();
+
+        QuarterManager.getInstance().rebuildQuarterIndex();
 
         registerCommands();
 

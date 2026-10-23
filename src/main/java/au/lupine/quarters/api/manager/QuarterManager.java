@@ -14,13 +14,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class QuarterManager {
 
     private static QuarterManager instance;
+    private final Map<UUID, Quarter> quartersById = new ConcurrentHashMap<>();
 
     private QuarterManager() {}
 
@@ -57,25 +60,28 @@ public final class QuarterManager {
      * @return The quarter with the specified UUID or null if it does not exist
      */
     public @Nullable Quarter getQuarter(UUID uuid) {
-        for (Quarter quarter : getAllQuarters()) {
-            if (quarter.getUUID().equals(uuid)) return quarter;
-        }
-
-        return null;
+        return quartersById.get(uuid);
     }
 
     /**
      * @return Every single currently registered quarter
      */
     public List<Quarter> getAllQuarters() {
-        List<Quarter> quarters = new CopyOnWriteArrayList<>();
+        return new ArrayList<>(quartersById.values());
+    }
+
+    /**
+     * Rebuilds the global quarter index from Towny's loaded towns. This should be called once after
+     * Towny's metadata has been loaded; subsequent changes are kept in sync by {@link #setQuarters(Town, List)}.
+     */
+    public void rebuildQuarterIndex() {
+        quartersById.clear();
 
         for (Town town : TownyAPI.getInstance().getTowns()) {
-            List<Quarter> currentTownQuarterList = getQuarters(town);
-            quarters.addAll(currentTownQuarterList);
+            for (Quarter quarter : getQuarters(town)) {
+                quartersById.put(quarter.getUUID(), quarter);
+            }
         }
-
-        return quarters;
     }
 
     /**
@@ -97,6 +103,11 @@ public final class QuarterManager {
      */
     public void setQuarters(@NotNull Town town, List<Quarter> quarters) {
         TownMetadataManager.getInstance().setQuarterList(town, quarters);
+
+        quartersById.entrySet().removeIf(entry -> entry.getValue().getTown().equals(town));
+        for (Quarter quarter : quarters) {
+            quartersById.put(quarter.getUUID(), quarter);
+        }
     }
 
     /**
@@ -110,7 +121,7 @@ public final class QuarterManager {
      * @return A list of all quarters in the specified nation
      */
     public List<Quarter> getQuarters(@NotNull Nation nation) {
-        List<Quarter> quarters = new CopyOnWriteArrayList<>();
+        List<Quarter> quarters = new ArrayList<>();
 
         for (Town town : nation.getTowns()) {
             quarters.addAll(getQuarters(town));
@@ -130,7 +141,7 @@ public final class QuarterManager {
      * @return A list of all quarters owned by the specified player
      */
     public List<Quarter> getQuarters(@NotNull OfflinePlayer player) {
-        List<Quarter> quarters = new CopyOnWriteArrayList<>();
+        List<Quarter> quarters = new ArrayList<>();
 
         for (Quarter quarter : getAllQuarters()) {
             if (player.getUniqueId().equals(quarter.getOwner())) quarters.add(quarter);
@@ -164,7 +175,7 @@ public final class QuarterManager {
      * @return Every quarter that intersects with this worldcoord
      */
     public List<Quarter> getQuarters(@NotNull WorldCoord worldCoord) {
-        List<Quarter> quarters = new CopyOnWriteArrayList<>();
+        List<Quarter> quarters = new ArrayList<>();
 
         Town town = worldCoord.getTownOrNull();
         if (town == null) return quarters;
@@ -204,7 +215,7 @@ public final class QuarterManager {
      * @return Every quarter in the specified area within that radius
      */
     public List<Quarter> getQuartersNear(@NotNull Location location, double radius) {
-        List<Quarter> quarters = new CopyOnWriteArrayList<>();
+        List<Quarter> quarters = new ArrayList<>();
 
         for (Quarter quarter : getAllQuarters()) {
             if (quarter.getDistanceFrom(location) <= radius) quarters.add(quarter);
@@ -219,7 +230,7 @@ public final class QuarterManager {
      */
     public List<Quarter> getQuartersInTownSortedByDistance(@NotNull Location location) {
         Town town = TownyAPI.getInstance().getTown(location);
-        if (town == null) return new CopyOnWriteArrayList<>();
+        if (town == null) return new ArrayList<>();
 
         return getQuarters(town).stream()
                 .sorted(Comparator.comparingDouble(quarter -> quarter.getDistanceFrom(location)))
