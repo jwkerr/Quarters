@@ -21,12 +21,15 @@ public final class SelectionRemoveMethod extends CommandMethod {
         Player player = getSenderAsPlayerOrThrow(source);
         List<Cuboid> cuboids = SelectionManager.getInstance().getCuboids(player);
 
-        for (Cuboid cuboid : cuboids) {
-            if (cuboid.getPlayersInsideBounds().contains(player)) {
-                cuboids.remove(cuboid);
-                QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.selection.remove.feedback.success");
-                return;
-            }
+        Cuboid cuboidToRemove = cuboids.stream()
+                .filter(cuboid -> cuboid.isLocationInsideBounds(player.getLocation()))
+                .findFirst()
+                .orElse(null);
+
+        if (cuboidToRemove != null) {
+            cuboids.remove(cuboidToRemove);
+            QuartersMessaging.sendSuccessMessage(player, "quarters.command.quarters.selection.remove.feedback.success");
+            return;
         }
 
         QuartersMessaging.sendErrorMessage(player, "quarters.command.quarters.selection.remove.feedback.no_cuboid");

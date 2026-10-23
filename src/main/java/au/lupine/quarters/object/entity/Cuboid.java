@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
@@ -35,23 +36,25 @@ public class Cuboid {
      * @param cornerTwo Cuboid corner two
      */
     public Cuboid(@NotNull Location cornerOne, @NotNull Location cornerTwo) {
-        if (!cornerOne.getWorld().equals(cornerTwo.getWorld())) throw new IllegalArgumentException("Cuboid corners must be within the same world");
+        World cornerOneWorld = Objects.requireNonNull(cornerOne.getWorld(), "Cuboid corner one must have a world");
+        World cornerTwoWorld = Objects.requireNonNull(cornerTwo.getWorld(), "Cuboid corner two must have a world");
+        if (!cornerOneWorld.equals(cornerTwoWorld)) throw new IllegalArgumentException("Cuboid corners must be within the same world");
 
-        this.cornerOne = cornerOne;
-        this.cornerTwo = cornerTwo;
-        this.world = cornerOne.getWorld();
-        this.cornerBlockOne = world.getBlockAt(cornerOne);
-        this.cornerBlockTwo = world.getBlockAt(cornerTwo);
+        this.cornerOne = new Location(cornerOneWorld, cornerOne.getBlockX(), cornerOne.getBlockY(), cornerOne.getBlockZ());
+        this.cornerTwo = new Location(cornerTwoWorld, cornerTwo.getBlockX(), cornerTwo.getBlockY(), cornerTwo.getBlockZ());
+        this.world = cornerOneWorld;
+        this.cornerBlockOne = world.getBlockAt(this.cornerOne);
+        this.cornerBlockTwo = world.getBlockAt(this.cornerTwo);
         this.bounding = BoundingBox.of(cornerBlockOne, cornerBlockTwo);
-        this.minX = Math.min(cornerOne.getBlockX(), cornerTwo.getBlockX());
-        this.maxX = Math.max(cornerOne.getBlockX(), cornerTwo.getBlockX());
-        this.minY = Math.min(cornerOne.getBlockY(), cornerTwo.getBlockY());
-        this.maxY = Math.max(cornerOne.getBlockY(), cornerTwo.getBlockY());
-        this.minZ = Math.min(cornerOne.getBlockZ(), cornerTwo.getBlockZ());
-        this.maxZ = Math.max(cornerOne.getBlockZ(), cornerTwo.getBlockZ());
-        this.length = Math.abs(cornerOne.getBlockX() - cornerTwo.getBlockX()) + 1;
-        this.height = Math.abs(cornerOne.getBlockY() - cornerTwo.getBlockY()) + 1;
-        this.width = Math.abs(cornerOne.getBlockZ() - cornerTwo.getBlockZ()) + 1;
+        this.minX = Math.min(this.cornerOne.getBlockX(), this.cornerTwo.getBlockX());
+        this.maxX = Math.max(this.cornerOne.getBlockX(), this.cornerTwo.getBlockX());
+        this.minY = Math.min(this.cornerOne.getBlockY(), this.cornerTwo.getBlockY());
+        this.maxY = Math.max(this.cornerOne.getBlockY(), this.cornerTwo.getBlockY());
+        this.minZ = Math.min(this.cornerOne.getBlockZ(), this.cornerTwo.getBlockZ());
+        this.maxZ = Math.max(this.cornerOne.getBlockZ(), this.cornerTwo.getBlockZ());
+        this.length = Math.abs(this.cornerOne.getBlockX() - this.cornerTwo.getBlockX()) + 1;
+        this.height = Math.abs(this.cornerOne.getBlockY() - this.cornerTwo.getBlockY()) + 1;
+        this.width = Math.abs(this.cornerOne.getBlockZ() - this.cornerTwo.getBlockZ()) + 1;
         this.volume = length * height * width;
     }
 
@@ -219,11 +222,11 @@ public class Cuboid {
     }
 
     public Location getCornerOne() {
-        return cornerOne;
+        return cornerOne.clone();
     }
 
     public Location getCornerTwo() {
-        return cornerTwo;
+        return cornerTwo.clone();
     }
 
     public World getWorld() {

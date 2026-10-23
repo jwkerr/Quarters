@@ -7,7 +7,6 @@ import au.lupine.quarters.object.entity.Cuboid;
 import au.lupine.quarters.object.exception.CommandMethodException;
 import au.lupine.quarters.object.state.CuboidValidity;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,21 +23,16 @@ public final class SelectionPasteMethod extends CommandMethod {
     public void execute(@NotNull CommandSourceStack source) {
         Player player = getSenderAsPlayerOrThrow(source);
 
-        List<Cuboid> vectors = SelectionCopyMethod.SELECTION_VECTOR_MAP.get(player.getUniqueId());
-        if (vectors == null) throw new CommandMethodException("quarters.command.quarters.selection.paste.feedback.no_clipboard");
+        SelectionCopyMethod.Clipboard clipboard = SelectionCopyMethod.CLIPBOARD_MAP.get(player.getUniqueId());
+        if (clipboard == null) throw new CommandMethodException("quarters.command.quarters.selection.paste.feedback.no_clipboard");
 
-        Location location = player.getLocation();
-
-        List<Cuboid> toPaste = new ArrayList<>();
-        for (Cuboid vector : vectors) {
-            Cuboid addCuboid = vector.add(location);
-            toPaste.add(addCuboid);
-        }
+        List<Cuboid> toPaste = clipboard.pasteAt(player.getLocation());
 
         SelectionManager sm = SelectionManager.getInstance();
         List<Cuboid> currentCuboids = sm.getCuboids(player);
 
-        for (Cuboid cuboidToPaste : toPaste) {
+        for (int i = 0; i < toPaste.size(); i++) {
+            Cuboid cuboidToPaste = toPaste.get(i);
             CuboidValidity validity = cuboidToPaste.checkValidity();
             switch (validity) {
                 case CONTAINS_WILDERNESS -> throw new CommandMethodException("quarters.command.quarters.selection.paste.feedback.contains_wilderness");
@@ -50,6 +44,12 @@ public final class SelectionPasteMethod extends CommandMethod {
 
             for (Cuboid currentCuboid : currentCuboids) {
                 if (cuboidToPaste.intersectsWith(currentCuboid)) throw new CommandMethodException("quarters.command.quarters.selection.paste.feedback.intersects_selection");
+            }
+
+            for (int copiedIndex = 0; copiedIndex < i; copiedIndex++) {
+                if (cuboidToPaste.intersectsWith(toPaste.get(copiedIndex))) {
+                    throw new CommandMethodException("quarters.command.quarters.selection.paste.feedback.intersects_selection");
+                }
             }
         }
 

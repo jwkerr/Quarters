@@ -41,9 +41,10 @@ public final class SelectionManager {
      */
     public void selectPosition(@NotNull Player player, @NotNull Location location, @NotNull SelectionType type) {
         CuboidSelection selection = CUBOID_SELECTION_MAP.computeIfAbsent(player.getUniqueId(), s -> new CuboidSelection());
+        Location blockLocation = toBlockLocation(location);
         switch (type) {
-            case LEFT -> selection.setCornerOne(location);
-            case RIGHT -> selection.setCornerTwo(location);
+            case LEFT -> selection.setCornerOne(blockLocation);
+            case RIGHT -> selection.setCornerTwo(blockLocation);
         }
     }
 
@@ -66,7 +67,7 @@ public final class SelectionManager {
      * @return The player's currently added cuboids using /q selection add
      */
     public List<Cuboid> getCuboids(Player player) {
-        return CUBOIDS_MAP.getOrDefault(player.getUniqueId(), new ArrayList<>());
+        return CUBOIDS_MAP.computeIfAbsent(player.getUniqueId(), ignored -> new ArrayList<>());
     }
 
     /**
@@ -97,6 +98,13 @@ public final class SelectionManager {
         double y = location.getY();
 
         return y < world.getMaxHeight() && y > world.getMinHeight();
+    }
+
+    private @NotNull Location toBlockLocation(@NotNull Location location) {
+        World world = location.getWorld();
+        if (world == null) throw new IllegalArgumentException("Selection location must have a world");
+
+        return new Location(world, location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
     public Component getSelectedPositionComponent(SelectionType type, Location location) {

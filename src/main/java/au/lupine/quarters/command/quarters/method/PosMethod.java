@@ -91,6 +91,9 @@ public final class PosMethod extends CommandMethod {
 
         sm.selectPosition(player, location, type);
 
-        QuartersMessaging.sendMessage(player, sm.getSelectedPositionComponent(type, location));
+        Location selectedLocation = type == SelectionType.LEFT
+                ? sm.getSelection(player).getCornerOne()
+                : sm.getSelection(player).getCornerTwo();
+        QuartersMessaging.sendMessage(player, sm.getSelectedPositionComponent(type, selectedLocation));
     }
 }
