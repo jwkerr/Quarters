@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Called after a resident has claimed a quarter. This event cannot be cancelled.
- *
  * @since 2.0.0
+ * @author pernio
  */
 public class QuarterClaimEvent extends QuartersEvent {
 
@@ -23,7 +23,6 @@ public class QuarterClaimEvent extends QuartersEvent {
 
     /**
      * Creates a claim event.
-     *
      * @param player the player who claimed the quarter
      * @param resident the Towny resident who claimed the quarter
      * @param quarter the claimed quarter

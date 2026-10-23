@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Called before a resident claims a quarter. Cancelling this event prevents the claim from continuing.
- *
  * @since 2.0.0
+ * @author pernio
  */
 public class QuarterPreClaimEvent extends CancellableQuartersEvent {
 
@@ -23,7 +23,6 @@ public class QuarterPreClaimEvent extends CancellableQuartersEvent {
 
     /**
      * Creates a pre-claim event.
-     *
      * @param player the player claiming the quarter
      * @param resident the Towny resident claiming the quarter
      * @param quarter the quarter to be claimed
