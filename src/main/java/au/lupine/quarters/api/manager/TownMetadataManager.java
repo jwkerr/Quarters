@@ -15,7 +15,9 @@ public final class TownMetadataManager extends MetadataManager<Town> {
 
     public static final String QUARTER_LIST_KEY = METADATA_PREFIX + "quarter_list";
     public static final String DEFAULT_SELL_PRICE_KEY = METADATA_PREFIX + "default_sell_price";
+    public static final String DEFAULT_RENT_PRICE_KEY = METADATA_PREFIX + "default_rent_price";
     public static final String SELL_ON_DELETE_KEY = METADATA_PREFIX + "sell_on_delete";
+    public static final String RESIDENT_PERMISSION_DELAY_ENABLED_KEY = METADATA_PREFIX + "resident_permission_delay_enabled";
 
     private TownMetadataManager() {}
 
@@ -40,12 +42,28 @@ public final class TownMetadataManager extends MetadataManager<Town> {
         return getMetadataAsDecimal(town, DEFAULT_SELL_PRICE_KEY, 0.0D);
     }
 
+    public void setDefaultRentPrice(@NotNull Town town, Double value) {
+        setMetadataAsDecimal(town, DEFAULT_RENT_PRICE_KEY, value);
+    }
+
+    public Double getDefaultRentPrice(@NotNull Town town) {
+        return getMetadataAsDecimal(town, DEFAULT_RENT_PRICE_KEY, 0.0D);
+    }
+
     public void setSellOnDelete(@NotNull Town town, boolean value) {
         setMetadataAsBoolean(town, SELL_ON_DELETE_KEY, value);
     }
 
     public Boolean getSellOnDelete(@NotNull Town town) {
         return getMetadataAsBoolean(town, SELL_ON_DELETE_KEY);
+    }
+
+    public void setResidentPermissionDelayEnabled(@NotNull Town town, boolean value) {
+        setMetadataAsBoolean(town, RESIDENT_PERMISSION_DELAY_ENABLED_KEY, value);
+    }
+
+    public boolean isResidentPermissionDelayEnabled(@NotNull Town town) {
+        return getMetadataAsBoolean(town, RESIDENT_PERMISSION_DELAY_ENABLED_KEY);
     }
 
     private void setMetadataAsQuarterList(@NotNull Town town, @NotNull String key, List<Quarter> value) {

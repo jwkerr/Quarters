@@ -7,6 +7,7 @@ import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.object.base.CommandMethod;
 import au.lupine.quarters.object.entity.Quarter;
 import au.lupine.quarters.object.wrapper.Pair;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.plugin.configuration.PluginMeta;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -14,19 +15,19 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
 
-public class InfoMethod extends CommandMethod {
+public final class InfoMethod extends CommandMethod {
 
-    public InfoMethod(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quarters.info");
+    public InfoMethod() {
+        super("info", "quarters.command.quarters.info");
     }
 
     @Override
-    public void execute() {
+    public void execute(@NotNull CommandSourceStack source) {
         PluginMeta meta = Quarters.getInstance().getPluginMeta();
 
         int numQuarters = 0;
@@ -37,18 +38,18 @@ public class InfoMethod extends CommandMethod {
         }
 
         List<Pair<String, Component>> labelledEntries = List.of(
-                Pair.of("Author", ConfigManager.getFormattedName(UUID.fromString("fed0ec4a-f1ad-4b97-9443-876391668b34"), Component.text("Fruitloopins", NamedTextColor.GRAY))),
-                Pair.of("Version", Component.text(meta.getVersion(), NamedTextColor.GRAY)),
-                Pair.of("Quarters", Component.text(numQuarters, NamedTextColor.GRAY)),
-                Pair.of("Cuboids", Component.text(numCuboids, NamedTextColor.GRAY))
+                Pair.of("quarters.command.quarters.info.label.author", ConfigManager.getFormattedName(UUID.fromString("fed0ec4a-f1ad-4b97-9443-876391668b34"), Component.text("Fruitloopins", NamedTextColor.GRAY))),
+                Pair.of("quarters.command.quarters.info.label.version", Component.text(meta.getVersion(), NamedTextColor.GRAY)),
+                Pair.of("quarters.command.quarters.info.label.quarters", Component.text(numQuarters, NamedTextColor.GRAY)),
+                Pair.of("quarters.command.quarters.info.label.cuboids", Component.text(numCuboids, NamedTextColor.GRAY))
         );
 
         TextComponent.Builder bracketBuilder = Component.text();
 
         bracketBuilder.append(QuartersMessaging.OPEN_SQUARE_BRACKET);
-        bracketBuilder.append(Component.text("Fame", TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
+        bracketBuilder.append(Component.translatable("quarters.command.quarters.info.button.fame", TextColor.color(QuartersMessaging.PLUGIN_COLOUR.getRGB())));
         bracketBuilder.append(QuartersMessaging.CLOSED_SQUARE_BRACKET);
-        bracketBuilder.hoverEvent(Component.text("Click to view Quarters' most famous players", NamedTextColor.GRAY));
+        bracketBuilder.hoverEvent(Component.translatable("quarters.command.quarters.info.button.fame.hover", NamedTextColor.GRAY));
         bracketBuilder.clickEvent(ClickEvent.runCommand("/quarters:q fame"));
 
         Component info = QuartersMessaging.getListComponent(QuartersMessaging.PLUGIN_WORDMARK_COMPONENT, labelledEntries, null).appendNewline()
@@ -56,6 +57,6 @@ public class InfoMethod extends CommandMethod {
                 .append(Component.text("Wiki", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://github.com/jwkerr/Quarters/wiki"))).appendSpace()
                 .append(Component.text("Discord", TextColor.color(0x2F81F7), TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl("https://discord.gg/ey6ZvnwAJp")));
 
-        QuartersMessaging.sendComponent(sender, info);
+        QuartersMessaging.sendComponent(source.getSender(), info);
     }
 }

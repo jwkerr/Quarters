@@ -2,7 +2,7 @@ package au.lupine.quarters.listener;
 
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.object.entity.Quarter;
-import au.lupine.quarters.object.state.QuarterType;
+import au.lupine.quarters.object.state.FlagType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
@@ -47,13 +47,9 @@ public class StatusScreenListener implements Listener {
         List<Quarter> quarters = QuarterManager.getInstance().getQuarters(town);
         if (quarters.isEmpty()) return;
 
-        Map<QuarterType, Integer> numOfTypes = new HashMap<>();
-        for (Quarter quarter : quarters) {
-            QuarterType type = quarter.getType();
-            int num = numOfTypes.getOrDefault(type, 0);
-
-            numOfTypes.put(type, num + 1);
-        }
+        Map<String, Integer> numOfQuarters = new HashMap<>();
+        numOfQuarters.put("Total", quarters.size());
+        numOfQuarters.put("Embassies", (int) quarters.stream().filter(Quarter::isEmbassy).count());
 
         TextComponent.Builder builder = Component.text();
         builder.append(Component.text("[", NamedTextColor.GRAY));
@@ -61,9 +57,9 @@ public class StatusScreenListener implements Listener {
         builder.append(Component.text("]", NamedTextColor.GRAY));
 
         List<Component> hoverComponents = new ArrayList<>();
-        for (Map.Entry<QuarterType, Integer> entry : numOfTypes.entrySet()) {
+        for (Map.Entry<String, Integer> entry : numOfQuarters.entrySet()) {
             hoverComponents.add(Component.text(
-                    entry.getKey().getCommonName() + ": ", NamedTextColor.DARK_GREEN)
+                    entry.getKey() + ": ", NamedTextColor.DARK_GREEN)
                     .append(Component.text(entry.getValue(), NamedTextColor.GREEN))
             );
         }

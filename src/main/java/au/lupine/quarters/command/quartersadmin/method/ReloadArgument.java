@@ -2,18 +2,19 @@ package au.lupine.quarters.command.quartersadmin.method;
 
 import au.lupine.quarters.command.quartersadmin.method.reload.AdminReloadConfigMethod;
 import au.lupine.quarters.object.base.CommandArgument;
-import org.bukkit.command.CommandSender;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import org.jetbrains.annotations.NotNull;
 
-public class ReloadArgument extends CommandArgument {
+public final class ReloadArgument extends CommandArgument {
 
-    public ReloadArgument(CommandSender sender, String[] args) {
-        super(sender, args, "quarters.command.quartersadmin.reload");
+    public ReloadArgument() {
+        super("reload", "quarters.command.quartersadmin.reload");
     }
 
     @Override
-    protected void parseMethod(CommandSender sender, String method, String[] args) {
-        switch (method) {
-            case "config" -> new AdminReloadConfigMethod(sender, args).execute();
-        }
+    public @NotNull LiteralArgumentBuilder<CommandSourceStack> build() {
+        return super.build()
+                .then(new AdminReloadConfigMethod().build());
     }
 }

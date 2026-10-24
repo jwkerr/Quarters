@@ -1,6 +1,6 @@
 package au.lupine.quarters.object.entity;
 
-import au.lupine.quarters.api.manager.ConfigManager;
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.manager.QuarterManager;
 import au.lupine.quarters.api.manager.SelectionManager;
 import au.lupine.quarters.object.state.CuboidValidity;
@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
@@ -35,23 +36,25 @@ public class Cuboid {
      * @param cornerTwo Cuboid corner two
      */
     public Cuboid(@NotNull Location cornerOne, @NotNull Location cornerTwo) {
-        if (!cornerOne.getWorld().equals(cornerTwo.getWorld())) throw new IllegalArgumentException("Cuboid corners must be within the same world");
+        World cornerOneWorld = Objects.requireNonNull(cornerOne.getWorld(), "Cuboid corner one must have a world");
+        World cornerTwoWorld = Objects.requireNonNull(cornerTwo.getWorld(), "Cuboid corner two must have a world");
+        if (!cornerOneWorld.equals(cornerTwoWorld)) throw new IllegalArgumentException("Cuboid corners must be within the same world");
 
-        this.cornerOne = cornerOne;
-        this.cornerTwo = cornerTwo;
-        this.world = cornerOne.getWorld();
-        this.cornerBlockOne = world.getBlockAt(cornerOne);
-        this.cornerBlockTwo = world.getBlockAt(cornerTwo);
+        this.cornerOne = new Location(cornerOneWorld, cornerOne.getBlockX(), cornerOne.getBlockY(), cornerOne.getBlockZ());
+        this.cornerTwo = new Location(cornerTwoWorld, cornerTwo.getBlockX(), cornerTwo.getBlockY(), cornerTwo.getBlockZ());
+        this.world = cornerOneWorld;
+        this.cornerBlockOne = world.getBlockAt(this.cornerOne);
+        this.cornerBlockTwo = world.getBlockAt(this.cornerTwo);
         this.bounding = BoundingBox.of(cornerBlockOne, cornerBlockTwo);
-        this.minX = Math.min(cornerOne.getBlockX(), cornerTwo.getBlockX());
-        this.maxX = Math.max(cornerOne.getBlockX(), cornerTwo.getBlockX());
-        this.minY = Math.min(cornerOne.getBlockY(), cornerTwo.getBlockY());
-        this.maxY = Math.max(cornerOne.getBlockY(), cornerTwo.getBlockY());
-        this.minZ = Math.min(cornerOne.getBlockZ(), cornerTwo.getBlockZ());
-        this.maxZ = Math.max(cornerOne.getBlockZ(), cornerTwo.getBlockZ());
-        this.length = Math.abs(cornerOne.getBlockX() - cornerTwo.getBlockX()) + 1;
-        this.height = Math.abs(cornerOne.getBlockY() - cornerTwo.getBlockY()) + 1;
-        this.width = Math.abs(cornerOne.getBlockZ() - cornerTwo.getBlockZ()) + 1;
+        this.minX = Math.min(this.cornerOne.getBlockX(), this.cornerTwo.getBlockX());
+        this.maxX = Math.max(this.cornerOne.getBlockX(), this.cornerTwo.getBlockX());
+        this.minY = Math.min(this.cornerOne.getBlockY(), this.cornerTwo.getBlockY());
+        this.maxY = Math.max(this.cornerOne.getBlockY(), this.cornerTwo.getBlockY());
+        this.minZ = Math.min(this.cornerOne.getBlockZ(), this.cornerTwo.getBlockZ());
+        this.maxZ = Math.max(this.cornerOne.getBlockZ(), this.cornerTwo.getBlockZ());
+        this.length = Math.abs(this.cornerOne.getBlockX() - this.cornerTwo.getBlockX()) + 1;
+        this.height = Math.abs(this.cornerOne.getBlockY() - this.cornerTwo.getBlockY()) + 1;
+        this.width = Math.abs(this.cornerOne.getBlockZ() - this.cornerTwo.getBlockZ()) + 1;
         this.volume = length * height * width;
     }
 
@@ -60,22 +63,29 @@ public class Cuboid {
      *
      * @return True if the cuboid instance is in a valid location to be part of a quarter
      */
-    public CuboidValidity checkValidity() {
-        boolean isInsideWorldBounds = isCuboidInsideWorldBounds();
-        if (!isInsideWorldBounds) return CuboidValidity.OUTSIDE_WORLD_BOUNDS;
+    /**
+     * Gets every validation problem with this cuboid.
+     *
+     * @return an immutable list of all issues, or an empty list when this cuboid is valid
+     */
+    public @NotNull List<CuboidValidity> checkValidity() {
+        List<CuboidValidity> issues = new ArrayList<>();
+
+        if (!isCuboidInsideWorldBounds()) issues.add(CuboidValidity.OUTSIDE_WORLD_BOUNDS);
 
         boolean doesNotContainWilderness = doesCuboidNotContainWilderness();
-        if (!doesNotContainWilderness) return CuboidValidity.CONTAINS_WILDERNESS;
+        if (!doesNotContainWilderness) issues.add(CuboidValidity.CONTAINS_WILDERNESS);
 
-        boolean doesIntersect = doesCuboidIntersectWithPreExistingQuarters();
-        if (doesIntersect) return CuboidValidity.INTERSECTS;
+        if (doesCuboidIntersectWithPreExistingQuarters()) issues.add(CuboidValidity.INTERSECTS);
 
-        if (!isCuboidEntirelyWithinSingularTown()) return CuboidValidity.SPANS_MULTIPLE_TOWNS;
+        if (doesNotContainWilderness && !isCuboidEntirelyWithinSingularTown()) {
+            issues.add(CuboidValidity.SPANS_MULTIPLE_TOWNS);
+        }
 
-        int maxCuboidVolume = ConfigManager.getMaxCuboidVolume();
-        if (maxCuboidVolume > -1 && this.getVolume() > maxCuboidVolume) return CuboidValidity.TOO_LARGE;
+        int maxCuboidVolume = Quarters.getInstance().config().quarters.maxCuboidVolume;
+        if (maxCuboidVolume > -1 && this.getVolume() > maxCuboidVolume) issues.add(CuboidValidity.TOO_LARGE);
 
-        return CuboidValidity.VALID;
+        return List.copyOf(issues);
     }
 
     public boolean isCuboidInsideWorldBounds() {
@@ -219,11 +229,11 @@ public class Cuboid {
     }
 
     public Location getCornerOne() {
-        return cornerOne;
+        return cornerOne.clone();
     }
 
     public Location getCornerTwo() {
-        return cornerTwo;
+        return cornerTwo.clone();
     }
 
     public World getWorld() {

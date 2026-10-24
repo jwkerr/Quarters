@@ -1,9 +1,9 @@
 package au.lupine.quarters.listener;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.QuartersMessaging;
-import au.lupine.quarters.api.manager.ConfigManager;
-import au.lupine.quarters.api.manager.ParticleManager;
 import au.lupine.quarters.api.manager.QuarterManager;
+import au.lupine.quarters.api.manager.SelectionRendererManager;
 import au.lupine.quarters.api.manager.SelectionManager;
 import au.lupine.quarters.object.state.SelectionType;
 import org.bukkit.Location;
@@ -21,7 +21,7 @@ public class QuartersWandListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!event.getMaterial().equals(ConfigManager.getWandMaterial())) return;
+        if (!event.getMaterial().equals(Quarters.getInstance().config().wand.material)) return;
 
         Player player = event.getPlayer();
         if (!player.hasPermission("quarters.wand")) return;
@@ -43,14 +43,12 @@ public class QuartersWandListener implements Listener {
 
     @EventHandler
     public void onItemHeld(PlayerItemHeldEvent event) {
-        if (!ConfigManager.areParticlesEnabled()) return;
+        if (!Quarters.getInstance().config().renderer.enabled) return;
 
         Player player = event.getPlayer();
 
         if (!QuarterManager.getInstance().shouldRenderOutlinesForPlayer(player)) return;
 
-        ParticleManager pm = ParticleManager.getInstance(); // Draw outlines on item hold to make them more snappy
-        pm.drawParticlesAtCurrentSelection(player);
-        pm.drawParticlesAtAllQuarters(player);
+        SelectionRendererManager.getInstance().render(player); // Draw outlines on item hold to make them more snappy
     }
 }
