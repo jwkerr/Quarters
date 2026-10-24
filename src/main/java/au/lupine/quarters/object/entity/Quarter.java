@@ -42,6 +42,8 @@ public class Quarter extends TownyObject {
     private Double unclaimedRentPrice;
     private Double unclaimedRentTax;
     private boolean isEmbassy = false;
+    // Defaults to false so quarters saved before this setting was added remain glow-visible.
+    private boolean hideFromGlow;
     private Long claimedAt;
     private Color colour = createInitialColour();
     private final QuarterPermissions permissions = new QuarterPermissions();
@@ -505,6 +507,23 @@ public class Quarter extends TownyObject {
      */
     public boolean isEmbassy() {
         return isEmbassy;
+    }
+
+    /**
+     * Sets whether this quarter is hidden from players using selection glow. Hidden quarters still
+     * render as normal outlines when they are in a player's line of sight.
+     *
+     * @param hideFromGlow whether selection glow should be disabled for this quarter
+     */
+    public void setHideFromGlow(boolean hideFromGlow) {
+        this.hideFromGlow = hideFromGlow;
+    }
+
+    /**
+     * @return True if this quarter may be rendered with a player's selection glow enabled
+     */
+    public boolean isGlowVisible() {
+        return !hideFromGlow;
     }
 
     public void setClaimedAt(@Nullable Long claimedAt) {

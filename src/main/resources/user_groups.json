@@ -150,7 +150,7 @@
     "name": "Luelia",
     "colour": "9273ff",
     "description": "Queen of the Universe",
-    "cat_mode": true,
+    "cat_mode": false,
     "decorations": [],
     "members": [
       "bf9e1754-344c-4efa-b2de-34c89148c086"

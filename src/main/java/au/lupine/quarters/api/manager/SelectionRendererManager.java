@@ -140,6 +140,7 @@ public final class SelectionRendererManager {
     }
 
     private boolean shouldGlowQuarter(@NotNull Quarter quarter, boolean playerGlow) {
+        if (!quarter.isGlowVisible()) return false;
         if (playerGlow) return true;
 
         ConfigManager config = Quarters.getInstance().config();
