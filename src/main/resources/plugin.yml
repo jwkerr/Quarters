@@ -240,6 +240,7 @@ permissions:
       quarters.command.quarters.toggle.vehicles: true
       quarters.command.quarters.toggle.snow: true
       quarters.command.quarters.toggle.ice: true
+      quarters.command.quarters.toggle.vault: true
 
   quarters.command.quarters.toggle.constantoutlines:
     default: true
@@ -284,6 +285,9 @@ permissions:
     default: false
 
   quarters.command.quarters.toggle.ice:
+    default: false
+
+  quarters.command.quarters.toggle.vault:
     default: false
 
   quarters.command.quarters.trust:
@@ -331,6 +335,8 @@ permissions:
       quarters.command.quartersadmin.toggle.*: true
       quarters.command.quartersadmin.trust: true
       quarters.command.quartersadmin.trust.*: true
+      quarters.command.quartersadmin.reload: true
+      quarters.command.quartersadmin.reload.*: true
 
   quarters.command.quartersadmin.delete:
     default: op
