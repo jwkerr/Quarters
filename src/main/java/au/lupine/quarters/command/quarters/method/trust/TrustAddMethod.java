@@ -62,7 +62,18 @@ public final class TrustAddMethod extends CommandMethod {
                     player.getLocation(),
                     Argument.string("player", resident.getName())
             );
-            if (resident.getPlayer() != null) QuartersMessaging.sendInfoMessage(resident.getPlayer(), "quarters.command.quarters.trust.add.feedback.target", player.getLocation());
+            if (resident.getPlayer() != null) {
+                QuartersMessaging.sendInfoMessage(
+                        resident.getPlayer(),
+                        "quarters.command.quarters.trust.add.feedback.target",
+                        null,
+                        Argument.string("player", player.getName()),
+                        Argument.string("x", String.valueOf(player.getLocation().getBlockX())),
+                        Argument.string("y", String.valueOf(player.getLocation().getBlockY())),
+                        Argument.string("z", String.valueOf(player.getLocation().getBlockZ())),
+                        Argument.string("town", quarter.getTown().getName())
+                );
+            }
         } else {
             QuartersMessaging.sendErrorMessage(player, "quarters.command.quarters.trust.feedback.already_trusted");
         }
