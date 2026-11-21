@@ -8,6 +8,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -40,9 +41,10 @@ public final class SelectionManager {
      */
     public void selectPosition(@NotNull Player player, @NotNull Location location, @NotNull SelectionType type) {
         CuboidSelection selection = CUBOID_SELECTION_MAP.computeIfAbsent(player.getUniqueId(), s -> new CuboidSelection());
+        Location blockLocation = toBlockLocation(location);
         switch (type) {
-            case LEFT -> selection.setCornerOne(location);
-            case RIGHT -> selection.setCornerTwo(location);
+            case LEFT -> selection.setCornerOne(blockLocation);
+            case RIGHT -> selection.setCornerTwo(blockLocation);
         }
     }
 
@@ -65,7 +67,7 @@ public final class SelectionManager {
      * @return The player's currently added cuboids using /q selection add
      */
     public List<Cuboid> getCuboids(Player player) {
-        return CUBOIDS_MAP.getOrDefault(player.getUniqueId(), new ArrayList<>());
+        return CUBOIDS_MAP.computeIfAbsent(player.getUniqueId(), ignored -> new ArrayList<>());
     }
 
     /**
@@ -98,11 +100,21 @@ public final class SelectionManager {
         return y < world.getMaxHeight() && y > world.getMinHeight();
     }
 
+    private @NotNull Location toBlockLocation(@NotNull Location location) {
+        World world = location.getWorld();
+        if (world == null) throw new IllegalArgumentException("Selection location must have a world");
+
+        return new Location(world, location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    }
+
     public Component getSelectedPositionComponent(SelectionType type, Location location) {
         int pos = type.equals(SelectionType.LEFT) ? 1 : 2;
 
         TextComponent.Builder builder = Component.text();
-        builder.append(Component.text("Position " + pos + ": ", NamedTextColor.GRAY, TextDecoration.ITALIC));
+        builder.append(Component.translatable(
+                "quarters.selection.feedback.position",
+                Argument.string("position", Integer.toString(pos))
+        ).color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC));
         builder.append(QuartersMessaging.getLocationComponent(location));
 
         return builder.build();

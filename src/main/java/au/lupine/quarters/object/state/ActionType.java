@@ -1,5 +1,7 @@
 package au.lupine.quarters.object.state;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum ActionType {
     BUILD("Build"),
     DESTROY("Destroy"),
@@ -8,15 +10,15 @@ public enum ActionType {
 
     private final String commonName;
 
-    ActionType(String commonName) {
+    ActionType(@NotNull String commonName) {
         this.commonName = commonName;
     }
 
-    public String getCommonName() {
+    public @NotNull String getCommonName() {
         return commonName;
     }
 
-    public String getLowerCase() {
+    public @NotNull String getLowerCase() {
         return name().toLowerCase();
     }
 }

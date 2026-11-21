@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Tag and publish release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read release version
+        id: version
+        shell: bash
+        run: |
+          version="$(sed -nE 's/^def semVersion = "([^"]+)"$/\1/p' build.gradle)"
+          if [[ -z "$version" ]]; then
+            echo "::error::Could not read semVersion from build.gradle."
+            exit 1
+          fi
+
+          echo "value=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Check whether this version is already released
+        id: tag
+        shell: bash
+        run: |
+          if git rev-parse -q --verify "refs/tags/${{ steps.version.outputs.tag }}" >/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create Git tag and GitHub release
+        if: steps.tag.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        shell: bash
+        run: |
+          git tag "$TAG"
+          git push origin "$TAG"
+          gh release create "$TAG" --generate-notes \
+            --notes "Javadocs: https://jitpack.io/com/github/${GITHUB_REPOSITORY}/${TAG}/javadoc/"
+
+      - name: Request the JitPack build
+        if: steps.tag.outputs.exists == 'false'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        shell: bash
+        run: |
+          # Requesting the published POM starts JitPack's on-demand build for this release.
+          # JitPack may still be building when this request returns.
+          curl --location --silent --show-error --output /dev/null \
+            "https://jitpack.io/com/github/${GITHUB_REPOSITORY}/${TAG}/Quarters-${TAG}.pom" || true

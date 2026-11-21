@@ -1,10 +1,13 @@
 package au.lupine.quarters.object.metadata;
 
+import au.lupine.quarters.Quarters;
 import au.lupine.quarters.api.manager.JSONManager;
 import au.lupine.quarters.object.entity.Quarter;
+import au.lupine.quarters.object.state.FlagType;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.palmergames.bukkit.towny.object.metadata.DataFieldDeserializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,9 +31,30 @@ public class QuarterListDataFieldDeserialiser implements DataFieldDeserializer<Q
         JsonArray jsonArray = gson.fromJson(decoded, JsonArray.class);
         for (JsonElement element : jsonArray) {
             Quarter quarter = gson.fromJson(element, Quarter.class);
+            migrateLegacyType(element, quarter);
             quarters.add(quarter);
         }
 
         return new QuarterListDataField(key, quarters);
+    }
+
+    private void migrateLegacyType(@NotNull JsonElement element, @NotNull Quarter quarter) {
+        if (!element.isJsonObject()) return;
+
+        JsonObject jsonObject = element.getAsJsonObject();
+        JsonElement typeElement = jsonObject.get("type");
+        if (typeElement == null || !typeElement.isJsonPrimitive()) return;
+
+        switch (typeElement.getAsString().toUpperCase()) {
+            case "INN" -> migrateLegacyType(quarter, FlagType.SLEEPING, "INN");
+            case "STATION" -> migrateLegacyType(quarter, FlagType.VEHICLES, "STATION");
+        }
+    }
+
+    private void migrateLegacyType(@NotNull Quarter quarter, @NotNull FlagType flag, @NotNull String legacyType) {
+        if (quarter.hasStoredFlag(flag)) return;
+
+        quarter.setFlag(flag, true);
+        Quarters.logInfo("Migrated legacy " + legacyType + " quarter " + quarter.getUUID() + " to the " + flag + " flag.");
     }
 }

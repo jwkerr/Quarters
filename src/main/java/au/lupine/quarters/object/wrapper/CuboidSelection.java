@@ -20,18 +20,18 @@ public class CuboidSelection {
     }
 
     public void setCornerOne(Location location) {
-        this.cornerOne = location;
+        this.cornerOne = location.clone();
     }
 
     public @Nullable Location getCornerOne() {
-        return cornerOne;
+        return cornerOne == null ? null : cornerOne.clone();
     }
 
     public void setCornerTwo(Location location) {
-        this.cornerTwo = location;
+        this.cornerTwo = location.clone();
     }
 
     public @Nullable Location getCornerTwo() {
-        return cornerTwo;
+        return cornerTwo == null ? null : cornerTwo.clone();
     }
 }

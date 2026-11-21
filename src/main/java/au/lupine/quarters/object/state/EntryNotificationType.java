@@ -1,20 +1,22 @@
 package au.lupine.quarters.object.state;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum EntryNotificationType {
     ACTION_BAR("Action Bar"),
     CHAT("Chat");
 
     private final String commonName;
 
-    EntryNotificationType(String commonName) {
+    EntryNotificationType(@NotNull String commonName) {
         this.commonName = commonName;
     }
 
-    public String getCommonName() {
+    public @NotNull String getCommonName() {
         return commonName;
     }
 
-    public String getLowerCase() {
+    public @NotNull String getLowerCase() {
         return name().toLowerCase();
     }
 }
